@@ -1,0 +1,73 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Engagement {
+  id                        String   @id @default(cuid())
+  code                      String   @unique
+  title                     String
+  objective                 String
+  scopeJson                 Json
+  criteriaJson              Json
+  constraintsJson           Json
+  auditeeUnitsJson          Json
+  stakeholdersJson          Json
+  startDate                 DateTime
+  endDate                   DateTime
+  budgetHours               Int
+  independenceDisclosureUrl String?
+  status                    String   @default("planned")
+  createdBy                 String
+  createdAt                 DateTime @default(now())
+  updatedAt                 DateTime @updatedAt
+  
+  // Relations
+  plans                     Plan[]
+  pbcRequests              PBCRequest[]
+
+  @@map("engagements")
+}
+
+model Plan {
+  id                    String   @id @default(cuid())
+  engagementId          String
+  timelineJson          Json
+  milestonesJson        Json
+  communicationCadence  String
+  dataStrategyJson      Json
+  raciJson              Json
+  createdAt             DateTime @default(now())
+  updatedAt             DateTime @updatedAt
+  
+  // Relations
+  engagement            Engagement @relation(fields: [engagementId], references: [id], onDelete: Cascade)
+
+  @@map("plans")
+}
+
+model PBCRequest {
+  id              String   @id @default(cuid())
+  engagementId    String
+  code            String
+  description     String
+  ownerId         String
+  dueDate         DateTime
+  status          String   @default("open")
+  attachmentsJson Json
+  notes           String?
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+  
+  // Relations
+  engagement      Engagement @relation(fields: [engagementId], references: [id], onDelete: Cascade)
+
+  @@map("pbc_requests")
+}
