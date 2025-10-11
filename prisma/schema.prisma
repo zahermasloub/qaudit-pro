@@ -1,6 +1,7 @@
 // This is your Prisma schema file,
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
 
+
 generator client {
   provider = "prisma-client-js"
 }
@@ -8,6 +9,19 @@ generator client {
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
+}
+
+enum EngagementStatus {
+  DRAFT
+  IN_PROGRESS
+  COMPLETED
+  ARCHIVED
+}
+
+enum PBCStatus {
+  OPEN
+  CLOSED
+  REVIEWED
 }
 
 model Engagement {
@@ -24,16 +38,18 @@ model Engagement {
   endDate                   DateTime
   budgetHours               Int
   independenceDisclosureUrl String?
-  status                    String   @default("planned")
+  status                    EngagementStatus @default(DRAFT)
   createdBy                 String
   createdAt                 DateTime @default(now())
   updatedAt                 DateTime @updatedAt
-  
+
   // Relations
   plans                     Plan[]
-  pbcRequests              PBCRequest[]
+  pbcRequests               PBCRequest[]
 
   @@map("engagements")
+  @@index([status])
+  @@unique([code])
 }
 
 model Plan {
@@ -46,11 +62,12 @@ model Plan {
   raciJson              Json
   createdAt             DateTime @default(now())
   updatedAt             DateTime @updatedAt
-  
+
   // Relations
   engagement            Engagement @relation(fields: [engagementId], references: [id], onDelete: Cascade)
 
   @@map("plans")
+  @@index([engagementId])
 }
 
 model PBCRequest {
@@ -60,14 +77,16 @@ model PBCRequest {
   description     String
   ownerId         String
   dueDate         DateTime
-  status          String   @default("open")
+  status          PBCStatus @default(OPEN)
   attachmentsJson Json
   notes           String?
   createdAt       DateTime @default(now())
   updatedAt       DateTime @updatedAt
-  
+
   // Relations
   engagement      Engagement @relation(fields: [engagementId], references: [id], onDelete: Cascade)
 
   @@map("pbc_requests")
+  @@index([status])
+  @@unique([code, engagementId])
 }
