@@ -85,7 +85,8 @@ qaudit-pro/
 │   ├── api/            # API Routes
 │   ├── globals.css     # ملفات CSS العامة
 │   ├── layout.tsx      # Layout الرئيسي
-│   └── page.tsx        # الصفحة الرئيسية
+│   ├── page.tsx        # الصفحة الرئيسية (تستورد AppShell)
+│   └── shell/          # مكونات AppShell الأساسية
 ├── components/         # المكونات القابلة لإعادة الاستخدام
 │   └── ui/            # مكونات واجهة المستخدم
 ├── features/          # نطاقات العمل (planning, execution, etc.)
