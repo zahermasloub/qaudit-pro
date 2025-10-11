@@ -27,10 +27,25 @@ body {
 }
 
 /* RTL Support */
-[dir="rtl"] {
+[dir='rtl'] {
   direction: rtl;
 }
 
-[dir="ltr"] {
+[dir='ltr'] {
   direction: ltr;
+}
+
+/* Ensure input text is visible (black) for login/register forms */
+input[type='text'],
+input[type='email'],
+input[type='password'],
+textarea,
+select {
+  color: #000 !important;
+}
+
+/* Placeholder color (optional: light gray) */
+input::placeholder,
+textarea::placeholder {
+  color: #6b7280;
 }
