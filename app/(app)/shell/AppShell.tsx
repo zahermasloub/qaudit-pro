@@ -366,6 +366,7 @@ import DashboardView from './DashboardView';
 import { PlanningScreen, ProcessRiskScreen, ProgramScreen } from './ScreenComponents';
 import { useForm } from 'react-hook-form';
 import { EngagementForm } from '@/features/planning/engagement/engagement.form';
+import PBCForm from '@/features/planning/pbc/pbc.form';
 import { useI18n, type Locale } from '@/lib/i18n';
 const clsx = (...xs: Array<string | false | null | undefined>) => xs.filter(Boolean).join(' ');
 
@@ -653,6 +654,7 @@ export default function AppShell(){
   const [role, setRole] = useState<Role>('IA_Manager');
   const [engagementId, setEngagementId] = useState<string>('ENG-DEMO');
   const [openEngForm, setOpenEngForm] = useState(false);
+  const [openPbc, setOpenPbc] = useState(false);
   const isRTL = locale==='ar';
   const i18n = useI18n(locale);
 
@@ -672,6 +674,9 @@ export default function AppShell(){
         break;
       case 'createPlan':
         setOpenEngForm(true);
+        break;
+      case 'newPBC':
+        setOpenPbc(true);
         break;
       default:
         console.log(`Action: ${action}`);
@@ -736,6 +741,17 @@ export default function AppShell(){
         onOpenChange={setOpenEngForm}
         onSuccess={() => {
           console.log('✅ تم حفظ المهمة بنجاح - سيتم تحديث القائمة');
+          // TODO: Add toast notification and refresh data
+        }}
+      />
+
+      <PBCForm
+        open={openPbc}
+        onOpenChange={setOpenPbc}
+        engagementId={engagementId}
+        onSuccess={() => {
+          console.log('✅ تم حفظ PBC بنجاح - سيتم تحديث القائمة');
+          setOpenPbc(false);
           // TODO: Add toast notification and refresh data
         }}
       />
