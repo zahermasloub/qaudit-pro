@@ -2,6 +2,7 @@
 
 import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
+import { signIn } from 'next-auth/react';
 import Link from 'next/link';
 import { useI18n } from '@/lib/i18n';
 import { Button } from '@/components/ui/button';
@@ -42,17 +43,24 @@ export default function LoginPage() {
 
     setIsLoading(true);
 
-    // Mock authentication - will be replaced with NextAuth in future sprint
-    setTimeout(() => {
+    try {
+      const res = await signIn("credentials", {
+        email: formData.email,
+        password: formData.password,
+        redirect: false,
+        callbackUrl: "/shell"
+      });
+
+      if (res?.ok) {
+        router.push("/shell");
+      } else {
+        setErrors({ password: 'بيانات غير صحيحة' });
+      }
+    } catch (error) {
+      setErrors({ password: 'حدث خطأ في تسجيل الدخول' });
+    } finally {
       setIsLoading(false);
-
-      // Set mock session cookie
-      document.cookie = 'qaudit_auth=1; Path=/; SameSite=Lax';
-
-      // Get redirect destination from URL params or default to home
-      const next = new URLSearchParams(window.location.search).get('next') || '/';
-      router.push(next);
-    }, 1000);
+    }
   };
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {

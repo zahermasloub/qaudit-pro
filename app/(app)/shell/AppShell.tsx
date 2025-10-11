@@ -359,6 +359,8 @@ export function PBCForm({ engagementId, onCreated }: { engagementId: string; onC
 // ========================= FILE: app/(app)/shell/AppShell.tsx =========
 'use client';
 import React, { useEffect, useState } from "react";
+import { useSession, signOut } from "next-auth/react";
+import { useRouter } from "next/navigation";
 import { ClipboardList, BookCheck, Shield, FlaskConical, Database, FileCheck, AlertTriangle, FileText, RotateCcw, BadgeCheck, LayoutDashboard } from "lucide-react";
 import DashboardView from './DashboardView';
 import { PlanningScreen, ProcessRiskScreen, ProgramScreen } from './ScreenComponents';
@@ -644,8 +646,10 @@ function PBCRequestForm({ engagementId, onClose }: { engagementId: string; onClo
 function PlaceholderScreen({ title }: { title: string }){ return (<Card><div className='font-semibold mb-2'>{title}</div><div className='text-sm text-gray-600'>Coming soon…</div></Card>); }
 
 export default function AppShell(){
+  const { status } = useSession();
+  const router = useRouter();
   const [locale, setLocale] = useState<Locale>('ar');
-  const [route, setRoute] = useState<Route>('login');
+  const [route, setRoute] = useState<Route>('dashboard');
   const [role, setRole] = useState<Role>('IA_Manager');
   const [engagementId, setEngagementId] = useState<string>('ENG-DEMO');
   const [openEngForm, setOpenEngForm] = useState(false);
@@ -653,6 +657,13 @@ export default function AppShell(){
   const i18n = useI18n(locale);
 
   useEffect(()=>{ if (typeof document!=='undefined'){ document.documentElement.dir = isRTL? 'rtl':'ltr'; document.documentElement.lang = isRTL? 'ar':'en'; } }, [isRTL]);
+
+  // Redirect to login if not authenticated
+  useEffect(() => {
+    if (status === "unauthenticated") {
+      router.push("/auth/login");
+    }
+  }, [status, router]);
 
   const handleToolbarAction = (action: string) => {
     switch (action) {
@@ -670,37 +681,19 @@ export default function AppShell(){
   const allowed = RBAC[route as Route]?.includes(role);
   const statusBadge = 'In-Field';
 
-  if (route==='login') return (
-    <div className='min-h-[100dvh] grid place-items-center bg-[#F5F7FB] px-4'>
-      <div className='w-full max-w-md bg-white rounded-2xl shadow-xl p-6 border border-gray-200'>
-        <div className='flex items-center gap-3 mb-6'><div className='h-10 w-10 rounded-full bg-blue-600 text-white grid place-items-center font-bold'>IA</div><h1 className='text-xl font-bold'>{i18n.auth.signin}</h1></div>
-        <div className='space-y-3'>
-          <input className='w-full rounded-xl border border-gray-200 px-3 py-2' placeholder='email@gov.sa' />
-          <input type='password' className='w-full rounded-xl border border-gray-200 px-3 py-2' placeholder='••••••••' />
-          <button onClick={()=>setRoute('dashboard')} className='w-full rounded-xl bg-blue-600 text-white py-2 font-semibold hover:bg-blue-700'>{i18n.auth.signin}</button>
-          <div className='flex items-center justify-between text-xs text-gray-600'><button>{i18n.auth.forgot}</button><button onClick={()=>setRoute('register')}>{i18n.auth.signup}</button></div>
-        </div>
-      </div>
-    </div>
-  );
-  if (route==='register') return (
-    <div className='min-h-[100dvh] grid place-items-center bg-[#F5F7FB] px-4'>
-      <div className='w-full max-w-md bg-white rounded-2xl shadow-xl p-6 border border-gray-200'>
-        <h1 className='text-xl font-bold mb-4'>{i18n.auth.signup}</h1>
-        <div className='space-y-3'>
-          <input className='w-full rounded-xl border border-gray-200 px-3 py-2' placeholder='Name' />
-          <input className='w-full rounded-xl border border-gray-200 px-3 py-2' placeholder='email@gov.sa' />
-          <input type='password' className='w-full rounded-xl border border-gray-200 px-3 py-2' placeholder='Password (8+)' />
-          <input type='password' className='w-full rounded-xl border border-gray-200 px-3 py-2' placeholder='Confirm password' />
-          <button onClick={()=>setRoute('login')} className='w-full rounded-xl bg-blue-600 text-white py-2 font-semibold hover:bg-blue-700'>{i18n.auth.signup}</button>
-        </div>
+  // Show loading while checking authentication
+  if (status === "loading") return (
+    <div className='min-h-[100dvh] grid place-items-center bg-[#F5F7FB]'>
+      <div className='text-center'>
+        <div className='animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4'></div>
+        <p className='text-gray-600'>جارٍ التحقق من الهوية...</p>
       </div>
     </div>
   );
 
   return (
     <div className='min-h-[100dvh] bg-[#F5F7FB] text-[#111827]'>
-      <Topbar locale={locale} setLocale={setLocale} onLogout={()=>setRoute('login')} role={role} route={route} onToolbarAction={handleToolbarAction} />
+      <Topbar locale={locale} setLocale={setLocale} onLogout={() => signOut({ callbackUrl: "/auth/login" })} role={role} route={route} onToolbarAction={handleToolbarAction} />
 
       <div className='mx-auto max-w-[1400px] px-4 mt-3'>
         <div className='bg-white rounded-xl border border-gray-200 p-2 text-sm inline-flex items-center gap-2'>
