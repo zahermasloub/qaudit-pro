@@ -32,7 +32,7 @@ export default function PBCForm({ open, onOpenChange, engagementId, onSuccess }:
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ ...data, engagementId })
       });
-      
+
       if (response.ok) {
         reset();
         onSuccess();
@@ -55,14 +55,14 @@ export default function PBCForm({ open, onOpenChange, engagementId, onSuccess }:
       <div className="relative bg-white rounded-2xl shadow-xl border border-gray-200 w-full max-w-2xl p-6">
         <div className="flex items-center justify-between mb-4">
           <h3 className="text-lg font-semibold">طلب مستندات جديد (PBC)</h3>
-          <button 
-            className="text-gray-500 hover:text-gray-700" 
+          <button
+            className="text-gray-500 hover:text-gray-700"
             onClick={() => onOpenChange(false)}
           >
             ✕
           </button>
         </div>
-        
+
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
@@ -74,7 +74,7 @@ export default function PBCForm({ open, onOpenChange, engagementId, onSuccess }:
               />
               {errors.code && <p className="text-red-500 text-xs mt-1">{errors.code.message}</p>}
             </div>
-            
+
             <div>
               <label className="block text-sm font-medium mb-1">المسؤول</label>
               <input
