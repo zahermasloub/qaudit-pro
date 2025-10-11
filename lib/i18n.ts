@@ -1,69 +1,49 @@
 const I18N = {
   ar: {
-    app: {
-      title: "نظام التدقيق الاحترافي"
-    },
+    app: { title: "نظام التدقيق الداخلي" },
     auth: {
       signin: "تسجيل الدخول",
       signup: "إنشاء حساب",
       forgot: "نسيت كلمة المرور؟",
+      logout: "خروج",
       alreadyHaveAccount: "لديك حساب بالفعل؟",
-      noAccount: "ليس لديك حساب؟",
-      logout: "تسجيل خروج"
+      noAccount: "ليس لديك حساب؟"
     },
     menu: {
       dashboard: "لوحة القيادة",
       planning: "1) التخطيط",
       processRisk: "2) فهم العملية والمخاطر",
-      program: "3) البرنامج والعينات",
+      program: "3) برنامج العمل والعينات",
       fieldwork: "4) الأعمال الميدانية والأدلة",
       agile: "5) اللمسات الرشيقة",
-      findings: "6) النتائج",
-      reporting: "7) التقرير",
+      findings: "6) النتائج والتوصيات",
+      reporting: "7) التقرير النهائي",
       followup: "8) المتابعة",
       closeout: "9) الإقفال",
       qa: "ضمان الجودة"
     },
     actions: {
-      newEngagement: "مهمة جديدة",
-      exportCSV: "تصدير CSV",
-      refresh: "تحديث",
-      createPlan: "إنشاء خطة",
-      newPBC: "طلب PBC جديد",
-      importCSV: "استيراد CSV",
-      addRisk: "إضافة مخاطر",
-      addControl: "إضافة ضابط",
-      linkTest: "ربط اختبار",
-      newTest: "اختبار جديد",
-      assignOwner: "تعيين مسؤول",
-      drawSample: "سحب عينة",
-      recalcHash: "إعادة حساب Hash",
-      importPopulation: "استيراد مجتمع",
-      uploadEvidence: "رفع دليل",
-      scanAV: "فحص الفيروسات",
-      linkEvidence: "ربط دليل",
-      standUp: "Stand-up",
-      sprintLog: "سجل Sprint",
-      newFinding: "ملاحظة جديدة",
-      genCCER: "توليد C-C-E-R",
-      preview: "معاينة",
-      exportPDF: "تصدير PDF",
-      sendToSign: "إرسال للتوقيع",
-      newCheck: "فحص جديد",
-      remindOwners: "تذكير الملاك",
-      followupReport: "تقرير متابعة",
-      closeFile: "إقفال الملف",
-      qaReview: "مراجعة الجودة"
+      newEng: "إنشاء مهمة", exportCSV: "تصدير CSV", refresh: "تحديث",
+      createPlan: "إنشاء خطة", addMilestone: "إضافة مرحلة", addTask: "إضافة مهمة",
+      newPBC: "طلب جديد", importCSV: "استيراد CSV",
+      addRisk: "إضافة خطر", addControl: "إضافة ضابط", linkTest: "ربط اختبار",
+      newTest: "اختبار جديد", assignOwner: "تعيين مسؤول",
+      drawSample: "سحب عيّنة", recalcHash: "إعادة حساب Hash", importPopulation: "استيراد مجتمع",
+      uploadEv: "رفع دليل", scanAV: "فحص فيروسات", linkTo: "ربط بعينة/اختبار",
+      newFinding: "ملاحظة جديدة", genCCER: "توليد C-C-E-R",
+      preview: "معاينة", exportPDF: "تصدير PDF", sendSign: "إرسال للتوقيع",
+      newCheck: "تحقق جديد", remindOwners: "تذكير الملاك", followReport: "تقرير متابعة",
+      closeFile: "إقفال الملف", qaReview: "مراجعة جودة"
     },
     sections: {
-      planning: "التخطيط وطلبات PBC",
-      processRisk: "خرائط العملية وإدارة المخاطر",
+      planning: "الخطة ومهام PBC",
+      processRisk: "خرائط العملية و RCM",
       program: "برنامج الاختبارات والعينات",
       fieldwork: "تنفيذ الإجراءات والأدلة",
-      agile: "لوحة Sprint والمتابعة الرشيقة",
+      agile: "لوحة Sprint / Stand-up",
       findings: "تحرير النتائج والتوصيات",
       reporting: "بناء التقرير النهائي",
-      followup: "تتبع الإجراءات التصحيحية",
+      followup: "تعقّب الإجراءات التصحيحية",
       closeout: "إقفال الملف",
       qa: "مراجعة الجودة الداخلية"
     },
@@ -77,22 +57,23 @@ const I18N = {
       required: "هذا الحقل مطلوب",
       emailInvalid: "البريد الإلكتروني غير صحيح",
       passwordMismatch: "كلمات المرور غير متطابقة",
-      search: "بحث...",
-      notifications: "الإشعارات",
-      accessDenied: "الوصول مرفوض للدور:"
+      search: "بحث…",
+      lead: "القائد",
+      status: "الحالة",
+      alerts: "إشعارات",
+      accessDenied: "ممنوع الوصول للدور",
+      comingSoon: "قريباً..."
     }
   },
   en: {
-    app: {
-      title: "Professional Audit System"
-    },
+    app: { title: "Internal Audit Suite" },
     auth: {
       signin: "Sign in",
       signup: "Create account",
       forgot: "Forgot password?",
+      logout: "Logout",
       alreadyHaveAccount: "Already have an account?",
-      noAccount: "Don't have an account?",
-      logout: "Logout"
+      noAccount: "Don't have an account?"
     },
     menu: {
       dashboard: "Dashboard",
@@ -105,50 +86,32 @@ const I18N = {
       reporting: "7) Reporting",
       followup: "8) Follow-up",
       closeout: "9) Closeout",
-      qa: "Quality Assurance"
+      qa: "QA"
     },
     actions: {
-      newEngagement: "New Engagement",
-      exportCSV: "Export CSV",
-      refresh: "Refresh",
-      createPlan: "Create Plan",
-      newPBC: "New PBC Request",
-      importCSV: "Import CSV",
-      addRisk: "Add Risk",
-      addControl: "Add Control",
-      linkTest: "Link Test",
-      newTest: "New Test",
-      assignOwner: "Assign Owner",
-      drawSample: "Draw Sample",
-      recalcHash: "Recalc Hash",
-      importPopulation: "Import Population",
-      uploadEvidence: "Upload Evidence",
-      scanAV: "Scan AV",
-      linkEvidence: "Link Evidence",
-      standUp: "Stand-up",
-      sprintLog: "Sprint Log",
-      newFinding: "New Finding",
-      genCCER: "Generate C-C-E-R",
-      preview: "Preview",
-      exportPDF: "Export PDF",
-      sendToSign: "Send to Sign",
-      newCheck: "New Check",
-      remindOwners: "Remind Owners",
-      followupReport: "Follow-up Report",
-      closeFile: "Close File",
-      qaReview: "QA Review"
+      newEng: "New Engagement", exportCSV: "Export CSV", refresh: "Refresh",
+      createPlan: "Create Plan", addMilestone: "Add Milestone", addTask: "Add Task",
+      newPBC: "New Request", importCSV: "Import CSV",
+      addRisk: "Add Risk", addControl: "Add Control", linkTest: "Link Test",
+      newTest: "New Test", assignOwner: "Assign Owner",
+      drawSample: "Draw Sample", recalcHash: "Recalc Hash", importPopulation: "Import Population",
+      uploadEv: "Upload Evidence", scanAV: "Scan AV", linkTo: "Link to Sample/Test",
+      newFinding: "New Finding", genCCER: "Generate C-C-E-R",
+      preview: "Preview", exportPDF: "Export PDF", sendSign: "Send to Sign",
+      newCheck: "New Check", remindOwners: "Remind Owners", followReport: "Follow-up Report",
+      closeFile: "Close File", qaReview: "QA Review"
     },
     sections: {
-      planning: "Planning & PBC Requests",
-      processRisk: "Process Maps & Risk Management",
-      program: "Test Program & Sampling",
-      fieldwork: "Fieldwork Procedures & Evidence",
-      agile: "Sprint Board & Agile Touchpoints",
-      findings: "Findings & Recommendations",
-      reporting: "Final Report Building",
-      followup: "Corrective Action Tracking",
-      closeout: "File Closeout",
-      qa: "Internal Quality Assurance"
+      planning: "Plan & PBC",
+      processRisk: "Process maps & RCM",
+      program: "Test program & sampling",
+      fieldwork: "Procedures & evidence",
+      agile: "Sprint / Stand-up board",
+      findings: "Findings & recommendations",
+      reporting: "Final report",
+      followup: "Action plans",
+      closeout: "File closeout",
+      qa: "Internal QA"
     },
     common: {
       email: "Email",
@@ -160,9 +123,12 @@ const I18N = {
       required: "This field is required",
       emailInvalid: "Invalid email address",
       passwordMismatch: "Passwords do not match",
-      search: "Search...",
-      notifications: "Notifications",
-      accessDenied: "Access denied for role:"
+      search: "Search…",
+      lead: "Lead",
+      status: "Status",
+      alerts: "Alerts",
+      accessDenied: "Access denied for role",
+      comingSoon: "Coming soon..."
     }
   }
 } as const;

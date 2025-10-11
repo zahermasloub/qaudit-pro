@@ -360,99 +360,10 @@ export function PBCForm({ engagementId, onCreated }: { engagementId: string; onC
 'use client';
 import React, { useEffect, useState } from "react";
 import { ClipboardList, BookCheck, Shield, FlaskConical, Database, FileCheck, AlertTriangle, FileText, RotateCcw, BadgeCheck, LayoutDashboard } from "lucide-react";
+import DashboardView from './DashboardView';
+import { PlanningScreen, ProcessRiskScreen, ProgramScreen } from './ScreenComponents';
 import { useForm } from 'react-hook-form';
-
-// --- i18n (Arabic labels now fully Arabic + numbers as requested) ---
-const I18N = {
-  ar: {
-    app: { title: "نظام التدقيق الداخلي" },
-    menu: {
-      dashboard: "لوحة القيادة",
-      planning: "1) التخطيط",
-      processRisk: "2) فهم العملية والمخاطر",
-      program: "3) برنامج العمل والعينات",
-      fieldwork: "4) الأعمال الميدانية والأدلة",
-      agile: "5) اللمسات الرشيقة",
-      findings: "6) النتائج والتوصيات",
-      reporting: "7) التقرير النهائي",
-      followup: "8) المتابعة",
-      closeout: "9) الإقفال",
-      qa: "ضمان الجودة",
-    },
-    actions: {
-      newEng: "إنشاء مهمة", exportCSV: "تصدير CSV", refresh: "تحديث",
-      createPlan: "إنشاء خطة", addMilestone: "إضافة مرحلة", addTask: "إضافة مهمة",
-      newPBC: "طلب جديد", importCSV: "استيراد CSV",
-      addRisk: "إضافة خطر", addControl: "إضافة ضابط", linkTest: "ربط اختبار",
-      newTest: "اختبار جديد", assignOwner: "تعيين مسؤول",
-      drawSample: "سحب عيّنة", recalcHash: "إعادة حساب Hash", importPopulation: "استيراد مجتمع",
-      uploadEv: "رفع دليل", scanAV: "فحص فيروسات", linkTo: "ربط بعينة/اختبار",
-      newFinding: "ملاحظة جديدة", genCCER: "توليد C-C-E-R",
-      preview: "معاينة", exportPDF: "تصدير PDF", sendSign: "إرسال للتوقيع",
-      newCheck: "تحقق جديد", remindOwners: "تذكير الملاك", followReport: "تقرير متابعة",
-      closeFile: "إقفال الملف", qaReview: "مراجعة جودة",
-    },
-    sections: {
-      planning: "الخطة ومهام PBC",
-      processRisk: "خرائط العملية و RCM",
-      program: "برنامج الاختبارات والعينات",
-      fieldwork: "تنفيذ الإجراءات والأدلة",
-      agile: "لوحة Sprint / Stand-up",
-      findings: "تحرير النتائج والتوصيات",
-      reporting: "بناء التقرير النهائي",
-      followup: "تعقّب الإجراءات التصحيحية",
-      closeout: "إقفال الملف",
-      qa: "مراجعة الجودة الداخلية",
-    },
-    common: { search: "بحث…", lead: "القائد", status: "الحالة", alerts: "إشعارات" },
-    auth: { signin: "تسجيل الدخول", signup: "إنشاء حساب", forgot: "نسيت كلمة المرور؟", logout: "خروج" },
-  },
-  en: {
-    app: { title: "Internal Audit Suite" },
-    menu: {
-      dashboard: "Dashboard",
-      planning: "1) Planning",
-      processRisk: "2) Process & Risk",
-      program: "3) Program & Sampling",
-      fieldwork: "4) Fieldwork & Evidence",
-      agile: "5) Agile Touchpoints",
-      findings: "6) Findings",
-      reporting: "7) Reporting",
-      followup: "8) Follow-up",
-      closeout: "9) Closeout",
-      qa: "QA",
-    },
-    actions: {
-      newEng: "New Engagement", exportCSV: "Export CSV", refresh: "Refresh",
-      createPlan: "Create Plan", addMilestone: "Add Milestone", addTask: "Add Task",
-      newPBC: "New Request", importCSV: "Import CSV",
-      addRisk: "Add Risk", addControl: "Add Control", linkTest: "Link Test",
-      newTest: "New Test", assignOwner: "Assign Owner",
-      drawSample: "Draw Sample", recalcHash: "Recalc Hash", importPopulation: "Import Population",
-      uploadEv: "Upload Evidence", scanAV: "Scan AV", linkTo: "Link to Sample/Test",
-      newFinding: "New Finding", genCCER: "Generate C-C-E-R",
-      preview: "Preview", exportPDF: "Export PDF", sendSign: "Send to Sign",
-      newCheck: "New Check", remindOwners: "Remind Owners", followReport: "Follow-up Report",
-      closeFile: "Close File", qaReview: "QA Review",
-    },
-    sections: {
-      planning: "Plan & PBC",
-      processRisk: "Process maps & RCM",
-      program: "Test program & sampling",
-      fieldwork: "Procedures & evidence",
-      agile: "Sprint / Stand-up board",
-      findings: "Findings & recommendations",
-      reporting: "Final report",
-      followup: "Action plans",
-      closeout: "File closeout",
-      qa: "Internal QA",
-    },
-    common: { search: "Search…", lead: "Lead", status: "Status", alerts: "Alerts" },
-    auth: { signin: "Sign in", signup: "Create account", forgot: "Forgot password?", logout: "Logout" },
-  }
-} as const;
-
-type Locale = 'ar' | 'en';
+import { useI18n, type Locale } from '@/lib/i18n';
 const clsx = (...xs: Array<string | false | null | undefined>) => xs.filter(Boolean).join(' ');
 
 type Route = 'login'|'register'|'dashboard'|'planning'|'processRisk'|'program'|'fieldwork'|'agile'|'findings'|'reporting'|'followup'|'closeout'|'qa';
@@ -474,11 +385,98 @@ const RBAC: Record<Route, Role[]> = {
   qa: ['IA_Manager','IA_Lead'],
 };
 
-function Topbar({ locale, setLocale, onLogout, role }: { locale: Locale; setLocale: (l:Locale)=>void; onLogout: ()=>void; role: Role; }){
-  const i18n = I18N[locale]; const isRTL = locale==='ar';
+// Toolbar configurations by route
+const TOOLBARS: Record<Route, { action: string; roles: Role[]; variant?: 'primary'|'secondary' }[]> = {
+  dashboard: [
+    { action: 'newEng', roles: ['IA_Manager','IA_Lead'], variant: 'primary' },
+    { action: 'exportCSV', roles: ['IA_Manager','IA_Lead','IA_Auditor'] },
+    { action: 'refresh', roles: ['IA_Manager','IA_Lead','IA_Auditor','Process_Owner','Viewer'] }
+  ],
+  planning: [
+    { action: 'createPlan', roles: ['IA_Manager','IA_Lead'], variant: 'primary' },
+    { action: 'newPBC', roles: ['IA_Manager','IA_Lead','IA_Auditor'] },
+    { action: 'importCSV', roles: ['IA_Manager','IA_Lead','IA_Auditor'] },
+    { action: 'exportCSV', roles: ['IA_Manager','IA_Lead','IA_Auditor'] }
+  ],
+  processRisk: [
+    { action: 'addRisk', roles: ['IA_Manager','IA_Lead','IA_Auditor'], variant: 'primary' },
+    { action: 'addControl', roles: ['IA_Manager','IA_Lead','IA_Auditor'] },
+    { action: 'linkTest', roles: ['IA_Manager','IA_Lead','IA_Auditor'] }
+  ],
+  program: [
+    { action: 'newTest', roles: ['IA_Manager','IA_Lead','IA_Auditor'], variant: 'primary' },
+    { action: 'drawSample', roles: ['IA_Manager','IA_Lead','IA_Auditor'] },
+    { action: 'importPopulation', roles: ['IA_Manager','IA_Lead','IA_Auditor'] }
+  ],
+  fieldwork: [
+    { action: 'uploadEv', roles: ['IA_Manager','IA_Lead','IA_Auditor'], variant: 'primary' },
+    { action: 'scanAV', roles: ['IA_Manager','IA_Lead','IA_Auditor'] },
+    { action: 'linkTo', roles: ['IA_Manager','IA_Lead','IA_Auditor'] }
+  ],
+  agile: [
+    { action: 'addTask', roles: ['IA_Manager','IA_Lead','IA_Auditor'], variant: 'primary' },
+    { action: 'assignOwner', roles: ['IA_Manager','IA_Lead'] }
+  ],
+  findings: [
+    { action: 'newFinding', roles: ['IA_Manager','IA_Lead','IA_Auditor'], variant: 'primary' },
+    { action: 'genCCER', roles: ['IA_Manager','IA_Lead'] }
+  ],
+  reporting: [
+    { action: 'preview', roles: ['IA_Manager','IA_Lead'], variant: 'primary' },
+    { action: 'exportPDF', roles: ['IA_Manager','IA_Lead'] },
+    { action: 'sendSign', roles: ['IA_Manager'] }
+  ],
+  followup: [
+    { action: 'newCheck', roles: ['IA_Manager','IA_Lead','Process_Owner'], variant: 'primary' },
+    { action: 'remindOwners', roles: ['IA_Manager','IA_Lead'] },
+    { action: 'followReport', roles: ['IA_Manager','IA_Lead'] }
+  ],
+  closeout: [
+    { action: 'closeFile', roles: ['IA_Manager','IA_Lead'], variant: 'primary' }
+  ],
+  qa: [
+    { action: 'qaReview', roles: ['IA_Manager','IA_Lead'], variant: 'primary' }
+  ],
+  login: [],
+  register: []
+};
+
+function canAccess(route: Route, role: Role): boolean {
+  return RBAC[route]?.includes(role) || false;
+}
+
+function Topbar({ locale, setLocale, onLogout, role, route }: { locale: Locale; setLocale: (l:Locale)=>void; onLogout: ()=>void; role: Role; route: Route; }){
+  const i18n = useI18n(locale); const isRTL = locale==='ar';
+  const toolbarActions = TOOLBARS[route]?.filter(tool => tool.roles.includes(role)) || [];
+
   return (
     <div className="sticky top-0 z-10 h-14 bg-white border-b border-gray-200 flex items-center px-4">
-      <div className={clsx('font-bold text-lg', isRTL?'ms-auto':'me-auto')}>{i18n.app.title} <span className='text-xs text-gray-500'>({role})</span></div>
+      <div className={clsx('font-bold text-lg', isRTL?'ms-auto':'me-auto')}>
+        {i18n.app.title}
+        <span className='text-xs text-gray-500 mx-2'>•</span>
+        <span className='text-sm text-gray-600'>{(i18n.sections as any)[route] || route}</span>
+        <span className='text-xs text-gray-500 ml-2'>({role.replace('_', ' ')})</span>
+      </div>
+
+      {/* Toolbar Actions */}
+      {toolbarActions.length > 0 && (
+        <div className="flex items-center gap-2 mx-4">
+          {toolbarActions.map(tool => (
+            <button
+              key={tool.action}
+              className={clsx(
+                'px-3 py-1.5 text-sm rounded-md border font-medium transition-colors',
+                tool.variant === 'primary'
+                  ? 'bg-blue-600 text-white border-blue-600 hover:bg-blue-700'
+                  : 'bg-white text-gray-700 border-gray-300 hover:bg-gray-50'
+              )}
+            >
+              {i18n.actions[tool.action as keyof typeof i18n.actions] || tool.action}
+            </button>
+          ))}
+        </div>
+      )}
+
       <div className={clsx('shrink-0', isRTL?'me-auto':'ms-auto')} />
       <button className="ms-2 rounded-full bg-blue-600 text-white text-sm px-3 py-1.5">{i18n.common.alerts} 3</button>
       <div className="ms-2 h-9 w-9 rounded-full bg-gray-900/90 text-white grid place-items-center">IA</div>
@@ -506,12 +504,16 @@ const MENU_SPEC = [
   { key: 'qa', icon: BadgeCheck },
 ] as const;
 
-function Sidebar({ locale, route, setRoute, statusBadge }: { locale: Locale; route: Route; setRoute: (r:Route)=>void; statusBadge: string; }){
-  const i18n = I18N[locale]; const isRTL = locale==='ar';
+function Sidebar({ locale, route, setRoute, statusBadge, role }: { locale: Locale; route: Route; setRoute: (r:Route)=>void; statusBadge: string; role: Role; }){
+  const i18n = useI18n(locale); const isRTL = locale==='ar';
+  
+  // Filter menu items based on RBAC
+  const allowedMenuItems = MENU_SPEC.filter(item => canAccess(item.key as Route, role));
+  
   return (
     <aside className={clsx('bg-white rounded-2xl border border-gray-200 p-3 h-fit', isRTL?'order-2':'order-1')}>
       <nav className="space-y-2">
-        {MENU_SPEC.map((it, idx)=>{
+        {allowedMenuItems.map((it, idx)=>{
           const Icon = it.icon as any; const active = route===it.key;
           return (
             <button key={it.key}
@@ -526,6 +528,16 @@ function Sidebar({ locale, route, setRoute, statusBadge }: { locale: Locale; rou
           );
         })}
       </nav>
+      
+      {/* Role indicator at bottom */}
+      <div className="mt-6 pt-3 border-t border-gray-200">
+        <div className="text-xs text-gray-500 mb-1">
+          {locale === 'ar' ? 'الدور الحالي' : 'Current Role'}
+        </div>
+        <div className="text-xs font-medium text-gray-700">
+          {role.replace('_', ' ')}
+        </div>
+      </div>
     </aside>
   );
 }
@@ -623,52 +635,9 @@ function PBCRequestForm({ engagementId, onClose }: { engagementId: string; onClo
   );
 }
 
-function DashboardScreen({ i18n, role, onOpenEngForm }: { i18n:any; role:Role; onOpenEngForm:()=>void }){
-  return (
-    <div className="space-y-6">
-      <div className="flex items-center justify-between">
-        <h2 className="text-lg font-semibold">{i18n.menu.dashboard}</h2>
-        <div className='flex items-center gap-2'>
-          { ['IA_Manager','IA_Lead'].includes(role) && <button className='rounded-xl bg-blue-600 text-white text-sm px-3 py-2' onClick={onOpenEngForm}>{i18n.actions.newEng}</button> }
-          <button className='rounded-xl border border-gray-200 px-3 py-2 text-sm'>{i18n.actions.exportCSV}</button>
-          <button className='rounded-xl border border-gray-200 px-3 py-2 text-sm'>{i18n.actions.refresh}</button>
-        </div>
-      </div>
-      <div className='grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4'>
-        {[72,91,58,43].map((v,i)=> (
-          <Card key={i}><div className='text-gray-500 text-sm'>KPI {i+1}</div><div className='mt-2 text-2xl font-bold'>{v}%</div><div className='mt-3 h-2 w-full rounded-full bg-gray-200 overflow-hidden'><div className='h-full bg-blue-600' style={{width:`${v}%`}}/></div></Card>
-        ))}
-      </div>
-    </div>
-  );
-}
+// Dashboard component moved to separate file
 
-function PlanningScreen({ i18n, role, engagementId }: { i18n:any; role:Role; engagementId: string; }){
-  const [openEng, setOpenEng] = useState(false);
-  const [openPBC, setOpenPBC] = useState(false);
-  return (
-    <div className='space-y-4'>
-      <div className='flex items-center justify-between'>
-        <h2 className='text-lg font-semibold'>{i18n.sections.planning}</h2>
-        <div className='flex items-center gap-2'>
-          { ['IA_Manager','IA_Lead'].includes(role) && <button className='rounded-xl bg-blue-600 text-white text-sm px-3 py-2' onClick={()=>setOpenEng(true)}>{i18n.actions.createPlan}</button> }
-          { ['IA_Manager','IA_Lead','IA_Auditor'].includes(role) && <button className='rounded-xl border border-gray-200 px-3 py-2 text-sm' onClick={()=>setOpenPBC(true)}>{i18n.actions.newPBC}</button> }
-          <button className='rounded-xl border border-gray-200 px-3 py-2 text-sm'>{i18n.actions.importCSV}</button>
-          <button className='rounded-xl border border-gray-200 px-3 py-2 text-sm'>{i18n.actions.exportCSV}</button>
-        </div>
-      </div>
-      <Card><div className='text-sm text-gray-600'>Gantt / Milestones table placeholder.</div></Card>
-      <Card><div className='text-sm text-gray-600'>PBC table placeholder.</div></Card>
-
-      <Dialog open={openEng} onClose={()=>setOpenEng(false)} title='Engagement Mandate'>
-        <EngagementMandateForm onClose={()=>setOpenEng(false)} />
-      </Dialog>
-      <Dialog open={openPBC} onClose={()=>setOpenPBC(false)} title='PBC Request'>
-        <PBCRequestForm engagementId={engagementId} onClose={()=>setOpenPBC(false)} />
-      </Dialog>
-    </div>
-  );
-}
+// Planning screen moved to ScreenComponents.tsx
 
 function PlaceholderScreen({ title }: { title: string }){ return (<Card><div className='font-semibold mb-2'>{title}</div><div className='text-sm text-gray-600'>Coming soon…</div></Card>); }
 
@@ -678,7 +647,7 @@ export default function AppShell(){
   const [role, setRole] = useState<Role>('IA_Manager');
   const [engagementId, setEngagementId] = useState<string>('ENG-DEMO');
   const isRTL = locale==='ar';
-  const i18n = I18N[locale];
+  const i18n = useI18n(locale);
 
   useEffect(()=>{ if (typeof document!=='undefined'){ document.documentElement.dir = isRTL? 'rtl':'ltr'; document.documentElement.lang = isRTL? 'ar':'en'; } }, [isRTL]);
 
@@ -715,7 +684,7 @@ export default function AppShell(){
 
   return (
     <div className='min-h-[100dvh] bg-[#F5F7FB] text-[#111827]'>
-      <Topbar locale={locale} setLocale={setLocale} onLogout={()=>setRoute('login')} role={role} />
+      <Topbar locale={locale} setLocale={setLocale} onLogout={()=>setRoute('login')} role={role} route={route} />
 
       <div className='mx-auto max-w-[1400px] px-4 mt-3'>
         <div className='bg-white rounded-xl border border-gray-200 p-2 text-sm inline-flex items-center gap-2'>
@@ -731,15 +700,15 @@ export default function AppShell(){
       </div>
 
       <div className={clsx('mx-auto max-w-[1400px] px-4 py-6 grid gap-6', isRTL?'[grid-template-columns:1fr_300px]':'[grid-template-columns:300px_1fr]')}>
-        <Sidebar locale={locale} route={route} setRoute={setRoute} statusBadge={'In-Field'} />
+        <Sidebar locale={locale} route={route} setRoute={setRoute} statusBadge={'In-Field'} role={role} />
         <main className={clsx(isRTL?'order-1':'order-2')}>
           {!allowed && <Card><div className='text-sm text-red-600'>Access denied for role: {role}</div></Card>}
           {allowed && (
             <>
-              {route==='dashboard' && <DashboardScreen i18n={i18n} role={role} onOpenEngForm={()=>setRoute('planning')} />}
-              {route==='planning' && <PlanningScreen i18n={i18n} role={role} engagementId={engagementId} />}
-              {route==='processRisk' && <PlaceholderScreen title={i18n.sections.processRisk} />}
-              {route==='program' && <PlaceholderScreen title={i18n.sections.program} />}
+              {route==='dashboard' && <DashboardView locale={locale} />}
+              {route==='planning' && <PlanningScreen locale={locale} />}
+              {route==='processRisk' && <ProcessRiskScreen locale={locale} />}
+              {route==='program' && <ProgramScreen locale={locale} />}
               {route==='fieldwork' && <PlaceholderScreen title={i18n.sections.fieldwork} />}
               {route==='agile' && <PlaceholderScreen title={i18n.sections.agile} />}
               {route==='findings' && <PlaceholderScreen title={i18n.sections.findings} />}
