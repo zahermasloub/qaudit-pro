@@ -44,37 +44,8 @@ select {
   color: #000 !important;
 }
 
-/* Placeholder color (light gray) */
+/* Placeholder color (optional: light gray) */
 input::placeholder,
 textarea::placeholder {
   color: #6b7280;
-}
-
-/* Buttons: ensure visible text color on primary/dark backgrounds and light backgrounds */
-button,
-.btn,
-button[type='submit'],
-input[type='submit'] {
-  /* افتراض: الأزرار الأساسية لديها خلفية داكنة/ملونة => استخدم نص أبيض */
-  color: #fff !important;
-}
-
-/* Light-style buttons that use a light background should show dark text */
-.btn-light,
-.button--light {
-  color: #000 !important;
-}
-
-/* Specific common primary classes */
-.btn-primary,
-.primary {
-  color: #fff !important;
-}
-
-/* Login button specific styling */
-.login-btn {
-  color: #fff !important; /* لو الخلفية داكنة */
-}
-.login-btn.light {
-  color: #000 !important; /* لو الخلفية فاتحة */
 }
