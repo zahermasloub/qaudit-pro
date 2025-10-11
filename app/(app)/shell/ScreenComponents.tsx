@@ -1,4 +1,5 @@
 import { useI18n, Locale } from '@/lib/i18n';
+import PBCTable from '@/components/pbc/pbc-table';
 
 const clsx = (...xs: Array<string | false | null | undefined>) => xs.filter(Boolean).join(' ');
 
@@ -31,22 +32,42 @@ export function PlanningScreen({ locale }: { locale: Locale }) {
           </div>
         </div>
 
-        {/* PBC Requests */}
+        {/* PBC Requests Summary */}
         <div className="bg-white rounded-lg border border-gray-200 p-6">
           <h3 className="font-semibold text-gray-900 mb-4">
-            {locale === 'ar' ? 'طلبات PBC' : 'PBC Requests'}
+            {locale === 'ar' ? 'ملخص طلبات PBC' : 'PBC Requests Summary'}
           </h3>
           <div className="space-y-3">
-            <div className="p-3 bg-yellow-50 border border-yellow-200 rounded-lg">
-              <div className="font-medium text-yellow-900">
-                {locale === 'ar' ? '15 طلب معلق' : '15 Pending Requests'}
+            <div className="grid grid-cols-3 gap-3">
+              <div className="p-3 bg-blue-50 border border-blue-200 rounded-lg text-center">
+                <div className="text-lg font-bold text-blue-900">1</div>
+                <div className="text-xs text-blue-700">{locale === 'ar' ? 'مفتوح' : 'Open'}</div>
               </div>
-              <div className="text-sm text-yellow-700">
-                {locale === 'ar' ? 'يتطلب مراجعة' : 'Requires review'}
+              <div className="p-3 bg-yellow-50 border border-yellow-200 rounded-lg text-center">
+                <div className="text-lg font-bold text-yellow-900">1</div>
+                <div className="text-xs text-yellow-700">{locale === 'ar' ? 'جزئي' : 'Partial'}</div>
+              </div>
+              <div className="p-3 bg-green-50 border border-green-200 rounded-lg text-center">
+                <div className="text-lg font-bold text-green-900">1</div>
+                <div className="text-xs text-green-700">{locale === 'ar' ? 'مكتمل' : 'Complete'}</div>
               </div>
             </div>
           </div>
         </div>
+      </div>
+
+      {/* PBC Requests Table */}
+      <div>
+        <h2 className="text-xl font-semibold text-gray-900 mb-4">
+          {locale === 'ar' ? 'طلبات المستندات (PBC)' : 'PBC Requests'}
+        </h2>
+        <PBCTable
+          engagementId="ENG-DEMO"
+          onRefresh={() => {
+            console.log('Refreshing PBC data...');
+            // TODO: Re-fetch PBC data from API
+          }}
+        />
       </div>
     </div>
   );

@@ -13,7 +13,7 @@ export async function POST(req: Request) {
         description: v.description,
         ownerId: v.ownerId,
         dueDate: new Date(v.dueDate),
-        status: v.status.toUpperCase() as "OPEN" | "CLOSED" | "REVIEWED", // Map to Prisma enum
+        status: v.status, // Direct mapping since both use lowercase
         attachmentsJson: v.attachments ?? [],
         notes: v.notes ?? null,
       },

@@ -367,7 +367,10 @@ import { PlanningScreen, ProcessRiskScreen, ProgramScreen } from './ScreenCompon
 import { useForm } from 'react-hook-form';
 import { EngagementForm } from '@/features/planning/engagement/engagement.form';
 import PBCForm from '@/features/planning/pbc/pbc.form';
+import TestForm from '@/features/program/tests/test.form';
+import SamplingForm from '@/features/program/sampling/sampling.form';
 import { useI18n, type Locale } from '@/lib/i18n';
+import { ToastProvider } from '@/components/ui/toast';
 const clsx = (...xs: Array<string | false | null | undefined>) => xs.filter(Boolean).join(' ');
 
 type Route = 'login'|'register'|'dashboard'|'planning'|'processRisk'|'program'|'fieldwork'|'agile'|'findings'|'reporting'|'followup'|'closeout'|'qa';
@@ -655,6 +658,8 @@ export default function AppShell(){
   const [engagementId, setEngagementId] = useState<string>('ENG-DEMO');
   const [openEngForm, setOpenEngForm] = useState(false);
   const [openPbc, setOpenPbc] = useState(false);
+  const [openTest, setOpenTest] = useState(false);
+  const [openSample, setOpenSample] = useState(false);
   const isRTL = locale==='ar';
   const i18n = useI18n(locale);
 
@@ -678,6 +683,12 @@ export default function AppShell(){
       case 'newPBC':
         setOpenPbc(true);
         break;
+      case 'newTest':
+        setOpenTest(true);
+        break;
+      case 'drawSample':
+        setOpenSample(true);
+        break;
       default:
         console.log(`Action: ${action}`);
     }
@@ -697,7 +708,8 @@ export default function AppShell(){
   );
 
   return (
-    <div className='min-h-[100dvh] bg-[#F5F7FB] text-[#111827]'>
+    <ToastProvider>
+      <div className='min-h-[100dvh] bg-[#F5F7FB] text-[#111827]'>
       <Topbar locale={locale} setLocale={setLocale} onLogout={() => signOut({ callbackUrl: "/auth/login" })} role={role} route={route} onToolbarAction={handleToolbarAction} />
 
       <div className='mx-auto max-w-[1400px] px-4 mt-3'>
@@ -755,6 +767,30 @@ export default function AppShell(){
           // TODO: Add toast notification and refresh data
         }}
       />
-    </div>
+
+      <TestForm
+        open={openTest}
+        onOpenChange={setOpenTest}
+        engagementId={engagementId}
+        onSuccess={() => {
+          console.log('✅ تم حفظ الاختبار بنجاح - سيتم تحديث القائمة');
+          setOpenTest(false);
+          // TODO: Add toast notification and refresh data
+        }}
+      />
+
+      <SamplingForm
+        open={openSample}
+        onOpenChange={setOpenSample}
+        auditTestId="TEST-001" // TODO: Get from selected test
+        populationSize={1000} // TODO: Get from actual population
+        onSuccess={() => {
+          console.log('✅ تم إنشاء العينة بنجاح - سيتم تحديث القائمة');
+          setOpenSample(false);
+          // TODO: Add toast notification and refresh data
+        }}
+      />
+      </div>
+    </ToastProvider>
   );
 }

@@ -56,10 +56,8 @@ export const EngagementStatus = {
 } as const;
 
 export const PBCRequestStatus = {
-  OPEN: "OPEN",
-  CLOSED: "CLOSED",
-  REVIEWED: "REVIEWED"
-} as const;
-
-export type EngagementStatusType = typeof EngagementStatus[keyof typeof EngagementStatus];
+  OPEN: "open",
+  PARTIAL: "partial",
+  COMPLETE: "complete"
+} as const;export type EngagementStatusType = typeof EngagementStatus[keyof typeof EngagementStatus];
 export type PBCRequestStatusType = typeof PBCRequestStatus[keyof typeof PBCRequestStatus];

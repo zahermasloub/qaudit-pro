@@ -19,9 +19,22 @@ enum EngagementStatus {
 }
 
 enum PBCStatus {
-  OPEN
-  CLOSED
-  REVIEWED
+  open
+  partial
+  complete
+}
+
+enum TestStatus {
+  planned
+  in_progress
+  completed
+  blocked
+}
+
+enum SamplingMethod {
+  random
+  judgment
+  monetary
 }
 
 model User {
@@ -59,6 +72,7 @@ model Engagement {
   // Relations
   plans                     Plan[]
   pbcRequests               PBCRequest[]
+  auditTests                AuditTest[]
 
   @@map("engagements")
   @@index([status])
@@ -89,7 +103,7 @@ model PBCRequest {
   description     String
   ownerId         String
   dueDate         DateTime
-  status          PBCStatus @default(OPEN)
+  status          PBCStatus @default(open)
   attachmentsJson Json
   notes           String?
   createdAt       DateTime @default(now())
@@ -101,4 +115,54 @@ model PBCRequest {
   @@map("pbc_requests")
   @@index([status])
   @@unique([code, engagementId])
+}
+
+model AuditTest {
+  id              String     @id @default(cuid())
+  engagementId    String
+  code            String
+  title           String
+  objective       String
+  controlId       String?
+  riskId          String?
+  testStepsJson   Json
+  expectedResults String
+  actualResults   String?
+  conclusion      String?
+  status          TestStatus @default(planned)
+  assignedTo      String?
+  plannedHours    Int?
+  actualHours     Int?
+  createdAt       DateTime   @default(now())
+  updatedAt       DateTime   @updatedAt
+
+  // Relations
+  engagement      Engagement @relation(fields: [engagementId], references: [id], onDelete: Cascade)
+  samples         Sample[]
+
+  @@map("audit_tests")
+  @@index([status])
+  @@unique([code, engagementId])
+}
+
+model Sample {
+  id              String         @id @default(cuid())
+  testId          String
+  method          SamplingMethod
+  populationSize  Int
+  sampleSize      Int
+  confidenceLevel Float?
+  precisionRate   Float?
+  selectionHash   String         // SHA256 of selection criteria
+  criteriaJson    Json           // Selection criteria/parameters
+  itemsJson       Json           // Selected sample items
+  notes           String?
+  createdAt       DateTime       @default(now())
+  updatedAt       DateTime       @updatedAt
+
+  // Relations
+  test            AuditTest      @relation(fields: [testId], references: [id], onDelete: Cascade)
+
+  @@map("samples")
+  @@index([method])
 }

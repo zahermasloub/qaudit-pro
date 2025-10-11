@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { pbcSchema, type PBCFormValues } from '@/features/planning/pbc/pbc.schema';
+import { useToast } from '@/components/ui/toast';
 
 interface PBCFormProps {
   open: boolean;
@@ -11,6 +12,7 @@ interface PBCFormProps {
 
 export default function PBCForm({ open, onOpenChange, engagementId, onSuccess }: PBCFormProps) {
   const [loading, setLoading] = useState(false);
+  const { addToast } = useToast();
   const { register, handleSubmit, reset, formState: { errors } } = useForm<PBCFormValues>({
     defaultValues: {
       engagementId,
@@ -34,14 +36,28 @@ export default function PBCForm({ open, onOpenChange, engagementId, onSuccess }:
       });
 
       if (response.ok) {
+        const result = await response.json();
+        addToast({
+          type: 'success',
+          title: 'تم إنشاء PBC بنجاح',
+          message: `تم حفظ طلب المستندات: ${data.code}`
+        });
         reset();
         onSuccess();
       } else {
         const error = await response.json();
-        console.error('PBC Error:', error);
+        addToast({
+          type: 'error',
+          title: 'خطأ في حفظ PBC',
+          message: error.error || 'حدث خطأ غير متوقع'
+        });
       }
     } catch (error) {
-      console.error('Submit Error:', error);
+      addToast({
+        type: 'error',
+        title: 'خطأ في الاتصال',
+        message: 'تعذر الاتصال بالخادم'
+      });
     } finally {
       setLoading(false);
     }

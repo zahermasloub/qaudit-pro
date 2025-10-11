@@ -20,8 +20,10 @@ async function main() {
   console.log("Seeded: lead@example.com / Passw0rd!");
 
   // Create Engagement
-  const engagement = await prisma.engagement.create({
-    data: {
+  const engagement = await prisma.engagement.upsert({
+    where: { code: 'IA-2025-001' },
+    update: {},
+    create: {
       code: 'IA-2025-001',
       title: 'Internal Audit 2025',
       objective: 'Audit Objective',
@@ -38,18 +40,22 @@ async function main() {
     },
   });
 
-  // Create PBC
-  await prisma.pBCRequest.create({
-    data: {
-      code: 'PBC-001',
-      description: 'First PBC',
-      ownerId: 'lead@example.com',
-      dueDate: new Date('2025-02-01'),
-      status: 'OPEN',
-      attachmentsJson: {},
-      engagementId: engagement.id,
-    },
-  });
+  // Create PBC (try to create, ignore if exists)
+  try {
+    await prisma.pBCRequest.create({
+      data: {
+        code: 'PBC-001',
+        description: 'First PBC',
+        ownerId: 'lead@example.com',
+        dueDate: new Date('2025-02-01'),
+        status: 'open',
+        attachmentsJson: {},
+        engagementId: engagement.id,
+      },
+    });
+  } catch (error) {
+    // PBC already exists, skip
+  }
 
   console.log('Seeded User, Engagement and PBC');
 }
