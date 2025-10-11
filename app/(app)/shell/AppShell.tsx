@@ -363,6 +363,7 @@ import { ClipboardList, BookCheck, Shield, FlaskConical, Database, FileCheck, Al
 import DashboardView from './DashboardView';
 import { PlanningScreen, ProcessRiskScreen, ProgramScreen } from './ScreenComponents';
 import { useForm } from 'react-hook-form';
+import { EngagementForm } from '@/features/planning/engagement/engagement.form';
 import { useI18n, type Locale } from '@/lib/i18n';
 const clsx = (...xs: Array<string | false | null | undefined>) => xs.filter(Boolean).join(' ');
 
@@ -445,7 +446,7 @@ function canAccess(route: Route, role: Role): boolean {
   return RBAC[route]?.includes(role) || false;
 }
 
-function Topbar({ locale, setLocale, onLogout, role, route }: { locale: Locale; setLocale: (l:Locale)=>void; onLogout: ()=>void; role: Role; route: Route; }){
+function Topbar({ locale, setLocale, onLogout, role, route, onToolbarAction }: { locale: Locale; setLocale: (l:Locale)=>void; onLogout: ()=>void; role: Role; route: Route; onToolbarAction: (action: string) => void; }){
   const i18n = useI18n(locale); const isRTL = locale==='ar';
   const toolbarActions = TOOLBARS[route]?.filter(tool => tool.roles.includes(role)) || [];
 
@@ -464,6 +465,7 @@ function Topbar({ locale, setLocale, onLogout, role, route }: { locale: Locale; 
           {toolbarActions.map(tool => (
             <button
               key={tool.action}
+              onClick={() => onToolbarAction(tool.action)}
               className={clsx(
                 'px-3 py-1.5 text-sm rounded-md border font-medium transition-colors',
                 tool.variant === 'primary'
@@ -646,10 +648,24 @@ export default function AppShell(){
   const [route, setRoute] = useState<Route>('login');
   const [role, setRole] = useState<Role>('IA_Manager');
   const [engagementId, setEngagementId] = useState<string>('ENG-DEMO');
+  const [openEngForm, setOpenEngForm] = useState(false);
   const isRTL = locale==='ar';
   const i18n = useI18n(locale);
 
   useEffect(()=>{ if (typeof document!=='undefined'){ document.documentElement.dir = isRTL? 'rtl':'ltr'; document.documentElement.lang = isRTL? 'ar':'en'; } }, [isRTL]);
+
+  const handleToolbarAction = (action: string) => {
+    switch (action) {
+      case 'newEng':
+        setOpenEngForm(true);
+        break;
+      case 'createPlan':
+        setOpenEngForm(true);
+        break;
+      default:
+        console.log(`Action: ${action}`);
+    }
+  };
 
   const allowed = RBAC[route as Route]?.includes(role);
   const statusBadge = 'In-Field';
@@ -684,7 +700,7 @@ export default function AppShell(){
 
   return (
     <div className='min-h-[100dvh] bg-[#F5F7FB] text-[#111827]'>
-      <Topbar locale={locale} setLocale={setLocale} onLogout={()=>setRoute('login')} role={role} route={route} />
+      <Topbar locale={locale} setLocale={setLocale} onLogout={()=>setRoute('login')} role={role} route={route} onToolbarAction={handleToolbarAction} />
 
       <div className='mx-auto max-w-[1400px] px-4 mt-3'>
         <div className='bg-white rounded-xl border border-gray-200 p-2 text-sm inline-flex items-center gap-2'>
@@ -722,7 +738,14 @@ export default function AppShell(){
       </div>
 
       {/* Modals mounted at root for dashboard shortcuts */}
-      {/* Engagement & PBC forms are hosted inside PlanningScreen */}
+      <EngagementForm
+        open={openEngForm}
+        onOpenChange={setOpenEngForm}
+        onSuccess={() => {
+          console.log('✅ تم حفظ المهمة بنجاح - سيتم تحديث القائمة');
+          // TODO: Add toast notification and refresh data
+        }}
+      />
     </div>
   );
 }

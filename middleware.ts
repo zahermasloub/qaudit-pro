@@ -23,7 +23,7 @@ export function middleware(req: NextRequest) {
   // مستخدم مسجِّل يحاول زيارة صفحات auth
   if (isPublic && hasSession && pathname.startsWith('/auth')) {
     const url = req.nextUrl.clone();
-    url.pathname = '/';
+    url.pathname = '/shell';
     return NextResponse.redirect(url);
   }
 

@@ -14,8 +14,9 @@ export const metadata: Metadata = {
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
+  // لا تضبط dir/lang هنا لتفادي التعارض مع AppShell
   return (
-    <html lang="ar" dir="rtl">
+    <html suppressHydrationWarning>
       <body className={tajawal.className}>
         {children}
       </body>
