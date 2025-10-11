@@ -1,7 +1,7 @@
 // Example usage of Prisma models
 // This file demonstrates how to use the defined models
 
-import { prisma } from './prisma';
+import prisma from './prisma';
 import { EngagementStatus, PBCRequestStatus } from './types';
 
 // Example: Create a new engagement

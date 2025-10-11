@@ -715,7 +715,11 @@ export default function QAuditProApp(){
 
   return (
     <div className='min-h-[100dvh] bg-[#F5F7FB] text-[#111827]'>
-      <Topbar locale={locale} setLocale={setLocale} onLogout={()=>setRoute('login')} role={role} />
+      <Topbar locale={locale} setLocale={setLocale} onLogout={()=>{
+        // Clear mock session cookie
+        document.cookie = 'qaudit_auth=; Path=/; Max-Age=0; SameSite=Lax';
+        setRoute('login');
+      }} role={role} />
 
       <div className='mx-auto max-w-[1400px] px-4 mt-3'>
         <div className='bg-white rounded-xl border border-gray-200 p-2 text-sm inline-flex items-center gap-2'>
@@ -732,7 +736,7 @@ export default function QAuditProApp(){
 
       <div className={clsx('mx-auto max-w-[1400px] px-4 py-6 grid gap-6', isRTL?'[grid-template-columns:1fr_300px]':'[grid-template-columns:300px_1fr]')}>
         <Sidebar locale={locale} route={route} setRoute={setRoute} statusBadge={'In-Field'} />
-        <main className={clsx(isRTL?'order-1':'order-2')}> 
+        <main className={clsx(isRTL?'order-1':'order-2')}>
           {!allowed && <Card><div className='text-sm text-red-600'>Access denied for role: {role}</div></Card>}
           {allowed && (
             <>
