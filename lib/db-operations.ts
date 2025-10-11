@@ -36,7 +36,7 @@ export async function createEngagement(data: {
         budgetHours: data.budgetHours,
         createdBy: data.createdBy,
         independenceDisclosureUrl: data.independenceDisclosureUrl,
-        status: EngagementStatus.PLANNED,
+        status: EngagementStatus.DRAFT,
       },
     });
     return engagement;

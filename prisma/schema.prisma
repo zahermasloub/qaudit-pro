@@ -24,6 +24,19 @@ enum PBCStatus {
   REVIEWED
 }
 
+model User {
+  id        String   @id @default(cuid())
+  name      String?
+  email     String   @unique
+  password  String   // bcrypt hash
+  role      String   @default("IA_Auditor")
+  locale    String   @default("ar")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("users")
+}
+
 model Engagement {
   id                        String   @id @default(cuid())
   code                      String   @unique
@@ -49,7 +62,6 @@ model Engagement {
 
   @@map("engagements")
   @@index([status])
-  @@unique([code])
 }
 
 model Plan {

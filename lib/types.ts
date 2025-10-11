@@ -47,19 +47,18 @@ export type PBCRequest = {
   updatedAt: Date;
 };
 
-// Enums for status fields
+// Enums for status fields (matching Prisma schema)
 export const EngagementStatus = {
-  PLANNED: "planned",
-  IN_PROGRESS: "in_progress",
-  COMPLETED: "completed",
-  CANCELLED: "cancelled"
+  DRAFT: "DRAFT",
+  IN_PROGRESS: "IN_PROGRESS",
+  COMPLETED: "COMPLETED",
+  ARCHIVED: "ARCHIVED"
 } as const;
 
 export const PBCRequestStatus = {
-  OPEN: "open",
-  IN_PROGRESS: "in_progress",
-  COMPLETED: "completed",
-  OVERDUE: "overdue"
+  OPEN: "OPEN",
+  CLOSED: "CLOSED",
+  REVIEWED: "REVIEWED"
 } as const;
 
 export type EngagementStatusType = typeof EngagementStatus[keyof typeof EngagementStatus];
