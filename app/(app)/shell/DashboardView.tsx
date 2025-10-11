@@ -49,7 +49,7 @@ export default function DashboardView({ locale }: { locale: Locale }) {
 
   const colorClasses = {
     blue: 'bg-blue-500',
-    green: 'bg-green-500', 
+    green: 'bg-green-500',
     orange: 'bg-orange-500',
     purple: 'bg-purple-500'
   };
@@ -57,20 +57,20 @@ export default function DashboardView({ locale }: { locale: Locale }) {
   const bgColorClasses = {
     blue: 'bg-blue-50',
     green: 'bg-green-50',
-    orange: 'bg-orange-50', 
+    orange: 'bg-orange-50',
     purple: 'bg-purple-50'
   };
 
   function KPICard({ kpi }: { kpi: DashboardKPI }) {
     const progress = kpi.total > 0 ? (kpi.value / kpi.total) * 100 : 0;
-    
+
     return (
       <div className={clsx('rounded-lg border border-gray-200 p-6', bgColorClasses[kpi.color])}>
         <div className="flex items-center justify-between mb-4">
           <h3 className="font-semibold text-gray-900">{kpi.title}</h3>
           <div className={clsx('w-3 h-3 rounded-full', colorClasses[kpi.color])}></div>
         </div>
-        
+
         <div className="mb-3">
           <div className="flex items-baseline gap-2">
             <span className="text-3xl font-bold text-gray-900">{kpi.value}</span>
@@ -81,7 +81,7 @@ export default function DashboardView({ locale }: { locale: Locale }) {
 
         {kpi.total > 0 && (
           <div className="w-full bg-gray-200 rounded-full h-2">
-            <div 
+            <div
               className={clsx('h-2 rounded-full transition-all duration-300', colorClasses[kpi.color])}
               style={{ width: `${Math.min(progress, 100)}%` }}
             ></div>
@@ -99,8 +99,8 @@ export default function DashboardView({ locale }: { locale: Locale }) {
           {locale === 'ar' ? 'لوحة التحكم' : 'Dashboard'}
         </h1>
         <p className="text-gray-600">
-          {locale === 'ar' 
-            ? 'نظرة عامة على حالة التدقيق والمهام الجارية' 
+          {locale === 'ar'
+            ? 'نظرة عامة على حالة التدقيق والمهام الجارية'
             : 'Overview of audit status and ongoing tasks'
           }
         </p>

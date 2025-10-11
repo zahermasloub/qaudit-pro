@@ -506,10 +506,10 @@ const MENU_SPEC = [
 
 function Sidebar({ locale, route, setRoute, statusBadge, role }: { locale: Locale; route: Route; setRoute: (r:Route)=>void; statusBadge: string; role: Role; }){
   const i18n = useI18n(locale); const isRTL = locale==='ar';
-  
+
   // Filter menu items based on RBAC
   const allowedMenuItems = MENU_SPEC.filter(item => canAccess(item.key as Route, role));
-  
+
   return (
     <aside className={clsx('bg-white rounded-2xl border border-gray-200 p-3 h-fit', isRTL?'order-2':'order-1')}>
       <nav className="space-y-2">
@@ -528,7 +528,7 @@ function Sidebar({ locale, route, setRoute, statusBadge, role }: { locale: Local
           );
         })}
       </nav>
-      
+
       {/* Role indicator at bottom */}
       <div className="mt-6 pt-3 border-t border-gray-200">
         <div className="text-xs text-gray-500 mb-1">

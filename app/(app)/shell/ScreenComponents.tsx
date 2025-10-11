@@ -4,7 +4,7 @@ const clsx = (...xs: Array<string | false | null | undefined>) => xs.filter(Bool
 
 export function PlanningScreen({ locale }: { locale: Locale }) {
   const i18n = useI18n(locale);
-  
+
   return (
     <div className="p-6 space-y-6">
       <div className="flex items-center justify-between">
@@ -12,7 +12,7 @@ export function PlanningScreen({ locale }: { locale: Locale }) {
           {(i18n.menu as any).planning}
         </h1>
       </div>
-      
+
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Engagement Planning */}
         <div className="bg-white rounded-lg border border-gray-200 p-6">
@@ -54,7 +54,7 @@ export function PlanningScreen({ locale }: { locale: Locale }) {
 
 export function ProcessRiskScreen({ locale }: { locale: Locale }) {
   const i18n = useI18n(locale);
-  
+
   return (
     <div className="p-6 space-y-6">
       <div className="flex items-center justify-between">
@@ -62,7 +62,7 @@ export function ProcessRiskScreen({ locale }: { locale: Locale }) {
           {(i18n.menu as any).processRisk}
         </h1>
       </div>
-      
+
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Process Maps */}
         <div className="bg-white rounded-lg border border-gray-200 p-6">
@@ -113,7 +113,7 @@ export function ProcessRiskScreen({ locale }: { locale: Locale }) {
 
 export function ProgramScreen({ locale }: { locale: Locale }) {
   const i18n = useI18n(locale);
-  
+
   return (
     <div className="p-6 space-y-6">
       <div className="flex items-center justify-between">
@@ -121,7 +121,7 @@ export function ProgramScreen({ locale }: { locale: Locale }) {
           {(i18n.menu as any).program}
         </h1>
       </div>
-      
+
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Test Programs */}
         <div className="bg-white rounded-lg border border-gray-200 p-6">
