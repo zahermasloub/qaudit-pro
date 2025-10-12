@@ -183,3 +183,146 @@ export function ProgramScreen({ locale }: { locale: Locale }) {
     </div>
   );
 }
+
+export function FieldworkScreen({ locale }: { locale: Locale }) {
+  const i18n = useI18n(locale);
+
+  return (
+    <div className="p-6 space-y-6">
+      <div className="flex items-center justify-between">
+        <h1 className="text-2xl font-bold text-gray-900">
+          {locale === 'ar' ? 'العمل الميداني والأدلة' : 'Fieldwork & Evidence'}
+        </h1>
+        <a
+          href="/fieldwork/ENG-DEMO"
+          className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+        >
+          {locale === 'ar' ? 'إدارة الأدلة' : 'Manage Evidence'}
+        </a>
+      </div>
+
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        {/* Test Execution Status */}
+        <div className="bg-white rounded-lg border border-gray-200 p-6">
+          <h3 className="font-semibold text-gray-900 mb-4">
+            {locale === 'ar' ? 'حالة تنفيذ الاختبارات' : 'Test Execution Status'}
+          </h3>
+          <div className="space-y-3">
+            <div className="p-3 bg-green-50 border border-green-200 rounded-lg">
+              <div className="flex items-center justify-between">
+                <span className="text-sm font-medium text-green-900">
+                  {locale === 'ar' ? 'مكتملة' : 'Completed'}
+                </span>
+                <span className="text-lg font-bold text-green-900">1</span>
+              </div>
+            </div>
+            <div className="p-3 bg-blue-50 border border-blue-200 rounded-lg">
+              <div className="flex items-center justify-between">
+                <span className="text-sm font-medium text-blue-900">
+                  {locale === 'ar' ? 'قيد التنفيذ' : 'In Progress'}
+                </span>
+                <span className="text-lg font-bold text-blue-900">1</span>
+              </div>
+            </div>
+            <div className="p-3 bg-yellow-50 border border-yellow-200 rounded-lg">
+              <div className="flex items-center justify-between">
+                <span className="text-sm font-medium text-yellow-900">
+                  {locale === 'ar' ? 'مخطط' : 'Planned'}
+                </span>
+                <span className="text-lg font-bold text-yellow-900">1</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Evidence Files */}
+        <div className="bg-white rounded-lg border border-gray-200 p-6">
+          <h3 className="font-semibold text-gray-900 mb-4">
+            {locale === 'ar' ? 'ملفات الأدلة' : 'Evidence Files'}
+          </h3>
+          <div className="space-y-3">
+            <div className="p-4 bg-blue-50 border border-blue-200 rounded-lg text-center">
+              <div className="text-2xl font-bold text-blue-900">0</div>
+              <div className="text-xs text-blue-700 mt-1">
+                {locale === 'ar' ? 'إجمالي الملفات' : 'Total Files'}
+              </div>
+            </div>
+            <div className="grid grid-cols-2 gap-2">
+              <div className="p-2 bg-gray-50 border border-gray-200 rounded text-center">
+                <div className="text-sm font-bold text-gray-900">0</div>
+                <div className="text-xs text-gray-600">
+                  {locale === 'ar' ? 'مستندات' : 'Documents'}
+                </div>
+              </div>
+              <div className="p-2 bg-gray-50 border border-gray-200 rounded text-center">
+                <div className="text-sm font-bold text-gray-900">0</div>
+                <div className="text-xs text-gray-600">
+                  {locale === 'ar' ? 'صور' : 'Images'}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Recent Activity */}
+        <div className="bg-white rounded-lg border border-gray-200 p-6">
+          <h3 className="font-semibold text-gray-900 mb-4">
+            {locale === 'ar' ? 'النشاط الأخير' : 'Recent Activity'}
+          </h3>
+          <div className="space-y-3 text-sm">
+            <div className="flex items-start space-x-3 space-x-reverse">
+              <div className="w-2 h-2 bg-blue-500 rounded-full mt-2"></div>
+              <div>
+                <p className="text-gray-900">
+                  {locale === 'ar' ? 'تم إنشاء نظام إدارة الأدلة' : 'Evidence management system created'}
+                </p>
+                <p className="text-gray-500 text-xs">
+                  {locale === 'ar' ? 'منذ دقائق' : 'Just now'}
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Quick Actions */}
+      <div className="bg-white rounded-lg border border-gray-200 p-6">
+        <h3 className="font-semibold text-gray-900 mb-4">
+          {locale === 'ar' ? 'إجراءات سريعة' : 'Quick Actions'}
+        </h3>
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+          <a
+            href="/fieldwork/ENG-DEMO"
+            className="flex flex-col items-center p-4 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors"
+          >
+            <div className="text-2xl mb-2">📁</div>
+            <span className="text-sm font-medium text-gray-900">
+              {locale === 'ar' ? 'رفع ملفات' : 'Upload Files'}
+            </span>
+          </a>
+
+          <div className="flex flex-col items-center p-4 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors cursor-pointer">
+            <div className="text-2xl mb-2">🧪</div>
+            <span className="text-sm font-medium text-gray-900">
+              {locale === 'ar' ? 'تنفيذ اختبار' : 'Execute Test'}
+            </span>
+          </div>
+
+          <div className="flex flex-col items-center p-4 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors cursor-pointer">
+            <div className="text-2xl mb-2">📋</div>
+            <span className="text-sm font-medium text-gray-900">
+              {locale === 'ar' ? 'توثيق النتائج' : 'Document Results'}
+            </span>
+          </div>
+
+          <div className="flex flex-col items-center p-4 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors cursor-pointer">
+            <div className="text-2xl mb-2">📊</div>
+            <span className="text-sm font-medium text-gray-900">
+              {locale === 'ar' ? 'تقرير التقدم' : 'Progress Report'}
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}

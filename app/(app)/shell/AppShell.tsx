@@ -363,7 +363,7 @@ import { useSession, signOut } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { ClipboardList, BookCheck, Shield, FlaskConical, Database, FileCheck, AlertTriangle, FileText, RotateCcw, BadgeCheck, LayoutDashboard } from "lucide-react";
 import DashboardView from './DashboardView';
-import { PlanningScreen, ProcessRiskScreen, ProgramScreen } from './ScreenComponents';
+import { PlanningScreen, ProcessRiskScreen, ProgramScreen, FieldworkScreen } from './ScreenComponents';
 import { useForm } from 'react-hook-form';
 import { EngagementForm } from '@/features/planning/engagement/engagement.form';
 import PBCForm from '@/features/planning/pbc/pbc.form';
@@ -735,7 +735,7 @@ export default function AppShell(){
               {route==='planning' && <PlanningScreen locale={locale} />}
               {route==='processRisk' && <ProcessRiskScreen locale={locale} />}
               {route==='program' && <ProgramScreen locale={locale} />}
-              {route==='fieldwork' && <PlaceholderScreen title={i18n.sections.fieldwork} />}
+              {route==='fieldwork' && <FieldworkScreen locale={locale} />}
               {route==='agile' && <PlaceholderScreen title={i18n.sections.agile} />}
               {route==='findings' && <PlaceholderScreen title={i18n.sections.findings} />}
               {route==='reporting' && <PlaceholderScreen title={i18n.sections.reporting} />}

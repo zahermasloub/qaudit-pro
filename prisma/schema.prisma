@@ -37,6 +37,29 @@ enum SamplingMethod {
   monetary
 }
 
+enum RunResult {
+  pass
+  fail
+  exception
+}
+
+enum VirusScanStatus {
+  pending
+  clean
+  suspected
+  blocked
+}
+
+enum EvidenceStatus {
+  active
+  archived
+}
+
+enum StorageProvider {
+  local
+  s3
+}
+
 model User {
   id        String   @id @default(cuid())
   name      String?
@@ -73,6 +96,7 @@ model Engagement {
   plans                     Plan[]
   pbcRequests               PBCRequest[]
   auditTests                AuditTest[]
+  evidenceFiles             Evidence[]
 
   @@map("engagements")
   @@index([status])
@@ -139,6 +163,8 @@ model AuditTest {
   // Relations
   engagement      Engagement @relation(fields: [engagementId], references: [id], onDelete: Cascade)
   samples         Sample[]
+  testRuns        TestRun[]
+  evidenceFiles   Evidence[]
 
   @@map("audit_tests")
   @@index([status])
@@ -165,4 +191,65 @@ model Sample {
 
   @@map("samples")
   @@index([method])
+}
+
+model TestRun {
+  id            String    @id @default(cuid())
+  engagementId  String
+  auditTestId   String
+  stepIndex     Int
+  actionTaken   String
+  result        RunResult
+  notes         String?
+  sampleRef     String?
+  evidenceIds   String[]  @default([])
+  executedBy    String
+  executedAt    DateTime  @default(now())
+
+  // Relations
+  auditTest     AuditTest @relation(fields: [auditTestId], references: [id], onDelete: Cascade)
+
+  @@map("test_runs")
+  @@index([engagementId])
+  @@index([auditTestId])
+  @@index([result])
+}
+
+model Evidence {
+  id               String           @id @default(cuid())
+  engagementId     String
+  category         String           // invoice/contract/log/screenshot/sql-export/...
+  status           EvidenceStatus   @default(active)
+
+  // روابط
+  linkedTestId     String?
+  linkedSampleRef  String?
+  linkedFindingId  String?
+
+  // تخزين
+  storage          StorageProvider  @default(local)
+  storageKey       String           // path/key (محلي أو S3)
+  bucket           String?          // لـ S3
+  fileName         String
+  fileExt          String?
+  mimeType         String?
+  fileSize         Int              // بالبايت
+  fileHash         String?          // sha256
+
+  ocrTextUrl       String?
+  virusScanStatus  VirusScanStatus  @default(pending)
+
+  uploadedBy       String
+  uploadedAt       DateTime         @default(now())
+
+  // Relations
+  engagement       Engagement       @relation(fields: [engagementId], references: [id], onDelete: Cascade)
+  linkedTest       AuditTest?       @relation(fields: [linkedTestId], references: [id], onDelete: SetNull)
+
+  @@map("evidence_files")
+  @@index([engagementId])
+  @@index([linkedTestId])
+  @@index([linkedFindingId])
+  @@index([category])
+  @@index([status])
 }
