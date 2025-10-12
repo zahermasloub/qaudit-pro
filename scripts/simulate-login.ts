@@ -14,7 +14,7 @@ async function simulateLogin() {
   try {
     // Step 1: Test NextAuth API directly
     console.log("1️⃣ Testing NextAuth API endpoint...");
-    
+
     const authResponse = await fetch('http://localhost:3001/api/auth/callback/credentials', {
       method: 'POST',
       headers: {
@@ -31,7 +31,7 @@ async function simulateLogin() {
 
     console.log(`   Response Status: ${authResponse.status}`);
     console.log(`   Response OK: ${authResponse.ok}`);
-    
+
     if (authResponse.ok) {
       const authResult = await authResponse.json();
       console.log("   ✅ NextAuth API Response:", authResult);
@@ -48,7 +48,7 @@ async function simulateLogin() {
     console.log("3. Verify user exists in database");
     console.log("4. Check NextAuth configuration");
   }
-  
+
   console.log("\n" + "=" .repeat(50));
 }
 

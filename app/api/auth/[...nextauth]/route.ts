@@ -27,7 +27,7 @@ const handler = NextAuth({
 
         try {
           console.log("🔍 Looking up user in database:", creds.email);
-          
+
           // Try database authentication first
           const user = await prisma.user.findUnique({
             where: { email: creds.email }

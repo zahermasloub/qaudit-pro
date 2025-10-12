@@ -2,7 +2,7 @@
 async function testRegistration() {
   const userData = {
     email: "crc.qa2222@gmail.com",
-    name: "Test User CRC", 
+    name: "Test User CRC",
     password: "~Zaher@@2865052"
   };
 
@@ -23,7 +23,7 @@ async function testRegistration() {
     });
 
     console.log(`\n📡 Response Status: ${response.status}`);
-    
+
     if (!response.ok) {
       console.log(`❌ HTTP Error: ${response.status} ${response.statusText}`);
     }
@@ -37,7 +37,7 @@ async function testRegistration() {
     } else {
       console.log("❌ Registration failed!");
       console.log("🚨 Error:", result.error);
-      
+
       // Explain common error codes
       switch (result.error) {
         case "email/password required":
