@@ -31,7 +31,7 @@ export type TestRunBatchFormValues = z.infer<typeof testRunBatchSchema>;
 export function getResultLabel(result: string): string {
   const labels = {
     pass: "نجح",
-    fail: "فشل", 
+    fail: "فشل",
     exception: "استثناء"
   };
   return labels[result as keyof typeof labels] || result;

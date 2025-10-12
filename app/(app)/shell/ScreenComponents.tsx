@@ -286,42 +286,122 @@ export function FieldworkScreen({ locale }: { locale: Locale }) {
       </div>
 
       {/* Quick Actions */}
+      <div className="bg-blue-50 border border-blue-200 rounded-lg p-6">
+        <div className="flex items-center">
+          <div className="flex-shrink-0">
+            <span className="text-2xl">✨</span>
+          </div>
+          <div className="mr-3">
+            <h3 className="text-lg font-medium text-blue-900">
+              {locale === 'ar' ? 'نظام العمل الميداني المتكامل' : 'Integrated Fieldwork System'}
+            </h3>
+            <p className="text-sm text-blue-700 mt-1">
+              {locale === 'ar'
+                ? 'يمكنك الآن الوصول إلى جميع ميزات العمل الميداني من شريط الأدوات أعلاه: رفع الأدلة، تنفيذ الاختبارات، وفحص الفيروسات.'
+                : 'All fieldwork features are now accessible from the toolbar above: Evidence upload, test execution, and virus scanning.'
+              }
+            </p>
+          </div>
+        </div>
+      </div>
+
+      {/* Toolbar Integration Notice */}
       <div className="bg-white rounded-lg border border-gray-200 p-6">
         <h3 className="font-semibold text-gray-900 mb-4">
-          {locale === 'ar' ? 'إجراءات سريعة' : 'Quick Actions'}
+          {locale === 'ar' ? 'الميزات المدمجة مع شريط الأدوات' : 'Toolbar Integrated Features'}
         </h3>
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-          <a
-            href="/fieldwork/ENG-DEMO"
-            className="flex flex-col items-center p-4 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors"
-          >
-            <div className="text-2xl mb-2">📁</div>
-            <span className="text-sm font-medium text-gray-900">
-              {locale === 'ar' ? 'رفع ملفات' : 'Upload Files'}
+          <div className="flex flex-col items-center p-4 border border-dashed border-gray-300 rounded-lg bg-gray-50">
+            <div className="text-2xl mb-2">�</div>
+            <span className="text-sm font-medium text-gray-600">
+              {locale === 'ar' ? 'رفع الأدلة' : 'Upload Evidence'}
             </span>
-          </a>
+            <span className="text-xs text-gray-500 mt-1">
+              {locale === 'ar' ? 'من شريط الأدوات' : 'Via Toolbar'}
+            </span>
+          </div>
 
-          <div className="flex flex-col items-center p-4 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors cursor-pointer">
+          <div className="flex flex-col items-center p-4 border border-dashed border-gray-300 rounded-lg bg-gray-50">
             <div className="text-2xl mb-2">🧪</div>
-            <span className="text-sm font-medium text-gray-900">
-              {locale === 'ar' ? 'تنفيذ اختبار' : 'Execute Test'}
+            <span className="text-sm font-medium text-gray-600">
+              {locale === 'ar' ? 'تنفيذ اختبار' : 'Run Test'}
+            </span>
+            <span className="text-xs text-gray-500 mt-1">
+              {locale === 'ar' ? 'من شريط الأدوات' : 'Via Toolbar'}
             </span>
           </div>
 
-          <div className="flex flex-col items-center p-4 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors cursor-pointer">
-            <div className="text-2xl mb-2">📋</div>
-            <span className="text-sm font-medium text-gray-900">
-              {locale === 'ar' ? 'توثيق النتائج' : 'Document Results'}
+          <div className="flex flex-col items-center p-4 border border-dashed border-gray-300 rounded-lg bg-gray-50">
+            <div className="text-2xl mb-2">�️</div>
+            <span className="text-sm font-medium text-gray-600">
+              {locale === 'ar' ? 'فحص الفيروسات' : 'Virus Scan'}
+            </span>
+            <span className="text-xs text-gray-500 mt-1">
+              {locale === 'ar' ? 'من شريط الأدوات' : 'Via Toolbar'}
             </span>
           </div>
 
-          <div className="flex flex-col items-center p-4 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors cursor-pointer">
-            <div className="text-2xl mb-2">📊</div>
-            <span className="text-sm font-medium text-gray-900">
-              {locale === 'ar' ? 'تقرير التقدم' : 'Progress Report'}
+          <div className="flex flex-col items-center p-4 border border-dashed border-gray-300 rounded-lg bg-gray-50">
+            <div className="text-2xl mb-2">🔗</div>
+            <span className="text-sm font-medium text-gray-600">
+              {locale === 'ar' ? 'ربط الأدلة' : 'Link Evidence'}
+            </span>
+            <span className="text-xs text-gray-500 mt-1">
+              {locale === 'ar' ? 'من شريط الأدوات' : 'Via Toolbar'}
             </span>
           </div>
         </div>
+      </div>
+
+      {/* Available Features */}
+      <div className="bg-white rounded-lg border border-gray-200 p-6">
+        <h3 className="font-semibold text-gray-900 mb-4">
+          {locale === 'ar' ? 'الميزات المتاحة' : 'Available Features'}
+        </h3>
+        <ul className="text-sm text-gray-600 space-y-2">
+          <li className="flex items-center">
+            <span className="text-green-500 mr-2">✓</span>
+            {locale === 'ar'
+              ? 'رفع الأدلة بجميع الصيغ مع drag & drop'
+              : 'Multi-format evidence upload with drag & drop'
+            }
+          </li>
+          <li className="flex items-center">
+            <span className="text-green-500 mr-2">✓</span>
+            {locale === 'ar'
+              ? 'تنفيذ الاختبارات مع ربط الأدلة'
+              : 'Test execution with evidence linking'
+            }
+          </li>
+          <li className="flex items-center">
+            <span className="text-green-500 mr-2">✓</span>
+            {locale === 'ar'
+              ? 'فحص الفيروسات وتأمين الملفات'
+              : 'Virus scanning and file security'
+            }
+          </li>
+          <li className="flex items-center">
+            <span className="text-green-500 mr-2">✓</span>
+            {locale === 'ar'
+              ? 'دعم التحقق من صحة البيانات بـ Zod'
+              : 'Zod validation support'
+            }
+          </li>
+          <li className="flex items-center">
+            <span className="text-green-500 mr-2">✓</span>
+            {locale === 'ar'
+              ? 'واجهة React Hook Form متقدمة'
+              : 'Advanced React Hook Form interface'
+            }
+          </li>
+          <li className="flex items-center">
+            <span className="text-green-500 mr-2">✓</span>
+            {locale === 'ar'
+              ? 'تكامل شامل مع AppShell وRBAC'
+              : 'Full AppShell and RBAC integration'
+            }
+          </li>
+        </ul>
       </div>
     </div>
   );

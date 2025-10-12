@@ -369,6 +369,8 @@ import { EngagementForm } from '@/features/planning/engagement/engagement.form';
 import PBCForm from '@/features/planning/pbc/pbc.form';
 import TestForm from '@/features/program/tests/test.form';
 import SamplingForm from '@/features/program/sampling/sampling.form';
+import TestExecutionForm from '@/features/fieldwork/forms/test-execution.form';
+import EvidenceUploaderForm from '@/features/evidence/forms/evidence-uploader.form';
 import { useI18n, type Locale } from '@/lib/i18n';
 import { ToastProvider } from '@/components/ui/toast';
 const clsx = (...xs: Array<string | false | null | undefined>) => xs.filter(Boolean).join(' ');
@@ -417,6 +419,7 @@ const TOOLBARS: Record<Route, { action: string; roles: Role[]; variant?: 'primar
   ],
   fieldwork: [
     { action: 'uploadEv', roles: ['IA_Manager','IA_Lead','IA_Auditor'], variant: 'primary' },
+    { action: 'runTest', roles: ['IA_Manager','IA_Lead','IA_Auditor'] },
     { action: 'scanAV', roles: ['IA_Manager','IA_Lead','IA_Auditor'] },
     { action: 'linkTo', roles: ['IA_Manager','IA_Lead','IA_Auditor'] }
   ],
@@ -660,6 +663,8 @@ export default function AppShell(){
   const [openPbc, setOpenPbc] = useState(false);
   const [openTest, setOpenTest] = useState(false);
   const [openSample, setOpenSample] = useState(false);
+  const [openTestExecution, setOpenTestExecution] = useState(false);
+  const [openEvidenceUploader, setOpenEvidenceUploader] = useState(false);
   const isRTL = locale==='ar';
   const i18n = useI18n(locale);
 
@@ -688,6 +693,20 @@ export default function AppShell(){
         break;
       case 'drawSample':
         setOpenSample(true);
+        break;
+      case 'uploadEv':
+        setOpenEvidenceUploader(true);
+        break;
+      case 'runTest':
+        setOpenTestExecution(true);
+        break;
+      case 'scanAV':
+        console.log('تم تفعيل فحص الفيروسات للأدلة المرفوعة');
+        // TODO: Implement virus scan for uploaded evidence
+        break;
+      case 'linkTo':
+        console.log('ربط الأدلة بالاختبارات والعينات');
+        // TODO: Open evidence linking dialog
         break;
       default:
         console.log(`Action: ${action}`);
@@ -787,6 +806,35 @@ export default function AppShell(){
         onSuccess={() => {
           console.log('✅ تم إنشاء العينة بنجاح - سيتم تحديث القائمة');
           setOpenSample(false);
+          // TODO: Add toast notification and refresh data
+        }}
+      />
+
+      <TestExecutionForm
+        open={openTestExecution}
+        onOpenChange={setOpenTestExecution}
+        engagementId={engagementId}
+        auditTestId="TEST-001" // TODO: Get from selected test
+        auditTestTitle="اختبار تحقق من صحة البيانات المالية" // TODO: Get from selected test
+        onSuccess={(runId) => {
+          console.log('✅ تم تنفيذ الاختبار بنجاح:', runId);
+          setOpenTestExecution(false);
+          // TODO: Add toast notification and refresh data
+        }}
+      />
+
+      <EvidenceUploaderForm
+        open={openEvidenceUploader}
+        onOpenChange={setOpenEvidenceUploader}
+        engagementId={engagementId}
+        defaultLinks={{
+          testId: "TEST-001", // TODO: Get from context
+          sampleRef: "SAMPLE-001", // TODO: Get from context
+          findingId: undefined // TODO: Get from context if applicable
+        }}
+        onSuccess={(evidenceId) => {
+          console.log('✅ تم رفع الأدلة بنجاح:', evidenceId);
+          setOpenEvidenceUploader(false);
           // TODO: Add toast notification and refresh data
         }}
       />
