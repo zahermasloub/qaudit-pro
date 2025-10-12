@@ -677,6 +677,33 @@ export default function AppShell(){
     }
   }, [status, router]);
 
+  const handleVirusScanAll = async () => {
+    try {
+      console.log('🛡️ Starting virus scan for all pending evidence...');
+
+      // Call the virus scan API for all pending files
+      const response = await fetch('/api/evidence/virus-scan-all', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ engagementId })
+      });
+
+      const result = await response.json();
+
+      if (response.ok) {
+        console.log(`✅ Virus scan initiated for ${result.count} files`);
+        // TODO: Add toast notification
+        alert(`تم بدء فحص الفيروسات لـ ${result.count} ملف`);
+      } else {
+        throw new Error(result.error || 'Failed to initiate virus scan');
+      }
+
+    } catch (error) {
+      console.error('❌ Virus scan failed:', error);
+      alert('فشل في بدء فحص الفيروسات');
+    }
+  };
+
   const handleToolbarAction = (action: string) => {
     switch (action) {
       case 'newEng':
@@ -701,8 +728,7 @@ export default function AppShell(){
         setOpenTestExecution(true);
         break;
       case 'scanAV':
-        console.log('تم تفعيل فحص الفيروسات للأدلة المرفوعة');
-        // TODO: Implement virus scan for uploaded evidence
+        handleVirusScanAll();
         break;
       case 'linkTo':
         console.log('ربط الأدلة بالاختبارات والعينات');
