@@ -1,5 +1,5 @@
 // Test registration API directly
-async function testRegistration() {
+async function testSpecificRegistration() {
   const userData = {
     email: "crc.qa2222@gmail.com",
     name: "Test User CRC",
@@ -64,4 +64,4 @@ async function testRegistration() {
 }
 
 // Run the test
-testRegistration();
+testSpecificRegistration();

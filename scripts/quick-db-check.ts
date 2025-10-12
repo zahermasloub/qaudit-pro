@@ -1,6 +1,6 @@
 import prisma from "@/lib/prisma";
 
-async function main() {
+async function quickDbCheck() {
   try {
     const ping = await prisma.$queryRaw`SELECT 1 as ok`;
     console.log("DB PING:", ping);
@@ -20,8 +20,8 @@ async function main() {
   }
 }
 
-main()
-  .catch(e => {
+quickDbCheck()
+  .catch((e: any) => {
     console.error("DB ERROR:", e);
     process.exit(1);
   })

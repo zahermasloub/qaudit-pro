@@ -3,7 +3,7 @@ import bcrypt from 'bcrypt';
 
 const prisma = new PrismaClient();
 
-async function main() {
+async function seedData() {
   // Create User
   const hash = await bcrypt.hash("Passw0rd!", 10);
   await prisma.user.upsert({
@@ -60,8 +60,8 @@ async function main() {
   console.log('Seeded User, Engagement and PBC');
 }
 
-main()
-  .catch((e) => {
+seedData()
+  .catch((e: any) => {
     console.error(e);
     process.exit(1);
   })
