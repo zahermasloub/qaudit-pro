@@ -44,6 +44,11 @@ export default function LoginPage() {
     setIsLoading(true);
 
     try {
+      console.log("🔐 Attempting login with:", {
+        email: formData.email,
+        passwordLength: formData.password.length
+      });
+
       const res = await signIn("credentials", {
         email: formData.email,
         password: formData.password,
@@ -51,13 +56,27 @@ export default function LoginPage() {
         callbackUrl: "/shell"
       });
 
+      console.log("🔍 NextAuth response:", {
+        ok: res?.ok,
+        status: res?.status,
+        error: res?.error,
+        url: res?.url
+      });
+
       if (res?.ok) {
+        console.log("✅ Login successful, redirecting to /shell");
         router.push("/shell");
       } else {
-        setErrors({ password: 'بيانات غير صحيحة' });
+        console.log("❌ Login failed:", res?.error);
+        if (res?.error === "CredentialsSignin") {
+          setErrors({ password: 'بيانات تسجيل الدخول غير صحيحة - تحقق من البريد الإلكتروني وكلمة المرور' });
+        } else {
+          setErrors({ password: `خطأ في تسجيل الدخول: ${res?.error || 'غير معروف'}` });
+        }
       }
     } catch (error) {
-      setErrors({ password: 'حدث خطأ في تسجيل الدخول' });
+      console.error("🚫 Login error:", error);
+      setErrors({ password: 'حدث خطأ في الشبكة أثناء تسجيل الدخول' });
     } finally {
       setIsLoading(false);
     }

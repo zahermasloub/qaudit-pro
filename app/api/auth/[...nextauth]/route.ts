@@ -14,28 +14,61 @@ const handler = NextAuth({
         password: { label: "Password", type: "password" }
       },
       async authorize(creds) {
-        if (!creds?.email || !creds?.password) return null;
+        console.log("🔐 NextAuth authorize called with:", {
+          email: creds?.email,
+          passwordProvided: !!creds?.password,
+          passwordLength: creds?.password?.length
+        });
+
+        if (!creds?.email || !creds?.password) {
+          console.log("❌ Missing email or password");
+          return null;
+        }
 
         try {
+          console.log("🔍 Looking up user in database:", creds.email);
+          
           // Try database authentication first
           const user = await prisma.user.findUnique({
             where: { email: creds.email }
           });
 
-          if (user && await bcrypt.compare(creds.password, user.password)) {
-            return {
+          if (!user) {
+            console.log("❌ User not found in database:", creds.email);
+            return null;
+          }
+
+          console.log("✅ User found:", {
+            id: user.id,
+            email: user.email,
+            name: user.name,
+            role: user.role
+          });
+
+          console.log("🔐 Comparing passwords...");
+          const passwordMatch = await bcrypt.compare(creds.password, user.password);
+          console.log("🔍 Password comparison result:", passwordMatch);
+
+          if (passwordMatch) {
+            const authUser = {
               id: user.id,
               name: user.email,
               email: user.email,
               role: user.role,
               locale: user.locale
             };
+            console.log("✅ Authentication successful, returning user:", authUser);
+            return authUser;
+          } else {
+            console.log("❌ Password does not match");
+            return null;
           }
         } catch (dbError) {
-          console.log("Database not available, using fallback authentication:", dbError);
+          console.error("🚫 Database error during authentication:", dbError);
 
           // Fallback to hardcoded credentials when DB is not connected
           if (creds.email === "lead@example.com" && creds.password === "Passw0rd!") {
+            console.log("🔄 Using fallback authentication");
             return {
               id: "1",
               name: "IA Lead",
@@ -46,6 +79,7 @@ const handler = NextAuth({
           }
         }
 
+        console.log("❌ Authentication failed - returning null");
         return null;
       },
     }),

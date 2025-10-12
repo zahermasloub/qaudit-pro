@@ -64,11 +64,42 @@ export default function RegisterPage() {
 
     setIsLoading(true);
 
-    // Mock registration - will be replaced with real authentication in future sprint
-    setTimeout(() => {
+    try {
+      const response = await fetch('/api/auth/register', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          name: formData.name,
+          email: formData.email,
+          password: formData.password
+        })
+      });
+
+      const result = await response.json();
+
+      if (result.ok) {
+        // Success - redirect to login
+        router.push('/auth/login?message=registration_success');
+      } else {
+        // Handle error
+        if (result.error === 'user_exists') {
+          setErrors({ email: 'البريد الإلكتروني مستخدم بالفعل' });
+        } else if (result.error === 'invalid_email_format') {
+          setErrors({ email: 'تنسيق البريد الإلكتروني غير صحيح' });
+        } else if (result.error === 'password_too_short') {
+          setErrors({ password: 'كلمة المرور قصيرة جداً' });
+        } else {
+          setErrors({ name: 'حدث خطأ أثناء التسجيل، يرجى المحاولة مرة أخرى' });
+        }
+      }
+    } catch (error) {
+      console.error('Registration error:', error);
+      setErrors({ name: 'حدث خطأ في الشبكة، يرجى المحاولة مرة أخرى' });
+    } finally {
       setIsLoading(false);
-      router.push('/auth/login');
-    }, 1000);
+    }
   };
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {

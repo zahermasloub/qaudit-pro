@@ -31,17 +31,40 @@ npm install
 ```
 
 3. **إعداد قاعدة البيانات:**
-```bash
-# نسخ ملف البيئة
-cp .env.example .env
-# حرّر .env وأضف DATABASE_URL الصحيح
 
-# توليد عميل Prisma
-npm run prisma:generate
+   **خيار أ: باستخدام Docker (موصى به):**
+   ```bash
+   # إنشاء حاوية PostgreSQL
+   docker run --name qauditpg -e POSTGRES_PASSWORD=postgres -e POSTGRES_DB=qaudit_pro -p 5432:5432 -d postgres:16
 
-# تزامن قاعدة البيانات
-npm run db:push
-```
+   # إنشاء المستخدم والصلاحيات
+   docker exec -it qauditpg psql -U postgres -c "CREATE USER qaudit_user WITH PASSWORD 'qaudit_pass_2024';"
+   docker exec -it qauditpg psql -U postgres -c "GRANT ALL PRIVILEGES ON DATABASE qaudit_pro TO qaudit_user;"
+   docker exec -it qauditpg psql -U postgres -d qaudit_pro -c "GRANT ALL ON SCHEMA public TO qaudit_user;"
+   ```
+
+   **خيار ب: خدمة Windows المحلية:**
+   ```powershell
+   # فحص المنفذ
+   Test-NetConnection 127.0.0.1 -Port 5432
+
+   # تشغيل الخدمة إذا لم تكن تعمل
+   services.msc # ← PostgreSQL → Start
+   ```
+
+   **تكوين متغيرات البيئة:**
+   ```bash
+   # نسخ وتحديث ملف البيئة
+   cp .env.example .env
+   # تأكد من أن DATABASE_URL في .env يحتوي على:
+   # DATABASE_URL="postgresql://qaudit_user:qaudit_pass_2024@127.0.0.1:5432/qaudit_pro?schema=public"
+
+   # توليد عميل Prisma
+   npm run prisma:generate
+
+   # تزامن قاعدة البيانات
+   npm run db:push
+   ```
 
 4. **تشغيل خادم التطوير:**
 ```bash
@@ -50,22 +73,41 @@ npm run dev
 
 5. افتح [http://localhost:3001](http://localhost:3001) في متصفحك.
 
-## نظام المصادقة (Mock)
+## نظام المصادقة والتسجيل
 
-المشروع يستخدم حالياً نظام مصادقة مؤقت (Mock) لأغراض التطوير:
+المشروع يستخدم NextAuth.js مع قاعدة بيانات PostgreSQL:
 
 - **صفحة تسجيل الدخول:** `/auth/login`
-- **صفحة التسجيل:** `/auth/register`
+- **صفحة التسجيل:** `/auth/register` - ينشئ مستخدمين جدد في قاعدة البيانات
 - **حماية المسارات:** تلقائية عبر Middleware
-- **إدارة الجلسات:** كوكي `qaudit_auth`
+- **إدارة الجلسات:** JWT مع NextAuth.js
+- **تشفير كلمات المرور:** bcrypt مع salt rounds = 10
 
 ### التدفق:
-1. زيارة أي صفحة محمية بدون جلسة → تحويل تلقائي إلى `/auth/login`
-2. تسجيل الدخول (أي بيانات مقبولة) → تعيين كوكي الجلسة
-3. التحويل إلى الوجهة المطلوبة أو الصفحة الرئيسية
-4. زر "خروج" يمسح الجلسة ويعيد إلى صفحة تسجيل الدخول
 
-**ملاحظة:** سيتم استبدال هذا النظام بـ NextAuth في Sprint 3.5
+1. التسجيل: `/auth/register` → إنشاء مستخدم في DB مع كلمة مرور مشفرة
+2. تسجيل الدخول: `/auth/login` → التحقق من البيانات مقابل قاعدة البيانات
+3. الجلسة: JWT token مع معلومات المستخدم (role, locale)
+4. الحماية: تحويل تلقائي إلى `/auth/login` للصفحات المحمية
+5. الخروج: مسح JWT وإعادة التوجيه
+
+### اختبار النظام:
+
+**المستخدم التجريبي:**
+- البريد: `test@test.com`
+- كلمة المرور: `Passw0rd!`
+
+**اختبارات إضافية:**
+```bash
+# فحص الاتصال بقاعدة البيانات
+npx tsx scripts/quick-db-check.ts
+
+# التحقق من وجود المستخدمين
+npx tsx scripts/check-user-exists.ts
+
+# اختبار تشفير كلمات المرور
+npx tsx scripts/test-login.ts
+```
 
 
 # qaudit-pro
