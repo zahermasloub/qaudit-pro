@@ -59,35 +59,18 @@ class OCRService {
     };
   }
 
-  async initializeWorker(): Promise<void> {
-    if (this.workerInitialized && this.worker) {
-      return;
-    }
+  private async initializeWorker(): Promise<void> {
+    if (!this.worker) {
+      console.log('🔄 Initializing Tesseract.js worker...');
 
-    try {
-      console.log('🤖 Initializing OCR worker...');
-
-      this.worker = await createWorker();
-
-      // Load languages
+      // Create worker instance with languages
       const languageString = this.config.languages.join('+');
-      await this.worker.loadLanguage(languageString);
-      await this.worker.initialize(languageString);
-
-      // Configure Tesseract parameters
-      await this.worker.setParameters({
-        tessedit_ocr_engine_mode: this.config.engineMode,
-        tessedit_pageseg_mode: this.config.pageSegMode,
-        preserve_interword_spaces: '1',
-        user_defined_dpi: '300',
+      this.worker = await createWorker(languageString, 1, {
+        logger: process.env.NODE_ENV === 'development' ?
+          (m: any) => console.log(`OCR: ${m.status}`) : undefined
       });
 
-      this.workerInitialized = true;
-      console.log(`✅ OCR worker initialized with languages: ${languageString}`);
-
-    } catch (error) {
-      console.error('❌ Failed to initialize OCR worker:', error);
-      throw new Error(`OCR initialization failed: ${error instanceof Error ? error.message : 'Unknown error'}`);
+      console.log('✅ Tesseract.js worker initialized successfully');
     }
   }
 

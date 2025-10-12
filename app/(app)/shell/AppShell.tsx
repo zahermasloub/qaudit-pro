@@ -679,9 +679,9 @@ export default function AppShell(){
 
   const handleVirusScanAll = async () => {
     try {
-      console.log('🛡️ Starting virus scan for all pending evidence...');
+      console.log('� Starting Sprint 7.5 evidence processing...');
 
-      // Call the virus scan API for all pending files
+      // Call the integrated evidence processing API (AV + OCR + S3)
       const response = await fetch('/api/evidence/virus-scan-all', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -691,20 +691,20 @@ export default function AppShell(){
       const result = await response.json();
 
       if (response.ok) {
-        console.log(`✅ Virus scan initiated for ${result.count} files`);
-        // TODO: Add toast notification
-        alert(`تم بدء فحص الفيروسات لـ ${result.count} ملف`);
+        console.log(`✅ Sprint 7.5 processing initiated:`, result.services);
+
+        // Show comprehensive processing message
+        const servicesList = result.services?.join(' + ') || 'AV Scan + OCR + S3';
+        alert(`تم بدء معالجة الأدلة الشاملة\n${servicesList}\n\nسيتم الانتهاء من العملية في الخلفية`);
       } else {
-        throw new Error(result.error || 'Failed to initiate virus scan');
+        throw new Error(result.error || 'Failed to initiate evidence processing');
       }
 
     } catch (error) {
-      console.error('❌ Virus scan failed:', error);
-      alert('فشل في بدء فحص الفيروسات');
+      console.error('❌ Evidence processing failed:', error);
+      alert('فشل في بدء معالجة الأدلة الشاملة');
     }
-  };
-
-  const handleToolbarAction = (action: string) => {
+  };  const handleToolbarAction = (action: string) => {
     switch (action) {
       case 'newEng':
         setOpenEngForm(true);
