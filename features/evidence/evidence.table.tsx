@@ -1,5 +1,6 @@
 "use client";
 import { useMemo, useState, useEffect } from "react";
+import { Download, Trash2 } from "lucide-react";
 
 function formatSize(n:number|undefined){
   if(!n && n!==0) return "—";
@@ -19,6 +20,29 @@ export default function EvidenceTable({ engagementId }:{engagementId:string}) {
 
   const [data, setData] = useState<any>(null);
   const [isLoading, setIsLoading] = useState(false);
+
+  async function handleDownload(row: any) {
+    try {
+      if (row.storage === "local") {
+        window.open(`/api/evidence/${row.id}/download`, "_blank");
+        return;
+      }
+      const r = await fetch(`/api/evidence/${row.id}/presign`);
+      const j = await r.json().catch(() => ({}));
+      if (j?.ok && j.url) window.open(j.url, "_blank");
+      else alert("تعذّر إنشاء رابط التنزيل.");
+    } catch { alert("فشل التنزيل."); }
+  }
+
+  async function handleDelete(row: any) {
+    const yes = window.confirm("هل تريد حذف هذا الدليل نهائيًا؟");
+    if (!yes) return;
+    try {
+      const r = await fetch(`/api/evidence/${row.id}`, { method: "DELETE" });
+      const j = await r.json().catch(() => ({}));
+      if (r.ok && j?.ok) refetch(); else alert(j?.error || "فشل الحذف");
+    } catch { alert("فشل الحذف."); }
+  }
 
   const url = useMemo(()=>{
     const p = new URLSearchParams();
@@ -105,8 +129,8 @@ export default function EvidenceTable({ engagementId }:{engagementId:string}) {
       </div>
 
       {/* Table */}
-      <div className="overflow-auto border rounded-xl">
-        <table className="min-w-full text-sm">
+      <div className="table-wrap relative w-full max-w-full overflow-x-auto overscroll-x-contain rounded-xl border">
+        <table className="min-w-full table-fixed text-sm">
           <thead className="bg-gray-50">
             <tr className="[&>th]:px-3 [&>th]:py-2 [&>th]:text-right [&>th]:font-semibold">
               <th>المعرف</th>
@@ -118,7 +142,7 @@ export default function EvidenceTable({ engagementId }:{engagementId:string}) {
               <th>OCR</th>
               <th>التخزين</th>
               <th>تاريخ الرفع</th>
-              <th>تنزيل</th>
+              <th className="w-[120px]">الإجراءات</th>
             </tr>
           </thead>
           <tbody className="[&>tr>td]:px-3 [&>tr>td]:py-2">
@@ -145,11 +169,24 @@ export default function EvidenceTable({ engagementId }:{engagementId:string}) {
                 <td className="uppercase">{r.storage}</td>
                 <td>{new Date(r.uploadedAt).toLocaleString("ar")}</td>
                 <td>
-                  {r.storage==="local" ? (
-                    <a className="underline text-blue-600" href={`/api/evidence/${r.id}/download`} target="_blank">تنزيل</a>
-                  ) : (
-                    <a className="underline text-blue-600" href={`/api/evidence/${r.id}/presign`} target="_blank">رابط مؤقت</a>
-                  )}
+                  <div className="flex items-center gap-2">
+                    <button
+                      onClick={() => handleDownload(r)}
+                      title="تنزيل"
+                      aria-label="تنزيل"
+                      className="p-1.5 rounded-md border hover:bg-gray-50"
+                    >
+                      <Download className="w-4 h-4" />
+                    </button>
+                    <button
+                      onClick={() => handleDelete(r)}
+                      title="حذف"
+                      aria-label="حذف"
+                      className="p-1.5 rounded-md border hover:bg-red-50 text-red-600"
+                    >
+                      <Trash2 className="w-4 h-4" />
+                    </button>
+                  </div>
                 </td>
               </tr>
             ))}

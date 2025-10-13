@@ -56,3 +56,12 @@ input::placeholder,
 textarea::placeholder {
   color: #6b7280;
 }
+
+/* RTL Overflow Fix */
+html, body {
+  overflow-x: hidden;
+}
+
+.table-wrap > table {
+  table-layout: fixed;
+}
