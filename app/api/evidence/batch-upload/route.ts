@@ -35,11 +35,22 @@ export async function POST(req: NextRequest) {
     });
 
     if (!engagement) {
+      console.error('❌ المهمة غير موجودة:', {
+        requestedEngagementId: meta.engagementId,
+        timestamp: new Date().toISOString()
+      });
+
       return Response.json({
         ok: false,
-        error: "المهمة المحددة غير موجودة"
+        error: `المهمة المحددة غير موجودة (معرف: ${meta.engagementId}). يرجى التأكد من صحة اختيار المهمة.`
       }, { status: 404 });
     }
+
+    console.log('✅ تم العثور على المهمة:', {
+      engagementId: engagement.id,
+      title: engagement.title,
+      status: engagement.status
+    });
 
     // التحقق من الاختبار إذا كان محدداً
     if (meta.linkedTestId) {

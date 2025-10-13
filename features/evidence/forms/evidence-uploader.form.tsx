@@ -116,6 +116,13 @@ const EvidenceUploaderForm: React.FC<EvidenceUploaderFormProps> = ({
   };
 
   const uploadSingleFile = async (file: FileWithPreview, metadata: EvidenceUploadMeta): Promise<string> => {
+    console.log('📤 رفع الملف:', {
+      fileName: file.name,
+      fileSize: file.size,
+      engagementId: metadata.engagementId,
+      category: metadata.category
+    });
+
     const formData = new FormData();
     formData.append('file', file);
     formData.append('meta', JSON.stringify(metadata));
@@ -128,13 +135,26 @@ const EvidenceUploaderForm: React.FC<EvidenceUploaderFormProps> = ({
     const result = await response.json();
 
     if (!response.ok) {
-      throw new Error(result.error || `فشل في رفع ${file.name}`);
+      console.error('❌ خطأ في الاستجابة:', {
+        status: response.status,
+        statusText: response.statusText,
+        error: result.error
+      });
+
+      // رسائل خطأ محسنة حسب نوع المشكلة
+      if (response.status === 404 && result.error?.includes('المهمة')) {
+        throw new Error(`المهمة غير موجودة (معرف: ${metadata.engagementId}). يرجى التأكد من صحة اختيار المهمة.`);
+      }
+
+      throw new Error(result.error || `فشل في رفع ${file.name} (كود الخطأ: ${response.status})`);
     }
 
     if (!result.ok) {
+      console.error('❌ خطأ في المعالجة:', result.error);
       throw new Error(result.error || `خطأ في معالجة ${file.name}`);
     }
 
+    console.log('✅ تم رفع الملف بنجاح:', file.name, '- معرف الدليل:', result.evidence.id);
     return result.evidence.id;
   };
 
@@ -143,6 +163,14 @@ const EvidenceUploaderForm: React.FC<EvidenceUploaderFormProps> = ({
       setSubmitError('يرجى اختيار ملف واحد على الأقل');
       return;
     }
+
+    // التحقق من وجود معرف المهمة
+    if (!engagementId || engagementId.trim() === '') {
+      setSubmitError('معرف المهمة مطلوب لرفع الأدلة. يرجى التأكد من اختيار المهمة الصحيحة.');
+      return;
+    }
+
+    console.log('🔄 بدء رفع الملفات للمهمة:', engagementId);
 
     setIsUploading(true);
     setSubmitError(null);
@@ -185,6 +213,8 @@ const EvidenceUploaderForm: React.FC<EvidenceUploaderFormProps> = ({
           results.push(evidenceId);
 
         } catch (error) {
+          console.error('❌ فشل في رفع الملف:', file.name, error);
+
           // تحديث حالة الملف للخطأ
           const errorMessage = error instanceof Error ? error.message : 'خطأ غير معروف';
           setSelectedFiles(prev => prev.map((f, idx) =>
@@ -214,12 +244,13 @@ const EvidenceUploaderForm: React.FC<EvidenceUploaderFormProps> = ({
       }
 
       if (errors.length > 0) {
-        setSubmitError(`فشل في رفع بعض الملفات:\n${errors.join('\n')}`);
+        console.error('📋 ملخص الأخطاء:', errors);
+        setSubmitError(`فشل في رفع ${errors.length} من ${selectedFiles.length} ملف:\n${errors.join('\n')}\n\nنصائح لحل المشكلة:\n• تأكد من صحة اختيار المهمة\n• تحقق من اتصال الإنترنت\n• جرب رفع الملفات مرة أخرى`);
       }
 
     } catch (error) {
-      console.error('Batch upload error:', error);
-      setSubmitError(error instanceof Error ? error.message : 'خطأ في رفع الملفات');
+      console.error('❌ خطأ عام في رفع الملفات:', error);
+      setSubmitError(error instanceof Error ? error.message : 'خطأ عام في رفع الملفات. يرجى المحاولة مرة أخرى.');
     } finally {
       setIsUploading(false);
     }
