@@ -10,6 +10,9 @@ import { getServerSession } from 'next-auth/next';
 import FileUploadService from '@/lib/file-upload-service';
 import prisma from '@/lib/prisma';
 
+// Force dynamic rendering for this route
+export const dynamic = 'force-dynamic';
+
 // Mock auth options for now
 const authOptions = {
   session: { strategy: 'jwt' as const },
@@ -31,7 +34,7 @@ export async function GET(req: NextRequest) {
     }
 
     // Get query parameters
-    const { searchParams } = new URL(req.url);
+    const { searchParams } = req.nextUrl;
     const engagementId = searchParams.get('engagementId');
     const testId = searchParams.get('testId');
     const category = searchParams.get('category');
