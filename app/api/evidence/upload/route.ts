@@ -34,6 +34,19 @@ export async function POST(request: NextRequest) {
     const meta = JSON.parse(metaStr);
     const validatedMeta = evidenceUploadMetaSchema.parse(meta);
 
+    // Verify engagement exists
+    const engagement = await prisma.engagement.findUnique({
+      where: { id: validatedMeta.engagementId },
+      select: { id: true }
+    });
+
+    if (!engagement) {
+      return NextResponse.json(
+        { ok: false, error: `Engagement with ID '${validatedMeta.engagementId}' not found` },
+        { status: 404 }
+      );
+    }
+
     // Process file
     const buffer = Buffer.from(await file.arrayBuffer());
     const fileHash = computeSha256(buffer);

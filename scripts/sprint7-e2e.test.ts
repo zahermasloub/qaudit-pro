@@ -8,7 +8,7 @@ import { PrismaClient } from '@prisma/client';
 import { promises as fs } from 'fs';
 import path from 'path';
 
-const BASE_URL = process.env.BASE_URL || 'http://localhost:3000';
+const BASE_URL = process.env.BASE_URL || 'http://localhost:3001';
 const prisma = new PrismaClient();
 
 interface TestResult {
@@ -30,7 +30,17 @@ async function test(name: string, testFn: () => Promise<void>): Promise<void> {
     results.push({ name, status: 'PASS' });
     await log(`✅ ${name}`);
   } catch (error) {
-    const errorMsg = error instanceof Error ? error.message : String(error);
+    let errorMsg: string;
+    if (error instanceof Error) {
+      // Check for common fetch errors
+      if (error.message.includes('fetch failed') || error.message.includes('ECONNREFUSED')) {
+        errorMsg = `Server not available at ${BASE_URL}. Please start the dev server with 'npm run dev'`;
+      } else {
+        errorMsg = error.message;
+      }
+    } else {
+      errorMsg = String(error);
+    }
     results.push({ name, status: 'FAIL', message: errorMsg });
     await log(`❌ ${name}: ${errorMsg}`);
   }
@@ -71,7 +81,11 @@ async function testFieldworkRuns() {
       throw new Error('Expected {ok: true, id: string}');
     }
 
-    results[results.length - 1].data = { runId: result.id };
+    // Store test data safely
+    const currentResult = results[results.length - 1];
+    if (currentResult) {
+      currentResult.data = { runId: result.id };
+    }
   });
 
   await test('POST /api/fieldwork/runs - Invalid payload', async () => {

@@ -896,7 +896,7 @@ export default function AppShell() {
   const [locale, setLocale] = useState<Locale>('ar');
   const [route, setRoute] = useState<Route>('dashboard');
   const [role, setRole] = useState<Role>('IA_Manager');
-  const [engagementId, setEngagementId] = useState<string>('ENG-DEMO');
+  const [engagementId, setEngagementId] = useState<string>('TEST-ENG-001');
   const [openEngForm, setOpenEngForm] = useState(false);
   const [openPbc, setOpenPbc] = useState(false);
   const [openTest, setOpenTest] = useState(false);
