@@ -226,7 +226,11 @@ const EvidenceUploaderForm: React.FC<EvidenceUploaderFormProps> = ({
   };
 
   const getFileIcon = (file: FileWithPreview): string => {
-    const type = file.type;
+    const type = file.type || '';
+
+    // فحص أمان: في حالة عدم وجود نوع محدد للملف
+    if (!type) return '📁';
+
     if (type.startsWith('image/')) return '🖼️';
     if (type === 'application/pdf') return '📄';
     if (type.includes('word')) return '📝';
