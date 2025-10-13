@@ -1,4 +1,5 @@
 import PBCTable from '@/components/pbc/PbcTable';
+import EvidenceTable from '@/features/evidence/evidence.table';
 import type { Locale } from '@/lib/i18n';
 import { useI18n } from '@/lib/i18n';
 
@@ -181,7 +182,7 @@ export function ProgramScreen({ locale }: { locale: Locale }) {
   );
 }
 
-export function FieldworkScreen({ locale }: { locale: Locale }) {
+export function FieldworkScreen({ locale, engagementId }: { locale: Locale; engagementId: string }) {
   const i18n = useI18n(locale);
 
   return (
@@ -388,6 +389,11 @@ export function FieldworkScreen({ locale }: { locale: Locale }) {
               : 'Full AppShell and RBAC integration'}
           </li>
         </ul>
+      </div>
+
+      {/* Evidence Table */}
+      <div className="mt-4">
+        <EvidenceTable engagementId={engagementId} />
       </div>
     </div>
   );

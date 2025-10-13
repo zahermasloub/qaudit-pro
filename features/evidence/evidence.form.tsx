@@ -26,10 +26,10 @@ export default function EvidenceForm({
   const [metaData, setMetaData] = useState<Partial<EvidenceUploadMeta>>({
     engagementId,
     category: 'audit-evidence',
-    linkedTestId: defaultLinks.testId || '',
-    linkedSampleRef: defaultLinks.sampleRef || '',
+    linkedTestId: defaultLinks.testId || 'TEST-001',
+    linkedSampleRef: defaultLinks.sampleRef || 'SAMPLE-001',
     linkedFindingId: '',
-    uploadedBy: '',
+    uploadedBy: 'crc.qa2222@gmail.com',
   });
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -47,12 +47,23 @@ export default function EvidenceForm({
       formData.append('file', file);
       formData.append('meta', JSON.stringify(validated));
 
+      console.log('Uploading file:', file.name, 'with metadata:', validated);
+
       const response = await fetch('/api/evidence/upload', {
         method: 'POST',
         body: formData,
       });
 
+      console.log('Upload response status:', response.status);
+
+      if (!response.ok) {
+        const errorText = await response.text();
+        console.error('Upload API Error:', errorText);
+        throw new Error(`Server error (${response.status}): ${errorText}`);
+      }
+
       const result = await response.json();
+      console.log('Upload result:', result);
 
       if (result.ok) {
         alert('Evidence uploaded successfully');
@@ -71,7 +82,17 @@ export default function EvidenceForm({
       }
     } catch (error) {
       console.error('Upload error:', error);
-      alert('Upload failed');
+      if (error instanceof Error) {
+        if (error.message.includes('Failed to fetch') || error.message.includes('fetch')) {
+          alert('Network error: Cannot connect to server. Please check if the server is running.');
+        } else if (error.name === 'ZodError') {
+          alert('Validation error: Please check all required fields are filled correctly.');
+        } else {
+          alert(`Upload failed: ${error.message}`);
+        }
+      } else {
+        alert('Unknown upload error occurred');
+      }
     }
   };
 

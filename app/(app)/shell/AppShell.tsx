@@ -1067,7 +1067,7 @@ export default function AppShell() {
                 {route === 'planning' && <PlanningScreen locale={locale} />}
                 {route === 'processRisk' && <ProcessRiskScreen locale={locale} />}
                 {route === 'program' && <ProgramScreen locale={locale} />}
-                {route === 'fieldwork' && <FieldworkScreen locale={locale} />}
+                {route === 'fieldwork' && <FieldworkScreen locale={locale} engagementId={engagementId} />}
                 {route === 'agile' && <PlaceholderScreen title={i18n.sections.agile} />}
                 {route === 'findings' && <PlaceholderScreen title={i18n.sections.findings} />}
                 {route === 'reporting' && <PlaceholderScreen title={i18n.sections.reporting} />}

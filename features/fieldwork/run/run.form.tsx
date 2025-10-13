@@ -22,12 +22,12 @@ export default function RunForm({
   const [formData, setFormData] = useState<Partial<RunFormValues>>({
     engagementId,
     auditTestId,
-    stepIndex: 0,
-    actionTaken: '',
+    stepIndex: 1,
+    actionTaken: 'تم فحص العينة وتحليل البيانات وفقاً للإجراءات المحددة',
     result: 'pass',
-    notes: '',
-    sampleRef: '',
-    executedBy: '',
+    notes: 'تم إنجاز الخطوة بنجاح',
+    sampleRef: 'SAMPLE-001',
+    executedBy: 'crc.qa2222@gmail.com',
   });
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -39,13 +39,24 @@ export default function RunForm({
         evidenceIds: [],
       });
 
+      console.log('Sending run data:', validated);
+
       const response = await fetch('/api/fieldwork/runs', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(validated),
       });
 
+      console.log('Response status:', response.status);
+
+      if (!response.ok) {
+        const errorText = await response.text();
+        console.error('API Error:', errorText);
+        throw new Error(`Server error (${response.status}): ${errorText}`);
+      }
+
       const result = await response.json();
+      console.log('API Result:', result);
 
       if (result.ok) {
         alert('Test run saved successfully');
@@ -55,7 +66,17 @@ export default function RunForm({
       }
     } catch (error) {
       console.error('Submit error:', error);
-      alert('Network error');
+      if (error instanceof Error) {
+        if (error.message.includes('Failed to fetch') || error.message.includes('fetch')) {
+          alert('Network error: Cannot connect to server. Please check if the server is running.');
+        } else if (error.name === 'ZodError') {
+          alert('Validation error: Please check all required fields are filled correctly.');
+        } else {
+          alert(`Error: ${error.message}`);
+        }
+      } else {
+        alert('Unknown error occurred');
+      }
     }
   };
 
