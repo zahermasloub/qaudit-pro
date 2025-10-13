@@ -522,13 +522,13 @@ function Topbar({
 
       {/* Toolbar Actions */}
       {toolbarActions.length > 0 && (
-        <div className="flex items-center gap-2 mx-4">
+        <div className="flex flex-wrap items-center gap-2 overflow-x-auto max-w-full mx-4">
           {toolbarActions.map(tool => (
             <button
               key={tool.action}
               onClick={() => onToolbarAction(tool.action)}
               className={clsx(
-                'px-3 py-1.5 text-sm rounded-md border font-medium transition-colors',
+                'px-3 py-1.5 text-sm rounded-md border font-medium transition-colors whitespace-nowrap',
                 tool.variant === 'primary'
                   ? 'bg-blue-600 text-white border-blue-600 hover:bg-blue-700'
                   : 'bg-white text-gray-700 border-gray-300 hover:bg-gray-50',
@@ -1004,79 +1004,78 @@ export default function AppShell() {
 
   return (
     <ToastProvider>
-      <div className="min-h-[100dvh] bg-[#F5F7FB] text-[#111827]">
-        <Topbar
-          locale={locale}
-          setLocale={setLocale}
-          onLogout={() => signOut({ callbackUrl: '/auth/login' })}
-          role={role}
-          route={route}
-          onToolbarAction={handleToolbarAction}
-        />
-
-        <div className="mx-auto max-w-[1400px] px-4 mt-3">
-          <div className="bg-white rounded-xl border border-gray-200 p-2 text-sm inline-flex items-center gap-2">
-            <span className="text-gray-600">Role:</span>
-            <select
-              className="border border-gray-200 rounded-md px-2 py-1"
-              value={role}
-              onChange={e => setRole(e.target.value as Role)}
-            >
-              {(['IA_Manager', 'IA_Lead', 'IA_Auditor', 'Process_Owner', 'Viewer'] as Role[]).map(
-                r => (
-                  <option key={r} value={r}>
-                    {r}
-                  </option>
-                ),
-              )}
-            </select>
-            <span className="ms-3 text-gray-600">Lang:</span>
-            <select
-              className="border border-gray-200 rounded-md px-2 py-1"
-              value={locale}
-              onChange={e => setLocale(e.target.value as Locale)}
-            >
-              <option value="ar">العربية</option>
-              <option value="en">English</option>
-            </select>
-          </div>
-        </div>
-
-        <div
-          className={clsx(
-            'mx-auto max-w-[1400px] px-4 py-6 grid gap-6',
-            isRTL ? '[grid-template-columns:1fr_300px]' : '[grid-template-columns:300px_1fr]',
-          )}
-        >
-          <Sidebar
+      <div className="min-h-screen w-full overflow-x-hidden bg-slate-50">
+        <div className="mx-auto w-full max-w-screen-2xl px-3 lg:px-6">
+          <Topbar
             locale={locale}
-            route={route}
-            setRoute={setRoute}
-            statusBadge={'In-Field'}
+            setLocale={setLocale}
+            onLogout={() => signOut({ callbackUrl: '/auth/login' })}
             role={role}
+            route={route}
+            onToolbarAction={handleToolbarAction}
           />
-          <main className={clsx(isRTL ? 'order-1' : 'order-2')}>
-            {!allowed && (
-              <Card>
-                <div className="text-sm text-red-600">Access denied for role: {role}</div>
-              </Card>
-            )}
-            {allowed && (
-              <>
-                {route === 'dashboard' && <DashboardView locale={locale} />}
-                {route === 'planning' && <PlanningScreen locale={locale} />}
-                {route === 'processRisk' && <ProcessRiskScreen locale={locale} />}
-                {route === 'program' && <ProgramScreen locale={locale} />}
-                {route === 'fieldwork' && <FieldworkScreen locale={locale} engagementId={engagementId} />}
-                {route === 'agile' && <PlaceholderScreen title={i18n.sections.agile} />}
-                {route === 'findings' && <PlaceholderScreen title={i18n.sections.findings} />}
-                {route === 'reporting' && <PlaceholderScreen title={i18n.sections.reporting} />}
-                {route === 'followup' && <PlaceholderScreen title={i18n.sections.followup} />}
-                {route === 'closeout' && <PlaceholderScreen title={i18n.sections.closeout} />}
-                {route === 'qa' && <PlaceholderScreen title={i18n.sections.qa} />}
-              </>
-            )}
-          </main>
+
+          <div className="mt-3">
+            <div className="bg-white rounded-xl border border-gray-200 p-2 text-sm flex flex-wrap items-center gap-2 overflow-x-auto max-w-full">
+              <span className="text-gray-600">Role:</span>
+              <select
+                className="border border-gray-200 rounded-md px-2 py-1"
+                value={role}
+                onChange={e => setRole(e.target.value as Role)}
+              >
+                {(['IA_Manager', 'IA_Lead', 'IA_Auditor', 'Process_Owner', 'Viewer'] as Role[]).map(
+                  r => (
+                    <option key={r} value={r}>
+                      {r}
+                    </option>
+                  ),
+                )}
+              </select>
+              <span className="ms-3 text-gray-600">Lang:</span>
+              <select
+                className="border border-gray-200 rounded-md px-2 py-1"
+                value={locale}
+                onChange={e => setLocale(e.target.value as Locale)}
+              >
+                <option value="ar">العربية</option>
+                <option value="en">English</option>
+              </select>
+            </div>
+          </div>
+
+          <div className="mt-4 grid grid-cols-[260px_1fr] gap-4 lg:gap-6">
+            <aside className="min-w-[240px]">
+              <Sidebar
+                locale={locale}
+                route={route}
+                setRoute={setRoute}
+                statusBadge={'In-Field'}
+                role={role}
+              />
+            </aside>
+            <main className="min-w-0">
+              {!allowed && (
+                <Card>
+                  <div className="text-sm text-red-600">Access denied for role: {role}</div>
+                </Card>
+              )}
+              {allowed && (
+                <>
+                  {route === 'dashboard' && <DashboardView locale={locale} />}
+                  {route === 'planning' && <PlanningScreen locale={locale} />}
+                  {route === 'processRisk' && <ProcessRiskScreen locale={locale} />}
+                  {route === 'program' && <ProgramScreen locale={locale} />}
+                  {route === 'fieldwork' && <FieldworkScreen locale={locale} engagementId={engagementId} />}
+                  {route === 'agile' && <PlaceholderScreen title={i18n.sections.agile} />}
+                  {route === 'findings' && <PlaceholderScreen title={i18n.sections.findings} />}
+                  {route === 'reporting' && <PlaceholderScreen title={i18n.sections.reporting} />}
+                  {route === 'followup' && <PlaceholderScreen title={i18n.sections.followup} />}
+                  {route === 'closeout' && <PlaceholderScreen title={i18n.sections.closeout} />}
+                  {route === 'qa' && <PlaceholderScreen title={i18n.sections.qa} />}
+                </>
+              )}
+            </main>
+          </div>
         </div>
 
         {/* Modals mounted at root for dashboard shortcuts */}

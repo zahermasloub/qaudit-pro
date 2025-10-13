@@ -59,9 +59,32 @@ textarea::placeholder {
 
 /* RTL Overflow Fix */
 html, body {
-  overflow-x: hidden;
+  width: 100%;
+  max-width: 100%;
+  overflow-x: hidden;   /* يمنع تمدّد الصفحة ككل */
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
 }
 
 .table-wrap > table {
-  table-layout: fixed;
+  table-layout: fixed;  /* يمنع تمدد الأعمدة ذات النص الطويل */
+}
+
+.break-anywhere {
+  word-break: break-word;
+  overflow-wrap: anywhere;  /* يكسر النصوص الطويلة (مثل MIME/URLs) */
+}
+
+.badge-nowrap {
+  white-space: nowrap;  /* شارات الحالة لا تكسر السطر */
+}
+
+.scroll-shadow-x {
+  /* ظل خفيف عند الحواف للتلميح بوجود تمرير أفقي */
+  -webkit-mask-image: linear-gradient(to left, transparent, black 12px, black calc(100% - 12px), transparent);
+  mask-image: linear-gradient(to left, transparent, black 12px, black calc(100% - 12px), transparent);
 }

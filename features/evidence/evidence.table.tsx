@@ -129,7 +129,7 @@ export default function EvidenceTable({ engagementId }:{engagementId:string}) {
       </div>
 
       {/* Table */}
-      <div className="table-wrap relative w-full max-w-full overflow-x-auto overscroll-x-contain rounded-xl border">
+      <div className="table-wrap relative w-full max-w-full overflow-x-auto overscroll-x-contain rounded-xl border bg-white scroll-shadow-x">
         <table className="min-w-full table-fixed text-sm">
           <thead className="bg-gray-50">
             <tr className="[&>th]:px-3 [&>th]:py-2 [&>th]:text-right [&>th]:font-semibold">
@@ -155,18 +155,20 @@ export default function EvidenceTable({ engagementId }:{engagementId:string}) {
             {rows.map((r:any)=>(
               <tr key={r.id} className="border-t hover:bg-gray-50">
                 <td className="font-mono text-xs">{r.id}</td>
-                <td>{r.category || "—"}</td>
-                <td className="max-w-[260px] truncate" title={r.fileName}>{r.fileName}</td>
-                <td className="text-gray-600">{r.mimeType || "—"}</td>
+                <td className="break-anywhere">{r.category || "—"}</td>
+                <td className="max-w-[220px] truncate break-anywhere" title={r.fileName}>{r.fileName}</td>
+                <td className="text-gray-600 break-anywhere">{r.mimeType || "—"}</td>
                 <td>{formatSize(r.fileSize)}</td>
                 <td>
-                  {r.virusScanStatus==="clean" && <Badge text="clean" tone="ok" />}
-                  {r.virusScanStatus==="pending" && <Badge text="pending" tone="warn" />}
-                  {r.virusScanStatus==="suspected" && <Badge text="suspected" tone="bad" />}
-                  {r.virusScanStatus==="blocked" && <Badge text="blocked" tone="bad" />}
+                  <div className="badge-nowrap">
+                    {r.virusScanStatus==="clean" && <Badge text="clean" tone="ok" />}
+                    {r.virusScanStatus==="pending" && <Badge text="pending" tone="warn" />}
+                    {r.virusScanStatus==="suspected" && <Badge text="suspected" tone="bad" />}
+                    {r.virusScanStatus==="blocked" && <Badge text="blocked" tone="bad" />}
+                  </div>
                 </td>
-                <td>{r.ocrTextUrl ? <Badge text="✓" tone="info" /> : "—"}</td>
-                <td className="uppercase">{r.storage}</td>
+                <td className="badge-nowrap">{r.ocrTextUrl ? <Badge text="✓" tone="info" /> : "—"}</td>
+                <td className="uppercase badge-nowrap">{r.storage}</td>
                 <td>{new Date(r.uploadedAt).toLocaleString("ar")}</td>
                 <td>
                   <div className="flex items-center gap-2">
