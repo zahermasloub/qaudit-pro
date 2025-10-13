@@ -517,59 +517,66 @@ function Topbar({
   onToolbarAction: (action: string) => void;
 }) {
   const i18n = useI18n(locale);
-  const isRTL = locale === 'ar';
   const toolbarActions = TOOLBARS[route]?.filter(tool => tool.roles.includes(role)) || [];
 
   return (
-    <div className="sticky top-0 z-10 h-14 bg-white border-b border-gray-200 flex items-center px-4">
-      <div className={clsx('font-bold text-lg', isRTL ? 'ms-auto' : 'me-auto')}>
-        {i18n.app.title}
-        <span className="text-xs text-gray-500 mx-2">•</span>
-        <span className="text-sm text-gray-600">{(i18n.sections as any)[route] || route}</span>
-        <span className="text-xs text-gray-500 ml-2">({role.replace('_', ' ')})</span>
-      </div>
+    <header className="header-dark sticky top-0 z-40 bg-slate-900 text-white border-b border-slate-800 shadow-sm">
+      <div className="mx-auto w-full max-w-screen-2xl px-3 lg:px-6">
+        <div className="flex items-center justify-between h-12">
+          {/* العنوان/اللوجو */}
+          <h1 className="text-sm font-semibold tracking-wide text-white select-none">
+            {i18n.app.title}
+            <span className="text-xs text-white/70 mx-2">•</span>
+            <span className="text-sm text-white/90">{(i18n.sections as any)[route] || route}</span>
+            <span className="text-xs text-white/70 ml-2">({role.replace('_', ' ')})</span>
+          </h1>
 
-      {/* Toolbar Actions */}
-      {toolbarActions.length > 0 && (
-        <div className="flex flex-wrap items-center gap-2 overflow-x-auto max-w-full mx-4">
-          {toolbarActions.map(tool => (
-            <button
-              key={tool.action}
-              onClick={() => onToolbarAction(tool.action)}
-              className={clsx(
-                'px-3 py-1.5 text-sm rounded-md border font-medium transition-colors whitespace-nowrap',
-                tool.variant === 'primary'
-                  ? 'bg-blue-600 text-white border-blue-600 hover:bg-blue-700'
-                  : 'bg-white text-gray-700 border-gray-300 hover:bg-gray-50',
-              )}
-            >
-              {i18n.actions[tool.action as keyof typeof i18n.actions] || tool.action}
+          {/* Toolbar Actions */}
+          {toolbarActions.length > 0 && (
+            <div className="flex flex-wrap items-center gap-2 overflow-x-auto max-w-full mx-4">
+              {toolbarActions.map(tool => (
+                <button
+                  key={tool.action}
+                  onClick={() => onToolbarAction(tool.action)}
+                  className={clsx(
+                    'px-3 py-1.5 text-sm rounded-md border font-medium transition-colors whitespace-nowrap',
+                    tool.variant === 'primary'
+                      ? 'bg-blue-600 text-white border-blue-600 hover:bg-blue-700'
+                      : 'bg-white/10 text-white/90 border-white/20 hover:bg-white/20 hover:text-white',
+                  )}
+                >
+                  {i18n.actions[tool.action as keyof typeof i18n.actions] || tool.action}
+                </button>
+              ))}
+            </div>
+          )}
+
+          {/* User controls */}
+          <div className="flex items-center gap-2 rtl:space-x-reverse">
+            <button className="rounded-full bg-blue-600 text-white text-sm px-3 py-1.5 hover:bg-blue-700 transition-colors">
+              {i18n.common.alerts} 3
             </button>
-          ))}
+            <div className="h-8 w-8 rounded-full bg-white/20 text-white grid place-items-center text-xs font-medium">
+              IA
+            </div>
+            <select
+              className="rounded-lg border border-white/20 bg-white/10 text-white px-2 py-1 text-sm focus:outline-none focus:ring-2 focus:ring-sky-400/60"
+              value={locale}
+              onChange={e => setLocale(e.target.value as Locale)}
+            >
+              <option value="ar" className="text-gray-900">العربية</option>
+              <option value="en" className="text-gray-900">English</option>
+            </select>
+            <button
+              className="text-sm text-white/90 hover:text-white transition-colors px-2 py-1 rounded focus:outline-none focus:ring-2 focus:ring-sky-400/60"
+              onClick={onLogout}
+            >
+              {i18n.auth.logout}
+            </button>
+          </div>
         </div>
-      )}
-
-      <div className={clsx('shrink-0', isRTL ? 'me-auto' : 'ms-auto')} />
-      <button className="ms-2 rounded-full bg-blue-600 text-white text-sm px-3 py-1.5">
-        {i18n.common.alerts} 3
-      </button>
-      <div className="ms-2 h-9 w-9 rounded-full bg-gray-900/90 text-white grid place-items-center">
-        IA
       </div>
-      <div className="ms-2">
-        <select
-          className="rounded-lg border border-gray-200 bg-white px-2 py-1 text-sm"
-          value={locale}
-          onChange={e => setLocale(e.target.value as Locale)}
-        >
-          <option value="ar">العربية</option>
-          <option value="en">English</option>
-        </select>
-      </div>
-      <button className="ms-2 text-sm text-gray-600 hover:text-gray-900" onClick={onLogout}>
-        {i18n.auth.logout}
-      </button>
-    </div>
+    </header>
   );
 }
 

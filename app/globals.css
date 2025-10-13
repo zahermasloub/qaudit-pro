@@ -27,6 +27,61 @@ body {
   font-family: Arial, Helvetica, sans-serif;
 }
 
+/* Header Dark Theme Overrides */
+.header-dark, .header-dark * {
+  opacity: 1 !important;               /* لا شفافية في الهيدر */
+}
+.header-dark a, .header-dark button {
+  color: rgba(255,255,255,0.92) !important;  /* نص أبيض واضح */
+}
+.header-dark a:hover, .header-dark button:hover,
+.header-dark [data-active="true"] {
+  color: #fff !important;
+}
+.header-dark .muted {
+  color: rgba(255,255,255,0.7) !important;   /* نص ثانوي */
+}
+
+/* تحسينات إضافية للـ Header */
+.header-dark select {
+  background-color: rgba(255,255,255,0.1) !important;
+  border-color: rgba(255,255,255,0.2) !important;
+  color: white !important;
+}
+.header-dark select:focus {
+  background-color: rgba(255,255,255,0.15) !important;
+  border-color: rgba(56, 189, 248, 0.6) !important; /* sky-400 */
+  outline: none !important;
+}
+.header-dark select option {
+  background-color: #1e293b !important; /* slate-800 */
+  color: white !important;
+}
+
+/* إزالة أي تباين منخفض في الهيدر */
+.header-dark .text-slate-400,
+.header-dark .text-slate-500,
+.header-dark .text-gray-400,
+.header-dark .text-gray-500 {
+  color: rgba(255,255,255,0.9) !important;
+}
+
+/* تحسين حالات التركيز */
+.header-dark button:focus-visible,
+.header-dark a:focus-visible {
+  outline: 2px solid rgba(56, 189, 248, 0.6) !important;
+  outline-offset: 2px !important;
+}
+
+/* تحسين قابلية القراءة عمومًا */
+html {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+:root {
+  --header-bg: #0f172a; /* slate-900 */
+}
+
 @layer utilities {
   .text-balance {
     text-wrap: balance;
