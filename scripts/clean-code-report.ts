@@ -226,7 +226,10 @@ class CleanCodeReporter {
         'Rename directory to kebab-case format, update all relative imports',
     };
 
-    return recommendations[change.reason as keyof typeof recommendations] || 'Review and apply appropriate naming convention';
+    return (
+      recommendations[change.reason as keyof typeof recommendations] ||
+      'Review and apply appropriate naming convention'
+    );
   }
 
   private generateTodos(report: FinalReport): FinalReport['todos'] {

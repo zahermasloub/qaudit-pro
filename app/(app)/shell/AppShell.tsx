@@ -377,8 +377,10 @@ import { useRouter } from 'next/navigation';
 import { signOut, useSession } from 'next-auth/react';
 
 import { ToastProvider } from '@/components/ui/Toast-v2';
+import EvidenceForm from '@/features/evidence/evidence.form';
 import EvidenceUploaderForm from '@/features/evidence/forms/EvidenceUploader.form';
 import TestExecutionForm from '@/features/fieldwork/forms/TestExecution.form';
+import RunForm from '@/features/fieldwork/run/run.form';
 import { EngagementForm } from '@/features/planning/engagement/Engagement.form-v2';
 import PBCForm from '@/features/planning/pbc/Pbc.form-v2';
 import SamplingForm from '@/features/program/sampling/Sampling.form-v2';
@@ -901,6 +903,10 @@ export default function AppShell() {
   const [openSample, setOpenSample] = useState(false);
   const [openTestExecution, setOpenTestExecution] = useState(false);
   const [openEvidenceUploader, setOpenEvidenceUploader] = useState(false);
+  const [openRun, setOpenRun] = useState(false);
+  const [openEv, setOpenEv] = useState(false);
+  const [currentTestId, setCurrentTestId] = useState('TEST-001');
+  const [currentSampleRef, setCurrentSampleRef] = useState('SAMPLE-001');
   const isRTL = locale === 'ar';
   const i18n = useI18n(locale);
 
@@ -965,10 +971,10 @@ export default function AppShell() {
         setOpenSample(true);
         break;
       case 'uploadEv':
-        setOpenEvidenceUploader(true);
+        setOpenEv(true);
         break;
       case 'runTest':
-        setOpenTestExecution(true);
+        setOpenRun(true);
         break;
       case 'scanAV':
         handleVirusScanAll();
@@ -1144,6 +1150,23 @@ export default function AppShell() {
             setOpenEvidenceUploader(false);
             // TODO: Add toast notification and refresh data
           }}
+        />
+
+        {/* Sprint 7 Forms */}
+        <RunForm
+          open={openRun}
+          onOpenChange={setOpenRun}
+          engagementId={engagementId}
+          auditTestId={currentTestId}
+          onSuccess={() => setOpenRun(false)}
+        />
+
+        <EvidenceForm
+          open={openEv}
+          onOpenChange={setOpenEv}
+          engagementId={engagementId}
+          defaultLinks={{ testId: currentTestId, sampleRef: currentSampleRef }}
+          onSuccess={() => setOpenEv(false)}
         />
       </div>
     </ToastProvider>

@@ -1,22 +1,39 @@
 {
   "changes": [
     {
+      "oldPath": "app\\(app)\\auth\\login\\Page-v2.tsx",
+      "newPath": "app\\(app)\\auth\\login\\PageV2.tsx",
+      "reason": "React component should be PascalCase",
+      "severity": "high",
+      "type": "file",
+      "importers": []
+    },
+    {
       "oldPath": "app\\(app)\\auth\\login\\page.tsx",
       "newPath": "app\\(app)\\auth\\login\\Page-v2.tsx",
       "reason": "React component should be PascalCase",
       "severity": "high",
       "type": "file",
       "importers": [
+        "app\\api\\auth\\[...nextauth]\\route-v2.ts",
         "app\\api\\auth\\[...nextauth]\\route.ts",
         "app\\api\\evidence\\batch-upload\\route.ts",
         "app\\api\\fieldwork\\test-runs\\route.ts",
         "app\\api\\files\\route.ts",
-        "components\\evidence\\evidence-files.tsx",
+        "components\\evidence\\EvidenceFiles.tsx",
         "features\\evidence\\schemas\\evidence-upload.schema.ts",
         "lib\\ocr-service.ts",
         "middleware.ts",
         "tailwind.config.js"
       ]
+    },
+    {
+      "oldPath": "app\\(app)\\auth\\register\\Page-v2.tsx",
+      "newPath": "app\\(app)\\auth\\register\\PageV2.tsx",
+      "reason": "React component should be PascalCase",
+      "severity": "high",
+      "type": "file",
+      "importers": []
     },
     {
       "oldPath": "app\\(app)\\auth\\register\\page.tsx",
@@ -25,11 +42,12 @@
       "severity": "high",
       "type": "file",
       "importers": [
+        "app\\api\\auth\\[...nextauth]\\route-v2.ts",
         "app\\api\\auth\\[...nextauth]\\route.ts",
         "app\\api\\evidence\\batch-upload\\route.ts",
         "app\\api\\fieldwork\\test-runs\\route.ts",
         "app\\api\\files\\route.ts",
-        "components\\evidence\\evidence-files.tsx",
+        "components\\evidence\\EvidenceFiles.tsx",
         "features\\evidence\\schemas\\evidence-upload.schema.ts",
         "lib\\ocr-service.ts",
         "middleware.ts",
@@ -37,40 +55,28 @@
       ]
     },
     {
-      "oldPath": "app\\(app)\\fieldwork\\page.tsx",
-      "newPath": "app\\(app)\\fieldwork\\Page-v2.tsx",
+      "oldPath": "app\\(app)\\fieldwork\\Page-v2.tsx",
+      "newPath": "app\\(app)\\fieldwork\\PageV2.tsx",
       "reason": "React component should be PascalCase",
       "severity": "high",
       "type": "file",
-      "importers": [
-        "app\\api\\auth\\[...nextauth]\\route.ts",
-        "app\\api\\evidence\\batch-upload\\route.ts",
-        "app\\api\\fieldwork\\test-runs\\route.ts",
-        "app\\api\\files\\route.ts",
-        "components\\evidence\\evidence-files.tsx",
-        "features\\evidence\\schemas\\evidence-upload.schema.ts",
-        "lib\\ocr-service.ts",
-        "middleware.ts",
-        "tailwind.config.js"
-      ]
+      "importers": []
     },
     {
-      "oldPath": "app\\(app)\\fieldwork\\[engagementId]\\page.tsx",
-      "newPath": "app\\(app)\\fieldwork\\[engagementId]\\Page-v2.tsx",
+      "oldPath": "app\\(app)\\fieldwork\\[engagementId]\\Page-v2.tsx",
+      "newPath": "app\\(app)\\fieldwork\\[engagementId]\\PageV2.tsx",
       "reason": "React component should be PascalCase",
       "severity": "high",
       "type": "file",
-      "importers": [
-        "app\\api\\auth\\[...nextauth]\\route.ts",
-        "app\\api\\evidence\\batch-upload\\route.ts",
-        "app\\api\\fieldwork\\test-runs\\route.ts",
-        "app\\api\\files\\route.ts",
-        "components\\evidence\\evidence-files.tsx",
-        "features\\evidence\\schemas\\evidence-upload.schema.ts",
-        "lib\\ocr-service.ts",
-        "middleware.ts",
-        "tailwind.config.js"
-      ]
+      "importers": []
+    },
+    {
+      "oldPath": "app\\api\\auth\\[...nextauth]\\route-v2.ts",
+      "newPath": "app\\api\\auth\\[...nextauth]\\route-v2-v2.ts",
+      "reason": "Directory should be kebab-case",
+      "severity": "low",
+      "type": "directory",
+      "importers": ["app\\(app)\\shell\\AppShell.tsx"]
     },
     {
       "oldPath": "app\\api\\auth\\[...nextauth]\\route.ts",
@@ -79,10 +85,36 @@
       "severity": "low",
       "type": "directory",
       "importers": [
+        "app\\(app)\\auth\\login\\Page-v2.tsx",
         "app\\(app)\\auth\\login\\page.tsx",
+        "app\\(app)\\auth\\register\\Page-v2.tsx",
         "app\\(app)\\auth\\register\\page.tsx",
-        "app\\(app)\\shell\\AppShell.tsx"
+        "app\\(app)\\shell\\AppShell.tsx",
+        "scripts\\sprint7-presence-audit.ts"
       ]
+    },
+    {
+      "oldPath": "app\\api\\evidence\\[id]\\download\\route.ts",
+      "newPath": "app\\api\\evidence\\[id]\\download\\route-v2.ts",
+      "reason": "Directory should be kebab-case",
+      "severity": "low",
+      "type": "directory",
+      "importers": [
+        "app\\(app)\\auth\\login\\Page-v2.tsx",
+        "app\\(app)\\auth\\login\\page.tsx",
+        "app\\(app)\\auth\\register\\Page-v2.tsx",
+        "app\\(app)\\auth\\register\\page.tsx",
+        "app\\(app)\\shell\\AppShell.tsx",
+        "scripts\\sprint7-presence-audit.ts"
+      ]
+    },
+    {
+      "oldPath": "app\\api\\evidence\\[id]\\download-secure\\route-v2.ts",
+      "newPath": "app\\api\\evidence\\[id]\\download-secure\\route-v2-v2.ts",
+      "reason": "Directory should be kebab-case",
+      "severity": "low",
+      "type": "directory",
+      "importers": ["app\\(app)\\shell\\AppShell.tsx"]
     },
     {
       "oldPath": "app\\api\\evidence\\[id]\\download-secure\\route.ts",
@@ -91,204 +123,168 @@
       "severity": "low",
       "type": "directory",
       "importers": [
+        "app\\(app)\\auth\\login\\Page-v2.tsx",
         "app\\(app)\\auth\\login\\page.tsx",
+        "app\\(app)\\auth\\register\\Page-v2.tsx",
         "app\\(app)\\auth\\register\\page.tsx",
-        "app\\(app)\\shell\\AppShell.tsx"
+        "app\\(app)\\shell\\AppShell.tsx",
+        "scripts\\sprint7-presence-audit.ts"
       ]
     },
     {
-      "oldPath": "app\\api\\files\\download\\[storageKey]\\route.ts",
-      "newPath": "app\\api\\files\\download\\[storage-key]\\route.ts",
+      "oldPath": "app\\api\\files\\download\\[storage-key]\\route.ts",
+      "newPath": "app\\api\\files\\download\\[storage-key]\\route-v2.ts",
       "reason": "Directory should be kebab-case",
       "severity": "low",
       "type": "directory",
       "importers": [
+        "app\\(app)\\auth\\login\\Page-v2.tsx",
         "app\\(app)\\auth\\login\\page.tsx",
+        "app\\(app)\\auth\\register\\Page-v2.tsx",
         "app\\(app)\\auth\\register\\page.tsx",
-        "app\\(app)\\shell\\AppShell.tsx"
+        "app\\(app)\\shell\\AppShell.tsx",
+        "scripts\\sprint7-presence-audit.ts"
       ]
     },
     {
-      "oldPath": "components\\evidence\\evidence-files.tsx",
-      "newPath": "components\\evidence\\EvidenceFiles.tsx",
-      "reason": "React component should be PascalCase",
-      "severity": "high",
-      "type": "file",
-      "importers": ["app\\(app)\\fieldwork\\[engagementId]\\page.tsx"]
-    },
-    {
-      "oldPath": "components\\evidence\\file-upload.tsx",
-      "newPath": "components\\evidence\\FileUpload.tsx",
+      "oldPath": "components\\ui\\Card-v2.tsx",
+      "newPath": "components\\ui\\CardV2.tsx",
       "reason": "React component should be PascalCase",
       "severity": "high",
       "type": "file",
       "importers": [
-        "app\\(app)\\fieldwork\\[engagementId]\\page.tsx",
-        "app\\api\\files\\route.ts",
-        "app\\api\\files\\upload\\route.ts"
+        "app\\(app)\\auth\\login\\Page-v2.tsx",
+        "app\\(app)\\auth\\login\\page.tsx",
+        "app\\(app)\\auth\\register\\Page-v2.tsx",
+        "app\\(app)\\auth\\register\\page.tsx"
       ]
     },
     {
-      "oldPath": "components\\pbc\\pbc-table.tsx",
-      "newPath": "components\\pbc\\PbcTable.tsx",
-      "reason": "React component should be PascalCase",
-      "severity": "high",
-      "type": "file",
-      "importers": ["app\\(app)\\shell\\ScreenComponents.tsx"]
-    },
-    {
-      "oldPath": "components\\ui\\card.tsx",
-      "newPath": "components\\ui\\Card-v2.tsx",
+      "oldPath": "components\\ui\\Input-v2.tsx",
+      "newPath": "components\\ui\\InputV2.tsx",
       "reason": "React component should be PascalCase",
       "severity": "high",
       "type": "file",
       "importers": [
+        "app\\(app)\\auth\\login\\Page-v2.tsx",
         "app\\(app)\\auth\\login\\page.tsx",
+        "app\\(app)\\auth\\register\\Page-v2.tsx",
         "app\\(app)\\auth\\register\\page.tsx",
-        "app\\(app)\\fieldwork\\[engagementId]\\page.tsx",
-        "components\\pbc\\pbc-table.tsx"
+        "features\\planning\\engagement\\Engagement.form-v2.tsx"
       ]
     },
     {
-      "oldPath": "components\\ui\\form-dialog.tsx",
-      "newPath": "components\\ui\\FormDialog.tsx",
+      "oldPath": "components\\ui\\Toast-v2.tsx",
+      "newPath": "components\\ui\\ToastV2.tsx",
+      "reason": "React component should be PascalCase",
+      "severity": "high",
+      "type": "file",
+      "importers": [
+        "app\\(app)\\shell\\AppShell.tsx",
+        "components\\pbc\\PbcTable.tsx",
+        "features\\planning\\pbc\\Pbc.form-v2.tsx",
+        "features\\program\\sampling\\Sampling.form-v2.tsx",
+        "features\\program\\tests\\Test.form-v2.tsx"
+      ]
+    },
+    {
+      "oldPath": "features\\evidence\\evidence.form.tsx",
+      "newPath": "features\\evidence\\Evidence.form-v2.tsx",
       "reason": "React component should be PascalCase",
       "severity": "high",
       "type": "file",
       "importers": []
     },
     {
-      "oldPath": "components\\ui\\input.tsx",
-      "newPath": "components\\ui\\Input-v2.tsx",
-      "reason": "React component should be PascalCase",
-      "severity": "high",
-      "type": "file",
-      "importers": [
-        "app\\(app)\\auth\\login\\page.tsx",
-        "app\\(app)\\auth\\register\\page.tsx",
-        "app\\(app)\\shell\\AppShell.tsx",
-        "components\\evidence\\file-upload.tsx",
-        "components\\pbc\\pbc-table.tsx",
-        "features\\evidence\\forms\\evidence-uploader.form.tsx",
-        "features\\fieldwork\\forms\\test-execution.form.tsx",
-        "features\\planning\\engagement\\engagement.form.tsx",
-        "features\\planning\\pbc\\pbc.form.tsx",
-        "features\\program\\sampling\\sampling.form.tsx",
-        "features\\program\\tests\\test.form.tsx",
-        "lib\\utils.ts",
-        "scripts\\clean-code-scan.ts"
-      ]
-    },
-    {
-      "oldPath": "components\\ui\\toast.tsx",
-      "newPath": "components\\ui\\Toast-v2.tsx",
-      "reason": "React component should be PascalCase",
-      "severity": "high",
-      "type": "file",
-      "importers": [
-        "app\\(app)\\shell\\AppShell.tsx",
-        "components\\evidence\\file-upload.tsx",
-        "components\\pbc\\pbc-table.tsx",
-        "features\\evidence\\forms\\evidence-uploader.form.tsx",
-        "features\\fieldwork\\forms\\test-execution.form.tsx",
-        "features\\planning\\pbc\\pbc.form.tsx",
-        "features\\program\\sampling\\sampling.form.tsx",
-        "features\\program\\tests\\test.form.tsx"
-      ]
-    },
-    {
-      "oldPath": "features\\evidence\\forms\\evidence-uploader.form.tsx",
-      "newPath": "features\\evidence\\forms\\EvidenceUploader.form.tsx",
+      "oldPath": "features\\evidence\\forms\\EvidenceUploader.form.tsx",
+      "newPath": "features\\evidence\\forms\\EvidenceUploader.form-v2.tsx",
       "reason": "React component should be PascalCase",
       "severity": "high",
       "type": "file",
       "importers": ["app\\(app)\\shell\\AppShell.tsx"]
     },
     {
-      "oldPath": "features\\fieldwork\\forms\\test-execution.form.tsx",
-      "newPath": "features\\fieldwork\\forms\\TestExecution.form.tsx",
+      "oldPath": "features\\fieldwork\\forms\\TestExecution.form.tsx",
+      "newPath": "features\\fieldwork\\forms\\TestExecution.form-v2.tsx",
       "reason": "React component should be PascalCase",
       "severity": "high",
       "type": "file",
       "importers": ["app\\(app)\\shell\\AppShell.tsx"]
     },
     {
-      "oldPath": "features\\planning\\engagement\\engagement.form.tsx",
-      "newPath": "features\\planning\\engagement\\Engagement.form-v2.tsx",
+      "oldPath": "features\\fieldwork\\run\\run.form.tsx",
+      "newPath": "features\\fieldwork\\run\\Run.form-v2.tsx",
+      "reason": "React component should be PascalCase",
+      "severity": "high",
+      "type": "file",
+      "importers": []
+    },
+    {
+      "oldPath": "features\\planning\\engagement\\Engagement.form-v2.tsx",
+      "newPath": "features\\planning\\engagement\\Engagement.formV2.tsx",
       "reason": "React component should be PascalCase",
       "severity": "high",
       "type": "file",
       "importers": ["app\\(app)\\shell\\AppShell.tsx"]
     },
     {
-      "oldPath": "features\\planning\\engagement\\engagement.service.ts",
-      "newPath": "features\\planning\\engagement\\engagement.service-v2.ts",
+      "oldPath": "features\\planning\\engagement\\engagement.service-v2.ts",
+      "newPath": "features\\planning\\engagement\\engagement.serviceV2.ts",
       "reason": "Hook/utility should be camelCase",
       "severity": "medium",
       "type": "file",
       "importers": ["features\\planning\\engagement\\index.ts"]
     },
     {
-      "oldPath": "features\\planning\\pbc\\pbc.form.tsx",
-      "newPath": "features\\planning\\pbc\\Pbc.form-v2.tsx",
+      "oldPath": "features\\planning\\pbc\\Pbc.form-v2.tsx",
+      "newPath": "features\\planning\\pbc\\Pbc.formV2.tsx",
       "reason": "React component should be PascalCase",
       "severity": "high",
       "type": "file",
       "importers": ["app\\(app)\\shell\\AppShell.tsx"]
     },
     {
-      "oldPath": "features\\planning\\pbc\\pbc.service.ts",
-      "newPath": "features\\planning\\pbc\\pbc.service-v2.ts",
+      "oldPath": "features\\planning\\pbc\\pbc.service-v2.ts",
+      "newPath": "features\\planning\\pbc\\pbc.serviceV2.ts",
       "reason": "Hook/utility should be camelCase",
       "severity": "medium",
       "type": "file",
       "importers": ["features\\planning\\pbc\\index.ts"]
     },
     {
-      "oldPath": "features\\program\\sampling\\sampling.form.tsx",
-      "newPath": "features\\program\\sampling\\Sampling.form-v2.tsx",
+      "oldPath": "features\\program\\sampling\\Sampling.form-v2.tsx",
+      "newPath": "features\\program\\sampling\\Sampling.formV2.tsx",
       "reason": "React component should be PascalCase",
       "severity": "high",
       "type": "file",
       "importers": ["app\\(app)\\shell\\AppShell.tsx", "features\\program\\sampling\\index.ts"]
     },
     {
-      "oldPath": "features\\program\\tests\\test.form.tsx",
-      "newPath": "features\\program\\tests\\Test.form-v2.tsx",
+      "oldPath": "features\\program\\tests\\Test.form-v2.tsx",
+      "newPath": "features\\program\\tests\\Test.formV2.tsx",
       "reason": "React component should be PascalCase",
       "severity": "high",
       "type": "file",
       "importers": ["app\\(app)\\shell\\AppShell.tsx", "features\\program\\tests\\index.ts"]
-    },
-    {
-      "oldPath": "lib\\auth-provider.tsx",
-      "newPath": "lib\\AuthProvider.tsx",
-      "reason": "React component should be PascalCase",
-      "severity": "high",
-      "type": "file",
-      "importers": ["app\\layout.tsx"]
     }
   ],
   "conflicts": [
     "app\\(app)\\auth\\login\\page.tsx → app\\(app)\\auth\\login\\Page.tsx",
     "app\\(app)\\auth\\register\\page.tsx → app\\(app)\\auth\\register\\Page.tsx",
-    "app\\(app)\\fieldwork\\page.tsx → app\\(app)\\fieldwork\\Page.tsx",
-    "app\\(app)\\fieldwork\\[engagementId]\\page.tsx → app\\(app)\\fieldwork\\[engagementId]\\Page.tsx",
+    "app\\api\\auth\\[...nextauth]\\route-v2.ts → app\\api\\auth\\[...nextauth]\\route-v2.ts",
     "app\\api\\auth\\[...nextauth]\\route.ts → app\\api\\auth\\[...nextauth]\\route.ts",
+    "app\\api\\evidence\\[id]\\download\\route.ts → app\\api\\evidence\\[id]\\download\\route.ts",
+    "app\\api\\evidence\\[id]\\download-secure\\route-v2.ts → app\\api\\evidence\\[id]\\download-secure\\route-v2.ts",
     "app\\api\\evidence\\[id]\\download-secure\\route.ts → app\\api\\evidence\\[id]\\download-secure\\route.ts",
-    "components\\ui\\card.tsx → components\\ui\\Card.tsx",
-    "components\\ui\\input.tsx → components\\ui\\Input.tsx",
-    "components\\ui\\toast.tsx → components\\ui\\Toast.tsx",
-    "features\\planning\\engagement\\engagement.form.tsx → features\\planning\\engagement\\Engagement.form.tsx",
-    "features\\planning\\engagement\\engagement.service.ts → features\\planning\\engagement\\engagement.service.ts",
-    "features\\planning\\pbc\\pbc.form.tsx → features\\planning\\pbc\\Pbc.form.tsx",
-    "features\\planning\\pbc\\pbc.service.ts → features\\planning\\pbc\\pbc.service.ts",
-    "features\\program\\sampling\\sampling.form.tsx → features\\program\\sampling\\Sampling.form.tsx",
-    "features\\program\\tests\\test.form.tsx → features\\program\\tests\\Test.form.tsx"
+    "app\\api\\files\\download\\[storage-key]\\route.ts → app\\api\\files\\download\\[storage-key]\\route.ts",
+    "features\\evidence\\evidence.form.tsx → features\\evidence\\Evidence.form.tsx",
+    "features\\evidence\\forms\\EvidenceUploader.form.tsx → features\\evidence\\forms\\EvidenceUploader.form.tsx",
+    "features\\fieldwork\\forms\\TestExecution.form.tsx → features\\fieldwork\\forms\\TestExecution.form.tsx",
+    "features\\fieldwork\\run\\run.form.tsx → features\\fieldwork\\run\\Run.form.tsx"
   ],
   "summary": {
-    "totalFiles": 98,
-    "violations": 23,
-    "conflicts": 15
+    "totalFiles": 112,
+    "violations": 25,
+    "conflicts": 12
   }
 }

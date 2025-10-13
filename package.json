@@ -13,6 +13,7 @@
     "cc:refactor": "tsx scripts/clean-code-refactor.ts",
     "cc:report": "tsx scripts/clean-code-report.ts",
     "cc:all": "npm run cc:scan && npm run cc:refactor && npm run cc:report",
+    "audit:s7": "tsx scripts/sprint7-presence-audit.ts",
     "db:setup": "prisma db push && npm run seed",
     "db:push": "prisma db push",
     "db:migrate": "prisma migrate dev",
@@ -20,6 +21,7 @@
     "db:reset": "prisma migrate reset",
     "db:studio": "prisma studio",
     "seed": "tsx scripts/seed.ts",
+    "test:s7": "tsx scripts/sprint7-e2e.test.ts",
     "prisma:studio": "prisma studio",
     "prisma:generate": "prisma generate"
   },

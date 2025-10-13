@@ -3,6 +3,7 @@
  * POST /api/files/upload - Upload single or multiple files
  */
 
+import { StorageProvider } from '@prisma/client';
 import type { NextRequest } from 'next/server';
 import { NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth/next';
@@ -103,7 +104,7 @@ export async function POST(req: NextRequest) {
               category: FileUploadService.getFileCategory(uploadResult.mimeType),
               status: 'active',
               linkedTestId: testId || null,
-              storage: 'local',
+              storage: StorageProvider.local,
               storageKey: uploadResult.storageKey,
               bucket: uploadResult.bucket || null,
               fileName: uploadResult.fileName,
