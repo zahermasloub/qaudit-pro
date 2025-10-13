@@ -1,6 +1,7 @@
-import prisma from "@/lib/prisma";
-import { samplingSchema } from "@/features/program/sampling/sampling.schema";
-import { createHash } from "crypto";
+import { createHash } from 'crypto';
+
+import { samplingSchema } from '@/features/program/sampling/sampling.schema';
+import prisma from '@/lib/prisma';
 
 export async function POST(req: Request) {
   try {
@@ -15,12 +16,10 @@ export async function POST(req: Request) {
       confidenceLevel: v.confidenceLevel,
       precisionRate: v.precisionRate,
       criteria: v.criteria || {},
-      timestamp: new Date().toISOString()
+      timestamp: new Date().toISOString(),
     });
 
-    const selectionHash = createHash('sha256')
-      .update(criteriaString)
-      .digest('hex');
+    const selectionHash = createHash('sha256').update(criteriaString).digest('hex');
 
     // Generate mock sample items based on method
     const generateSampleItems = () => {
@@ -31,7 +30,7 @@ export async function POST(req: Request) {
             items.push({
               itemId: `ITEM-${String(Math.floor(Math.random() * v.populationSize) + 1).padStart(4, '0')}`,
               amount: Math.floor(Math.random() * 10000) + 100,
-              selected: true
+              selected: true,
             });
             break;
           case 'judgment':
@@ -39,7 +38,7 @@ export async function POST(req: Request) {
               itemId: `HIGH-RISK-${String(i).padStart(3, '0')}`,
               riskLevel: 'high',
               amount: Math.floor(Math.random() * 50000) + 10000,
-              selected: true
+              selected: true,
             });
             break;
           case 'monetary':
@@ -47,7 +46,7 @@ export async function POST(req: Request) {
               itemId: `MU-${String(i).padStart(4, '0')}`,
               amount: Math.floor(Math.random() * 100000) + 50000,
               cumulative: i * 75000,
-              selected: true
+              selected: true,
             });
             break;
         }
@@ -70,15 +69,18 @@ export async function POST(req: Request) {
       },
     });
 
-    return Response.json({
-      ok: true,
-      id: created.id,
-      hash: selectionHash,
-      sampleSize: created.sampleSize,
-      method: created.method
-    }, { status: 200 });
+    return Response.json(
+      {
+        ok: true,
+        id: created.id,
+        hash: selectionHash,
+        sampleSize: created.sampleSize,
+        method: created.method,
+      },
+      { status: 200 },
+    );
   } catch (e: any) {
-    const msg = e?.errors?.[0]?.message || e?.message || "Invalid";
+    const msg = e?.errors?.[0]?.message || e?.message || 'Invalid';
     return Response.json({ ok: false, error: msg }, { status: 400 });
   }
 }

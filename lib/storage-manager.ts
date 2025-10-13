@@ -3,11 +3,12 @@
  * يدعم تخزين متعدد المزودين مع إدارة آمنة للملفات
  */
 
-import { promises as fs } from "fs";
-import path from "path";
-import { computeFileHashes, generateUniqueFileName } from "./file-hash-manager";
+import { promises as fs } from 'fs';
+import path from 'path';
 
-export type StorageProvider = "local" | "s3";
+import { computeFileHashes, generateUniqueFileName } from './file-hash-manager';
+
+export type StorageProvider = 'local' | 's3';
 
 export interface StorageConfig {
   provider: StorageProvider;
@@ -31,19 +32,15 @@ export class StorageManager {
 
   constructor(config: Partial<StorageConfig> = {}) {
     this.config = {
-      provider: (process.env.STORAGE_PROVIDER as StorageProvider) || "local",
-      uploadDir: process.env.UPLOAD_DIR || "./uploads",
+      provider: (process.env.STORAGE_PROVIDER as StorageProvider) || 'local',
+      uploadDir: process.env.UPLOAD_DIR || './uploads',
       maxFileSize: Number(process.env.UPLOAD_MAX_BYTES) || 50 * 1024 * 1024,
       allowedMimeTypes: [], // Empty = allow all
       ...config,
     };
   }
 
-  async saveFile(
-    fileName: string,
-    buffer: Buffer,
-    userId?: string
-  ): Promise<StorageResult> {
+  async saveFile(fileName: string, buffer: Buffer, userId?: string): Promise<StorageResult> {
     try {
       // حساب التوقيع الرقمي
       const hashResult = await computeFileHashes(buffer);
@@ -52,7 +49,7 @@ export class StorageManager {
       if (buffer.byteLength > this.config.maxFileSize!) {
         return {
           success: false,
-          storageKey: "",
+          storageKey: '',
           provider: this.config.provider,
           fileHash: hashResult.sha256,
           fileSize: buffer.byteLength,
@@ -63,9 +60,9 @@ export class StorageManager {
       // توليد اسم ملف فريد
       const uniqueFileName = generateUniqueFileName(fileName, userId);
 
-      if (this.config.provider === "local") {
+      if (this.config.provider === 'local') {
         return await this.saveToLocal(uniqueFileName, buffer, hashResult.sha256);
-      } else if (this.config.provider === "s3") {
+      } else if (this.config.provider === 's3') {
         return await this.saveToS3(uniqueFileName, buffer, hashResult.sha256);
       }
 
@@ -73,9 +70,9 @@ export class StorageManager {
     } catch (error) {
       return {
         success: false,
-        storageKey: "",
+        storageKey: '',
         provider: this.config.provider,
-        fileHash: "",
+        fileHash: '',
         fileSize: buffer.byteLength,
         error: `Storage error: ${error}`,
       };
@@ -85,7 +82,7 @@ export class StorageManager {
   private async saveToLocal(
     fileName: string,
     buffer: Buffer,
-    fileHash: string
+    fileHash: string,
   ): Promise<StorageResult> {
     const dir = path.resolve(this.config.uploadDir!);
     await fs.mkdir(dir, { recursive: true });
@@ -96,7 +93,7 @@ export class StorageManager {
     return {
       success: true,
       storageKey: fileName,
-      provider: "local",
+      provider: 'local',
       fileHash,
       fileSize: buffer.byteLength,
     };
@@ -105,23 +102,23 @@ export class StorageManager {
   private async saveToS3(
     fileName: string,
     buffer: Buffer,
-    fileHash: string
+    fileHash: string,
   ): Promise<StorageResult> {
     // TODO: Implement S3 upload using AWS SDK v3
     // For now, return placeholder
     return {
       success: false,
       storageKey: fileName,
-      provider: "s3",
+      provider: 's3',
       bucket: process.env.S3_BUCKET,
       fileHash,
       fileSize: buffer.byteLength,
-      error: "S3 storage not implemented yet",
+      error: 'S3 storage not implemented yet',
     };
   }
 
   async getFile(storageKey: string): Promise<Buffer | null> {
-    if (this.config.provider === "local") {
+    if (this.config.provider === 'local') {
       try {
         const dir = path.resolve(this.config.uploadDir!);
         const filePath = path.join(dir, storageKey);
@@ -129,7 +126,7 @@ export class StorageManager {
       } catch {
         return null;
       }
-    } else if (this.config.provider === "s3") {
+    } else if (this.config.provider === 's3') {
       // TODO: Implement S3 download
       return null;
     }
@@ -137,7 +134,7 @@ export class StorageManager {
   }
 
   async deleteFile(storageKey: string): Promise<boolean> {
-    if (this.config.provider === "local") {
+    if (this.config.provider === 'local') {
       try {
         const dir = path.resolve(this.config.uploadDir!);
         const filePath = path.join(dir, storageKey);
@@ -146,7 +143,7 @@ export class StorageManager {
       } catch {
         return false;
       }
-    } else if (this.config.provider === "s3") {
+    } else if (this.config.provider === 's3') {
       // TODO: Implement S3 delete
       return false;
     }
@@ -154,7 +151,7 @@ export class StorageManager {
   }
 
   async fileExists(storageKey: string): Promise<boolean> {
-    if (this.config.provider === "local") {
+    if (this.config.provider === 'local') {
       try {
         const dir = path.resolve(this.config.uploadDir!);
         const filePath = path.join(dir, storageKey);

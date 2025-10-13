@@ -1,2 +1,2 @@
 export * from './engagement.schema';
-export * from './engagement.service';
+export * from './engagement.service-v2';

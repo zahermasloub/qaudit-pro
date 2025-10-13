@@ -3,7 +3,7 @@
  * يدعم SHA256 وMD5 لضمان سلامة الملفات المرفوعة
  */
 
-import { createHash } from "crypto";
+import { createHash } from 'crypto';
 
 export interface FileHashResult {
   sha256: string;
@@ -12,8 +12,8 @@ export interface FileHashResult {
 }
 
 export async function computeFileHashes(buffer: Buffer): Promise<FileHashResult> {
-  const sha256 = createHash("sha256").update(buffer).digest("hex");
-  const md5 = createHash("md5").update(buffer).digest("hex");
+  const sha256 = createHash('sha256').update(buffer).digest('hex');
+  const md5 = createHash('md5').update(buffer).digest('hex');
 
   return {
     sha256,
@@ -22,7 +22,10 @@ export async function computeFileHashes(buffer: Buffer): Promise<FileHashResult>
   };
 }
 
-export async function verifyFileIntegrity(buffer: Buffer, expectedSha256: string): Promise<boolean> {
+export async function verifyFileIntegrity(
+  buffer: Buffer,
+  expectedSha256: string,
+): Promise<boolean> {
   const computed = await computeFileHashes(buffer);
   return computed.sha256 === expectedSha256;
 }
@@ -32,7 +35,7 @@ export function generateUniqueFileName(originalName: string, userId?: string): s
   const randomSuffix = Math.random().toString(36).substring(2, 8);
   const userPrefix = userId ? userId.substring(0, 8) : 'anon';
   const ext = originalName.includes('.') ? originalName.split('.').pop() : 'bin';
-  const baseName = originalName.replace(/\.[^/.]+$/, "").replace(/[^a-zA-Z0-9-_]/g, '_');
+  const baseName = originalName.replace(/\.[^/.]+$/, '').replace(/[^a-zA-Z0-9-_]/g, '_');
 
   return `${userPrefix}_${timestamp}_${baseName}_${randomSuffix}.${ext}`;
 }

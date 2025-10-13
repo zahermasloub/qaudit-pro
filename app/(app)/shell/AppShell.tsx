@@ -131,7 +131,7 @@ export async function apiPost(url: string, data: any) {
 // ========================= FILE: lib/rbac.ts =========================
 /* export const RBAC = { ... }  // moved into AppShell.tsx below for brevity */
 
-// ========================= FILE: app/api/engagements/route.ts ========
+// ========================= FILE: app/api/engagements/route-v2.ts ========
 /*
 import { prisma } from "@/lib/prisma";
 import { NextResponse } from "next/server";
@@ -159,7 +159,7 @@ export async function POST(req: Request) {
 }
 */
 
-// ========================= FILE: app/api/pbc/route.ts ===============
+// ========================= FILE: app/api/pbc/route-v2.ts ===============
 /*
 import { prisma } from "@/lib/prisma";
 import { NextResponse } from "next/server";
@@ -358,114 +358,164 @@ export function PBCForm({ engagementId, onCreated }: { engagementId: string; onC
 
 // ========================= FILE: app/(app)/shell/AppShell.tsx =========
 'use client';
-import React, { useEffect, useState } from "react";
-import { useSession, signOut } from "next-auth/react";
-import { useRouter } from "next/navigation";
-import { ClipboardList, BookCheck, Shield, FlaskConical, Database, FileCheck, AlertTriangle, FileText, RotateCcw, BadgeCheck, LayoutDashboard } from "lucide-react";
-import DashboardView from './DashboardView';
-import { PlanningScreen, ProcessRiskScreen, ProgramScreen, FieldworkScreen } from './ScreenComponents';
+import React, { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
-import { EngagementForm } from '@/features/planning/engagement/engagement.form';
-import PBCForm from '@/features/planning/pbc/pbc.form';
-import TestForm from '@/features/program/tests/test.form';
-import SamplingForm from '@/features/program/sampling/sampling.form';
-import TestExecutionForm from '@/features/fieldwork/forms/test-execution.form';
-import EvidenceUploaderForm from '@/features/evidence/forms/evidence-uploader.form';
-import { useI18n, type Locale } from '@/lib/i18n';
-import { ToastProvider } from '@/components/ui/toast';
+import {
+  AlertTriangle,
+  BadgeCheck,
+  BookCheck,
+  ClipboardList,
+  Database,
+  FileCheck,
+  FileText,
+  FlaskConical,
+  LayoutDashboard,
+  RotateCcw,
+  Shield,
+} from 'lucide-react';
+import { useRouter } from 'next/navigation';
+import { signOut, useSession } from 'next-auth/react';
+
+import { ToastProvider } from '@/components/ui/Toast-v2';
+import EvidenceUploaderForm from '@/features/evidence/forms/EvidenceUploader.form';
+import TestExecutionForm from '@/features/fieldwork/forms/TestExecution.form';
+import { EngagementForm } from '@/features/planning/engagement/Engagement.form-v2';
+import PBCForm from '@/features/planning/pbc/Pbc.form-v2';
+import SamplingForm from '@/features/program/sampling/Sampling.form-v2';
+import TestForm from '@/features/program/tests/Test.form-v2';
+import { type Locale, useI18n } from '@/lib/i18n';
+
+import DashboardView from './DashboardView';
+import {
+  FieldworkScreen,
+  PlanningScreen,
+  ProcessRiskScreen,
+  ProgramScreen,
+} from './ScreenComponents';
+
 const clsx = (...xs: Array<string | false | null | undefined>) => xs.filter(Boolean).join(' ');
 
-type Route = 'login'|'register'|'dashboard'|'planning'|'processRisk'|'program'|'fieldwork'|'agile'|'findings'|'reporting'|'followup'|'closeout'|'qa';
-type Role = 'IA_Manager'|'IA_Lead'|'IA_Auditor'|'Process_Owner'|'Viewer';
+type Route =
+  | 'login'
+  | 'register'
+  | 'dashboard'
+  | 'planning'
+  | 'processRisk'
+  | 'program'
+  | 'fieldwork'
+  | 'agile'
+  | 'findings'
+  | 'reporting'
+  | 'followup'
+  | 'closeout'
+  | 'qa';
+type Role = 'IA_Manager' | 'IA_Lead' | 'IA_Auditor' | 'Process_Owner' | 'Viewer';
 
 const RBAC: Record<Route, Role[]> = {
-  login: ['IA_Manager','IA_Lead','IA_Auditor','Process_Owner','Viewer'],
-  register: ['IA_Manager','IA_Lead','IA_Auditor','Process_Owner','Viewer'],
-  dashboard: ['IA_Manager','IA_Lead','IA_Auditor','Process_Owner','Viewer'],
-  planning: ['IA_Manager','IA_Lead','IA_Auditor'],
-  processRisk: ['IA_Manager','IA_Lead','IA_Auditor'],
-  program: ['IA_Manager','IA_Lead','IA_Auditor'],
-  fieldwork: ['IA_Manager','IA_Lead','IA_Auditor'],
-  agile: ['IA_Manager','IA_Lead','IA_Auditor'],
-  findings: ['IA_Manager','IA_Lead','IA_Auditor'],
-  reporting: ['IA_Manager','IA_Lead'],
-  followup: ['IA_Manager','IA_Lead','Process_Owner'],
-  closeout: ['IA_Manager','IA_Lead'],
-  qa: ['IA_Manager','IA_Lead'],
+  login: ['IA_Manager', 'IA_Lead', 'IA_Auditor', 'Process_Owner', 'Viewer'],
+  register: ['IA_Manager', 'IA_Lead', 'IA_Auditor', 'Process_Owner', 'Viewer'],
+  dashboard: ['IA_Manager', 'IA_Lead', 'IA_Auditor', 'Process_Owner', 'Viewer'],
+  planning: ['IA_Manager', 'IA_Lead', 'IA_Auditor'],
+  processRisk: ['IA_Manager', 'IA_Lead', 'IA_Auditor'],
+  program: ['IA_Manager', 'IA_Lead', 'IA_Auditor'],
+  fieldwork: ['IA_Manager', 'IA_Lead', 'IA_Auditor'],
+  agile: ['IA_Manager', 'IA_Lead', 'IA_Auditor'],
+  findings: ['IA_Manager', 'IA_Lead', 'IA_Auditor'],
+  reporting: ['IA_Manager', 'IA_Lead'],
+  followup: ['IA_Manager', 'IA_Lead', 'Process_Owner'],
+  closeout: ['IA_Manager', 'IA_Lead'],
+  qa: ['IA_Manager', 'IA_Lead'],
 };
 
 // Toolbar configurations by route
-const TOOLBARS: Record<Route, { action: string; roles: Role[]; variant?: 'primary'|'secondary' }[]> = {
+const TOOLBARS: Record<
+  Route,
+  { action: string; roles: Role[]; variant?: 'primary' | 'secondary' }[]
+> = {
   dashboard: [
-    { action: 'newEng', roles: ['IA_Manager','IA_Lead'], variant: 'primary' },
-    { action: 'exportCSV', roles: ['IA_Manager','IA_Lead','IA_Auditor'] },
-    { action: 'refresh', roles: ['IA_Manager','IA_Lead','IA_Auditor','Process_Owner','Viewer'] }
+    { action: 'newEng', roles: ['IA_Manager', 'IA_Lead'], variant: 'primary' },
+    { action: 'exportCSV', roles: ['IA_Manager', 'IA_Lead', 'IA_Auditor'] },
+    {
+      action: 'refresh',
+      roles: ['IA_Manager', 'IA_Lead', 'IA_Auditor', 'Process_Owner', 'Viewer'],
+    },
   ],
   planning: [
-    { action: 'createPlan', roles: ['IA_Manager','IA_Lead'], variant: 'primary' },
-    { action: 'newPBC', roles: ['IA_Manager','IA_Lead','IA_Auditor'] },
-    { action: 'importCSV', roles: ['IA_Manager','IA_Lead','IA_Auditor'] },
-    { action: 'exportCSV', roles: ['IA_Manager','IA_Lead','IA_Auditor'] }
+    { action: 'createPlan', roles: ['IA_Manager', 'IA_Lead'], variant: 'primary' },
+    { action: 'newPBC', roles: ['IA_Manager', 'IA_Lead', 'IA_Auditor'] },
+    { action: 'importCSV', roles: ['IA_Manager', 'IA_Lead', 'IA_Auditor'] },
+    { action: 'exportCSV', roles: ['IA_Manager', 'IA_Lead', 'IA_Auditor'] },
   ],
   processRisk: [
-    { action: 'addRisk', roles: ['IA_Manager','IA_Lead','IA_Auditor'], variant: 'primary' },
-    { action: 'addControl', roles: ['IA_Manager','IA_Lead','IA_Auditor'] },
-    { action: 'linkTest', roles: ['IA_Manager','IA_Lead','IA_Auditor'] }
+    { action: 'addRisk', roles: ['IA_Manager', 'IA_Lead', 'IA_Auditor'], variant: 'primary' },
+    { action: 'addControl', roles: ['IA_Manager', 'IA_Lead', 'IA_Auditor'] },
+    { action: 'linkTest', roles: ['IA_Manager', 'IA_Lead', 'IA_Auditor'] },
   ],
   program: [
-    { action: 'newTest', roles: ['IA_Manager','IA_Lead','IA_Auditor'], variant: 'primary' },
-    { action: 'drawSample', roles: ['IA_Manager','IA_Lead','IA_Auditor'] },
-    { action: 'importPopulation', roles: ['IA_Manager','IA_Lead','IA_Auditor'] }
+    { action: 'newTest', roles: ['IA_Manager', 'IA_Lead', 'IA_Auditor'], variant: 'primary' },
+    { action: 'drawSample', roles: ['IA_Manager', 'IA_Lead', 'IA_Auditor'] },
+    { action: 'importPopulation', roles: ['IA_Manager', 'IA_Lead', 'IA_Auditor'] },
   ],
   fieldwork: [
-    { action: 'uploadEv', roles: ['IA_Manager','IA_Lead','IA_Auditor'], variant: 'primary' },
-    { action: 'runTest', roles: ['IA_Manager','IA_Lead','IA_Auditor'] },
-    { action: 'scanAV', roles: ['IA_Manager','IA_Lead','IA_Auditor'] },
-    { action: 'linkTo', roles: ['IA_Manager','IA_Lead','IA_Auditor'] }
+    { action: 'uploadEv', roles: ['IA_Manager', 'IA_Lead', 'IA_Auditor'], variant: 'primary' },
+    { action: 'runTest', roles: ['IA_Manager', 'IA_Lead', 'IA_Auditor'] },
+    { action: 'scanAV', roles: ['IA_Manager', 'IA_Lead', 'IA_Auditor'] },
+    { action: 'linkTo', roles: ['IA_Manager', 'IA_Lead', 'IA_Auditor'] },
   ],
   agile: [
-    { action: 'addTask', roles: ['IA_Manager','IA_Lead','IA_Auditor'], variant: 'primary' },
-    { action: 'assignOwner', roles: ['IA_Manager','IA_Lead'] }
+    { action: 'addTask', roles: ['IA_Manager', 'IA_Lead', 'IA_Auditor'], variant: 'primary' },
+    { action: 'assignOwner', roles: ['IA_Manager', 'IA_Lead'] },
   ],
   findings: [
-    { action: 'newFinding', roles: ['IA_Manager','IA_Lead','IA_Auditor'], variant: 'primary' },
-    { action: 'genCCER', roles: ['IA_Manager','IA_Lead'] }
+    { action: 'newFinding', roles: ['IA_Manager', 'IA_Lead', 'IA_Auditor'], variant: 'primary' },
+    { action: 'genCCER', roles: ['IA_Manager', 'IA_Lead'] },
   ],
   reporting: [
-    { action: 'preview', roles: ['IA_Manager','IA_Lead'], variant: 'primary' },
-    { action: 'exportPDF', roles: ['IA_Manager','IA_Lead'] },
-    { action: 'sendSign', roles: ['IA_Manager'] }
+    { action: 'preview', roles: ['IA_Manager', 'IA_Lead'], variant: 'primary' },
+    { action: 'exportPDF', roles: ['IA_Manager', 'IA_Lead'] },
+    { action: 'sendSign', roles: ['IA_Manager'] },
   ],
   followup: [
-    { action: 'newCheck', roles: ['IA_Manager','IA_Lead','Process_Owner'], variant: 'primary' },
-    { action: 'remindOwners', roles: ['IA_Manager','IA_Lead'] },
-    { action: 'followReport', roles: ['IA_Manager','IA_Lead'] }
+    { action: 'newCheck', roles: ['IA_Manager', 'IA_Lead', 'Process_Owner'], variant: 'primary' },
+    { action: 'remindOwners', roles: ['IA_Manager', 'IA_Lead'] },
+    { action: 'followReport', roles: ['IA_Manager', 'IA_Lead'] },
   ],
-  closeout: [
-    { action: 'closeFile', roles: ['IA_Manager','IA_Lead'], variant: 'primary' }
-  ],
-  qa: [
-    { action: 'qaReview', roles: ['IA_Manager','IA_Lead'], variant: 'primary' }
-  ],
+  closeout: [{ action: 'closeFile', roles: ['IA_Manager', 'IA_Lead'], variant: 'primary' }],
+  qa: [{ action: 'qaReview', roles: ['IA_Manager', 'IA_Lead'], variant: 'primary' }],
   login: [],
-  register: []
+  register: [],
 };
 
 function canAccess(route: Route, role: Role): boolean {
   return RBAC[route]?.includes(role) || false;
 }
 
-function Topbar({ locale, setLocale, onLogout, role, route, onToolbarAction }: { locale: Locale; setLocale: (l:Locale)=>void; onLogout: ()=>void; role: Role; route: Route; onToolbarAction: (action: string) => void; }){
-  const i18n = useI18n(locale); const isRTL = locale==='ar';
+function Topbar({
+  locale,
+  setLocale,
+  onLogout,
+  role,
+  route,
+  onToolbarAction,
+}: {
+  locale: Locale;
+  setLocale: (l: Locale) => void;
+  onLogout: () => void;
+  role: Role;
+  route: Route;
+  onToolbarAction: (action: string) => void;
+}) {
+  const i18n = useI18n(locale);
+  const isRTL = locale === 'ar';
   const toolbarActions = TOOLBARS[route]?.filter(tool => tool.roles.includes(role)) || [];
 
   return (
     <div className="sticky top-0 z-10 h-14 bg-white border-b border-gray-200 flex items-center px-4">
-      <div className={clsx('font-bold text-lg', isRTL?'ms-auto':'me-auto')}>
+      <div className={clsx('font-bold text-lg', isRTL ? 'ms-auto' : 'me-auto')}>
         {i18n.app.title}
-        <span className='text-xs text-gray-500 mx-2'>•</span>
-        <span className='text-sm text-gray-600'>{(i18n.sections as any)[route] || route}</span>
-        <span className='text-xs text-gray-500 ml-2'>({role.replace('_', ' ')})</span>
+        <span className="text-xs text-gray-500 mx-2">•</span>
+        <span className="text-sm text-gray-600">{(i18n.sections as any)[route] || route}</span>
+        <span className="text-xs text-gray-500 ml-2">({role.replace('_', ' ')})</span>
       </div>
 
       {/* Toolbar Actions */}
@@ -479,7 +529,7 @@ function Topbar({ locale, setLocale, onLogout, role, route, onToolbarAction }: {
                 'px-3 py-1.5 text-sm rounded-md border font-medium transition-colors',
                 tool.variant === 'primary'
                   ? 'bg-blue-600 text-white border-blue-600 hover:bg-blue-700'
-                  : 'bg-white text-gray-700 border-gray-300 hover:bg-gray-50'
+                  : 'bg-white text-gray-700 border-gray-300 hover:bg-gray-50',
               )}
             >
               {i18n.actions[tool.action as keyof typeof i18n.actions] || tool.action}
@@ -488,15 +538,26 @@ function Topbar({ locale, setLocale, onLogout, role, route, onToolbarAction }: {
         </div>
       )}
 
-      <div className={clsx('shrink-0', isRTL?'me-auto':'ms-auto')} />
-      <button className="ms-2 rounded-full bg-blue-600 text-white text-sm px-3 py-1.5">{i18n.common.alerts} 3</button>
-      <div className="ms-2 h-9 w-9 rounded-full bg-gray-900/90 text-white grid place-items-center">IA</div>
+      <div className={clsx('shrink-0', isRTL ? 'me-auto' : 'ms-auto')} />
+      <button className="ms-2 rounded-full bg-blue-600 text-white text-sm px-3 py-1.5">
+        {i18n.common.alerts} 3
+      </button>
+      <div className="ms-2 h-9 w-9 rounded-full bg-gray-900/90 text-white grid place-items-center">
+        IA
+      </div>
       <div className="ms-2">
-        <select className="rounded-lg border border-gray-200 bg-white px-2 py-1 text-sm" value={locale} onChange={(e)=>setLocale(e.target.value as Locale)}>
-          <option value="ar">العربية</option><option value="en">English</option>
+        <select
+          className="rounded-lg border border-gray-200 bg-white px-2 py-1 text-sm"
+          value={locale}
+          onChange={e => setLocale(e.target.value as Locale)}
+        >
+          <option value="ar">العربية</option>
+          <option value="en">English</option>
         </select>
       </div>
-      <button className="ms-2 text-sm text-gray-600 hover:text-gray-900" onClick={onLogout}>{i18n.auth.logout}</button>
+      <button className="ms-2 text-sm text-gray-600 hover:text-gray-900" onClick={onLogout}>
+        {i18n.auth.logout}
+      </button>
     </div>
   );
 }
@@ -515,26 +576,64 @@ const MENU_SPEC = [
   { key: 'qa', icon: BadgeCheck },
 ] as const;
 
-function Sidebar({ locale, route, setRoute, statusBadge, role }: { locale: Locale; route: Route; setRoute: (r:Route)=>void; statusBadge: string; role: Role; }){
-  const i18n = useI18n(locale); const isRTL = locale==='ar';
+function Sidebar({
+  locale,
+  route,
+  setRoute,
+  statusBadge,
+  role,
+}: {
+  locale: Locale;
+  route: Route;
+  setRoute: (r: Route) => void;
+  statusBadge: string;
+  role: Role;
+}) {
+  const i18n = useI18n(locale);
+  const isRTL = locale === 'ar';
 
   // Filter menu items based on RBAC
   const allowedMenuItems = MENU_SPEC.filter(item => canAccess(item.key as Route, role));
 
   return (
-    <aside className={clsx('bg-white rounded-2xl border border-gray-200 p-3 h-fit', isRTL?'order-2':'order-1')}>
+    <aside
+      className={clsx(
+        'bg-white rounded-2xl border border-gray-200 p-3 h-fit',
+        isRTL ? 'order-2' : 'order-1',
+      )}
+    >
       <nav className="space-y-2">
-        {allowedMenuItems.map((it, idx)=>{
-          const Icon = it.icon as any; const active = route===it.key;
+        {allowedMenuItems.map((it, idx) => {
+          const Icon = it.icon as any;
+          const active = route === it.key;
           return (
-            <button key={it.key}
-              onClick={()=>setRoute(it.key as Route)}
-              className={clsx('w-full text-sm rounded-xl px-3 py-2 text-start border flex items-center gap-2 transition-colors', active?'bg-blue-600 text-white border-blue-600':'bg-white text-gray-900 border-gray-200 hover:bg-gray-50')}
+            <button
+              key={it.key}
+              onClick={() => setRoute(it.key as Route)}
+              className={clsx(
+                'w-full text-sm rounded-xl px-3 py-2 text-start border flex items-center gap-2 transition-colors',
+                active
+                  ? 'bg-blue-600 text-white border-blue-600'
+                  : 'bg-white text-gray-900 border-gray-200 hover:bg-gray-50',
+              )}
             >
               <Icon className="h-4 w-4" />
               <span className="grow text-start">{(i18n.menu as any)[it.key]}</span>
-              {it.key!=='dashboard' && (<span className={clsx('text-[10px] px-2 py-0.5 rounded-full border', active?'border-white':'border-gray-300')}>{idx}</span>)}
-              {it.key==='dashboard' && (<span className='text-[10px] px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200'>{statusBadge}</span>)}
+              {it.key !== 'dashboard' && (
+                <span
+                  className={clsx(
+                    'text-[10px] px-2 py-0.5 rounded-full border',
+                    active ? 'border-white' : 'border-gray-300',
+                  )}
+                >
+                  {idx}
+                </span>
+              )}
+              {it.key === 'dashboard' && (
+                <span className="text-[10px] px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200">
+                  {statusBadge}
+                </span>
+              )}
             </button>
           );
         })}
@@ -545,19 +644,33 @@ function Sidebar({ locale, route, setRoute, statusBadge, role }: { locale: Local
         <div className="text-xs text-gray-500 mb-1">
           {locale === 'ar' ? 'الدور الحالي' : 'Current Role'}
         </div>
-        <div className="text-xs font-medium text-gray-700">
-          {role.replace('_', ' ')}
-        </div>
+        <div className="text-xs font-medium text-gray-700">{role.replace('_', ' ')}</div>
       </div>
     </aside>
   );
 }
 
-function Card({ children }: { children: React.ReactNode }){ return <div className='bg-white rounded-2xl border border-gray-200 p-4 shadow-sm'>{children}</div>; }
-function Toolbar({ children }: { children: React.ReactNode }){ return <div className='flex flex-wrap items-center gap-2'>{children}</div>; }
+function Card({ children }: { children: React.ReactNode }) {
+  return (
+    <div className="bg-white rounded-2xl border border-gray-200 p-4 shadow-sm">{children}</div>
+  );
+}
+function Toolbar({ children }: { children: React.ReactNode }) {
+  return <div className="flex flex-wrap items-center gap-2">{children}</div>;
+}
 
 // --- Minimal dialog & forms (inlined for demo) ---
-function Dialog({ open, onClose, title, children }: { open: boolean; onClose: ()=>void; title: string; children: React.ReactNode; }){
+function Dialog({
+  open,
+  onClose,
+  title,
+  children,
+}: {
+  open: boolean;
+  onClose: () => void;
+  title: string;
+  children: React.ReactNode;
+}) {
   if (!open) return null;
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center">
@@ -565,82 +678,198 @@ function Dialog({ open, onClose, title, children }: { open: boolean; onClose: ()
       <div className="relative bg-white rounded-2xl shadow-xl border border-gray-200 w-full max-w-2xl p-5">
         <div className="flex items-center justify-between mb-3">
           <h3 className="text-lg font-semibold">{title}</h3>
-          <button className="text-gray-500" onClick={onClose}>✕</button>
+          <button className="text-gray-500" onClick={onClose}>
+            ✕
+          </button>
         </div>
         {children}
       </div>
     </div>
   );
 }
-function Field({ label, children }: { label: string; children: React.ReactNode; }){ return <label className="block mb-3"><span className="block text-sm text-gray-700 mb-1">{label}</span>{children}</label>; }
+function Field({ label, children }: { label: string; children: React.ReactNode }) {
+  return (
+    <label className="block mb-3">
+      <span className="block text-sm text-gray-700 mb-1">{label}</span>
+      {children}
+    </label>
+  );
+}
 
 // --- Forms (React Hook Form + Zod via minimal inline validation) ---
 // NOTE: In a real project, import zod & resolvers; here we keep client clean
 
-function EngagementMandateForm({ onClose }: { onClose: ()=>void }){
-  const { register, handleSubmit } = useForm({ defaultValues: {
-    engagement_code:'IA-2025-001', title:'', objective:'', scope:'', criteria:'', constraints:'',
-    auditee_units:'', stakeholders:'', start_date:'', end_date:'', budget_hours:40, created_by:'lead@gov.sa', independence_disclosure_url:''
-  }} as any);
-  async function onSubmit(values: any){
+function EngagementMandateForm({ onClose }: { onClose: () => void }) {
+  const { register, handleSubmit } = useForm({
+    defaultValues: {
+      engagement_code: 'IA-2025-001',
+      title: '',
+      objective: '',
+      scope: '',
+      criteria: '',
+      constraints: '',
+      auditee_units: '',
+      stakeholders: '',
+      start_date: '',
+      end_date: '',
+      budget_hours: 40,
+      created_by: 'lead@gov.sa',
+      independence_disclosure_url: '',
+    },
+  } as any);
+  async function onSubmit(values: any) {
     const payload = {
       engagement_code: values.engagement_code,
       title: values.title,
       objective: values.objective,
-      scope: String(values.scope).split(',').map((s)=>s.trim()).filter(Boolean),
-      criteria: String(values.criteria).split(',').map((s)=>s.trim()).filter(Boolean),
-      constraints: String(values.constraints).split(',').map((s)=>s.trim()).filter(Boolean),
-      auditee_units: String(values.auditee_units).split(',').map((s)=>s.trim()).filter(Boolean),
-      stakeholders: String(values.stakeholders).split(',').map((s)=>s.trim()).filter(Boolean),
+      scope: String(values.scope)
+        .split(',')
+        .map(s => s.trim())
+        .filter(Boolean),
+      criteria: String(values.criteria)
+        .split(',')
+        .map(s => s.trim())
+        .filter(Boolean),
+      constraints: String(values.constraints)
+        .split(',')
+        .map(s => s.trim())
+        .filter(Boolean),
+      auditee_units: String(values.auditee_units)
+        .split(',')
+        .map(s => s.trim())
+        .filter(Boolean),
+      stakeholders: String(values.stakeholders)
+        .split(',')
+        .map(s => s.trim())
+        .filter(Boolean),
       start_date: values.start_date,
       end_date: values.end_date,
-      budget_hours: Number(values.budget_hours||0),
+      budget_hours: Number(values.budget_hours || 0),
       independence_disclosure_url: values.independence_disclosure_url || undefined,
       created_by: values.created_by,
     };
-    await fetch('/api/engagements', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(payload)});
+    await fetch('/api/engagements', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload),
+    });
     onClose();
   }
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="grid grid-cols-1 md:grid-cols-2 gap-3">
-      <Field label="Code"><input {...register('engagement_code')} className='w-full rounded-lg border px-3 py-2' /></Field>
-      <Field label="Title"><input {...register('title')} className='w-full rounded-lg border px-3 py-2' /></Field>
-      <Field label="Objective"><textarea {...register('objective')} className='w-full rounded-lg border px-3 py-2' /></Field>
-      <Field label="Scope (comma)"><input {...register('scope')} className='w-full rounded-lg border px-3 py-2' /></Field>
-      <Field label="Criteria (comma)"><input {...register('criteria')} className='w-full rounded-lg border px-3 py-2' /></Field>
-      <Field label="Constraints (comma)"><input {...register('constraints')} className='w-full rounded-lg border px-3 py-2' /></Field>
-      <Field label="Auditee Units (comma)"><input {...register('auditee_units')} className='w-full rounded-lg border px-3 py-2' /></Field>
-      <Field label="Stakeholders (comma)"><input {...register('stakeholders')} className='w-full rounded-lg border px-3 py-2' /></Field>
-      <Field label="Start"><input type='date' {...register('start_date')} className='w-full rounded-lg border px-3 py-2' /></Field>
-      <Field label="End"><input type='date' {...register('end_date')} className='w-full rounded-lg border px-3 py-2' /></Field>
-      <Field label="Budget Hours"><input type='number' {...register('budget_hours')} className='w-full rounded-lg border px-3 py-2' /></Field>
-      <Field label="Independence URL"><input {...register('independence_disclosure_url')} className='w-full rounded-lg border px-3 py-2' /></Field>
-      <Field label="Created by (email)"><input {...register('created_by')} className='w-full rounded-lg border px-3 py-2' /></Field>
-      <div className='md:col-span-2 flex items-center justify-end gap-2 mt-2'>
-        <button type='button' onClick={onClose} className='rounded-lg border px-3 py-2'>Cancel</button>
-        <button className='rounded-lg bg-blue-600 text-white px-3 py-2'>Save</button>
+      <Field label="Code">
+        <input {...register('engagement_code')} className="w-full rounded-lg border px-3 py-2" />
+      </Field>
+      <Field label="Title">
+        <input {...register('title')} className="w-full rounded-lg border px-3 py-2" />
+      </Field>
+      <Field label="Objective">
+        <textarea {...register('objective')} className="w-full rounded-lg border px-3 py-2" />
+      </Field>
+      <Field label="Scope (comma)">
+        <input {...register('scope')} className="w-full rounded-lg border px-3 py-2" />
+      </Field>
+      <Field label="Criteria (comma)">
+        <input {...register('criteria')} className="w-full rounded-lg border px-3 py-2" />
+      </Field>
+      <Field label="Constraints (comma)">
+        <input {...register('constraints')} className="w-full rounded-lg border px-3 py-2" />
+      </Field>
+      <Field label="Auditee Units (comma)">
+        <input {...register('auditee_units')} className="w-full rounded-lg border px-3 py-2" />
+      </Field>
+      <Field label="Stakeholders (comma)">
+        <input {...register('stakeholders')} className="w-full rounded-lg border px-3 py-2" />
+      </Field>
+      <Field label="Start">
+        <input
+          type="date"
+          {...register('start_date')}
+          className="w-full rounded-lg border px-3 py-2"
+        />
+      </Field>
+      <Field label="End">
+        <input
+          type="date"
+          {...register('end_date')}
+          className="w-full rounded-lg border px-3 py-2"
+        />
+      </Field>
+      <Field label="Budget Hours">
+        <input
+          type="number"
+          {...register('budget_hours')}
+          className="w-full rounded-lg border px-3 py-2"
+        />
+      </Field>
+      <Field label="Independence URL">
+        <input
+          {...register('independence_disclosure_url')}
+          className="w-full rounded-lg border px-3 py-2"
+        />
+      </Field>
+      <Field label="Created by (email)">
+        <input {...register('created_by')} className="w-full rounded-lg border px-3 py-2" />
+      </Field>
+      <div className="md:col-span-2 flex items-center justify-end gap-2 mt-2">
+        <button type="button" onClick={onClose} className="rounded-lg border px-3 py-2">
+          Cancel
+        </button>
+        <button className="rounded-lg bg-blue-600 text-white px-3 py-2">Save</button>
       </div>
     </form>
   );
 }
 
-function PBCRequestForm({ engagementId, onClose }: { engagementId: string; onClose: ()=>void }){
-  const { register, handleSubmit } = useForm({ defaultValues: { pbc_code:'PBC-001', description:'', owner_id:'', due_date:'', status:'open' } } as any);
-  async function onSubmit(values: any){
+function PBCRequestForm({ engagementId, onClose }: { engagementId: string; onClose: () => void }) {
+  const { register, handleSubmit } = useForm({
+    defaultValues: {
+      pbc_code: 'PBC-001',
+      description: '',
+      owner_id: '',
+      due_date: '',
+      status: 'open',
+    },
+  } as any);
+  async function onSubmit(values: any) {
     const payload = { engagement_id: engagementId, ...values };
-    await fetch('/api/pbc', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(payload)});
+    await fetch('/api/pbc', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload),
+    });
     onClose();
   }
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="grid grid-cols-1 md:grid-cols-2 gap-3">
-      <Field label="PBC Code"><input {...register('pbc_code')} className='w-full rounded-lg border px-3 py-2' /></Field>
-      <Field label="Owner ID"><input {...register('owner_id')} className='w-full rounded-lg border px-3 py-2' /></Field>
-      <Field label="Description"><textarea {...register('description')} className='w-full rounded-lg border px-3 py-2' /></Field>
-      <Field label="Due Date"><input type='date' {...register('due_date')} className='w-full rounded-lg border px-3 py-2' /></Field>
-      <Field label="Status"><select {...register('status')} className='w-full rounded-lg border px-3 py-2'><option value='open'>open</option><option value='partial'>partial</option><option value='complete'>complete</option></select></Field>
-      <div className='md:col-span-2 flex items-center justify-end gap-2 mt-2'>
-        <button type='button' onClick={onClose} className='rounded-lg border px-3 py-2'>Cancel</button>
-        <button className='rounded-lg bg-blue-600 text-white px-3 py-2'>Save</button>
+      <Field label="PBC Code">
+        <input {...register('pbc_code')} className="w-full rounded-lg border px-3 py-2" />
+      </Field>
+      <Field label="Owner ID">
+        <input {...register('owner_id')} className="w-full rounded-lg border px-3 py-2" />
+      </Field>
+      <Field label="Description">
+        <textarea {...register('description')} className="w-full rounded-lg border px-3 py-2" />
+      </Field>
+      <Field label="Due Date">
+        <input
+          type="date"
+          {...register('due_date')}
+          className="w-full rounded-lg border px-3 py-2"
+        />
+      </Field>
+      <Field label="Status">
+        <select {...register('status')} className="w-full rounded-lg border px-3 py-2">
+          <option value="open">open</option>
+          <option value="partial">partial</option>
+          <option value="complete">complete</option>
+        </select>
+      </Field>
+      <div className="md:col-span-2 flex items-center justify-end gap-2 mt-2">
+        <button type="button" onClick={onClose} className="rounded-lg border px-3 py-2">
+          Cancel
+        </button>
+        <button className="rounded-lg bg-blue-600 text-white px-3 py-2">Save</button>
       </div>
     </form>
   );
@@ -650,9 +879,16 @@ function PBCRequestForm({ engagementId, onClose }: { engagementId: string; onClo
 
 // Planning screen moved to ScreenComponents.tsx
 
-function PlaceholderScreen({ title }: { title: string }){ return (<Card><div className='font-semibold mb-2'>{title}</div><div className='text-sm text-gray-600'>Coming soon…</div></Card>); }
+function PlaceholderScreen({ title }: { title: string }) {
+  return (
+    <Card>
+      <div className="font-semibold mb-2">{title}</div>
+      <div className="text-sm text-gray-600">Coming soon…</div>
+    </Card>
+  );
+}
 
-export default function AppShell(){
+export default function AppShell() {
   const { status } = useSession();
   const router = useRouter();
   const [locale, setLocale] = useState<Locale>('ar');
@@ -665,15 +901,20 @@ export default function AppShell(){
   const [openSample, setOpenSample] = useState(false);
   const [openTestExecution, setOpenTestExecution] = useState(false);
   const [openEvidenceUploader, setOpenEvidenceUploader] = useState(false);
-  const isRTL = locale==='ar';
+  const isRTL = locale === 'ar';
   const i18n = useI18n(locale);
 
-  useEffect(()=>{ if (typeof document!=='undefined'){ document.documentElement.dir = isRTL? 'rtl':'ltr'; document.documentElement.lang = isRTL? 'ar':'en'; } }, [isRTL]);
+  useEffect(() => {
+    if (typeof document !== 'undefined') {
+      document.documentElement.dir = isRTL ? 'rtl' : 'ltr';
+      document.documentElement.lang = isRTL ? 'ar' : 'en';
+    }
+  }, [isRTL]);
 
   // Redirect to login if not authenticated
   useEffect(() => {
-    if (status === "unauthenticated") {
-      router.push("/auth/login");
+    if (status === 'unauthenticated') {
+      router.push('/auth/login');
     }
   }, [status, router]);
 
@@ -685,7 +926,7 @@ export default function AppShell(){
       const response = await fetch('/api/evidence/virus-scan-all', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ engagementId })
+        body: JSON.stringify({ engagementId }),
       });
 
       const result = await response.json();
@@ -695,16 +936,18 @@ export default function AppShell(){
 
         // Show comprehensive processing message
         const servicesList = result.services?.join(' + ') || 'AV Scan + OCR + S3';
-        alert(`تم بدء معالجة الأدلة الشاملة\n${servicesList}\n\nسيتم الانتهاء من العملية في الخلفية`);
+        alert(
+          `تم بدء معالجة الأدلة الشاملة\n${servicesList}\n\nسيتم الانتهاء من العملية في الخلفية`,
+        );
       } else {
         throw new Error(result.error || 'Failed to initiate evidence processing');
       }
-
     } catch (error) {
       console.error('❌ Evidence processing failed:', error);
       alert('فشل في بدء معالجة الأدلة الشاملة');
     }
-  };  const handleToolbarAction = (action: string) => {
+  };
+  const handleToolbarAction = (action: string) => {
     switch (action) {
       case 'newEng':
         setOpenEngForm(true);
@@ -743,127 +986,165 @@ export default function AppShell(){
   const statusBadge = 'In-Field';
 
   // Show loading while checking authentication
-  if (status === "loading") return (
-    <div className='min-h-[100dvh] grid place-items-center bg-[#F5F7FB]'>
-      <div className='text-center'>
-        <div className='animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4'></div>
-        <p className='text-gray-600'>جارٍ التحقق من الهوية...</p>
+  if (status === 'loading')
+    return (
+      <div className="min-h-[100dvh] grid place-items-center bg-[#F5F7FB]">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
+          <p className="text-gray-600">جارٍ التحقق من الهوية...</p>
+        </div>
       </div>
-    </div>
-  );
+    );
 
   return (
     <ToastProvider>
-      <div className='min-h-[100dvh] bg-[#F5F7FB] text-[#111827]'>
-      <Topbar locale={locale} setLocale={setLocale} onLogout={() => signOut({ callbackUrl: "/auth/login" })} role={role} route={route} onToolbarAction={handleToolbarAction} />
+      <div className="min-h-[100dvh] bg-[#F5F7FB] text-[#111827]">
+        <Topbar
+          locale={locale}
+          setLocale={setLocale}
+          onLogout={() => signOut({ callbackUrl: '/auth/login' })}
+          role={role}
+          route={route}
+          onToolbarAction={handleToolbarAction}
+        />
 
-      <div className='mx-auto max-w-[1400px] px-4 mt-3'>
-        <div className='bg-white rounded-xl border border-gray-200 p-2 text-sm inline-flex items-center gap-2'>
-          <span className='text-gray-600'>Role:</span>
-          <select className='border border-gray-200 rounded-md px-2 py-1' value={role} onChange={(e)=>setRole(e.target.value as Role)}>
-            {(['IA_Manager','IA_Lead','IA_Auditor','Process_Owner','Viewer'] as Role[]).map(r=> <option key={r} value={r}>{r}</option>)}
-          </select>
-          <span className='ms-3 text-gray-600'>Lang:</span>
-          <select className='border border-gray-200 rounded-md px-2 py-1' value={locale} onChange={(e)=>setLocale(e.target.value as Locale)}>
-            <option value='ar'>العربية</option><option value='en'>English</option>
-          </select>
+        <div className="mx-auto max-w-[1400px] px-4 mt-3">
+          <div className="bg-white rounded-xl border border-gray-200 p-2 text-sm inline-flex items-center gap-2">
+            <span className="text-gray-600">Role:</span>
+            <select
+              className="border border-gray-200 rounded-md px-2 py-1"
+              value={role}
+              onChange={e => setRole(e.target.value as Role)}
+            >
+              {(['IA_Manager', 'IA_Lead', 'IA_Auditor', 'Process_Owner', 'Viewer'] as Role[]).map(
+                r => (
+                  <option key={r} value={r}>
+                    {r}
+                  </option>
+                ),
+              )}
+            </select>
+            <span className="ms-3 text-gray-600">Lang:</span>
+            <select
+              className="border border-gray-200 rounded-md px-2 py-1"
+              value={locale}
+              onChange={e => setLocale(e.target.value as Locale)}
+            >
+              <option value="ar">العربية</option>
+              <option value="en">English</option>
+            </select>
+          </div>
         </div>
-      </div>
 
-      <div className={clsx('mx-auto max-w-[1400px] px-4 py-6 grid gap-6', isRTL?'[grid-template-columns:1fr_300px]':'[grid-template-columns:300px_1fr]')}>
-        <Sidebar locale={locale} route={route} setRoute={setRoute} statusBadge={'In-Field'} role={role} />
-        <main className={clsx(isRTL?'order-1':'order-2')}>
-          {!allowed && <Card><div className='text-sm text-red-600'>Access denied for role: {role}</div></Card>}
-          {allowed && (
-            <>
-              {route==='dashboard' && <DashboardView locale={locale} />}
-              {route==='planning' && <PlanningScreen locale={locale} />}
-              {route==='processRisk' && <ProcessRiskScreen locale={locale} />}
-              {route==='program' && <ProgramScreen locale={locale} />}
-              {route==='fieldwork' && <FieldworkScreen locale={locale} />}
-              {route==='agile' && <PlaceholderScreen title={i18n.sections.agile} />}
-              {route==='findings' && <PlaceholderScreen title={i18n.sections.findings} />}
-              {route==='reporting' && <PlaceholderScreen title={i18n.sections.reporting} />}
-              {route==='followup' && <PlaceholderScreen title={i18n.sections.followup} />}
-              {route==='closeout' && <PlaceholderScreen title={i18n.sections.closeout} />}
-              {route==='qa' && <PlaceholderScreen title={i18n.sections.qa} />}
-            </>
+        <div
+          className={clsx(
+            'mx-auto max-w-[1400px] px-4 py-6 grid gap-6',
+            isRTL ? '[grid-template-columns:1fr_300px]' : '[grid-template-columns:300px_1fr]',
           )}
-        </main>
-      </div>
+        >
+          <Sidebar
+            locale={locale}
+            route={route}
+            setRoute={setRoute}
+            statusBadge={'In-Field'}
+            role={role}
+          />
+          <main className={clsx(isRTL ? 'order-1' : 'order-2')}>
+            {!allowed && (
+              <Card>
+                <div className="text-sm text-red-600">Access denied for role: {role}</div>
+              </Card>
+            )}
+            {allowed && (
+              <>
+                {route === 'dashboard' && <DashboardView locale={locale} />}
+                {route === 'planning' && <PlanningScreen locale={locale} />}
+                {route === 'processRisk' && <ProcessRiskScreen locale={locale} />}
+                {route === 'program' && <ProgramScreen locale={locale} />}
+                {route === 'fieldwork' && <FieldworkScreen locale={locale} />}
+                {route === 'agile' && <PlaceholderScreen title={i18n.sections.agile} />}
+                {route === 'findings' && <PlaceholderScreen title={i18n.sections.findings} />}
+                {route === 'reporting' && <PlaceholderScreen title={i18n.sections.reporting} />}
+                {route === 'followup' && <PlaceholderScreen title={i18n.sections.followup} />}
+                {route === 'closeout' && <PlaceholderScreen title={i18n.sections.closeout} />}
+                {route === 'qa' && <PlaceholderScreen title={i18n.sections.qa} />}
+              </>
+            )}
+          </main>
+        </div>
 
-      {/* Modals mounted at root for dashboard shortcuts */}
-      <EngagementForm
-        open={openEngForm}
-        onOpenChange={setOpenEngForm}
-        onSuccess={() => {
-          console.log('✅ تم حفظ المهمة بنجاح - سيتم تحديث القائمة');
-          // TODO: Add toast notification and refresh data
-        }}
-      />
+        {/* Modals mounted at root for dashboard shortcuts */}
+        <EngagementForm
+          open={openEngForm}
+          onOpenChange={setOpenEngForm}
+          onSuccess={() => {
+            console.log('✅ تم حفظ المهمة بنجاح - سيتم تحديث القائمة');
+            // TODO: Add toast notification and refresh data
+          }}
+        />
 
-      <PBCForm
-        open={openPbc}
-        onOpenChange={setOpenPbc}
-        engagementId={engagementId}
-        onSuccess={() => {
-          console.log('✅ تم حفظ PBC بنجاح - سيتم تحديث القائمة');
-          setOpenPbc(false);
-          // TODO: Add toast notification and refresh data
-        }}
-      />
+        <PBCForm
+          open={openPbc}
+          onOpenChange={setOpenPbc}
+          engagementId={engagementId}
+          onSuccess={() => {
+            console.log('✅ تم حفظ PBC بنجاح - سيتم تحديث القائمة');
+            setOpenPbc(false);
+            // TODO: Add toast notification and refresh data
+          }}
+        />
 
-      <TestForm
-        open={openTest}
-        onOpenChange={setOpenTest}
-        engagementId={engagementId}
-        onSuccess={() => {
-          console.log('✅ تم حفظ الاختبار بنجاح - سيتم تحديث القائمة');
-          setOpenTest(false);
-          // TODO: Add toast notification and refresh data
-        }}
-      />
+        <TestForm
+          open={openTest}
+          onOpenChange={setOpenTest}
+          engagementId={engagementId}
+          onSuccess={() => {
+            console.log('✅ تم حفظ الاختبار بنجاح - سيتم تحديث القائمة');
+            setOpenTest(false);
+            // TODO: Add toast notification and refresh data
+          }}
+        />
 
-      <SamplingForm
-        open={openSample}
-        onOpenChange={setOpenSample}
-        auditTestId="TEST-001" // TODO: Get from selected test
-        populationSize={1000} // TODO: Get from actual population
-        onSuccess={() => {
-          console.log('✅ تم إنشاء العينة بنجاح - سيتم تحديث القائمة');
-          setOpenSample(false);
-          // TODO: Add toast notification and refresh data
-        }}
-      />
+        <SamplingForm
+          open={openSample}
+          onOpenChange={setOpenSample}
+          auditTestId="TEST-001" // TODO: Get from selected test
+          populationSize={1000} // TODO: Get from actual population
+          onSuccess={() => {
+            console.log('✅ تم إنشاء العينة بنجاح - سيتم تحديث القائمة');
+            setOpenSample(false);
+            // TODO: Add toast notification and refresh data
+          }}
+        />
 
-      <TestExecutionForm
-        open={openTestExecution}
-        onOpenChange={setOpenTestExecution}
-        engagementId={engagementId}
-        auditTestId="TEST-001" // TODO: Get from selected test
-        auditTestTitle="اختبار تحقق من صحة البيانات المالية" // TODO: Get from selected test
-        onSuccess={(runId) => {
-          console.log('✅ تم تنفيذ الاختبار بنجاح:', runId);
-          setOpenTestExecution(false);
-          // TODO: Add toast notification and refresh data
-        }}
-      />
+        <TestExecutionForm
+          open={openTestExecution}
+          onOpenChange={setOpenTestExecution}
+          engagementId={engagementId}
+          auditTestId="TEST-001" // TODO: Get from selected test
+          auditTestTitle="اختبار تحقق من صحة البيانات المالية" // TODO: Get from selected test
+          onSuccess={runId => {
+            console.log('✅ تم تنفيذ الاختبار بنجاح:', runId);
+            setOpenTestExecution(false);
+            // TODO: Add toast notification and refresh data
+          }}
+        />
 
-      <EvidenceUploaderForm
-        open={openEvidenceUploader}
-        onOpenChange={setOpenEvidenceUploader}
-        engagementId={engagementId}
-        defaultLinks={{
-          testId: "TEST-001", // TODO: Get from context
-          sampleRef: "SAMPLE-001", // TODO: Get from context
-          findingId: undefined // TODO: Get from context if applicable
-        }}
-        onSuccess={(evidenceId) => {
-          console.log('✅ تم رفع الأدلة بنجاح:', evidenceId);
-          setOpenEvidenceUploader(false);
-          // TODO: Add toast notification and refresh data
-        }}
-      />
+        <EvidenceUploaderForm
+          open={openEvidenceUploader}
+          onOpenChange={setOpenEvidenceUploader}
+          engagementId={engagementId}
+          defaultLinks={{
+            testId: 'TEST-001', // TODO: Get from context
+            sampleRef: 'SAMPLE-001', // TODO: Get from context
+            findingId: undefined, // TODO: Get from context if applicable
+          }}
+          onSuccess={evidenceId => {
+            console.log('✅ تم رفع الأدلة بنجاح:', evidenceId);
+            setOpenEvidenceUploader(false);
+            // TODO: Add toast notification and refresh data
+          }}
+        />
       </div>
     </ToastProvider>
   );

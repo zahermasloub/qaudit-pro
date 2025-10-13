@@ -3,13 +3,15 @@
 ## إعداد قاعدة البيانات
 
 ### المتطلبات الأولية
+
 - PostgreSQL 12+ مثبت ومُشغّل
-- Node.js 18+ 
+- Node.js 18+
 - npm أو yarn
 
 ### خطوات الإعداد
 
 1. **تثبيت PostgreSQL وإنشاء قاعدة البيانات:**
+
 ```sql
 -- الاتصال بـ PostgreSQL كمستخدم admin
 CREATE DATABASE qaudit_pro;
@@ -18,6 +20,7 @@ GRANT ALL PRIVILEGES ON DATABASE qaudit_pro TO qaudit_user;
 ```
 
 2. **تكوين متغيرات البيئة:**
+
 ```bash
 # نسخ ملف المثال
 cp .env.example .env
@@ -27,21 +30,25 @@ DATABASE_URL="postgresql://qaudit_user:your_password_here@localhost:5432/qaudit_
 ```
 
 3. **تثبيت التبعيات:**
+
 ```bash
 npm install
 ```
 
 4. **توليد عميل Prisma:**
+
 ```bash
 npm run prisma:generate
 ```
 
 5. **تزامن قاعدة البيانات:**
+
 ```bash
 npm run db:push
 ```
 
 6. **التحقق من النتيجة (اختياري):**
+
 ```bash
 npm run prisma:studio
 ```
@@ -49,6 +56,7 @@ npm run prisma:studio
 ## النماذج المُعرّفة
 
 ### Engagement (المشاريع)
+
 - **id**: معرّف فريد
 - **code**: رمز المشروع (فريد)
 - **title**: عنوان المشروع
@@ -66,6 +74,7 @@ npm run prisma:studio
 - **createdAt** & **updatedAt**: تواريخ الإنشاء والتحديث
 
 ### Plan (الخطط)
+
 - **id**: معرّف فريد
 - **engagementId**: مرجع للمشروع
 - **timelineJson**: الجدول الزمني (JSON)
@@ -75,6 +84,7 @@ npm run prisma:studio
 - **raciJson**: مصفوفة RACI (JSON)
 
 ### PBCRequest (طلبات البيانات)
+
 - **id**: معرّف فريد
 - **engagementId**: مرجع للمشروع
 - **code**: رمز الطلب
@@ -112,20 +122,20 @@ import { prisma } from '@/lib/prisma';
 // إنشاء مشروع جديد
 const engagement = await prisma.engagement.create({
   data: {
-    code: "AUD-2024-001",
-    title: "تدقيق النظام المالي",
-    objective: "التأكد من دقة التقارير المالية",
+    code: 'AUD-2024-001',
+    title: 'تدقيق النظام المالي',
+    objective: 'التأكد من دقة التقارير المالية',
     // ... باقي البيانات
-  }
+  },
 });
 
 // الحصول على مشروع مع الخطط والطلبات
 const engagementWithRelations = await prisma.engagement.findUnique({
-  where: { id: "engagement-id" },
+  where: { id: 'engagement-id' },
   include: {
     plans: true,
     pbcRequests: true,
-  }
+  },
 });
 ```
 
@@ -136,6 +146,7 @@ const engagementWithRelations = await prisma.engagement.findUnique({
    - تحقق من صحة DATABASE_URL في .env
 
 2. **خطأ Prisma Client not generated:**
+
    ```bash
    npm run prisma:generate
    ```

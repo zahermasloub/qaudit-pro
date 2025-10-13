@@ -5,7 +5,7 @@
 
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useParams } from 'next/navigation';
 
 interface TestRun {
@@ -77,7 +77,9 @@ export default function FieldworkDashboardPage() {
 
       try {
         // Fetch test runs
-        const testRunsResponse = await fetch(`/api/fieldwork/test-runs?engagementId=${engagementId}`);
+        const testRunsResponse = await fetch(
+          `/api/fieldwork/test-runs?engagementId=${engagementId}`,
+        );
         if (!testRunsResponse.ok) {
           throw new Error('فشل في جلب بيانات تشغيل الاختبارات');
         }
@@ -97,7 +99,6 @@ export default function FieldworkDashboardPage() {
 
         // Calculate stats
         calculateStats(testRunsData.runs || [], evidenceList);
-
       } catch (err) {
         console.error('Error fetching fieldwork data:', err);
         setError(err instanceof Error ? err.message : 'خطأ في جلب البيانات');
@@ -129,7 +130,7 @@ export default function FieldworkDashboardPage() {
             notes: 'يجب مراجعة هذه الصلاحيات مع IT',
             executedBy: 'auditor@example.com',
             executedAt: new Date(Date.now() - 86400000).toISOString(),
-          }
+          },
         ];
 
         const demoEvidence: EvidenceItem[] = [
@@ -161,7 +162,7 @@ export default function FieldworkDashboardPage() {
             uploadedAt: new Date(Date.now() - 3600000).toISOString(),
             fileHash: 'sha256:def456...',
             virusStatus: 'clean',
-          }
+          },
         ];
 
         setTestRuns(demoTestRuns);
@@ -202,8 +203,10 @@ export default function FieldworkDashboardPage() {
         title: ev.originalName,
         timestamp: ev.uploadedAt,
         status: ev.virusStatus,
-      }))
-    ].sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime()).slice(0, 10);
+      })),
+    ]
+      .sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime())
+      .slice(0, 10);
 
     setStats({
       totalTestRuns,
@@ -295,9 +298,7 @@ export default function FieldworkDashboardPage() {
     <div className="space-y-6">
       {/* Header */}
       <div className="bg-white rounded-lg border border-gray-200 p-6">
-        <h1 className="text-2xl font-bold text-gray-900 mb-2">
-          لوحة تحكم العمل الميداني
-        </h1>
+        <h1 className="text-2xl font-bold text-gray-900 mb-2">لوحة تحكم العمل الميداني</h1>
         <p className="text-gray-600">
           مراقبة وإدارة تنفيذ الاختبارات ورفع الأدلة للمهمة: {engagementId}
         </p>
@@ -318,7 +319,7 @@ export default function FieldworkDashboardPage() {
               { key: 'overview', label: 'نظرة عامة' },
               { key: 'tests', label: 'تشغيلات الاختبارات' },
               { key: 'evidence', label: 'الأدلة المرفوعة' },
-            ].map((tab) => (
+            ].map(tab => (
               <button
                 key={tab.key}
                 onClick={() => setSelectedView(tab.key as any)}
@@ -402,7 +403,10 @@ export default function FieldworkDashboardPage() {
                 <h3 className="text-lg font-semibold text-gray-900 mb-4">النشاط الأخير</h3>
                 <div className="space-y-2">
                   {stats.recentActivity.map((activity, index) => (
-                    <div key={index} className="flex items-center justify-between bg-white p-3 rounded border">
+                    <div
+                      key={index}
+                      className="flex items-center justify-between bg-white p-3 rounded border"
+                    >
                       <div className="flex items-center">
                         <span className="text-2xl ml-3">
                           {activity.type === 'test' ? '🧪' : '📄'}
@@ -415,10 +419,16 @@ export default function FieldworkDashboardPage() {
                         </div>
                       </div>
                       <div className="text-left">
-                        <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${getResultColor(activity.status)}`}>
-                          {activity.type === 'test' ? getResultLabel(activity.status) : activity.status}
+                        <span
+                          className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${getResultColor(activity.status)}`}
+                        >
+                          {activity.type === 'test'
+                            ? getResultLabel(activity.status)
+                            : activity.status}
                         </span>
-                        <p className="text-xs text-gray-500 mt-1">{formatDate(activity.timestamp)}</p>
+                        <p className="text-xs text-gray-500 mt-1">
+                          {formatDate(activity.timestamp)}
+                        </p>
                       </div>
                     </div>
                   ))}
@@ -459,7 +469,7 @@ export default function FieldworkDashboardPage() {
                       </tr>
                     </thead>
                     <tbody className="bg-white divide-y divide-gray-200">
-                      {testRuns.map((run) => (
+                      {testRuns.map(run => (
                         <tr key={run.id} className="hover:bg-gray-50">
                           <td className="px-6 py-4 whitespace-nowrap">
                             <div>
@@ -475,7 +485,9 @@ export default function FieldworkDashboardPage() {
                             </div>
                           </td>
                           <td className="px-6 py-4 whitespace-nowrap">
-                            <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${getResultColor(run.result)}`}>
+                            <span
+                              className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${getResultColor(run.result)}`}
+                            >
                               {getResultLabel(run.result)}
                             </span>
                           </td>
@@ -526,7 +538,7 @@ export default function FieldworkDashboardPage() {
                       </tr>
                     </thead>
                     <tbody className="bg-white divide-y divide-gray-200">
-                      {evidence.map((item) => (
+                      {evidence.map(item => (
                         <tr key={item.id} className="hover:bg-gray-50">
                           <td className="px-6 py-4 whitespace-nowrap">
                             <div>
@@ -545,13 +557,20 @@ export default function FieldworkDashboardPage() {
                             {formatFileSize(item.fileSize)}
                           </td>
                           <td className="px-6 py-4 whitespace-nowrap">
-                            <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${
-                              item.virusStatus === 'clean' ? 'bg-green-100 text-green-800' :
-                              item.virusStatus === 'scanning' ? 'bg-yellow-100 text-yellow-800' :
-                              'bg-red-100 text-red-800'
-                            }`}>
-                              {item.virusStatus === 'clean' ? 'آمن' :
-                               item.virusStatus === 'scanning' ? 'جاري الفحص' : 'مشبوه'}
+                            <span
+                              className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${
+                                item.virusStatus === 'clean'
+                                  ? 'bg-green-100 text-green-800'
+                                  : item.virusStatus === 'scanning'
+                                    ? 'bg-yellow-100 text-yellow-800'
+                                    : 'bg-red-100 text-red-800'
+                              }`}
+                            >
+                              {item.virusStatus === 'clean'
+                                ? 'آمن'
+                                : item.virusStatus === 'scanning'
+                                  ? 'جاري الفحص'
+                                  : 'مشبوه'}
                             </span>
                           </td>
                           <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">

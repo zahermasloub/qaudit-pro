@@ -1,5 +1,6 @@
-import { useI18n, Locale } from '@/lib/i18n';
-import PBCTable from '@/components/pbc/pbc-table';
+import PBCTable from '@/components/pbc/PbcTable';
+import type { Locale } from '@/lib/i18n';
+import { useI18n } from '@/lib/i18n';
 
 const clsx = (...xs: Array<string | false | null | undefined>) => xs.filter(Boolean).join(' ');
 
@@ -9,9 +10,7 @@ export function PlanningScreen({ locale }: { locale: Locale }) {
   return (
     <div className="p-6 space-y-6">
       <div className="flex items-center justify-between">
-        <h1 className="text-2xl font-bold text-gray-900">
-          {(i18n.menu as any).planning}
-        </h1>
+        <h1 className="text-2xl font-bold text-gray-900">{(i18n.menu as any).planning}</h1>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
@@ -45,11 +44,15 @@ export function PlanningScreen({ locale }: { locale: Locale }) {
               </div>
               <div className="p-3 bg-yellow-50 border border-yellow-200 rounded-lg text-center">
                 <div className="text-lg font-bold text-yellow-900">1</div>
-                <div className="text-xs text-yellow-700">{locale === 'ar' ? 'جزئي' : 'Partial'}</div>
+                <div className="text-xs text-yellow-700">
+                  {locale === 'ar' ? 'جزئي' : 'Partial'}
+                </div>
               </div>
               <div className="p-3 bg-green-50 border border-green-200 rounded-lg text-center">
                 <div className="text-lg font-bold text-green-900">1</div>
-                <div className="text-xs text-green-700">{locale === 'ar' ? 'مكتمل' : 'Complete'}</div>
+                <div className="text-xs text-green-700">
+                  {locale === 'ar' ? 'مكتمل' : 'Complete'}
+                </div>
               </div>
             </div>
           </div>
@@ -79,9 +82,7 @@ export function ProcessRiskScreen({ locale }: { locale: Locale }) {
   return (
     <div className="p-6 space-y-6">
       <div className="flex items-center justify-between">
-        <h1 className="text-2xl font-bold text-gray-900">
-          {(i18n.menu as any).processRisk}
-        </h1>
+        <h1 className="text-2xl font-bold text-gray-900">{(i18n.menu as any).processRisk}</h1>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
@@ -91,9 +92,7 @@ export function ProcessRiskScreen({ locale }: { locale: Locale }) {
             {locale === 'ar' ? 'خرائط العمليات' : 'Process Maps'}
           </h3>
           <div className="text-center p-8 border-2 border-dashed border-gray-300 rounded-lg">
-            <div className="text-gray-500">
-              {locale === 'ar' ? 'لا توجد خرائط' : 'No maps yet'}
-            </div>
+            <div className="text-gray-500">{locale === 'ar' ? 'لا توجد خرائط' : 'No maps yet'}</div>
           </div>
         </div>
 
@@ -138,9 +137,7 @@ export function ProgramScreen({ locale }: { locale: Locale }) {
   return (
     <div className="p-6 space-y-6">
       <div className="flex items-center justify-between">
-        <h1 className="text-2xl font-bold text-gray-900">
-          {(i18n.menu as any).program}
-        </h1>
+        <h1 className="text-2xl font-bold text-gray-900">{(i18n.menu as any).program}</h1>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
@@ -150,7 +147,7 @@ export function ProgramScreen({ locale }: { locale: Locale }) {
             {locale === 'ar' ? 'برامج الاختبار' : 'Test Programs'}
           </h3>
           <div className="space-y-3">
-            {[1,2,3].map(i => (
+            {[1, 2, 3].map(i => (
               <div key={i} className="p-3 border border-gray-200 rounded-lg">
                 <div className="font-medium text-gray-900">
                   {locale === 'ar' ? `اختبار ${i}` : `Test ${i}`}
@@ -256,9 +253,7 @@ export function FieldworkScreen({ locale }: { locale: Locale }) {
               </div>
               <div className="p-2 bg-gray-50 border border-gray-200 rounded text-center">
                 <div className="text-sm font-bold text-gray-900">0</div>
-                <div className="text-xs text-gray-600">
-                  {locale === 'ar' ? 'صور' : 'Images'}
-                </div>
+                <div className="text-xs text-gray-600">{locale === 'ar' ? 'صور' : 'Images'}</div>
               </div>
             </div>
           </div>
@@ -274,7 +269,9 @@ export function FieldworkScreen({ locale }: { locale: Locale }) {
               <div className="w-2 h-2 bg-blue-500 rounded-full mt-2"></div>
               <div>
                 <p className="text-gray-900">
-                  {locale === 'ar' ? 'تم إنشاء نظام إدارة الأدلة' : 'Evidence management system created'}
+                  {locale === 'ar'
+                    ? 'تم إنشاء نظام إدارة الأدلة'
+                    : 'Evidence management system created'}
                 </p>
                 <p className="text-gray-500 text-xs">
                   {locale === 'ar' ? 'منذ دقائق' : 'Just now'}
@@ -298,8 +295,7 @@ export function FieldworkScreen({ locale }: { locale: Locale }) {
             <p className="text-sm text-blue-700 mt-1">
               {locale === 'ar'
                 ? 'يمكنك الآن الوصول إلى جميع ميزات العمل الميداني من شريط الأدوات أعلاه: رفع الأدلة، تنفيذ الاختبارات، وفحص الفيروسات.'
-                : 'All fieldwork features are now accessible from the toolbar above: Evidence upload, test execution, and virus scanning.'
-              }
+                : 'All fieldwork features are now accessible from the toolbar above: Evidence upload, test execution, and virus scanning.'}
             </p>
           </div>
         </div>
@@ -363,43 +359,33 @@ export function FieldworkScreen({ locale }: { locale: Locale }) {
             <span className="text-green-500 mr-2">✓</span>
             {locale === 'ar'
               ? 'رفع الأدلة بجميع الصيغ مع drag & drop'
-              : 'Multi-format evidence upload with drag & drop'
-            }
+              : 'Multi-format evidence upload with drag & drop'}
           </li>
           <li className="flex items-center">
             <span className="text-green-500 mr-2">✓</span>
             {locale === 'ar'
               ? 'تنفيذ الاختبارات مع ربط الأدلة'
-              : 'Test execution with evidence linking'
-            }
+              : 'Test execution with evidence linking'}
           </li>
           <li className="flex items-center">
             <span className="text-green-500 mr-2">✓</span>
-            {locale === 'ar'
-              ? 'فحص الفيروسات وتأمين الملفات'
-              : 'Virus scanning and file security'
-            }
+            {locale === 'ar' ? 'فحص الفيروسات وتأمين الملفات' : 'Virus scanning and file security'}
           </li>
           <li className="flex items-center">
             <span className="text-green-500 mr-2">✓</span>
-            {locale === 'ar'
-              ? 'دعم التحقق من صحة البيانات بـ Zod'
-              : 'Zod validation support'
-            }
+            {locale === 'ar' ? 'دعم التحقق من صحة البيانات بـ Zod' : 'Zod validation support'}
           </li>
           <li className="flex items-center">
             <span className="text-green-500 mr-2">✓</span>
             {locale === 'ar'
               ? 'واجهة React Hook Form متقدمة'
-              : 'Advanced React Hook Form interface'
-            }
+              : 'Advanced React Hook Form interface'}
           </li>
           <li className="flex items-center">
             <span className="text-green-500 mr-2">✓</span>
             {locale === 'ar'
               ? 'تكامل شامل مع AppShell وRBAC'
-              : 'Full AppShell and RBAC integration'
-            }
+              : 'Full AppShell and RBAC integration'}
           </li>
         </ul>
       </div>

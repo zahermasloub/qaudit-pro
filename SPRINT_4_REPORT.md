@@ -3,6 +3,7 @@
 ## ✅ **المهام المُنجزة (Done)**
 
 ### 1. **Zod Schema** ✓
+
 - **الملف**: `features/planning/engagement/engagement.schema.ts`
 - **المحتوى**:
   - 13 حقل مع تحقق كامل من البيانات
@@ -11,6 +12,7 @@
   - تحقق من البريد الإلكتروني، URLs، الأرقام الموجبة
 
 ### 2. **Form UI Component** ✓
+
 - **الملف**: `features/planning/engagement/engagement.form.tsx`
 - **المميزات**:
   - React Hook Form + Zod Resolver
@@ -22,6 +24,7 @@
   - رسائل نجاح/فشل
 
 ### 3. **API Route** ✓
+
 - **الملف**: `app/api/engagements/route.ts`
 - **الوظائف**:
   - POST endpoint لحفظ Engagement
@@ -31,6 +34,7 @@
   - استجابات JSON منظمة
 
 ### 4. **AppShell Integration** ✓
+
 - **الملف**: `app/(app)/shell/AppShell.tsx`
 - **التحديثات**:
   - إضافة state: `openEngForm`
@@ -42,6 +46,7 @@
 ## 🔧 **التحسينات التقنية**
 
 ### **Zod Validation**
+
 ```typescript
 - 13 حقل مع تحقق شامل
 - رسائل خطأ مخصصة بالعربية
@@ -50,6 +55,7 @@
 ```
 
 ### **React Hook Form**
+
 ```typescript
 - تحكم كامل في النموذج مع Zod resolver
 - معالجة أخطاء real-time
@@ -58,6 +64,7 @@
 ```
 
 ### **API Integration**
+
 ```typescript
 - RESTful POST endpoint
 - معالجة شاملة للأخطاء
@@ -66,6 +73,7 @@
 ```
 
 ### **UI/UX Enhancements**
+
 ```typescript
 - Dialog responsive مع scroll
 - تجميع الحقول منطقياً
@@ -75,12 +83,12 @@
 
 ## 📊 **الإحصائيات**
 
-| المكون | الأسطر | المميزات |
-|--------|--------|----------|
-| Schema | 15+ | 13 field validation |
-| Form UI | 250+ | Full form with tags |
-| API Route | 40+ | Complete CRUD endpoint |
-| Integration | 20+ | Toolbar + modal binding |
+| المكون      | الأسطر | المميزات                |
+| ----------- | ------ | ----------------------- |
+| Schema      | 15+    | 13 field validation     |
+| Form UI     | 250+   | Full form with tags     |
+| API Route   | 40+    | Complete CRUD endpoint  |
+| Integration | 20+    | Toolbar + modal binding |
 
 ## 🎯 **Acceptance Criteria - تم تحقيقها**
 
@@ -93,11 +101,13 @@
 ## 🔄 **Diff Summary**
 
 ### **Added Files:**
+
 - `features/planning/engagement/engagement.schema.ts` (NEW)
 - `features/planning/engagement/engagement.form.tsx` (UPDATED)
 - `app/api/engagements/route.ts` (NEW)
 
 ### **Modified Files:**
+
 - `app/(app)/shell/AppShell.tsx` (+25 lines)
   - Import EngagementForm
   - Add openEngForm state
@@ -115,6 +125,7 @@
 ## 📋 **Next: Sprint 5 (PBC Requests)**
 
 **الأولوية القادمة:**
+
 - إنشاء PBC Request Form مماثل
 - ربط PBC بـ Engagement
 - جدول PBC مع filtering
@@ -122,6 +133,7 @@
 - نظام تنبيهات للمواعيد النهائية
 
 **الملفات المتوقعة:**
+
 - `features/planning/pbc/pbc.schema.ts`
 - `features/planning/pbc/pbc.form.tsx`
 - `app/api/pbc-requests/route.ts`
@@ -133,6 +145,7 @@
 
 **Sprint 4 مُكتمل بنجاح!** 🚀
 نموذج Engagement Mandate يعمل بكفاءة مع:
+
 - تحقق شامل من البيانات
 - واجهة مستخدم احترافية
 - حفظ فعلي في قاعدة البيانات

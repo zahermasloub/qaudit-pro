@@ -1,4 +1,6 @@
-import { NextRequest, NextResponse } from 'next/server';
+import type { NextRequest } from 'next/server';
+import { NextResponse } from 'next/server';
+
 import { EvidenceProcessingService } from '@/lib/evidence-processing-service';
 
 export async function GET(request: NextRequest) {
@@ -7,10 +9,7 @@ export async function GET(request: NextRequest) {
     const engagementId = searchParams.get('engagementId');
 
     if (!engagementId) {
-      return NextResponse.json(
-        { error: 'Engagement ID is required' },
-        { status: 400 }
-      );
+      return NextResponse.json({ error: 'Engagement ID is required' }, { status: 400 });
     }
 
     // Initialize processing service to get stats
@@ -23,26 +22,25 @@ export async function GET(request: NextRequest) {
       services: {
         antivirusScanning: {
           available: true,
-          description: 'ClamAV and VirusTotal integration'
+          description: 'ClamAV and VirusTotal integration',
         },
         ocrProcessing: {
           available: true,
-          description: 'Arabic/English text extraction with Tesseract.js'
+          description: 'Arabic/English text extraction with Tesseract.js',
         },
         s3PresignedUrls: {
           available: true,
-          description: 'Secure file access with AWS S3'
-        }
+          description: 'Secure file access with AWS S3',
+        },
       },
       stats,
-      lastUpdated: new Date().toISOString()
+      lastUpdated: new Date().toISOString(),
     });
-
   } catch (error) {
     console.error('❌ Evidence processing status API error:', error);
     return NextResponse.json(
       { error: 'Internal server error fetching processing status' },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

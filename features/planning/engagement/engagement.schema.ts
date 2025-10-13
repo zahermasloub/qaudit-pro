@@ -13,7 +13,7 @@ export const engagementSchema = z.object({
   endDate: z.string().min(10, 'تاريخ النهاية مطلوب'),
   budgetHours: z.number().int().positive('ساعات الميزانية يجب أن تكون رقم صحيح موجب'),
   independenceDisclosureUrl: z.string().url('رابط غير صحيح').optional(),
-  createdBy: z.string().email('البريد الإلكتروني غير صحيح')
+  createdBy: z.string().email('البريد الإلكتروني غير صحيح'),
 });
 
 export type EngagementFormValues = z.infer<typeof engagementSchema>;

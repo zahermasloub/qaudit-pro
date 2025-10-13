@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { testSchema, type TestFormValues } from '@/features/program/tests/test.schema';
-import { useToast } from '@/components/ui/toast';
+
+import { useToast } from '@/components/ui/Toast-v2';
+import { type TestFormValues, testSchema } from '@/features/program/tests/test.schema';
 
 interface TestFormProps {
   open: boolean;
@@ -15,7 +16,13 @@ export default function TestForm({ open, onOpenChange, engagementId, onSuccess }
   const [loading, setLoading] = useState(false);
   const [testSteps, setTestSteps] = useState<string[]>(['']);
   const { addToast } = useToast();
-  const { register, handleSubmit, reset, setValue, formState: { errors } } = useForm<TestFormValues>({
+  const {
+    register,
+    handleSubmit,
+    reset,
+    setValue,
+    formState: { errors },
+  } = useForm<TestFormValues>({
     resolver: zodResolver(testSchema),
     defaultValues: {
       engagementId,
@@ -29,7 +36,7 @@ export default function TestForm({ open, onOpenChange, engagementId, onSuccess }
       status: 'planned' as const,
       assignedTo: '',
       plannedHours: 8,
-    }
+    },
   });
 
   async function onSubmit(data: TestFormValues) {
@@ -38,7 +45,7 @@ export default function TestForm({ open, onOpenChange, engagementId, onSuccess }
       const response = await fetch('/api/tests', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(data)
+        body: JSON.stringify(data),
       });
 
       if (response.ok) {
@@ -46,7 +53,7 @@ export default function TestForm({ open, onOpenChange, engagementId, onSuccess }
         addToast({
           type: 'success',
           title: 'تم إنشاء الاختبار بنجاح',
-          message: `تم حفظ الاختبار: ${result.code}`
+          message: `تم حفظ الاختبار: ${result.code}`,
         });
         reset();
         onSuccess();
@@ -55,14 +62,14 @@ export default function TestForm({ open, onOpenChange, engagementId, onSuccess }
         addToast({
           type: 'error',
           title: 'خطأ في حفظ الاختبار',
-          message: error.error || 'حدث خطأ غير متوقع'
+          message: error.error || 'حدث خطأ غير متوقع',
         });
       }
     } catch (error) {
       addToast({
         type: 'error',
         title: 'خطأ في الاتصال',
-        message: 'تعذر الاتصال بالخادم'
+        message: 'تعذر الاتصال بالخادم',
       });
     } finally {
       setLoading(false);
@@ -77,10 +84,7 @@ export default function TestForm({ open, onOpenChange, engagementId, onSuccess }
       <div className="relative bg-white rounded-2xl shadow-xl border border-gray-200 w-full max-w-4xl p-6 max-h-[90vh] overflow-y-auto">
         <div className="flex items-center justify-between mb-4">
           <h3 className="text-lg font-semibold">اختبار تدقيق جديد</h3>
-          <button
-            className="text-gray-500 hover:text-gray-700"
-            onClick={() => onOpenChange(false)}
-          >
+          <button className="text-gray-500 hover:text-gray-700" onClick={() => onOpenChange(false)}>
             ✕
           </button>
         </div>
@@ -128,7 +132,9 @@ export default function TestForm({ open, onOpenChange, engagementId, onSuccess }
               className="w-full rounded-lg border border-gray-300 px-3 py-2 h-20"
               placeholder="التأكد من دقة واكتمال البيانات المالية..."
             />
-            {errors.objective && <p className="text-red-500 text-xs mt-1">{errors.objective.message}</p>}
+            {errors.objective && (
+              <p className="text-red-500 text-xs mt-1">{errors.objective.message}</p>
+            )}
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -172,7 +178,7 @@ export default function TestForm({ open, onOpenChange, engagementId, onSuccess }
                 <div key={index} className="flex gap-2">
                   <input
                     value={step}
-                    onChange={(e) => {
+                    onChange={e => {
                       const newSteps = [...testSteps];
                       newSteps[index] = e.target.value;
                       setTestSteps(newSteps);
@@ -197,7 +203,9 @@ export default function TestForm({ open, onOpenChange, engagementId, onSuccess }
                 </div>
               ))}
             </div>
-            {errors.testSteps && <p className="text-red-500 text-xs mt-1">{errors.testSteps.message}</p>}
+            {errors.testSteps && (
+              <p className="text-red-500 text-xs mt-1">{errors.testSteps.message}</p>
+            )}
           </div>
 
           <div>
@@ -207,7 +215,9 @@ export default function TestForm({ open, onOpenChange, engagementId, onSuccess }
               className="w-full rounded-lg border border-gray-300 px-3 py-2 h-16"
               placeholder="النتائج التي نتوقعها من هذا الاختبار..."
             />
-            {errors.expectedResults && <p className="text-red-500 text-xs mt-1">{errors.expectedResults.message}</p>}
+            {errors.expectedResults && (
+              <p className="text-red-500 text-xs mt-1">{errors.expectedResults.message}</p>
+            )}
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">

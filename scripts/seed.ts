@@ -5,19 +5,19 @@ const prisma = new PrismaClient();
 
 async function seedData() {
   // Create User
-  const hash = await bcrypt.hash("Passw0rd!", 10);
+  const hash = await bcrypt.hash('Passw0rd!', 10);
   await prisma.user.upsert({
-    where: { email: "lead@example.com" },
+    where: { email: 'lead@example.com' },
     update: {},
     create: {
-      email: "lead@example.com",
-      name: "IA Lead",
+      email: 'lead@example.com',
+      name: 'IA Lead',
       password: hash,
-      role: "IA_Lead",
-      locale: "ar"
+      role: 'IA_Lead',
+      locale: 'ar',
     },
   });
-  console.log("Seeded: lead@example.com / Passw0rd!");
+  console.log('Seeded: lead@example.com / Passw0rd!');
 
   // Create Engagement
   const engagement = await prisma.engagement.upsert({

@@ -70,11 +70,13 @@ model Sample {
 **تم إنشاء المسارات التالية:**
 
 #### `/api/tests` (POST)
+
 - إنشاء اختبارات تدقيق جديدة
 - تحويل JSON لخطوات الاختبار
 - ربط بالمهام والمخاطر
 
 #### `/api/samples` (POST)
+
 - إنشاء عينات بطرق مختلفة (عشوائية، حكمية، وحدة نقدية)
 - توليد SHA256 hash لضمان السلامة
 - محاكاة اختيار العناصر حسب المعايير
@@ -84,30 +86,34 @@ model Sample {
 **تم إنشاء مخططات التحقق:**
 
 #### `testSchema`
+
 ```typescript
 testSchema = z.object({
-  engagementId: z.string().min(1, "مطلوب"),
-  code: z.string().min(2, "الرمز قصير"),
-  title: z.string().min(3, "العنوان قصير"),
-  objective: z.string().min(5, "الهدف مطلوب"),
-  testSteps: z.array(z.string().min(1)).min(1, "خطوة واحدة على الأقل"),
+  engagementId: z.string().min(1, 'مطلوب'),
+  code: z.string().min(2, 'الرمز قصير'),
+  title: z.string().min(3, 'العنوان قصير'),
+  objective: z.string().min(5, 'الهدف مطلوب'),
+  testSteps: z.array(z.string().min(1)).min(1, 'خطوة واحدة على الأقل'),
   // ... باقي الحقول
 });
 ```
 
 #### `samplingSchema`
+
 ```typescript
 samplingSchema = z.object({
-  testId: z.string().min(1, "Test ID مطلوب"),
-  method: z.enum(["random", "judgment", "monetary"]),
+  testId: z.string().min(1, 'Test ID مطلوب'),
+  method: z.enum(['random', 'judgment', 'monetary']),
   populationSize: z.number().min(1),
   sampleSize: z.number().min(1),
-  criteria: z.object({
-    minAmount: z.number().optional(),
-    maxAmount: z.number().optional(),
-    dateFrom: z.string().optional(),
-    // ... باقي معايير الاختيار
-  }).optional(),
+  criteria: z
+    .object({
+      minAmount: z.number().optional(),
+      maxAmount: z.number().optional(),
+      dateFrom: z.string().optional(),
+      // ... باقي معايير الاختيار
+    })
+    .optional(),
 });
 ```
 
@@ -116,12 +122,14 @@ samplingSchema = z.object({
 **تم إنشاء النماذج التفاعلية:**
 
 #### `TestForm.tsx`
+
 - نموذج شامل لإنشاء اختبارات التدقيق
 - إدارة ديناميكية لخطوات الاختبار
 - تكامل مع Toast للتنبيهات
 - التحقق من البيانات باستخدام Zod
 
 #### `SamplingForm.tsx`
+
 - نموذج متقدم لإنشاء العينات
 - اختيار طريقة العينة (عشوائية/حكمية/وحدة نقدية)
 - حساب نسب العينة تلقائياً
@@ -141,6 +149,7 @@ samplingSchema = z.object({
 ### 6. Database Operations ✅
 
 **العمليات المنجزة:**
+
 - ✅ `npx prisma generate` - توليد Prisma Client
 - ✅ `npx prisma db push` - مزامنة قاعدة البيانات
 - ✅ إضافة النماذج والعلاقات
@@ -149,6 +158,7 @@ samplingSchema = z.object({
 ### 7. Security Features ✅
 
 **أمان البيانات:**
+
 - SHA256 hashing للعينات
 - تشفير معايير الاختيار
 - التحقق من صحة البيانات على مستويات متعددة
@@ -157,6 +167,7 @@ samplingSchema = z.object({
 ## طريقة الاستخدام
 
 ### 1. إنشاء اختبار تدقيق جديد:
+
 1. اذهب إلى قسم "برنامج العمل والعينات"
 2. اضغط "اختبار جديد"
 3. املأ تفاصيل الاختبار
@@ -164,6 +175,7 @@ samplingSchema = z.object({
 5. احفظ
 
 ### 2. إنشاء عينة:
+
 1. في نفس القسم اضغط "سحب عينة"
 2. اختر طريقة العينة
 3. حدد حجم العينة والمعايير

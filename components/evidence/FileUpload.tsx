@@ -10,6 +10,7 @@ import { useDropzone } from 'react-dropzone';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
+
 import { Button } from '@/components/ui/button';
 // TODO: Import toast when implemented
 // import { toast } from '@/components/ui/toast';
@@ -77,7 +78,7 @@ const FileUpload: React.FC<FileUploadProps> = ({
   // Dropzone configuration
   const onDrop = useCallback(
     (acceptedFiles: File[]) => {
-      const filesWithPreview = acceptedFiles.map((file) => {
+      const filesWithPreview = acceptedFiles.map(file => {
         const fileWithPreview = file as FileWithPreview;
 
         // Create preview for images
@@ -93,7 +94,7 @@ const FileUpload: React.FC<FileUploadProps> = ({
       setSelectedFiles(updatedFiles);
       setValue('files', updatedFiles);
     },
-    [selectedFiles, setValue]
+    [selectedFiles, setValue],
   );
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
@@ -208,7 +209,6 @@ const FileUpload: React.FC<FileUploadProps> = ({
           setSelectedFiles([]);
           reset();
         }, 2000);
-
       } else {
         // Handle partial or complete failure
         const errorFiles = selectedFiles.map(file => ({
@@ -224,7 +224,6 @@ const FileUpload: React.FC<FileUploadProps> = ({
           onUploadError(result.errors);
         }
       }
-
     } catch (error) {
       console.error('Upload error:', error);
 
@@ -236,7 +235,6 @@ const FileUpload: React.FC<FileUploadProps> = ({
       setSelectedFiles(errorFiles);
 
       toast.error('خطأ في الاتصال بالخادم');
-
     } finally {
       setIsUploading(false);
     }
@@ -248,9 +246,7 @@ const FileUpload: React.FC<FileUploadProps> = ({
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
         {/* Category Selection */}
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">
-            تصنيف الأدلة
-          </label>
+          <label className="block text-sm font-medium text-gray-700 mb-2">تصنيف الأدلة</label>
           <select
             {...register('evidenceCategory')}
             className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
@@ -282,10 +278,7 @@ const FileUpload: React.FC<FileUploadProps> = ({
           {...getRootProps()}
           className={`
             border-2 border-dashed rounded-lg p-8 text-center cursor-pointer transition-colors
-            ${isDragActive
-              ? 'border-blue-400 bg-blue-50'
-              : 'border-gray-300 hover:border-gray-400'
-            }
+            ${isDragActive ? 'border-blue-400 bg-blue-50' : 'border-gray-300 hover:border-gray-400'}
             ${isUploading ? 'pointer-events-none opacity-50' : ''}
           `}
         >
@@ -298,15 +291,11 @@ const FileUpload: React.FC<FileUploadProps> = ({
             <p className="text-sm text-gray-500">
               أو انقر لاختيار الملفات (حد أقصى 50 ميجابايت لكل ملف)
             </p>
-            <p className="text-xs text-gray-400">
-              صيغ مدعومة: PDF, Word, Excel, CSV, صور، أرشيف
-            </p>
+            <p className="text-xs text-gray-400">صيغ مدعومة: PDF, Word, Excel, CSV, صور، أرشيف</p>
           </div>
         </div>
 
-        {errors.files && (
-          <p className="text-sm text-red-600">{errors.files.message}</p>
-        )}
+        {errors.files && <p className="text-sm text-red-600">{errors.files.message}</p>}
 
         {/* Selected Files List */}
         {selectedFiles.length > 0 && (
@@ -330,12 +319,8 @@ const FileUpload: React.FC<FileUploadProps> = ({
                     )}
 
                     <div className="flex-1 min-w-0">
-                      <p className="text-sm font-medium text-gray-900 truncate">
-                        {file.name}
-                      </p>
-                      <p className="text-xs text-gray-500">
-                        {formatFileSize(file.size)}
-                      </p>
+                      <p className="text-sm font-medium text-gray-900 truncate">{file.name}</p>
+                      <p className="text-xs text-gray-500">{formatFileSize(file.size)}</p>
 
                       {/* Upload status */}
                       {file.uploadStatus === 'uploading' && (
@@ -354,9 +339,7 @@ const FileUpload: React.FC<FileUploadProps> = ({
                       )}
 
                       {file.uploadStatus === 'error' && (
-                        <p className="text-xs text-red-600">
-                          ✗ {file.uploadError || 'فشل الرفع'}
-                        </p>
+                        <p className="text-xs text-red-600">✗ {file.uploadError || 'فشل الرفع'}</p>
                       )}
                     </div>
                   </div>

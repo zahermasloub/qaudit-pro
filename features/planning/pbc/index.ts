@@ -1,2 +1,2 @@
 export * from './pbc.schema';
-export * from './pbc.service';
+export * from './pbc.service-v2';

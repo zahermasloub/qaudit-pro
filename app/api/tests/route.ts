@@ -1,5 +1,5 @@
-import prisma from "@/lib/prisma";
-import { testSchema } from "@/features/program/tests/test.schema";
+import { testSchema } from '@/features/program/tests/test.schema';
+import prisma from '@/lib/prisma';
 
 export async function POST(req: Request) {
   try {
@@ -27,7 +27,7 @@ export async function POST(req: Request) {
 
     return Response.json({ ok: true, id: created.id, code: created.code }, { status: 200 });
   } catch (e: any) {
-    const msg = e?.errors?.[0]?.message || e?.message || "Invalid";
+    const msg = e?.errors?.[0]?.message || e?.message || 'Invalid';
     return Response.json({ ok: false, error: msg }, { status: 400 });
   }
 }

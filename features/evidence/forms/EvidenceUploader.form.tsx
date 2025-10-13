@@ -5,12 +5,17 @@
 
 'use client';
 
-import React, { useState, useCallback } from 'react';
+import React, { useCallback, useState } from 'react';
+import { useDropzone } from 'react-dropzone';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useDropzone } from 'react-dropzone';
-import { evidenceUploadMetaSchema, getCategoryLabel, type EvidenceUploadMeta } from '@/features/evidence/schemas/evidence-upload.schema';
+
 import { Button } from '@/components/ui/button';
+import {
+  type EvidenceUploadMeta,
+  evidenceUploadMetaSchema,
+  getCategoryLabel,
+} from '@/features/evidence/schemas/evidence-upload.schema';
 
 interface EvidenceUploaderFormProps {
   open: boolean;
@@ -115,12 +120,15 @@ const EvidenceUploaderForm: React.FC<EvidenceUploaderFormProps> = ({
     setSelectedFiles(prev => prev.filter((_, i) => i !== index));
   };
 
-  const uploadSingleFile = async (file: FileWithPreview, metadata: EvidenceUploadMeta): Promise<string> => {
+  const uploadSingleFile = async (
+    file: FileWithPreview,
+    metadata: EvidenceUploadMeta,
+  ): Promise<string> => {
     console.log('📤 رفع الملف:', {
       fileName: file.name,
       fileSize: file.size,
       engagementId: metadata.engagementId,
-      category: metadata.category
+      category: metadata.category,
     });
 
     const formData = new FormData();
@@ -138,12 +146,14 @@ const EvidenceUploaderForm: React.FC<EvidenceUploaderFormProps> = ({
       console.error('❌ خطأ في الاستجابة:', {
         status: response.status,
         statusText: response.statusText,
-        error: result.error
+        error: result.error,
       });
 
       // رسائل خطأ محسنة حسب نوع المشكلة
       if (response.status === 404 && result.error?.includes('المهمة')) {
-        throw new Error(`المهمة غير موجودة (معرف: ${metadata.engagementId}). يرجى التأكد من صحة اختيار المهمة.`);
+        throw new Error(
+          `المهمة غير موجودة (معرف: ${metadata.engagementId}). يرجى التأكد من صحة اختيار المهمة.`,
+        );
       }
 
       throw new Error(result.error || `فشل في رفع ${file.name} (كود الخطأ: ${response.status})`);
@@ -185,15 +195,15 @@ const EvidenceUploaderForm: React.FC<EvidenceUploaderFormProps> = ({
 
         try {
           // تحديث حالة الملف
-          setSelectedFiles(prev => prev.map((f, idx) =>
-            idx === i ? { ...f, uploadStatus: 'uploading' } : f
-          ));
+          setSelectedFiles(prev =>
+            prev.map((f, idx) => (idx === i ? { ...f, uploadStatus: 'uploading' } : f)),
+          );
 
           // محاكاة تقدم الرفع
           const progressInterval = setInterval(() => {
             setUploadProgress(prev => ({
               ...prev,
-              [file.name]: Math.min(90, (prev[file.name] || 0) + 10)
+              [file.name]: Math.min(90, (prev[file.name] || 0) + 10),
             }));
           }, 200);
 
@@ -206,20 +216,21 @@ const EvidenceUploaderForm: React.FC<EvidenceUploaderFormProps> = ({
           setUploadProgress(prev => ({ ...prev, [file.name]: 100 }));
 
           // تحديث حالة الملف للنجاح
-          setSelectedFiles(prev => prev.map((f, idx) =>
-            idx === i ? { ...f, uploadStatus: 'success' } : f
-          ));
+          setSelectedFiles(prev =>
+            prev.map((f, idx) => (idx === i ? { ...f, uploadStatus: 'success' } : f)),
+          );
 
           results.push(evidenceId);
-
         } catch (error) {
           console.error('❌ فشل في رفع الملف:', file.name, error);
 
           // تحديث حالة الملف للخطأ
           const errorMessage = error instanceof Error ? error.message : 'خطأ غير معروف';
-          setSelectedFiles(prev => prev.map((f, idx) =>
-            idx === i ? { ...f, uploadStatus: 'error', uploadError: errorMessage } : f
-          ));
+          setSelectedFiles(prev =>
+            prev.map((f, idx) =>
+              idx === i ? { ...f, uploadStatus: 'error', uploadError: errorMessage } : f,
+            ),
+          );
 
           errors.push(`${file.name}: ${errorMessage}`);
         }
@@ -245,12 +256,15 @@ const EvidenceUploaderForm: React.FC<EvidenceUploaderFormProps> = ({
 
       if (errors.length > 0) {
         console.error('📋 ملخص الأخطاء:', errors);
-        setSubmitError(`فشل في رفع ${errors.length} من ${selectedFiles.length} ملف:\n${errors.join('\n')}\n\nنصائح لحل المشكلة:\n• تأكد من صحة اختيار المهمة\n• تحقق من اتصال الإنترنت\n• جرب رفع الملفات مرة أخرى`);
+        setSubmitError(
+          `فشل في رفع ${errors.length} من ${selectedFiles.length} ملف:\n${errors.join('\n')}\n\nنصائح لحل المشكلة:\n• تأكد من صحة اختيار المهمة\n• تحقق من اتصال الإنترنت\n• جرب رفع الملفات مرة أخرى`,
+        );
       }
-
     } catch (error) {
       console.error('❌ خطأ عام في رفع الملفات:', error);
-      setSubmitError(error instanceof Error ? error.message : 'خطأ عام في رفع الملفات. يرجى المحاولة مرة أخرى.');
+      setSubmitError(
+        error instanceof Error ? error.message : 'خطأ عام في رفع الملفات. يرجى المحاولة مرة أخرى.',
+      );
     } finally {
       setIsUploading(false);
     }
@@ -285,9 +299,7 @@ const EvidenceUploaderForm: React.FC<EvidenceUploaderFormProps> = ({
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
       <div className="bg-white rounded-lg shadow-xl border border-gray-200 w-full max-w-4xl max-h-[90vh] overflow-y-auto">
         <div className="flex items-center justify-between p-6 border-b border-gray-200">
-          <h2 className="text-xl font-semibold text-gray-900">
-            رفع أدلة جديدة
-          </h2>
+          <h2 className="text-xl font-semibold text-gray-900">رفع أدلة جديدة</h2>
           <button
             onClick={() => onOpenChange(false)}
             className="text-gray-500 hover:text-gray-700 text-2xl"
@@ -301,9 +313,7 @@ const EvidenceUploaderForm: React.FC<EvidenceUploaderFormProps> = ({
           {/* معلومات الربط */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                تصنيف الدليل
-              </label>
+              <label className="block text-sm font-medium text-gray-700 mb-2">تصنيف الدليل</label>
               <select
                 {...register('category')}
                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
@@ -318,7 +328,9 @@ const EvidenceUploaderForm: React.FC<EvidenceUploaderFormProps> = ({
                 <option value="policy_document">{getCategoryLabel('policy_document')}</option>
                 <option value="procedure_manual">{getCategoryLabel('procedure_manual')}</option>
                 <option value="audit_trail">{getCategoryLabel('audit_trail')}</option>
-                <option value="financial_statement">{getCategoryLabel('financial_statement')}</option>
+                <option value="financial_statement">
+                  {getCategoryLabel('financial_statement')}
+                </option>
                 <option value="bank_statement">{getCategoryLabel('bank_statement')}</option>
                 <option value="other">{getCategoryLabel('other')}</option>
               </select>
@@ -371,9 +383,10 @@ const EvidenceUploaderForm: React.FC<EvidenceUploaderFormProps> = ({
             {...getRootProps()}
             className={`
               border-2 border-dashed rounded-lg p-8 text-center cursor-pointer transition-colors
-              ${isDragActive
-                ? 'border-blue-400 bg-blue-50'
-                : 'border-gray-300 hover:border-gray-400'
+              ${
+                isDragActive
+                  ? 'border-blue-400 bg-blue-50'
+                  : 'border-gray-300 hover:border-gray-400'
               }
               ${isUploading ? 'pointer-events-none opacity-50' : ''}
             `}
@@ -415,12 +428,8 @@ const EvidenceUploaderForm: React.FC<EvidenceUploaderFormProps> = ({
                       )}
 
                       <div className="flex-1 min-w-0">
-                        <p className="text-sm font-medium text-gray-900 truncate">
-                          {file.name}
-                        </p>
-                        <p className="text-xs text-gray-500">
-                          {formatFileSize(file.size)}
-                        </p>
+                        <p className="text-sm font-medium text-gray-900 truncate">{file.name}</p>
+                        <p className="text-xs text-gray-500">{formatFileSize(file.size)}</p>
 
                         {/* شريط التقدم */}
                         {file.uploadStatus === 'uploading' && (

@@ -1,9 +1,10 @@
-import prisma from "@/lib/prisma";
-import bcrypt from "bcrypt";
+import bcrypt from 'bcrypt';
+
+import prisma from '@/lib/prisma';
 
 async function checkSpecificUser() {
-  const email = "crc.qa2222@gmail.com";
-  const testPassword = "~Zaher@@2865052";
+  const email = 'crc.qa2222@gmail.com';
+  const testPassword = '~Zaher@@2865052';
 
   try {
     console.log(`🔍 Checking user: ${email}\n`);
@@ -18,13 +19,13 @@ async function checkSpecificUser() {
         password: true,
         role: true,
         locale: true,
-        createdAt: true
-      }
+        createdAt: true,
+      },
     });
 
     if (user) {
-      console.log("✅ USER EXISTS:", user.email);
-      console.log("📋 User Details:");
+      console.log('✅ USER EXISTS:', user.email);
+      console.log('📋 User Details:');
       console.log(`   ID: ${user.id}`);
       console.log(`   Name: ${user.name}`);
       console.log(`   Role: ${user.role}`);
@@ -32,13 +33,17 @@ async function checkSpecificUser() {
       console.log(`   Created: ${user.createdAt}`);
       console.log(`   Password Hash Length: ${user.password.length}`);
       console.log(`   Password Hash Sample: ${user.password.substring(0, 20)}...`);
-      console.log(`   Is Bcrypt Hash: ${user.password.startsWith("$2b$") || user.password.startsWith("$2a$")}`);
+      console.log(
+        `   Is Bcrypt Hash: ${user.password.startsWith('$2b$') || user.password.startsWith('$2a$')}`,
+      );
 
       // 2. Test password verification
-      console.log("\n🔐 Testing password verification:");
+      console.log('\n🔐 Testing password verification:');
       try {
         const isValidPassword = await bcrypt.compare(testPassword, user.password);
-        console.log(`   Password "${testPassword}" is ${isValidPassword ? "VALID ✅" : "INVALID ❌"}`);
+        console.log(
+          `   Password "${testPassword}" is ${isValidPassword ? 'VALID ✅' : 'INVALID ❌'}`,
+        );
 
         // Test with different variations
         const variations = [
@@ -50,46 +55,43 @@ async function checkSpecificUser() {
         for (const variation of variations) {
           if (variation !== testPassword) {
             const isValid = await bcrypt.compare(variation, user.password);
-            console.log(`   Variation "${variation}" is ${isValid ? "VALID ✅" : "INVALID ❌"}`);
+            console.log(`   Variation "${variation}" is ${isValid ? 'VALID ✅' : 'INVALID ❌'}`);
           }
         }
-
       } catch (bcryptError) {
         console.log(`   ❌ Bcrypt error: ${bcryptError}`);
       }
-
     } else {
-      console.log("❌ USER NOT FOUND:", email);
+      console.log('❌ USER NOT FOUND:', email);
 
       // Check if there's a similar email
       const similarUsers = await prisma.user.findMany({
         where: {
           email: {
-            contains: email.split('@')[0] // Check username part
-          }
+            contains: email.split('@')[0], // Check username part
+          },
         },
-        select: { email: true, name: true }
+        select: { email: true, name: true },
       });
 
       if (similarUsers.length > 0) {
-        console.log("🔍 Similar users found:");
+        console.log('🔍 Similar users found:');
         similarUsers.forEach(u => console.log(`   - ${u.email} (${u.name})`));
       }
     }
 
     // 3. Show all users for debugging
     const allUsers = await prisma.user.findMany({
-      select: { email: true, name: true, createdAt: true }
+      select: { email: true, name: true, createdAt: true },
     });
 
     console.log(`\n📊 Total users in database: ${allUsers.length}`);
-    console.log("All users:");
+    console.log('All users:');
     allUsers.forEach((u, index) => {
       console.log(`   ${index + 1}. ${u.email} (${u.name}) - ${u.createdAt}`);
     });
-
   } catch (error) {
-    console.error("❌ Error:", error);
+    console.error('❌ Error:', error);
   }
 }
 

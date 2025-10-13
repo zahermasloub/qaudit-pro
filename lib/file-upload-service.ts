@@ -4,8 +4,8 @@
  */
 
 import { createHash } from 'node:crypto';
-import { writeFile, mkdir } from 'node:fs/promises';
 import { existsSync } from 'node:fs';
+import { mkdir, writeFile } from 'node:fs/promises';
 import path from 'node:path';
 
 // Import Prisma enums
@@ -109,7 +109,7 @@ class FileUploadService {
     if (metadata.size > this.config.maxFileSize) {
       return {
         valid: false,
-        error: `File size exceeds maximum allowed size of ${this.config.maxFileSize / 1024 / 1024}MB`
+        error: `File size exceeds maximum allowed size of ${this.config.maxFileSize / 1024 / 1024}MB`,
       };
     }
 
@@ -117,7 +117,7 @@ class FileUploadService {
     if (!this.config.allowedMimeTypes.includes(metadata.type)) {
       return {
         valid: false,
-        error: `File type '${metadata.type}' is not allowed`
+        error: `File type '${metadata.type}' is not allowed`,
       };
     }
 
@@ -157,7 +157,7 @@ class FileUploadService {
         fileSize: metadata.size,
         mimeType: metadata.type,
         fileHash: '',
-        error: `Failed to upload to local storage: ${error}`
+        error: `Failed to upload to local storage: ${error}`,
       };
     }
   }
@@ -175,7 +175,7 @@ class FileUploadService {
       fileSize: metadata.size,
       mimeType: metadata.type,
       fileHash: '',
-      error: 'S3 upload not yet implemented. Please use local storage.'
+      error: 'S3 upload not yet implemented. Please use local storage.',
     };
   }
 
@@ -193,7 +193,7 @@ class FileUploadService {
         fileSize: metadata.size,
         mimeType: metadata.type,
         fileHash: '',
-        error: validation.error
+        error: validation.error,
       };
     }
 
@@ -214,7 +214,7 @@ class FileUploadService {
           fileSize: metadata.size,
           mimeType: metadata.type,
           fileHash: '',
-          error: `Unsupported storage provider: ${this.config.provider}`
+          error: `Unsupported storage provider: ${this.config.provider}`,
         };
     }
   }

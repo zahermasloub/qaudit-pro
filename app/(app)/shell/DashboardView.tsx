@@ -1,5 +1,6 @@
 'use client';
-import { useI18n, Locale } from '@/lib/i18n';
+import type { Locale } from '@/lib/i18n';
+import { useI18n } from '@/lib/i18n';
 
 interface DashboardKPI {
   title: string;
@@ -22,43 +23,43 @@ export default function DashboardView({ locale }: { locale: Locale }) {
       value: 32,
       total: 45,
       color: 'green',
-      description: locale === 'ar' ? 'من إجمالي المهام المطلوبة' : 'of total required tasks'
+      description: locale === 'ar' ? 'من إجمالي المهام المطلوبة' : 'of total required tasks',
     },
     {
       title: locale === 'ar' ? 'الأدلة المرفوعة' : 'Uploaded Evidence',
       value: 28,
       total: 40,
       color: 'blue',
-      description: locale === 'ar' ? 'من الأدلة المطلوبة' : 'of required evidence files'
+      description: locale === 'ar' ? 'من الأدلة المطلوبة' : 'of required evidence files',
     },
     {
       title: locale === 'ar' ? 'النتائج المرصودة' : 'Identified Findings',
       value: 7,
       total: 0,
       color: 'orange',
-      description: locale === 'ar' ? 'نتيجة تحتاج مراجعة' : 'findings need review'
+      description: locale === 'ar' ? 'نتيجة تحتاج مراجعة' : 'findings need review',
     },
     {
       title: locale === 'ar' ? 'التقارير الجاهزة' : 'Reports Ready',
       value: 3,
       total: 5,
       color: 'purple',
-      description: locale === 'ar' ? 'تقارير جاهزة للمراجعة' : 'reports ready for review'
-    }
+      description: locale === 'ar' ? 'تقارير جاهزة للمراجعة' : 'reports ready for review',
+    },
   ];
 
   const colorClasses = {
     blue: 'bg-blue-500',
     green: 'bg-green-500',
     orange: 'bg-orange-500',
-    purple: 'bg-purple-500'
+    purple: 'bg-purple-500',
   };
 
   const bgColorClasses = {
     blue: 'bg-blue-50',
     green: 'bg-green-50',
     orange: 'bg-orange-50',
-    purple: 'bg-purple-50'
+    purple: 'bg-purple-50',
   };
 
   function KPICard({ kpi }: { kpi: DashboardKPI }) {
@@ -82,7 +83,10 @@ export default function DashboardView({ locale }: { locale: Locale }) {
         {kpi.total > 0 && (
           <div className="w-full bg-gray-200 rounded-full h-2">
             <div
-              className={clsx('h-2 rounded-full transition-all duration-300', colorClasses[kpi.color])}
+              className={clsx(
+                'h-2 rounded-full transition-all duration-300',
+                colorClasses[kpi.color],
+              )}
               style={{ width: `${Math.min(progress, 100)}%` }}
             ></div>
           </div>
@@ -101,8 +105,7 @@ export default function DashboardView({ locale }: { locale: Locale }) {
         <p className="text-gray-600">
           {locale === 'ar'
             ? 'نظرة عامة على حالة التدقيق والمهام الجارية'
-            : 'Overview of audit status and ongoing tasks'
-          }
+            : 'Overview of audit status and ongoing tasks'}
         </p>
       </div>
 

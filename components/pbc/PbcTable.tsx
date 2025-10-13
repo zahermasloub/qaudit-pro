@@ -1,7 +1,8 @@
-import React, { useState, useEffect } from 'react';
-import { daysUntil, isOverdue, formatDateAr } from '@/lib/date';
+import React, { useEffect, useState } from 'react';
+
 import { Button } from '@/components/ui/button';
-import { useToast } from '@/components/ui/toast';
+import { useToast } from '@/components/ui/Toast-v2';
+import { daysUntil, formatDateAr, isOverdue } from '@/lib/date';
 import { cn } from '@/lib/utils';
 
 interface PBCItem {
@@ -25,7 +26,7 @@ const MOCK_PBCS: PBCItem[] = [
     dueDate: '2025-01-15',
     status: 'open',
     engagementId: 'ENG-001',
-    createdAt: '2025-01-01'
+    createdAt: '2025-01-01',
   },
   {
     id: '2',
@@ -35,7 +36,7 @@ const MOCK_PBCS: PBCItem[] = [
     dueDate: '2025-01-20',
     status: 'partial',
     engagementId: 'ENG-001',
-    createdAt: '2025-01-02'
+    createdAt: '2025-01-02',
   },
   {
     id: '3',
@@ -45,8 +46,8 @@ const MOCK_PBCS: PBCItem[] = [
     dueDate: '2025-01-10',
     status: 'complete',
     engagementId: 'ENG-001',
-    createdAt: '2025-01-01'
-  }
+    createdAt: '2025-01-01',
+  },
 ];
 
 interface PBCTableProps {
@@ -66,12 +67,12 @@ export default function PBCTable({ engagementId, onRefresh }: PBCTableProps) {
 
   // Due date row styling function
   function getDueRowClassName(dueDate?: string | null): string {
-    if (!dueDate) return "";
-    if (isOverdue(dueDate)) return "bg-danger-50 hover:bg-danger-50/70";
+    if (!dueDate) return '';
+    if (isOverdue(dueDate)) return 'bg-danger-50 hover:bg-danger-50/70';
     const days = daysUntil(dueDate);
-    if (days <= 3) return "bg-warning-50 hover:bg-warning-50/70";
-    if (days <= 7) return "bg-brand-50 hover:bg-brand-50/60";
-    return "";
+    if (days <= 3) return 'bg-warning-50 hover:bg-warning-50/70';
+    if (days <= 7) return 'bg-brand-50 hover:bg-brand-50/60';
+    return '';
   }
 
   // Export CSV function
@@ -90,7 +91,7 @@ export default function PBCTable({ engagementId, onRefresh }: PBCTableProps) {
       type: 'success',
       title: 'جارٍ تنزيل CSV',
       message: 'سيتم تحميل الملف قريباً...',
-      duration: 3000
+      duration: 3000,
     });
   };
 
@@ -105,9 +106,10 @@ export default function PBCTable({ engagementId, onRefresh }: PBCTableProps) {
 
     // Search filter
     if (searchTerm) {
-      filtered = filtered.filter(pbc =>
-        pbc.code.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        pbc.description.toLowerCase().includes(searchTerm.toLowerCase())
+      filtered = filtered.filter(
+        pbc =>
+          pbc.code.toLowerCase().includes(searchTerm.toLowerCase()) ||
+          pbc.description.toLowerCase().includes(searchTerm.toLowerCase()),
       );
     }
 
@@ -126,17 +128,19 @@ export default function PBCTable({ engagementId, onRefresh }: PBCTableProps) {
     const styles = {
       open: 'bg-brand-100 text-brand-800 border-brand-200',
       partial: 'bg-warning-100 text-warning-800 border-warning-200',
-      complete: 'bg-success-100 text-success-800 border-success-200'
+      complete: 'bg-success-100 text-success-800 border-success-200',
     };
 
     const labels = {
       open: 'مفتوح',
       partial: 'جزئي',
-      complete: 'مكتمل'
+      complete: 'مكتمل',
     };
 
     return (
-      <span className={`px-2 py-1 text-xs rounded-full border ${styles[status as keyof typeof styles]}`}>
+      <span
+        className={`px-2 py-1 text-xs rounded-full border ${styles[status as keyof typeof styles]}`}
+      >
         {labels[status as keyof typeof labels]}
       </span>
     );
@@ -158,7 +162,7 @@ export default function PBCTable({ engagementId, onRefresh }: PBCTableProps) {
               <input
                 type="text"
                 value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
+                onChange={e => setSearchTerm(e.target.value)}
                 placeholder="البحث بالرمز أو الوصف..."
                 className="w-full rounded-lg border border-neutral-300 px-3 py-2 text-sm focus:ring-2 focus:ring-brand-400 focus:border-brand-400"
               />
@@ -168,7 +172,7 @@ export default function PBCTable({ engagementId, onRefresh }: PBCTableProps) {
               <label className="block text-sm font-medium mb-1 text-neutral-700">الحالة</label>
               <select
                 value={statusFilter}
-                onChange={(e) => setStatusFilter(e.target.value)}
+                onChange={e => setStatusFilter(e.target.value)}
                 className="w-full rounded-lg border border-neutral-300 px-3 py-2 text-sm focus:ring-2 focus:ring-brand-400 focus:border-brand-400"
               >
                 <option value="all">الكل</option>
@@ -186,7 +190,7 @@ export default function PBCTable({ engagementId, onRefresh }: PBCTableProps) {
               <input
                 type="date"
                 value={fromDate}
-                onChange={(e) => setFromDate(e.target.value)}
+                onChange={e => setFromDate(e.target.value)}
                 className="w-full rounded-lg border border-neutral-300 px-3 py-2 text-sm focus:ring-2 focus:ring-brand-400 focus:border-brand-400"
               />
             </div>
@@ -196,26 +200,17 @@ export default function PBCTable({ engagementId, onRefresh }: PBCTableProps) {
               <input
                 type="date"
                 value={toDate}
-                onChange={(e) => setToDate(e.target.value)}
+                onChange={e => setToDate(e.target.value)}
                 className="w-full rounded-lg border border-neutral-300 px-3 py-2 text-sm focus:ring-2 focus:ring-brand-400 focus:border-brand-400"
               />
             </div>
 
             <div className="flex gap-2">
-              <Button
-                variant="secondary"
-                size="sm"
-                onClick={onRefresh}
-                disabled={loading}
-              >
+              <Button variant="secondary" size="sm" onClick={onRefresh} disabled={loading}>
                 {loading ? 'جارٍ التحديث...' : 'تحديث'}
               </Button>
 
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={handleExport}
-              >
+              <Button variant="outline" size="sm" onClick={handleExport}>
                 تصدير CSV
               </Button>
             </div>
@@ -226,7 +221,8 @@ export default function PBCTable({ engagementId, onRefresh }: PBCTableProps) {
       {/* Results Summary */}
       <div className="flex justify-between items-center">
         <div className="text-sm text-neutral-600">
-          عرض <span className="font-medium">{filteredPbcs.length}</span> من أصل <span className="font-medium">{pbcs.length}</span> طلب
+          عرض <span className="font-medium">{filteredPbcs.length}</span> من أصل{' '}
+          <span className="font-medium">{pbcs.length}</span> طلب
         </div>
 
         {/* Legend for color coding */}
@@ -275,17 +271,16 @@ export default function PBCTable({ engagementId, onRefresh }: PBCTableProps) {
                   <td colSpan={5} className="px-4 py-8 text-center text-neutral-500">
                     {searchTerm || statusFilter !== 'all' || fromDate || toDate
                       ? 'لا توجد نتائج تطابق الفلاتر'
-                      : 'لا توجد طلبات مستندات'
-                    }
+                      : 'لا توجد طلبات مستندات'}
                   </td>
                 </tr>
               ) : (
-                filteredPbcs.map((pbc) => (
+                filteredPbcs.map(pbc => (
                   <tr
                     key={pbc.id}
                     className={cn(
-                      "transition-colors hover:bg-neutral-50",
-                      getDueRowClassName(pbc.dueDate)
+                      'transition-colors hover:bg-neutral-50',
+                      getDueRowClassName(pbc.dueDate),
                     )}
                   >
                     <td className="px-3 py-2 whitespace-nowrap">
@@ -312,9 +307,7 @@ export default function PBCTable({ engagementId, onRefresh }: PBCTableProps) {
                         )}
                       </div>
                     </td>
-                    <td className="px-3 py-2 whitespace-nowrap">
-                      {getStatusBadge(pbc.status)}
-                    </td>
+                    <td className="px-3 py-2 whitespace-nowrap">{getStatusBadge(pbc.status)}</td>
                   </tr>
                 ))
               )}

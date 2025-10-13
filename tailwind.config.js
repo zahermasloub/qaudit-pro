@@ -1,16 +1,16 @@
 /** @type {import('tailwindcss').Config} */
 module.exports = {
   content: [
-    "./pages/**/*.{js,ts,jsx,tsx,mdx}",
-    "./components/**/*.{js,ts,jsx,tsx,mdx}",
-    "./app/**/*.{js,ts,jsx,tsx,mdx}",
-    "./features/**/*.{js,ts,jsx,tsx,mdx}",
+    './pages/**/*.{js,ts,jsx,tsx,mdx}',
+    './components/**/*.{js,ts,jsx,tsx,mdx}',
+    './app/**/*.{js,ts,jsx,tsx,mdx}',
+    './features/**/*.{js,ts,jsx,tsx,mdx}',
   ],
   theme: {
     extend: {
       colors: {
-        background: "var(--background)",
-        foreground: "var(--foreground)",
+        background: 'var(--background)',
+        foreground: 'var(--foreground)',
         brand: {
           50: '#f0f6ff',
           100: '#dce9ff',
@@ -21,25 +21,25 @@ module.exports = {
           600: '#1f64e6',
           700: '#154db4',
           800: '#123f90',
-          900: '#0e326f'
+          900: '#0e326f',
         },
         success: {
           50: '#ecfdf5',
           500: '#10b981',
           600: '#059669',
-          700: '#047857'
+          700: '#047857',
         },
         warning: {
           50: '#fffbeb',
           500: '#f59e0b',
           600: '#d97706',
-          700: '#b45309'
+          700: '#b45309',
         },
         danger: {
           50: '#fef2f2',
           500: '#ef4444',
           600: '#dc2626',
-          700: '#b91c1c'
+          700: '#b91c1c',
         },
         neutral: {
           50: '#f8fafc',
@@ -51,12 +51,10 @@ module.exports = {
           600: '#475569',
           700: '#334155',
           800: '#1e293b',
-          900: '#0f172a'
-        }
+          900: '#0f172a',
+        },
       },
     },
   },
-  plugins: [
-    require('tailwindcss-rtl')
-  ],
+  plugins: [require('tailwindcss-rtl')],
 };

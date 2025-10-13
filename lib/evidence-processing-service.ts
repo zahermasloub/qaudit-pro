@@ -3,12 +3,11 @@
  * يدمج فحص الفيروسات، OCR، و S3 في نظام موحد
  */
 
-import { AntivirusScanner, type VirusScanResult } from './antivirus-scanner';
-import { OCRService, type OCRResult } from './ocr-service';
-import { S3PresignedService, type PresignedUrlResult } from './s3-presigned-service';
-import prisma from './prisma';
-import { readFile } from 'fs/promises';
 import path from 'path';
+
+import { AntivirusScanner, type VirusScanResult } from './antivirus-scanner';
+import { type OCRResult, OCRService } from './ocr-service';
+import { S3PresignedService } from './s3-presigned-service';
 
 export type EvidenceProcessingResult = {
   evidenceId: string;
@@ -39,7 +38,7 @@ export class EvidenceProcessingService {
    */
   async processEvidenceFile(
     evidenceId: string,
-    filePath: string
+    filePath: string,
   ): Promise<EvidenceProcessingResult> {
     const startTime = Date.now();
     const errors: string[] = [];
@@ -91,12 +90,12 @@ export class EvidenceProcessingService {
             evidence.fileName,
             'system', // userId - using system as this is automated processing
             '0.0.0.0', // ipAddress - system processing
-            3600 // expires in 1 hour
-          );          if (downloadResponse.success) {
+            3600, // expires in 1 hour
+          );
+          if (downloadResponse.success) {
             downloadUrl = downloadResponse.url;
             s3UrlsGenerated = true;
           }
-
         } catch (s3Error) {
           const errorMsg = `S3 URL generation failed: ${s3Error instanceof Error ? s3Error.message : 'Unknown error'}`;
           errors.push(errorMsg);
@@ -115,7 +114,7 @@ export class EvidenceProcessingService {
         ocrProcessed: !!ocrResult,
         s3UrlsGenerated,
         success,
-        errorCount: errors.length
+        errorCount: errors.length,
       });
 
       return {
@@ -128,9 +127,8 @@ export class EvidenceProcessingService {
         uploadUrl,
         processingTime,
         success,
-        errors
+        errors,
       };
-
     } catch (error) {
       const processingTime = Date.now() - startTime;
       const errorMsg = error instanceof Error ? error.message : 'Unknown processing error';
@@ -144,12 +142,12 @@ export class EvidenceProcessingService {
           status: 'error',
           scanEngine: 'hybrid',
           scanTime: processingTime,
-          details: `Processing failed: ${errorMsg}`
+          details: `Processing failed: ${errorMsg}`,
         },
         s3UrlsGenerated: false,
         processingTime,
         success: false,
-        errors: [errorMsg, ...errors]
+        errors: [errorMsg, ...errors],
       };
     }
   }
@@ -177,7 +175,6 @@ export class EvidenceProcessingService {
 
         // Add delay between processing to avoid system overload
         await new Promise(resolve => setTimeout(resolve, 1000));
-
       } catch (error) {
         const errorMsg = error instanceof Error ? error.message : 'Unknown error';
         results.push(this.createErrorResult(evidenceId, errorMsg));
@@ -198,7 +195,7 @@ export class EvidenceProcessingService {
         mimeType: 'application/pdf',
         fileExt: 'pdf',
         storageKey: `evidence/${evidenceId}/file.pdf`,
-        fileSize: 1024000
+        fileSize: 1024000,
       };
     } catch (error) {
       console.error(`❌ Failed to fetch evidence record ${evidenceId}:`, error);
@@ -212,20 +209,23 @@ export class EvidenceProcessingService {
 
       // In production, this would update the actual database
       const updateData = {
-        virusScanStatus: scanResult.status === 'clean' ? 'clean' :
-                        scanResult.status === 'infected' ? 'suspected' : 'pending',
+        virusScanStatus:
+          scanResult.status === 'clean'
+            ? 'clean'
+            : scanResult.status === 'infected'
+              ? 'suspected'
+              : 'pending',
         virusScanDate: new Date(),
         virusScanResult: JSON.stringify({
           status: scanResult.status,
           engine: scanResult.scanEngine,
           scanTime: scanResult.scanTime,
           threats: scanResult.threats || [],
-          details: scanResult.details
-        })
+          details: scanResult.details,
+        }),
       };
 
       console.log(`✅ Virus scan status updated for ${evidenceId}`);
-
     } catch (error) {
       console.error(`❌ Failed to update virus scan status for ${evidenceId}:`, error);
       throw error;
@@ -234,7 +234,9 @@ export class EvidenceProcessingService {
 
   private async storeOCRResults(evidenceId: string, ocrResult: OCRResult) {
     try {
-      console.log(`💾 Storing OCR results for ${evidenceId}: ${ocrResult.text?.length || 0} characters extracted`);
+      console.log(
+        `💾 Storing OCR results for ${evidenceId}: ${ocrResult.text?.length || 0} characters extracted`,
+      );
 
       // In production, this would store OCR text and metadata
       const ocrData = {
@@ -242,11 +244,10 @@ export class EvidenceProcessingService {
         ocrConfidence: ocrResult.confidence || 0,
         ocrLanguage: ocrResult.language,
         ocrProcessingTime: ocrResult.processingTime,
-        ocrWordCount: ocrResult.words?.length || 0
+        ocrWordCount: ocrResult.words?.length || 0,
       };
 
       console.log(`✅ OCR results stored for ${evidenceId}`);
-
     } catch (error) {
       console.error(`❌ Failed to store OCR results for ${evidenceId}:`, error);
       throw error;
@@ -254,22 +255,16 @@ export class EvidenceProcessingService {
   }
 
   private shouldProcessOCR(mimeType?: string, fileExt?: string): boolean {
-    const ocrSupportedTypes = [
-      'image/jpeg',
-      'image/png',
-      'image/tiff',
-      'application/pdf'
-    ];
+    const ocrSupportedTypes = ['image/jpeg', 'image/png', 'image/tiff', 'application/pdf'];
 
-    const ocrSupportedExtensions = [
-      'jpg', 'jpeg', 'png', 'tiff', 'tif', 'pdf'
-    ];
+    const ocrSupportedExtensions = ['jpg', 'jpeg', 'png', 'tiff', 'tif', 'pdf'];
 
     return Boolean(
       (mimeType && ocrSupportedTypes.includes(mimeType)) ||
-      (fileExt && ocrSupportedExtensions.includes(fileExt.toLowerCase()))
+        (fileExt && ocrSupportedExtensions.includes(fileExt.toLowerCase())),
     );
-  }  private constructFilePath(storageKey: string): string {
+  }
+  private constructFilePath(storageKey: string): string {
     // In production, this would construct the actual file path based on storage configuration
     const uploadsDir = process.env.UPLOADS_DIR || './uploads';
     return path.join(uploadsDir, storageKey);
@@ -283,12 +278,12 @@ export class EvidenceProcessingService {
         status: 'error',
         scanEngine: 'hybrid',
         scanTime: 0,
-        details: errorMessage
+        details: errorMessage,
       },
       s3UrlsGenerated: false,
       processingTime: 0,
       success: false,
-      errors: [errorMessage]
+      errors: [errorMessage],
     };
   }
 
@@ -307,7 +302,7 @@ export class EvidenceProcessingService {
       cleanFiles: 0,
       suspiciousFiles: 0,
       failedScans: 0,
-      lastProcessed: null
+      lastProcessed: null,
     };
   }
 }

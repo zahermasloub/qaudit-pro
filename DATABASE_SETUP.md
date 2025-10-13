@@ -3,6 +3,7 @@
 ## 🚀 PostgreSQL Setup
 
 ### 1. تثبيت PostgreSQL
+
 ```bash
 # Windows (with Chocolatey)
 choco install postgresql
@@ -11,6 +12,7 @@ choco install postgresql
 ```
 
 ### 2. إنشاء قاعدة البيانات والمستخدم
+
 ```sql
 -- Connect as postgres user
 psql -U postgres
@@ -26,6 +28,7 @@ GRANT ALL ON SCHEMA public TO qaudit_user;
 ```
 
 ### 3. تحديث متغيرات البيئة
+
 ```bash
 # Copy .env.example to .env.local
 cp .env.example .env.local
@@ -35,6 +38,7 @@ DATABASE_URL="postgresql://qaudit_user:YOUR_SECURE_PASSWORD@localhost:5432/qaudi
 ```
 
 ### 4. تطبيق Schema وإدخال البيانات الأولية
+
 ```bash
 # Push schema to database
 npx prisma db push
@@ -72,6 +76,7 @@ npm run dev         # Start development server
 ## 🏥 Troubleshooting
 
 ### Common Issues:
+
 1. **"Can't reach database server"**
    - Ensure PostgreSQL service is running
    - Check port 5432 is not blocked

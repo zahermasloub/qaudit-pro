@@ -3,9 +3,9 @@
  * يدعم Tesseract.js للنصوص العربية والإنجليزية مع تحسينات الأداء
  */
 
-import { createWorker, Worker } from 'tesseract.js';
-import { readFile } from 'fs/promises';
 import path from 'path';
+import type { Worker } from 'tesseract.js';
+import { createWorker } from 'tesseract.js';
 
 export type OCRResult = {
   success: boolean;
@@ -55,7 +55,7 @@ class OCRService {
       timeout: parseInt(process.env.OCR_TIMEOUT || '60000'), // 60 seconds
       enhance: process.env.OCR_ENHANCE === 'true',
       outputFormats: ['text'],
-      ...config
+      ...config,
     };
   }
 
@@ -66,8 +66,10 @@ class OCRService {
       // Create worker instance with languages
       const languageString = this.config.languages.join('+');
       this.worker = await createWorker(languageString, 1, {
-        logger: process.env.NODE_ENV === 'development' ?
-          (m: any) => console.log(`OCR: ${m.status}`) : undefined
+        logger:
+          process.env.NODE_ENV === 'development'
+            ? (m: any) => console.log(`OCR: ${m.status}`)
+            : undefined,
       });
 
       console.log('✅ Tesseract.js worker initialized successfully');
@@ -84,7 +86,7 @@ class OCRService {
           error: 'OCR service is disabled in configuration',
           language: 'none',
           processingTime: Date.now() - startTime,
-          pageCount: 0
+          pageCount: 0,
         };
       }
 
@@ -96,7 +98,7 @@ class OCRService {
           error: validation.error,
           language: this.config.languages.join('+'),
           processingTime: Date.now() - startTime,
-          pageCount: 0
+          pageCount: 0,
         };
       }
 
@@ -110,22 +112,20 @@ class OCRService {
       console.log(`📖 Starting OCR processing for: ${path.basename(filePath)}`);
 
       // Process the image/document
-      const result = await Promise.race([
-        this.performOCR(filePath),
-        this.createTimeoutPromise()
-      ]);
+      const result = await Promise.race([this.performOCR(filePath), this.createTimeoutPromise()]);
 
       const processingTime = Date.now() - startTime;
 
       if (result.success) {
-        console.log(`✅ OCR completed in ${processingTime}ms - extracted ${result.text?.length || 0} characters`);
+        console.log(
+          `✅ OCR completed in ${processingTime}ms - extracted ${result.text?.length || 0} characters`,
+        );
       }
 
       return {
         ...result,
-        processingTime
+        processingTime,
       };
-
     } catch (error) {
       console.error('❌ OCR processing failed:', error);
       return {
@@ -133,7 +133,7 @@ class OCRService {
         error: error instanceof Error ? error.message : 'Unknown OCR error',
         language: this.config.languages.join('+'),
         processingTime: Date.now() - startTime,
-        pageCount: 0
+        pageCount: 0,
       };
     }
   }
@@ -148,7 +148,7 @@ class OCRService {
           error: 'OCR service is disabled in configuration',
           language: 'none',
           processingTime: Date.now() - startTime,
-          pageCount: 0
+          pageCount: 0,
         };
       }
 
@@ -159,7 +159,7 @@ class OCRService {
           error: `File too large: ${buffer.length} bytes (max: ${this.config.maxFileSize})`,
           language: this.config.languages.join('+'),
           processingTime: Date.now() - startTime,
-          pageCount: 0
+          pageCount: 0,
         };
       }
 
@@ -170,7 +170,7 @@ class OCRService {
           error: 'File is not a supported image format',
           language: this.config.languages.join('+'),
           processingTime: Date.now() - startTime,
-          pageCount: 0
+          pageCount: 0,
         };
       }
 
@@ -186,20 +186,21 @@ class OCRService {
       // Process the buffer
       const result = await Promise.race([
         this.performOCROnBuffer(buffer),
-        this.createTimeoutPromise()
+        this.createTimeoutPromise(),
       ]);
 
       const processingTime = Date.now() - startTime;
 
       if (result.success) {
-        console.log(`✅ OCR completed in ${processingTime}ms - extracted ${result.text?.length || 0} characters`);
+        console.log(
+          `✅ OCR completed in ${processingTime}ms - extracted ${result.text?.length || 0} characters`,
+        );
       }
 
       return {
         ...result,
-        processingTime
+        processingTime,
       };
-
     } catch (error) {
       console.error('❌ Buffer OCR processing failed:', error);
       return {
@@ -207,7 +208,7 @@ class OCRService {
         error: error instanceof Error ? error.message : 'Unknown OCR error',
         language: this.config.languages.join('+'),
         processingTime: Date.now() - startTime,
-        pageCount: 0
+        pageCount: 0,
       };
     }
   }
@@ -226,7 +227,7 @@ class OCRService {
       language: this.config.languages.join('+'),
       processingTime: 0, // Will be set by caller
       pageCount: 1,
-      words: this.extractWords(data)
+      words: this.extractWords(data),
     };
   }
 
@@ -244,7 +245,7 @@ class OCRService {
       language: this.config.languages.join('+'),
       processingTime: 0, // Will be set by caller
       pageCount: 1,
-      words: this.extractWords(data)
+      words: this.extractWords(data),
     };
   }
 
@@ -258,8 +259,8 @@ class OCRService {
         x0: word.bbox.x0,
         y0: word.bbox.y0,
         x1: word.bbox.x1,
-        y1: word.bbox.y1
-      }
+        y1: word.bbox.y1,
+      },
     }));
   }
 
@@ -278,7 +279,7 @@ class OCRService {
       if (stats.size > this.config.maxFileSize) {
         return {
           valid: false,
-          error: `File too large: ${stats.size} bytes (max: ${this.config.maxFileSize})`
+          error: `File too large: ${stats.size} bytes (max: ${this.config.maxFileSize})`,
         };
       }
 
@@ -289,16 +290,15 @@ class OCRService {
       if (!supportedExtensions.includes(extension)) {
         return {
           valid: false,
-          error: `Unsupported file type: ${extension}. Supported: ${supportedExtensions.join(', ')}`
+          error: `Unsupported file type: ${extension}. Supported: ${supportedExtensions.join(', ')}`,
         };
       }
 
       return { valid: true };
-
     } catch (error) {
       return {
         valid: false,
-        error: `File validation failed: ${error instanceof Error ? error.message : 'Unknown error'}`
+        error: `File validation failed: ${error instanceof Error ? error.message : 'Unknown error'}`,
       };
     }
   }
@@ -306,12 +306,12 @@ class OCRService {
   private isImageBuffer(buffer: Buffer): boolean {
     // Check for common image file signatures
     const signatures = [
-      [0x89, 0x50, 0x4E, 0x47], // PNG
-      [0xFF, 0xD8, 0xFF], // JPEG
+      [0x89, 0x50, 0x4e, 0x47], // PNG
+      [0xff, 0xd8, 0xff], // JPEG
       [0x47, 0x49, 0x46, 0x38], // GIF
-      [0x42, 0x4D], // BMP
-      [0x49, 0x49, 0x2A, 0x00], // TIFF (little-endian)
-      [0x4D, 0x4D, 0x00, 0x2A], // TIFF (big-endian)
+      [0x42, 0x4d], // BMP
+      [0x49, 0x49, 0x2a, 0x00], // TIFF (little-endian)
+      [0x4d, 0x4d, 0x00, 0x2a], // TIFF (big-endian)
       [0x25, 0x50, 0x44, 0x46], // PDF
     ];
 
@@ -351,7 +351,7 @@ class OCRService {
         processingTime: ocrResult.processingTime,
         pageCount: ocrResult.pageCount,
         words: ocrResult.words || [],
-        processedAt: new Date().toISOString()
+        processedAt: new Date().toISOString(),
       };
 
       // In production, you would save this to your storage system
@@ -360,14 +360,13 @@ class OCRService {
       console.log(`💾 Saving OCR results for evidence ${evidenceId}:`, {
         textLength: ocrResult.text.length,
         confidence: ocrResult.confidence,
-        fileName: ocrFileName
+        fileName: ocrFileName,
       });
 
       // TODO: Implement actual file saving to your storage system
       // const ocrUrl = await storageManager.saveOCRResults(ocrFileName, ocrData);
 
       return `ocr-results/${ocrFileName}`; // Return path/URL to saved OCR results
-
     } catch (error) {
       console.error('❌ Failed to save OCR results:', error);
       return null;
@@ -375,7 +374,10 @@ class OCRService {
   }
 
   // Search within OCR text
-  searchInOCRText(ocrResult: OCRResult, searchTerm: string): { found: boolean; matches: number; contexts: string[] } {
+  searchInOCRText(
+    ocrResult: OCRResult,
+    searchTerm: string,
+  ): { found: boolean; matches: number; contexts: string[] } {
     if (!ocrResult.success || !ocrResult.text) {
       return { found: false, matches: 0, contexts: [] };
     }
@@ -406,7 +408,7 @@ class OCRService {
     return {
       found: true,
       matches,
-      contexts: contexts.slice(0, 5) // Limit to 5 contexts
+      contexts: contexts.slice(0, 5), // Limit to 5 contexts
     };
   }
 }

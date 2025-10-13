@@ -3,12 +3,16 @@
  * يدعم تسجيل تفصيلي لجميع خطوات التنفيذ مع ربط الأدلة
  */
 
-import { NextRequest } from "next/server";
-import prisma from "@/lib/prisma";
-import { testExecutionSchema, testRunBatchSchema } from "@/features/fieldwork/execution/test-execution.schema";
+import type { NextRequest } from 'next/server';
 
-export const runtime = "nodejs";
-export const dynamic = "force-dynamic";
+import {
+  testExecutionSchema,
+  testRunBatchSchema,
+} from '@/features/fieldwork/execution/test-execution.schema';
+import prisma from '@/lib/prisma';
+
+export const runtime = 'nodejs';
+export const dynamic = 'force-dynamic';
 
 export async function POST(req: NextRequest) {
   try {
@@ -38,18 +42,20 @@ export async function POST(req: NextRequest) {
             stepIndex: true,
             result: true,
             executedAt: true,
-          }
+          },
         });
         results.push(created);
       }
 
-      return Response.json({
-        ok: true,
-        message: `تم تنفيذ ${results.length} خطوة بنجاح`,
-        runs: results,
-        batchNotes: batchData.batchNotes
-      }, { status: 201 });
-
+      return Response.json(
+        {
+          ok: true,
+          message: `تم تنفيذ ${results.length} خطوة بنجاح`,
+          runs: results,
+          batchNotes: batchData.batchNotes,
+        },
+        { status: 201 },
+      );
     } else {
       // تنفيذ خطوة واحدة
       const runData = testExecutionSchema.parse(body);
@@ -60,14 +66,17 @@ export async function POST(req: NextRequest) {
           id: runData.auditTestId,
           engagementId: runData.engagementId,
         },
-        select: { id: true, title: true, status: true }
+        select: { id: true, title: true, status: true },
       });
 
       if (!auditTest) {
-        return Response.json({
-          ok: false,
-          error: "الاختبار المحدد غير موجود أو لا ينتمي للمهمة"
-        }, { status: 404 });
+        return Response.json(
+          {
+            ok: false,
+            error: 'الاختبار المحدد غير موجود أو لا ينتمي للمهمة',
+          },
+          { status: 404 },
+        );
       }
 
       const created = await prisma.testRun.create({
@@ -96,45 +105,53 @@ export async function POST(req: NextRequest) {
             select: {
               id: true,
               title: true,
-            }
-          }
-        }
+            },
+          },
+        },
       });
 
       // تحديث حالة الاختبار إذا لزم الأمر
       if (auditTest.status === 'planned') {
         await prisma.auditTest.update({
           where: { id: runData.auditTestId },
-          data: { status: 'in_progress' }
+          data: { status: 'in_progress' },
         });
       }
 
-      return Response.json({
-        ok: true,
-        message: "تم تنفيذ الخطوة بنجاح",
-        run: created
-      }, { status: 201 });
+      return Response.json(
+        {
+          ok: true,
+          message: 'تم تنفيذ الخطوة بنجاح',
+          run: created,
+        },
+        { status: 201 },
+      );
     }
-
   } catch (error: any) {
     console.error('Test run execution error:', error);
 
     // معالجة أخطاء Zod
     if (error?.errors) {
       const firstError = error.errors[0];
-      return Response.json({
-        ok: false,
-        error: `خطأ في البيانات: ${firstError.message}`,
-        field: firstError.path?.join('.'),
-        details: error.errors
-      }, { status: 400 });
+      return Response.json(
+        {
+          ok: false,
+          error: `خطأ في البيانات: ${firstError.message}`,
+          field: firstError.path?.join('.'),
+          details: error.errors,
+        },
+        { status: 400 },
+      );
     }
 
-    return Response.json({
-      ok: false,
-      error: error?.message || "خطأ في تنفيذ خطوة الاختبار",
-      details: process.env.NODE_ENV === 'development' ? String(error) : undefined
-    }, { status: 500 });
+    return Response.json(
+      {
+        ok: false,
+        error: error?.message || 'خطأ في تنفيذ خطوة الاختبار',
+        details: process.env.NODE_ENV === 'development' ? String(error) : undefined,
+      },
+      { status: 500 },
+    );
   }
 }
 
@@ -143,15 +160,18 @@ export async function GET(req: NextRequest) {
     const { searchParams } = new URL(req.url);
     const engagementId = searchParams.get('engagementId');
     const auditTestId = searchParams.get('auditTestId');
-    const result = searchParams.get('result') as "pass" | "fail" | "exception" | null;
+    const result = searchParams.get('result') as 'pass' | 'fail' | 'exception' | null;
     const page = parseInt(searchParams.get('page') || '1');
     const limit = parseInt(searchParams.get('limit') || '20');
 
     if (!engagementId) {
-      return Response.json({
-        ok: false,
-        error: "معرف المهمة مطلوب"
-      }, { status: 400 });
+      return Response.json(
+        {
+          ok: false,
+          error: 'معرف المهمة مطلوب',
+        },
+        { status: 400 },
+      );
     }
 
     const whereClause: any = { engagementId };
@@ -167,14 +187,14 @@ export async function GET(req: NextRequest) {
               id: true,
               title: true,
               code: true,
-            }
-          }
+            },
+          },
         },
         orderBy: { executedAt: 'desc' },
         skip: (page - 1) * limit,
         take: limit,
       }),
-      prisma.testRun.count({ where: whereClause })
+      prisma.testRun.count({ where: whereClause }),
     ]);
 
     return Response.json({
@@ -187,14 +207,16 @@ export async function GET(req: NextRequest) {
         totalItems: totalCount,
         hasNext: page * limit < totalCount,
         hasPrevious: page > 1,
-      }
+      },
     });
-
   } catch (error: any) {
     console.error('Test runs fetch error:', error);
-    return Response.json({
-      ok: false,
-      error: "خطأ في جلب بيانات التنفيذ"
-    }, { status: 500 });
+    return Response.json(
+      {
+        ok: false,
+        error: 'خطأ في جلب بيانات التنفيذ',
+      },
+      { status: 500 },
+    );
   }
 }

@@ -6,9 +6,10 @@
 'use client';
 
 import React, { useState } from 'react';
+
+import EvidenceFiles from '@/components/evidence/EvidenceFiles';
+import FileUpload from '@/components/evidence/FileUpload';
 import { Button } from '@/components/ui/button';
-import FileUpload from '@/components/evidence/file-upload';
-import EvidenceFiles from '@/components/evidence/evidence-files';
 
 interface FieldworkPageProps {
   params: {
@@ -46,12 +47,8 @@ const FieldworkPage: React.FC<FieldworkPageProps> = ({ params }) => {
     <div className="container mx-auto px-4 py-8 space-y-8">
       {/* Page Header */}
       <div className="border-b border-gray-200 pb-6">
-        <h1 className="text-3xl font-bold text-gray-900">
-          العمل الميداني والأدلة
-        </h1>
-        <p className="text-gray-600 mt-2">
-          إدارة تنفيذ الاختبارات، رفع الأدلة، وتوثيق النتائج
-        </p>
+        <h1 className="text-3xl font-bold text-gray-900">العمل الميداني والأدلة</h1>
+        <p className="text-gray-600 mt-2">إدارة تنفيذ الاختبارات، رفع الأدلة، وتوثيق النتائج</p>
 
         {/* Breadcrumb */}
         <nav className="mt-4 text-sm text-gray-500">
@@ -70,9 +67,10 @@ const FieldworkPage: React.FC<FieldworkPageProps> = ({ params }) => {
             onClick={() => setActiveTab('files')}
             className={`
               py-2 px-1 border-b-2 font-medium text-sm
-              ${activeTab === 'files'
-                ? 'border-blue-500 text-blue-600'
-                : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+              ${
+                activeTab === 'files'
+                  ? 'border-blue-500 text-blue-600'
+                  : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
               }
             `}
           >
@@ -83,9 +81,10 @@ const FieldworkPage: React.FC<FieldworkPageProps> = ({ params }) => {
             onClick={() => setActiveTab('upload')}
             className={`
               py-2 px-1 border-b-2 font-medium text-sm
-              ${activeTab === 'upload'
-                ? 'border-blue-500 text-blue-600'
-                : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+              ${
+                activeTab === 'upload'
+                  ? 'border-blue-500 text-blue-600'
+                  : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
               }
             `}
           >
@@ -96,9 +95,10 @@ const FieldworkPage: React.FC<FieldworkPageProps> = ({ params }) => {
             onClick={() => setActiveTab('tests')}
             className={`
               py-2 px-1 border-b-2 font-medium text-sm
-              ${activeTab === 'tests'
-                ? 'border-blue-500 text-blue-600'
-                : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+              ${
+                activeTab === 'tests'
+                  ? 'border-blue-500 text-blue-600'
+                  : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
               }
             `}
           >
@@ -113,13 +113,8 @@ const FieldworkPage: React.FC<FieldworkPageProps> = ({ params }) => {
           <div className="space-y-6">
             {/* Quick actions */}
             <div className="flex items-center justify-between">
-              <div className="text-lg font-medium text-gray-900">
-                مكتبة الأدلة
-              </div>
-              <Button
-                onClick={() => setActiveTab('upload')}
-                variant="primary"
-              >
+              <div className="text-lg font-medium text-gray-900">مكتبة الأدلة</div>
+              <Button onClick={() => setActiveTab('upload')} variant="primary">
                 + إضافة ملفات جديدة
               </Button>
             </div>
@@ -136,9 +131,7 @@ const FieldworkPage: React.FC<FieldworkPageProps> = ({ params }) => {
 
         {activeTab === 'upload' && (
           <div className="space-y-6">
-            <div className="text-lg font-medium text-gray-900">
-              رفع ملفات أدلة جديدة
-            </div>
+            <div className="text-lg font-medium text-gray-900">رفع ملفات أدلة جديدة</div>
 
             {/* Test selection (optional) */}
             <div className="bg-gray-50 p-4 rounded-lg">
@@ -147,7 +140,7 @@ const FieldworkPage: React.FC<FieldworkPageProps> = ({ params }) => {
               </label>
               <select
                 value={selectedTestId || ''}
-                onChange={(e) => setSelectedTestId(e.target.value || null)}
+                onChange={e => setSelectedTestId(e.target.value || null)}
                 className="w-full max-w-md px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
               >
                 <option value="">بدون ربط بالاختبار</option>
@@ -170,16 +163,12 @@ const FieldworkPage: React.FC<FieldworkPageProps> = ({ params }) => {
 
         {activeTab === 'tests' && (
           <div className="space-y-6">
-            <div className="text-lg font-medium text-gray-900">
-              تنفيذ الاختبارات
-            </div>
+            <div className="text-lg font-medium text-gray-900">تنفيذ الاختبارات</div>
 
             {/* Tests execution interface - placeholder */}
             <div className="bg-gray-50 rounded-lg p-8 text-center">
               <div className="text-gray-400 text-6xl mb-4">🧪</div>
-              <h3 className="text-lg font-medium text-gray-900 mb-2">
-                واجهة تنفيذ الاختبارات
-              </h3>
+              <h3 className="text-lg font-medium text-gray-900 mb-2">واجهة تنفيذ الاختبارات</h3>
               <p className="text-gray-600 mb-4">
                 ستتم إضافة واجهة تفصيلية لتنفيذ الاختبارات خطوة بخطوة مع ربط الأدلة
               </p>
@@ -190,14 +179,21 @@ const FieldworkPage: React.FC<FieldworkPageProps> = ({ params }) => {
                   { id: '1', title: 'اختبار الضوابط الداخلية', status: 'planned' },
                   { id: '2', title: 'اختبار تقييم المخاطر', status: 'in_progress' },
                   { id: '3', title: 'اختبار العمليات المالية', status: 'completed' },
-                ].map((test) => (
-                  <div key={test.id} className="bg-white p-4 rounded-lg border border-gray-200 text-right">
+                ].map(test => (
+                  <div
+                    key={test.id}
+                    className="bg-white p-4 rounded-lg border border-gray-200 text-right"
+                  >
                     <h4 className="font-medium text-gray-900">{test.title}</h4>
-                    <p className={`text-xs mt-2 px-2 py-1 rounded inline-block ${
-                      test.status === 'planned' ? 'bg-yellow-100 text-yellow-800' :
-                      test.status === 'in_progress' ? 'bg-blue-100 text-blue-800' :
-                      'bg-green-100 text-green-800'
-                    }`}>
+                    <p
+                      className={`text-xs mt-2 px-2 py-1 rounded inline-block ${
+                        test.status === 'planned'
+                          ? 'bg-yellow-100 text-yellow-800'
+                          : test.status === 'in_progress'
+                            ? 'bg-blue-100 text-blue-800'
+                            : 'bg-green-100 text-green-800'
+                      }`}
+                    >
                       {test.status === 'planned' && 'مخطط'}
                       {test.status === 'in_progress' && 'قيد التنفيذ'}
                       {test.status === 'completed' && 'مكتمل'}

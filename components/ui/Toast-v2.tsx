@@ -1,4 +1,5 @@
-import React, { createContext, useContext, useState, ReactNode } from 'react';
+import type { ReactNode } from 'react';
+import React, { createContext, useContext, useState } from 'react';
 
 interface Toast {
   id: string;
@@ -93,9 +94,7 @@ function ToastItem({ toast, onRemove }: { toast: Toast; onRemove: (id: string) =
           <span className="flex-shrink-0 text-lg">{getIcon()}</span>
           <div className="flex-1 min-w-0">
             <p className="text-sm font-medium">{toast.title}</p>
-            {toast.message && (
-              <p className="text-xs mt-1 opacity-90">{toast.message}</p>
-            )}
+            {toast.message && <p className="text-xs mt-1 opacity-90">{toast.message}</p>}
           </div>
         </div>
         <button

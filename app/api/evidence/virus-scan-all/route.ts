@@ -1,4 +1,6 @@
-import { NextRequest, NextResponse } from 'next/server';
+import type { NextRequest } from 'next/server';
+import { NextResponse } from 'next/server';
+
 import { EvidenceProcessingService } from '@/lib/evidence-processing-service';
 
 export async function POST(request: NextRequest) {
@@ -6,10 +8,7 @@ export async function POST(request: NextRequest) {
     const { engagementId } = await request.json();
 
     if (!engagementId) {
-      return NextResponse.json(
-        { error: 'Engagement ID is required' },
-        { status: 400 }
-      );
+      return NextResponse.json({ error: 'Engagement ID is required' }, { status: 400 });
     }
 
     console.log(`🔍 Starting Sprint 7.5 evidence processing for engagement: ${engagementId}`);
@@ -26,14 +25,13 @@ export async function POST(request: NextRequest) {
       message: 'Sprint 7.5 evidence processing initiated (AV Scan + OCR + S3)',
       engagementId,
       status: 'processing',
-      services: ['antivirus-scan', 'ocr-processing', 's3-presigned-urls']
+      services: ['antivirus-scan', 'ocr-processing', 's3-presigned-urls'],
     });
-
   } catch (error) {
     console.error('❌ Evidence processing API error:', error);
     return NextResponse.json(
       { error: 'Internal server error during evidence processing initiation' },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }
@@ -41,7 +39,7 @@ export async function POST(request: NextRequest) {
 // Background processing function for comprehensive evidence processing
 async function processEngagementEvidence(
   engagementId: string,
-  processingService: EvidenceProcessingService
+  processingService: EvidenceProcessingService,
 ) {
   try {
     console.log(`� Starting Sprint 7.5 evidence processing for engagement: ${engagementId}`);
@@ -67,36 +65,35 @@ async function processEngagementEvidence(
 
     console.log(`🎯 Sprint 7.5 evidence processing completed for engagement ${engagementId}:`, {
       services: ['antivirus-completed', 'ocr-completed', 's3-urls-generated'],
-      stats
+      stats,
     });
-
   } catch (error: any) {
-    console.error(`❌ Sprint 7.5 evidence processing failed for engagement ${engagementId}:`, error);
+    console.error(
+      `❌ Sprint 7.5 evidence processing failed for engagement ${engagementId}:`,
+      error,
+    );
   }
-}export async function GET(request: NextRequest) {
+}
+export async function GET(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url);
     const engagementId = searchParams.get('engagementId');
 
     if (!engagementId) {
-      return NextResponse.json(
-        { error: 'Engagement ID is required' },
-        { status: 400 }
-      );
+      return NextResponse.json({ error: 'Engagement ID is required' }, { status: 400 });
     }
 
     // Simplified status response
     return NextResponse.json({
       engagementId,
       status: 'ready',
-      message: 'Virus scanning service is available'
+      message: 'Virus scanning service is available',
     });
-
   } catch (error) {
     console.error('❌ Virus scan status API error:', error);
     return NextResponse.json(
       { error: 'Internal server error fetching virus scan status' },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

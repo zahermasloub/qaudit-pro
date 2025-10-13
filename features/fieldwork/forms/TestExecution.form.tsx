@@ -8,8 +8,13 @@
 import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { testExecutionSchema, getResultLabel, type TestExecutionFormValues } from '@/features/fieldwork/execution/test-execution.schema';
+
 import { Button } from '@/components/ui/button';
+import {
+  getResultLabel,
+  type TestExecutionFormValues,
+  testExecutionSchema,
+} from '@/features/fieldwork/execution/test-execution.schema';
 
 interface TestExecutionFormProps {
   open: boolean;
@@ -87,7 +92,6 @@ const TestExecutionForm: React.FC<TestExecutionFormProps> = ({
       } else {
         throw new Error(result.error || 'فشل في حفظ التنفيذ');
       }
-
     } catch (error) {
       console.error('Test execution error:', error);
       setSubmitError(error instanceof Error ? error.message : 'خطأ غير معروف');
@@ -111,9 +115,7 @@ const TestExecutionForm: React.FC<TestExecutionFormProps> = ({
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
       <div className="bg-white rounded-lg shadow-xl border border-gray-200 w-full max-w-2xl max-h-[90vh] overflow-y-auto">
         <div className="flex items-center justify-between p-6 border-b border-gray-200">
-          <h2 className="text-xl font-semibold text-gray-900">
-            تنفيذ خطوة اختبار
-          </h2>
+          <h2 className="text-xl font-semibold text-gray-900">تنفيذ خطوة اختبار</h2>
           <button
             onClick={() => onOpenChange(false)}
             className="text-gray-500 hover:text-gray-700 text-2xl"
@@ -137,9 +139,7 @@ const TestExecutionForm: React.FC<TestExecutionFormProps> = ({
 
           {/* رقم الخطوة */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              رقم الخطوة
-            </label>
+            <label className="block text-sm font-medium text-gray-700 mb-2">رقم الخطوة</label>
             <input
               {...register('stepIndex', { valueAsNumber: true })}
               type="number"
@@ -176,18 +176,24 @@ const TestExecutionForm: React.FC<TestExecutionFormProps> = ({
             <select
               {...register('result')}
               className={`w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 ${
-                watchedResult === 'pass' ? 'text-green-700' :
-                watchedResult === 'fail' ? 'text-red-700' :
-                'text-orange-700'
+                watchedResult === 'pass'
+                  ? 'text-green-700'
+                  : watchedResult === 'fail'
+                    ? 'text-red-700'
+                    : 'text-orange-700'
               }`}
             >
-              <option value="pass" className="text-green-700">✅ {getResultLabel('pass')}</option>
-              <option value="fail" className="text-red-700">❌ {getResultLabel('fail')}</option>
-              <option value="exception" className="text-orange-700">⚠️ {getResultLabel('exception')}</option>
+              <option value="pass" className="text-green-700">
+                ✅ {getResultLabel('pass')}
+              </option>
+              <option value="fail" className="text-red-700">
+                ❌ {getResultLabel('fail')}
+              </option>
+              <option value="exception" className="text-orange-700">
+                ⚠️ {getResultLabel('exception')}
+              </option>
             </select>
-            {errors.result && (
-              <p className="mt-1 text-sm text-red-600">{errors.result.message}</p>
-            )}
+            {errors.result && <p className="mt-1 text-sm text-red-600">{errors.result.message}</p>}
           </div>
 
           {/* مرجع العينة */}
@@ -215,7 +221,7 @@ const TestExecutionForm: React.FC<TestExecutionFormProps> = ({
               rows={3}
               className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
               placeholder="معرف واحد في كل سطر..."
-              onChange={(e) => handleEvidenceIdsChange(e.target.value)}
+              onChange={e => handleEvidenceIdsChange(e.target.value)}
             />
             <p className="mt-1 text-xs text-gray-500">
               اكتب معرف دليل واحد في كل سطر لربطه بهذه الخطوة
@@ -233,9 +239,7 @@ const TestExecutionForm: React.FC<TestExecutionFormProps> = ({
               className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
               placeholder="أي ملاحظات أو تفاصيل إضافية..."
             />
-            {errors.notes && (
-              <p className="mt-1 text-sm text-red-600">{errors.notes.message}</p>
-            )}
+            {errors.notes && <p className="mt-1 text-sm text-red-600">{errors.notes.message}</p>}
           </div>
 
           {/* منفذ الاختبار */}
@@ -271,11 +275,7 @@ const TestExecutionForm: React.FC<TestExecutionFormProps> = ({
             >
               إلغاء
             </Button>
-            <Button
-              type="submit"
-              variant="primary"
-              disabled={isSubmitting}
-            >
+            <Button type="submit" variant="primary" disabled={isSubmitting}>
               {isSubmitting ? (
                 <>
                   <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>

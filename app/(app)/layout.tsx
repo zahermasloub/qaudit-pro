@@ -1,8 +1,4 @@
-export default function DashboardLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+export default function DashboardLayout({ children }: { children: React.ReactNode }) {
   return (
     <div className="min-h-screen bg-background">
       <header className="border-b">
@@ -36,9 +32,7 @@ export default function DashboardLayout({
         </div>
       </header>
       <main className="flex-1 space-y-4 pt-6">
-        <div className="container-custom">
-          {children}
-        </div>
+        <div className="container-custom">{children}</div>
       </main>
     </div>
   );

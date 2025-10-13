@@ -1,17 +1,19 @@
-import type { Metadata } from "next";
-import { Tajawal } from "next/font/google";
-import "./globals.css";
-import AuthProvider from "@/lib/auth-provider";
+import type { Metadata } from 'next';
+import { Tajawal } from 'next/font/google';
+
+import AuthProvider from '@/lib/AuthProvider';
+
+import './globals.css';
 
 const tajawal = Tajawal({
-  subsets: ["arabic", "latin"],
-  weight: ["300", "400", "500", "700"],
-  display: "swap",
+  subsets: ['arabic', 'latin'],
+  weight: ['300', '400', '500', '700'],
+  display: 'swap',
 });
 
 export const metadata: Metadata = {
-  title: "QAudit Pro - نظام إدارة التدقيق الاحترافي",
-  description: "نظام شامل لإدارة عمليات التدقيق والمراجعة",
+  title: 'QAudit Pro - نظام إدارة التدقيق الاحترافي',
+  description: 'نظام شامل لإدارة عمليات التدقيق والمراجعة',
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {

@@ -3,10 +3,12 @@
  * GET /api/files - Get list of evidence files for an engagement
  */
 
-import { NextRequest, NextResponse } from 'next/server';
+import type { NextRequest } from 'next/server';
+import { NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth/next';
-import prisma from '@/lib/prisma';
+
 import FileUploadService from '@/lib/file-upload-service';
+import prisma from '@/lib/prisma';
 
 // Mock auth options for now
 const authOptions = {
@@ -25,10 +27,7 @@ export async function GET(req: NextRequest) {
     // Check authentication
     const session = await getServerSession(authOptions);
     if (!session?.user?.id) {
-      return NextResponse.json(
-        { error: 'Unauthorized. Please login first.' },
-        { status: 401 }
-      );
+      return NextResponse.json({ error: 'Unauthorized. Please login first.' }, { status: 401 });
     }
 
     // Get query parameters
@@ -41,10 +40,7 @@ export async function GET(req: NextRequest) {
     const offset = (page - 1) * limit;
 
     if (!engagementId) {
-      return NextResponse.json(
-        { error: 'Engagement ID is required' },
-        { status: 400 }
-      );
+      return NextResponse.json({ error: 'Engagement ID is required' }, { status: 400 });
     }
 
     // Verify engagement exists and user has access
@@ -56,10 +52,7 @@ export async function GET(req: NextRequest) {
     });
 
     if (!engagement) {
-      return NextResponse.json(
-        { error: 'Engagement not found or access denied' },
-        { status: 404 }
-      );
+      return NextResponse.json({ error: 'Engagement not found or access denied' }, { status: 404 });
     }
 
     // Build where clause
@@ -121,7 +114,8 @@ export async function GET(req: NextRequest) {
       // Helper properties
       isImage: file.mimeType?.startsWith('image/') || false,
       isDocument: ['application/pdf', 'application/msword'].includes(file.mimeType || ''),
-      isSpreadsheet: file.mimeType?.includes('excel') || file.mimeType?.includes('spreadsheet') || false,
+      isSpreadsheet:
+        file.mimeType?.includes('excel') || file.mimeType?.includes('spreadsheet') || false,
       fileSizeFormatted: formatFileSize(file.fileSize),
     }));
 
@@ -165,15 +159,14 @@ export async function GET(req: NextRequest) {
         category,
       },
     });
-
   } catch (error) {
     console.error('Files list error:', error);
     return NextResponse.json(
       {
         error: 'Internal server error while fetching files',
-        details: process.env.NODE_ENV === 'development' ? String(error) : undefined
+        details: process.env.NODE_ENV === 'development' ? String(error) : undefined,
       },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

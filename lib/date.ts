@@ -40,7 +40,7 @@ export function formatDateAr(iso: string | Date): string {
   return new Intl.DateTimeFormat('ar-SA', {
     year: 'numeric',
     month: 'short',
-    day: 'numeric'
+    day: 'numeric',
   }).format(date);
 }
 

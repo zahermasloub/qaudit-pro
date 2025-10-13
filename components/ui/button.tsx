@@ -1,42 +1,48 @@
-import * as React from "react";
-import { cn } from "@/lib/utils";
+import * as React from 'react';
 
-export interface ButtonProps
-  extends React.ButtonHTMLAttributes<HTMLButtonElement> {
-  variant?: "primary" | "secondary" | "success" | "warning" | "danger" | "ghost" | "outline";
-  size?: "default" | "sm" | "lg" | "icon";
+import { cn } from '@/lib/utils';
+
+export interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
+  variant?: 'primary' | 'secondary' | 'success' | 'warning' | 'danger' | 'ghost' | 'outline';
+  size?: 'default' | 'sm' | 'lg' | 'icon';
 }
 
 const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
-  ({ className, variant = "primary", size = "default", ...props }, ref) => {
+  ({ className, variant = 'primary', size = 'default', ...props }, ref) => {
     return (
       <button
         className={cn(
-          "inline-flex items-center justify-center whitespace-nowrap rounded-lg text-sm font-medium transition-colors duration-150 focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:pointer-events-none disabled:opacity-50",
+          'inline-flex items-center justify-center whitespace-nowrap rounded-lg text-sm font-medium transition-colors duration-150 focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:pointer-events-none disabled:opacity-50',
           {
-            "bg-blue-600 hover:bg-blue-700 text-white focus:ring-blue-400": variant === "primary",
-            "bg-gray-200 hover:bg-gray-300 text-gray-800 focus:ring-gray-400": variant === "secondary",
-            "bg-success-600 hover:bg-success-700 text-white focus:ring-success-400": variant === "success",
-            "bg-warning-600 hover:bg-warning-700 text-white focus:ring-warning-400": variant === "warning",
-            "bg-danger-600 hover:bg-danger-700 text-white focus:ring-danger-400": variant === "danger",
-            "bg-transparent hover:bg-gray-100 text-gray-700 focus:ring-gray-400": variant === "ghost",
-            "border border-gray-300 bg-white hover:bg-gray-50 text-gray-800 focus:ring-blue-400": variant === "outline",
+            'bg-blue-600 hover:bg-blue-700 text-white focus:ring-blue-400': variant === 'primary',
+            'bg-gray-200 hover:bg-gray-300 text-gray-800 focus:ring-gray-400':
+              variant === 'secondary',
+            'bg-success-600 hover:bg-success-700 text-white focus:ring-success-400':
+              variant === 'success',
+            'bg-warning-600 hover:bg-warning-700 text-white focus:ring-warning-400':
+              variant === 'warning',
+            'bg-danger-600 hover:bg-danger-700 text-white focus:ring-danger-400':
+              variant === 'danger',
+            'bg-transparent hover:bg-gray-100 text-gray-700 focus:ring-gray-400':
+              variant === 'ghost',
+            'border border-gray-300 bg-white hover:bg-gray-50 text-gray-800 focus:ring-blue-400':
+              variant === 'outline',
           },
           {
-            "h-10 px-4 py-2": size === "default",
-            "h-9 px-3 py-1.5": size === "sm",
-            "h-11 px-6 py-3": size === "lg",
-            "h-10 w-10 p-0": size === "icon",
+            'h-10 px-4 py-2': size === 'default',
+            'h-9 px-3 py-1.5': size === 'sm',
+            'h-11 px-6 py-3': size === 'lg',
+            'h-10 w-10 p-0': size === 'icon',
           },
-          className
+          className,
         )}
         ref={ref}
         {...props}
       />
     );
-  }
+  },
 );
 
-Button.displayName = "Button";
+Button.displayName = 'Button';
 
 export { Button };

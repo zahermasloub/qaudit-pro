@@ -3,11 +3,13 @@
  * GET /api/files/download/[storageKey] - Download file by storage key
  */
 
-import { NextRequest, NextResponse } from 'next/server';
+import type { NextRequest } from 'next/server';
+import { NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth/next';
+import { existsSync } from 'node:fs';
 import { readFile } from 'node:fs/promises';
 import path from 'node:path';
-import { existsSync } from 'node:fs';
+
 import prisma from '@/lib/prisma';
 
 // Mock auth options for now - will be replaced when NextAuth is properly configured
@@ -33,19 +35,13 @@ export async function GET(req: NextRequest, { params }: RouteParams) {
     // Check authentication
     const session = await getServerSession(authOptions);
     if (!session?.user?.id) {
-      return NextResponse.json(
-        { error: 'Unauthorized. Please login first.' },
-        { status: 401 }
-      );
+      return NextResponse.json({ error: 'Unauthorized. Please login first.' }, { status: 401 });
     }
 
     const { storageKey } = params;
 
     if (!storageKey) {
-      return NextResponse.json(
-        { error: 'Storage key is required' },
-        { status: 400 }
-      );
+      return NextResponse.json({ error: 'Storage key is required' }, { status: 400 });
     }
 
     // Decode storage key (it was encoded in the URL)
@@ -69,17 +65,14 @@ export async function GET(req: NextRequest, { params }: RouteParams) {
     });
 
     if (!evidence) {
-      return NextResponse.json(
-        { error: 'File not found or access denied' },
-        { status: 404 }
-      );
+      return NextResponse.json({ error: 'File not found or access denied' }, { status: 404 });
     }
 
     // Check if user has access to this engagement
     if (evidence.engagement?.createdBy !== session.user.id) {
       return NextResponse.json(
         { error: 'Access denied. You do not have permission to download this file.' },
-        { status: 403 }
+        { status: 403 },
       );
     }
 
@@ -90,10 +83,7 @@ export async function GET(req: NextRequest, { params }: RouteParams) {
       const filePath = path.join(uploadDir, decodedStorageKey);
 
       if (!existsSync(filePath)) {
-        return NextResponse.json(
-          { error: 'File not found on storage' },
-          { status: 404 }
-        );
+        return NextResponse.json({ error: 'File not found on storage' }, { status: 404 });
       }
 
       try {
@@ -110,36 +100,24 @@ export async function GET(req: NextRequest, { params }: RouteParams) {
           status: 200,
           headers,
         });
-
       } catch (fileError) {
         console.error('File read error:', fileError);
-        return NextResponse.json(
-          { error: 'Failed to read file from storage' },
-          { status: 500 }
-        );
+        return NextResponse.json({ error: 'Failed to read file from storage' }, { status: 500 });
       }
-
     } else if (evidence.storage === 's3') {
       // TODO: Implement S3 download when AWS SDK is available
-      return NextResponse.json(
-        { error: 'S3 download not yet implemented' },
-        { status: 501 }
-      );
+      return NextResponse.json({ error: 'S3 download not yet implemented' }, { status: 501 });
     } else {
-      return NextResponse.json(
-        { error: 'Unsupported storage provider' },
-        { status: 400 }
-      );
+      return NextResponse.json({ error: 'Unsupported storage provider' }, { status: 400 });
     }
-
   } catch (error) {
     console.error('File download error:', error);
     return NextResponse.json(
       {
         error: 'Internal server error during file download',
-        details: process.env.NODE_ENV === 'development' ? String(error) : undefined
+        details: process.env.NODE_ENV === 'development' ? String(error) : undefined,
       },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

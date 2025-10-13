@@ -1,0 +1,288 @@
+{
+  "summary": {
+    "totalChanges": 23,
+    "appliedChanges": 23,
+    "failedChanges": 0,
+    "updatedFiles": 53,
+    "buildSuccess": true,
+    "lintSuccess": true
+  },
+  "changes": [
+    {
+      "type": "applied",
+      "oldPath": "app\\api\\auth\\[...nextauth]\\route.ts",
+      "newPath": "app\\api\\auth\\[...nextauth]\\route-v2.ts",
+      "reason": "Directory should be kebab-case",
+      "severity": "low",
+      "filesUpdated": 3,
+      "conflicts": [],
+      "notes": []
+    },
+    {
+      "type": "applied",
+      "oldPath": "app\\api\\evidence\\[id]\\download-secure\\route.ts",
+      "newPath": "app\\api\\evidence\\[id]\\download-secure\\route-v2.ts",
+      "reason": "Directory should be kebab-case",
+      "severity": "low",
+      "filesUpdated": 3,
+      "conflicts": [],
+      "notes": []
+    },
+    {
+      "type": "applied",
+      "oldPath": "app\\api\\files\\download\\[storageKey]\\route.ts",
+      "newPath": "app\\api\\files\\download\\[storage-key]\\route.ts",
+      "reason": "Directory should be kebab-case",
+      "severity": "low",
+      "filesUpdated": 3,
+      "conflicts": [],
+      "notes": []
+    },
+    {
+      "type": "applied",
+      "oldPath": "features\\planning\\engagement\\engagement.service.ts",
+      "newPath": "features\\planning\\engagement\\engagement.service-v2.ts",
+      "reason": "Hook/utility should be camelCase",
+      "severity": "medium",
+      "filesUpdated": 1,
+      "conflicts": [],
+      "notes": []
+    },
+    {
+      "type": "applied",
+      "oldPath": "features\\planning\\pbc\\pbc.service.ts",
+      "newPath": "features\\planning\\pbc\\pbc.service-v2.ts",
+      "reason": "Hook/utility should be camelCase",
+      "severity": "medium",
+      "filesUpdated": 1,
+      "conflicts": [],
+      "notes": []
+    },
+    {
+      "type": "applied",
+      "oldPath": "components\\ui\\form-dialog.tsx",
+      "newPath": "components\\ui\\FormDialog.tsx",
+      "reason": "React component should be PascalCase",
+      "severity": "high",
+      "filesUpdated": 0,
+      "conflicts": [],
+      "notes": []
+    },
+    {
+      "type": "applied",
+      "oldPath": "components\\evidence\\evidence-files.tsx",
+      "newPath": "components\\evidence\\EvidenceFiles.tsx",
+      "reason": "React component should be PascalCase",
+      "severity": "high",
+      "filesUpdated": 1,
+      "conflicts": [],
+      "notes": []
+    },
+    {
+      "type": "applied",
+      "oldPath": "components\\pbc\\pbc-table.tsx",
+      "newPath": "components\\pbc\\PbcTable.tsx",
+      "reason": "React component should be PascalCase",
+      "severity": "high",
+      "filesUpdated": 1,
+      "conflicts": [],
+      "notes": []
+    },
+    {
+      "type": "applied",
+      "oldPath": "features\\evidence\\forms\\evidence-uploader.form.tsx",
+      "newPath": "features\\evidence\\forms\\EvidenceUploader.form.tsx",
+      "reason": "React component should be PascalCase",
+      "severity": "high",
+      "filesUpdated": 1,
+      "conflicts": [],
+      "notes": []
+    },
+    {
+      "type": "applied",
+      "oldPath": "features\\fieldwork\\forms\\test-execution.form.tsx",
+      "newPath": "features\\fieldwork\\forms\\TestExecution.form.tsx",
+      "reason": "React component should be PascalCase",
+      "severity": "high",
+      "filesUpdated": 1,
+      "conflicts": [],
+      "notes": []
+    },
+    {
+      "type": "applied",
+      "oldPath": "features\\planning\\engagement\\engagement.form.tsx",
+      "newPath": "features\\planning\\engagement\\Engagement.form-v2.tsx",
+      "reason": "React component should be PascalCase",
+      "severity": "high",
+      "filesUpdated": 1,
+      "conflicts": [],
+      "notes": []
+    },
+    {
+      "type": "applied",
+      "oldPath": "features\\planning\\pbc\\pbc.form.tsx",
+      "newPath": "features\\planning\\pbc\\Pbc.form-v2.tsx",
+      "reason": "React component should be PascalCase",
+      "severity": "high",
+      "filesUpdated": 1,
+      "conflicts": [],
+      "notes": []
+    },
+    {
+      "type": "applied",
+      "oldPath": "lib\\auth-provider.tsx",
+      "newPath": "lib\\AuthProvider.tsx",
+      "reason": "React component should be PascalCase",
+      "severity": "high",
+      "filesUpdated": 1,
+      "conflicts": [],
+      "notes": []
+    },
+    {
+      "type": "applied",
+      "oldPath": "features\\program\\sampling\\sampling.form.tsx",
+      "newPath": "features\\program\\sampling\\Sampling.form-v2.tsx",
+      "reason": "React component should be PascalCase",
+      "severity": "high",
+      "filesUpdated": 2,
+      "conflicts": [],
+      "notes": []
+    },
+    {
+      "type": "applied",
+      "oldPath": "features\\program\\tests\\test.form.tsx",
+      "newPath": "features\\program\\tests\\Test.form-v2.tsx",
+      "reason": "React component should be PascalCase",
+      "severity": "high",
+      "filesUpdated": 2,
+      "conflicts": [],
+      "notes": []
+    },
+    {
+      "type": "applied",
+      "oldPath": "components\\evidence\\file-upload.tsx",
+      "newPath": "components\\evidence\\FileUpload.tsx",
+      "reason": "React component should be PascalCase",
+      "severity": "high",
+      "filesUpdated": 3,
+      "conflicts": [],
+      "notes": []
+    },
+    {
+      "type": "applied",
+      "oldPath": "components\\ui\\card.tsx",
+      "newPath": "components\\ui\\Card-v2.tsx",
+      "reason": "React component should be PascalCase",
+      "severity": "high",
+      "filesUpdated": 4,
+      "conflicts": [],
+      "notes": []
+    },
+    {
+      "type": "applied",
+      "oldPath": "components\\ui\\toast.tsx",
+      "newPath": "components\\ui\\Toast-v2.tsx",
+      "reason": "React component should be PascalCase",
+      "severity": "high",
+      "filesUpdated": 8,
+      "conflicts": [],
+      "notes": []
+    },
+    {
+      "type": "applied",
+      "oldPath": "app\\(app)\\auth\\login\\page.tsx",
+      "newPath": "app\\(app)\\auth\\login\\Page-v2.tsx",
+      "reason": "React component should be PascalCase",
+      "severity": "high",
+      "filesUpdated": 9,
+      "conflicts": [],
+      "notes": []
+    },
+    {
+      "type": "applied",
+      "oldPath": "app\\(app)\\auth\\register\\page.tsx",
+      "newPath": "app\\(app)\\auth\\register\\Page-v2.tsx",
+      "reason": "React component should be PascalCase",
+      "severity": "high",
+      "filesUpdated": 9,
+      "conflicts": [],
+      "notes": []
+    },
+    {
+      "type": "applied",
+      "oldPath": "app\\(app)\\fieldwork\\page.tsx",
+      "newPath": "app\\(app)\\fieldwork\\Page-v2.tsx",
+      "reason": "React component should be PascalCase",
+      "severity": "high",
+      "filesUpdated": 9,
+      "conflicts": [],
+      "notes": []
+    },
+    {
+      "type": "applied",
+      "oldPath": "app\\(app)\\fieldwork\\[engagementId]\\page.tsx",
+      "newPath": "app\\(app)\\fieldwork\\[engagementId]\\Page-v2.tsx",
+      "reason": "React component should be PascalCase",
+      "severity": "high",
+      "filesUpdated": 9,
+      "conflicts": [],
+      "notes": []
+    },
+    {
+      "type": "applied",
+      "oldPath": "components\\ui\\input.tsx",
+      "newPath": "components\\ui\\Input-v2.tsx",
+      "reason": "React component should be PascalCase",
+      "severity": "high",
+      "filesUpdated": 13,
+      "conflicts": [],
+      "notes": []
+    }
+  ],
+  "violations": [],
+  "todos": [
+    {
+      "priority": "low",
+      "description": "Clean up 15 temporary version suffixes",
+      "files": [
+        "app\\api\\auth\\[...nextauth]\\route-v2.ts",
+        "app\\api\\evidence\\[id]\\download-secure\\route-v2.ts",
+        "features\\planning\\engagement\\engagement.service-v2.ts",
+        "features\\planning\\pbc\\pbc.service-v2.ts",
+        "features\\planning\\engagement\\Engagement.form-v2.tsx",
+        "features\\planning\\pbc\\Pbc.form-v2.tsx",
+        "features\\program\\sampling\\Sampling.form-v2.tsx",
+        "features\\program\\tests\\Test.form-v2.tsx",
+        "components\\ui\\Card-v2.tsx",
+        "components\\ui\\Toast-v2.tsx",
+        "app\\(app)\\auth\\login\\Page-v2.tsx",
+        "app\\(app)\\auth\\register\\Page-v2.tsx",
+        "app\\(app)\\fieldwork\\Page-v2.tsx",
+        "app\\(app)\\fieldwork\\[engagementId]\\Page-v2.tsx",
+        "components\\ui\\Input-v2.tsx"
+      ],
+      "estimatedEffort": "15-30 minutes"
+    }
+  ],
+  "charter": {
+    "namingRules": [
+      "React Components: PascalCase (AppShell.tsx, DashboardView.tsx)",
+      "Hooks/Utilities: camelCase (useAuthGuard.ts, storageManager.ts)",
+      "Schemas/Forms: Descriptive + suffix (test-execution.schema.ts)",
+      "Directories: kebab-case (features/planning/engagement/)",
+      "i18n keys: dot.case (menu.planning.title)"
+    ],
+    "structureRules": [
+      "Feature-first organization (features/evidence/, features/fieldwork/)",
+      "Stable names for critical components (AppShell.tsx, DashboardView.tsx)",
+      "Consistent import patterns with @ alias",
+      "Clear separation of concerns (components/, lib/, features/)"
+    ],
+    "qualityRules": [
+      "No unused imports or variables",
+      "Consistent code formatting (Prettier)",
+      "TypeScript strict mode compliance",
+      "ESLint rule adherence"
+    ]
+  }
+}

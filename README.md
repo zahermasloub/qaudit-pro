@@ -15,6 +15,7 @@
 ## البدء
 
 ### المتطلبات
+
 - Node.js 18+ ([تحميل من هنا](https://nodejs.org))
 - PostgreSQL 12+ (لقاعدة البيانات)
 
@@ -26,6 +27,7 @@
    - أعد تشغيل Terminal
 
 2. **تثبيت المتطلبات:**
+
 ```bash
 npm install
 ```
@@ -33,6 +35,7 @@ npm install
 3. **إعداد قاعدة البيانات:**
 
    **خيار أ: باستخدام Docker (موصى به):**
+
    ```bash
    # إنشاء حاوية PostgreSQL
    docker run --name qauditpg -e POSTGRES_PASSWORD=postgres -e POSTGRES_DB=qaudit_pro -p 5432:5432 -d postgres:16
@@ -44,6 +47,7 @@ npm install
    ```
 
    **خيار ب: خدمة Windows المحلية:**
+
    ```powershell
    # فحص المنفذ
    Test-NetConnection 127.0.0.1 -Port 5432
@@ -53,6 +57,7 @@ npm install
    ```
 
    **تكوين متغيرات البيئة:**
+
    ```bash
    # نسخ وتحديث ملف البيئة
    cp .env.example .env
@@ -67,6 +72,7 @@ npm install
    ```
 
 4. **تشغيل خادم التطوير:**
+
 ```bash
 npm run dev
 ```
@@ -94,10 +100,12 @@ npm run dev
 ### اختبار النظام:
 
 **المستخدم التجريبي:**
+
 - البريد: `test@test.com`
 - كلمة المرور: `Passw0rd!`
 
 **اختبارات إضافية:**
+
 ```bash
 # فحص الاتصال بقاعدة البيانات
 npx tsx scripts/quick-db-check.ts
@@ -109,15 +117,16 @@ npx tsx scripts/check-user-exists.ts
 npx tsx scripts/test-login.ts
 ```
 
-
 # qaudit-pro
 
 Documentation in SETUP.md
 
 ## 📄 دليل كتابة الكود
+
 [CODESTYLE.md](docs/CODESTYLE.md)
 
 ## 🏗️ الهيكل المعماري
+
 [ARCHITECTURE.md](docs/ARCHITECTURE.md)
 
 ## هيكل المشروع
@@ -140,7 +149,6 @@ qaudit-pro/
 ```
 
 ## التقنيات المستخدمة
-
 
 ## المساهمة
 

@@ -1,2 +1,2 @@
-export { default as TestForm } from './test.form';
-export { testSchema, type TestFormValues } from './test.schema';
+export { default as TestForm } from './Test.form-v2';
+export { type TestFormValues, testSchema } from './test.schema';

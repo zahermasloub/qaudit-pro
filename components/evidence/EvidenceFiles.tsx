@@ -5,7 +5,8 @@
 
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
+
 import { Button } from '@/components/ui/button';
 
 interface EvidenceFile {
@@ -95,7 +96,6 @@ const EvidenceFiles: React.FC<EvidenceFilesProps> = ({
       setPagination(result.pagination);
       setCategories(result.categories);
       setError(null);
-
     } catch (err) {
       setError(err instanceof Error ? err.message : 'خطأ في تحميل الملفات');
     } finally {
@@ -124,11 +124,16 @@ const EvidenceFiles: React.FC<EvidenceFilesProps> = ({
   // Get status badge color
   const getStatusColor = (status: string): string => {
     switch (status) {
-      case 'clean': return 'bg-green-100 text-green-800';
-      case 'pending': return 'bg-yellow-100 text-yellow-800';
-      case 'suspected': return 'bg-orange-100 text-orange-800';
-      case 'blocked': return 'bg-red-100 text-red-800';
-      default: return 'bg-gray-100 text-gray-800';
+      case 'clean':
+        return 'bg-green-100 text-green-800';
+      case 'pending':
+        return 'bg-yellow-100 text-yellow-800';
+      case 'suspected':
+        return 'bg-orange-100 text-orange-800';
+      case 'blocked':
+        return 'bg-red-100 text-red-800';
+      default:
+        return 'bg-gray-100 text-gray-800';
     }
   };
 
@@ -150,7 +155,6 @@ const EvidenceFiles: React.FC<EvidenceFilesProps> = ({
       a.click();
       window.URL.revokeObjectURL(url);
       document.body.removeChild(a);
-
     } catch (error) {
       console.error('Download error:', error);
       alert('فشل في تحميل الملف');
@@ -174,11 +178,7 @@ const EvidenceFiles: React.FC<EvidenceFilesProps> = ({
         <div className="text-red-600">
           <p className="text-lg font-medium">خطأ في تحميل الملفات</p>
           <p className="text-sm mt-2">{error}</p>
-          <Button
-            onClick={() => fetchFiles()}
-            variant="outline"
-            className="mt-4"
-          >
+          <Button onClick={() => fetchFiles()} variant="outline" className="mt-4">
             إعادة المحاولة
           </Button>
         </div>
@@ -199,14 +199,14 @@ const EvidenceFiles: React.FC<EvidenceFilesProps> = ({
           {categories.length > 0 && (
             <select
               value={selectedCategory}
-              onChange={(e) => {
+              onChange={e => {
                 setSelectedCategory(e.target.value);
                 setPage(1);
               }}
               className="px-3 py-2 border border-gray-300 rounded-md text-sm"
             >
               <option value="">جميع التصنيفات</option>
-              {categories.map((cat) => (
+              {categories.map(cat => (
                 <option key={cat.category} value={cat.category}>
                   {cat.category} ({cat.count})
                 </option>
@@ -243,19 +243,20 @@ const EvidenceFiles: React.FC<EvidenceFilesProps> = ({
           <p className="text-gray-500 text-sm mt-2">
             {selectedCategory
               ? `لا توجد ملفات في تصنيف "${selectedCategory}"`
-              : 'ابدأ بإضافة ملفات الأدلة للمهام'
-            }
+              : 'ابدأ بإضافة ملفات الأدلة للمهام'}
           </p>
         </div>
       ) : (
         <>
           {/* Files grid/list */}
-          <div className={
-            viewMode === 'grid'
-              ? 'grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4'
-              : 'space-y-3'
-          }>
-            {files.map((file) => (
+          <div
+            className={
+              viewMode === 'grid'
+                ? 'grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4'
+                : 'space-y-3'
+            }
+          >
+            {files.map(file => (
               <div
                 key={file.id}
                 className={`
@@ -269,10 +270,12 @@ const EvidenceFiles: React.FC<EvidenceFilesProps> = ({
                   <>
                     <div className="flex items-center justify-between">
                       <span className="text-3xl">{getFileIcon(file)}</span>
-                      <span className={`
+                      <span
+                        className={`
                         px-2 py-1 text-xs rounded-full
                         ${getStatusColor(file.virusScanStatus)}
-                      `}>
+                      `}
+                      >
                         {file.virusScanStatus === 'clean' && '✓'}
                         {file.virusScanStatus === 'pending' && '⏳'}
                         {file.virusScanStatus === 'suspected' && '⚠️'}
@@ -293,7 +296,7 @@ const EvidenceFiles: React.FC<EvidenceFilesProps> = ({
                     </div>
 
                     <Button
-                      onClick={(e) => {
+                      onClick={e => {
                         e.stopPropagation();
                         downloadFile(file);
                       }}
@@ -322,10 +325,12 @@ const EvidenceFiles: React.FC<EvidenceFilesProps> = ({
                     </div>
 
                     <div className="flex items-center space-x-3 space-x-reverse">
-                      <span className={`
+                      <span
+                        className={`
                         px-2 py-1 text-xs rounded-full
                         ${getStatusColor(file.virusScanStatus)}
-                      `}>
+                      `}
+                      >
                         {file.virusScanStatus === 'clean' && '✓ آمن'}
                         {file.virusScanStatus === 'pending' && '⏳ قيد الفحص'}
                         {file.virusScanStatus === 'suspected' && '⚠️ مشبوه'}
@@ -333,7 +338,7 @@ const EvidenceFiles: React.FC<EvidenceFilesProps> = ({
                       </span>
 
                       <Button
-                        onClick={(e) => {
+                        onClick={e => {
                           e.stopPropagation();
                           downloadFile(file);
                         }}
@@ -353,8 +358,7 @@ const EvidenceFiles: React.FC<EvidenceFilesProps> = ({
           {pagination && pagination.total > 1 && (
             <div className="flex items-center justify-between pt-6">
               <div className="text-sm text-gray-600">
-                صفحة {pagination.current} من {pagination.total}
-                ({pagination.totalItems} ملف إجمالي)
+                صفحة {pagination.current} من {pagination.total}({pagination.totalItems} ملف إجمالي)
               </div>
 
               <div className="flex gap-2">

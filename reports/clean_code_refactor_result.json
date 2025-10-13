@@ -1,0 +1,391 @@
+{
+  "appliedChanges": [
+    {
+      "oldPath": "app\\api\\auth\\[...nextauth]\\route.ts",
+      "newPath": "app\\api\\auth\\[...nextauth]\\route-v2.ts",
+      "reason": "Directory should be kebab-case",
+      "severity": "low",
+      "type": "directory",
+      "importers": [
+        "app\\(app)\\auth\\login\\page.tsx",
+        "app\\(app)\\auth\\register\\page.tsx",
+        "app\\(app)\\shell\\AppShell.tsx"
+      ]
+    },
+    {
+      "oldPath": "app\\api\\evidence\\[id]\\download-secure\\route.ts",
+      "newPath": "app\\api\\evidence\\[id]\\download-secure\\route-v2.ts",
+      "reason": "Directory should be kebab-case",
+      "severity": "low",
+      "type": "directory",
+      "importers": [
+        "app\\(app)\\auth\\login\\page.tsx",
+        "app\\(app)\\auth\\register\\page.tsx",
+        "app\\(app)\\shell\\AppShell.tsx"
+      ]
+    },
+    {
+      "oldPath": "app\\api\\files\\download\\[storageKey]\\route.ts",
+      "newPath": "app\\api\\files\\download\\[storage-key]\\route.ts",
+      "reason": "Directory should be kebab-case",
+      "severity": "low",
+      "type": "directory",
+      "importers": [
+        "app\\(app)\\auth\\login\\page.tsx",
+        "app\\(app)\\auth\\register\\page.tsx",
+        "app\\(app)\\shell\\AppShell.tsx"
+      ]
+    },
+    {
+      "oldPath": "features\\planning\\engagement\\engagement.service.ts",
+      "newPath": "features\\planning\\engagement\\engagement.service-v2.ts",
+      "reason": "Hook/utility should be camelCase",
+      "severity": "medium",
+      "type": "file",
+      "importers": ["features\\planning\\engagement\\index.ts"]
+    },
+    {
+      "oldPath": "features\\planning\\pbc\\pbc.service.ts",
+      "newPath": "features\\planning\\pbc\\pbc.service-v2.ts",
+      "reason": "Hook/utility should be camelCase",
+      "severity": "medium",
+      "type": "file",
+      "importers": ["features\\planning\\pbc\\index.ts"]
+    },
+    {
+      "oldPath": "components\\ui\\form-dialog.tsx",
+      "newPath": "components\\ui\\FormDialog.tsx",
+      "reason": "React component should be PascalCase",
+      "severity": "high",
+      "type": "file",
+      "importers": []
+    },
+    {
+      "oldPath": "components\\evidence\\evidence-files.tsx",
+      "newPath": "components\\evidence\\EvidenceFiles.tsx",
+      "reason": "React component should be PascalCase",
+      "severity": "high",
+      "type": "file",
+      "importers": ["app\\(app)\\fieldwork\\[engagementId]\\page.tsx"]
+    },
+    {
+      "oldPath": "components\\pbc\\pbc-table.tsx",
+      "newPath": "components\\pbc\\PbcTable.tsx",
+      "reason": "React component should be PascalCase",
+      "severity": "high",
+      "type": "file",
+      "importers": ["app\\(app)\\shell\\ScreenComponents.tsx"]
+    },
+    {
+      "oldPath": "features\\evidence\\forms\\evidence-uploader.form.tsx",
+      "newPath": "features\\evidence\\forms\\EvidenceUploader.form.tsx",
+      "reason": "React component should be PascalCase",
+      "severity": "high",
+      "type": "file",
+      "importers": ["app\\(app)\\shell\\AppShell.tsx"]
+    },
+    {
+      "oldPath": "features\\fieldwork\\forms\\test-execution.form.tsx",
+      "newPath": "features\\fieldwork\\forms\\TestExecution.form.tsx",
+      "reason": "React component should be PascalCase",
+      "severity": "high",
+      "type": "file",
+      "importers": ["app\\(app)\\shell\\AppShell.tsx"]
+    },
+    {
+      "oldPath": "features\\planning\\engagement\\engagement.form.tsx",
+      "newPath": "features\\planning\\engagement\\Engagement.form-v2.tsx",
+      "reason": "React component should be PascalCase",
+      "severity": "high",
+      "type": "file",
+      "importers": ["app\\(app)\\shell\\AppShell.tsx"]
+    },
+    {
+      "oldPath": "features\\planning\\pbc\\pbc.form.tsx",
+      "newPath": "features\\planning\\pbc\\Pbc.form-v2.tsx",
+      "reason": "React component should be PascalCase",
+      "severity": "high",
+      "type": "file",
+      "importers": ["app\\(app)\\shell\\AppShell.tsx"]
+    },
+    {
+      "oldPath": "lib\\auth-provider.tsx",
+      "newPath": "lib\\AuthProvider.tsx",
+      "reason": "React component should be PascalCase",
+      "severity": "high",
+      "type": "file",
+      "importers": ["app\\layout.tsx"]
+    },
+    {
+      "oldPath": "features\\program\\sampling\\sampling.form.tsx",
+      "newPath": "features\\program\\sampling\\Sampling.form-v2.tsx",
+      "reason": "React component should be PascalCase",
+      "severity": "high",
+      "type": "file",
+      "importers": ["app\\(app)\\shell\\AppShell.tsx", "features\\program\\sampling\\index.ts"]
+    },
+    {
+      "oldPath": "features\\program\\tests\\test.form.tsx",
+      "newPath": "features\\program\\tests\\Test.form-v2.tsx",
+      "reason": "React component should be PascalCase",
+      "severity": "high",
+      "type": "file",
+      "importers": ["app\\(app)\\shell\\AppShell.tsx", "features\\program\\tests\\index.ts"]
+    },
+    {
+      "oldPath": "components\\evidence\\file-upload.tsx",
+      "newPath": "components\\evidence\\FileUpload.tsx",
+      "reason": "React component should be PascalCase",
+      "severity": "high",
+      "type": "file",
+      "importers": [
+        "app\\(app)\\fieldwork\\[engagementId]\\page.tsx",
+        "app\\api\\files\\route.ts",
+        "app\\api\\files\\upload\\route.ts"
+      ]
+    },
+    {
+      "oldPath": "components\\ui\\card.tsx",
+      "newPath": "components\\ui\\Card-v2.tsx",
+      "reason": "React component should be PascalCase",
+      "severity": "high",
+      "type": "file",
+      "importers": [
+        "app\\(app)\\auth\\login\\page.tsx",
+        "app\\(app)\\auth\\register\\page.tsx",
+        "app\\(app)\\fieldwork\\[engagementId]\\page.tsx",
+        "components\\pbc\\pbc-table.tsx"
+      ]
+    },
+    {
+      "oldPath": "components\\ui\\toast.tsx",
+      "newPath": "components\\ui\\Toast-v2.tsx",
+      "reason": "React component should be PascalCase",
+      "severity": "high",
+      "type": "file",
+      "importers": [
+        "app\\(app)\\shell\\AppShell.tsx",
+        "components\\evidence\\file-upload.tsx",
+        "components\\pbc\\pbc-table.tsx",
+        "features\\evidence\\forms\\evidence-uploader.form.tsx",
+        "features\\fieldwork\\forms\\test-execution.form.tsx",
+        "features\\planning\\pbc\\pbc.form.tsx",
+        "features\\program\\sampling\\sampling.form.tsx",
+        "features\\program\\tests\\test.form.tsx"
+      ]
+    },
+    {
+      "oldPath": "app\\(app)\\auth\\login\\page.tsx",
+      "newPath": "app\\(app)\\auth\\login\\Page-v2.tsx",
+      "reason": "React component should be PascalCase",
+      "severity": "high",
+      "type": "file",
+      "importers": [
+        "app\\api\\auth\\[...nextauth]\\route.ts",
+        "app\\api\\evidence\\batch-upload\\route.ts",
+        "app\\api\\fieldwork\\test-runs\\route.ts",
+        "app\\api\\files\\route.ts",
+        "components\\evidence\\evidence-files.tsx",
+        "features\\evidence\\schemas\\evidence-upload.schema.ts",
+        "lib\\ocr-service.ts",
+        "middleware.ts",
+        "tailwind.config.js"
+      ]
+    },
+    {
+      "oldPath": "app\\(app)\\auth\\register\\page.tsx",
+      "newPath": "app\\(app)\\auth\\register\\Page-v2.tsx",
+      "reason": "React component should be PascalCase",
+      "severity": "high",
+      "type": "file",
+      "importers": [
+        "app\\api\\auth\\[...nextauth]\\route.ts",
+        "app\\api\\evidence\\batch-upload\\route.ts",
+        "app\\api\\fieldwork\\test-runs\\route.ts",
+        "app\\api\\files\\route.ts",
+        "components\\evidence\\evidence-files.tsx",
+        "features\\evidence\\schemas\\evidence-upload.schema.ts",
+        "lib\\ocr-service.ts",
+        "middleware.ts",
+        "tailwind.config.js"
+      ]
+    },
+    {
+      "oldPath": "app\\(app)\\fieldwork\\page.tsx",
+      "newPath": "app\\(app)\\fieldwork\\Page-v2.tsx",
+      "reason": "React component should be PascalCase",
+      "severity": "high",
+      "type": "file",
+      "importers": [
+        "app\\api\\auth\\[...nextauth]\\route.ts",
+        "app\\api\\evidence\\batch-upload\\route.ts",
+        "app\\api\\fieldwork\\test-runs\\route.ts",
+        "app\\api\\files\\route.ts",
+        "components\\evidence\\evidence-files.tsx",
+        "features\\evidence\\schemas\\evidence-upload.schema.ts",
+        "lib\\ocr-service.ts",
+        "middleware.ts",
+        "tailwind.config.js"
+      ]
+    },
+    {
+      "oldPath": "app\\(app)\\fieldwork\\[engagementId]\\page.tsx",
+      "newPath": "app\\(app)\\fieldwork\\[engagementId]\\Page-v2.tsx",
+      "reason": "React component should be PascalCase",
+      "severity": "high",
+      "type": "file",
+      "importers": [
+        "app\\api\\auth\\[...nextauth]\\route.ts",
+        "app\\api\\evidence\\batch-upload\\route.ts",
+        "app\\api\\fieldwork\\test-runs\\route.ts",
+        "app\\api\\files\\route.ts",
+        "components\\evidence\\evidence-files.tsx",
+        "features\\evidence\\schemas\\evidence-upload.schema.ts",
+        "lib\\ocr-service.ts",
+        "middleware.ts",
+        "tailwind.config.js"
+      ]
+    },
+    {
+      "oldPath": "components\\ui\\input.tsx",
+      "newPath": "components\\ui\\Input-v2.tsx",
+      "reason": "React component should be PascalCase",
+      "severity": "high",
+      "type": "file",
+      "importers": [
+        "app\\(app)\\auth\\login\\page.tsx",
+        "app\\(app)\\auth\\register\\page.tsx",
+        "app\\(app)\\shell\\AppShell.tsx",
+        "components\\evidence\\file-upload.tsx",
+        "components\\pbc\\pbc-table.tsx",
+        "features\\evidence\\forms\\evidence-uploader.form.tsx",
+        "features\\fieldwork\\forms\\test-execution.form.tsx",
+        "features\\planning\\engagement\\engagement.form.tsx",
+        "features\\planning\\pbc\\pbc.form.tsx",
+        "features\\program\\sampling\\sampling.form.tsx",
+        "features\\program\\tests\\test.form.tsx",
+        "lib\\utils.ts",
+        "scripts\\clean-code-scan.ts"
+      ]
+    }
+  ],
+  "failedChanges": [],
+  "updatedFiles": [
+    "app\\api\\auth\\[...nextauth]\\route-v2.ts",
+    "app\\(app)\\auth\\login\\page.tsx",
+    "app\\(app)\\auth\\register\\page.tsx",
+    "app\\(app)\\shell\\AppShell.tsx",
+    "app\\api\\evidence\\[id]\\download-secure\\route-v2.ts",
+    "app\\(app)\\auth\\login\\page.tsx",
+    "app\\(app)\\auth\\register\\page.tsx",
+    "app\\(app)\\shell\\AppShell.tsx",
+    "app\\api\\files\\download\\[storage-key]\\route.ts",
+    "app\\(app)\\auth\\login\\page.tsx",
+    "app\\(app)\\auth\\register\\page.tsx",
+    "app\\(app)\\shell\\AppShell.tsx",
+    "features\\planning\\engagement\\engagement.service-v2.ts",
+    "features\\planning\\engagement\\index.ts",
+    "features\\planning\\pbc\\pbc.service-v2.ts",
+    "features\\planning\\pbc\\index.ts",
+    "components\\ui\\FormDialog.tsx",
+    "components\\evidence\\EvidenceFiles.tsx",
+    "app\\(app)\\fieldwork\\[engagementId]\\page.tsx",
+    "components\\pbc\\PbcTable.tsx",
+    "app\\(app)\\shell\\ScreenComponents.tsx",
+    "features\\evidence\\forms\\EvidenceUploader.form.tsx",
+    "app\\(app)\\shell\\AppShell.tsx",
+    "features\\fieldwork\\forms\\TestExecution.form.tsx",
+    "app\\(app)\\shell\\AppShell.tsx",
+    "features\\planning\\engagement\\Engagement.form-v2.tsx",
+    "app\\(app)\\shell\\AppShell.tsx",
+    "features\\planning\\pbc\\Pbc.form-v2.tsx",
+    "app\\(app)\\shell\\AppShell.tsx",
+    "lib\\AuthProvider.tsx",
+    "app\\layout.tsx",
+    "features\\program\\sampling\\Sampling.form-v2.tsx",
+    "app\\(app)\\shell\\AppShell.tsx",
+    "features\\program\\sampling\\index.ts",
+    "features\\program\\tests\\Test.form-v2.tsx",
+    "app\\(app)\\shell\\AppShell.tsx",
+    "features\\program\\tests\\index.ts",
+    "components\\evidence\\FileUpload.tsx",
+    "app\\(app)\\fieldwork\\[engagementId]\\page.tsx",
+    "app\\api\\files\\route.ts",
+    "app\\api\\files\\upload\\route.ts",
+    "components\\ui\\Card-v2.tsx",
+    "app\\(app)\\auth\\login\\page.tsx",
+    "app\\(app)\\auth\\register\\page.tsx",
+    "app\\(app)\\fieldwork\\[engagementId]\\page.tsx",
+    "components\\pbc\\pbc-table.tsx",
+    "components\\ui\\Toast-v2.tsx",
+    "app\\(app)\\shell\\AppShell.tsx",
+    "components\\evidence\\file-upload.tsx",
+    "components\\pbc\\pbc-table.tsx",
+    "features\\evidence\\forms\\evidence-uploader.form.tsx",
+    "features\\fieldwork\\forms\\test-execution.form.tsx",
+    "features\\planning\\pbc\\pbc.form.tsx",
+    "features\\program\\sampling\\sampling.form.tsx",
+    "features\\program\\tests\\test.form.tsx",
+    "app\\(app)\\auth\\login\\Page-v2.tsx",
+    "app\\api\\auth\\[...nextauth]\\route.ts",
+    "app\\api\\evidence\\batch-upload\\route.ts",
+    "app\\api\\fieldwork\\test-runs\\route.ts",
+    "app\\api\\files\\route.ts",
+    "components\\evidence\\evidence-files.tsx",
+    "features\\evidence\\schemas\\evidence-upload.schema.ts",
+    "lib\\ocr-service.ts",
+    "middleware.ts",
+    "tailwind.config.js",
+    "app\\(app)\\auth\\register\\Page-v2.tsx",
+    "app\\api\\auth\\[...nextauth]\\route.ts",
+    "app\\api\\evidence\\batch-upload\\route.ts",
+    "app\\api\\fieldwork\\test-runs\\route.ts",
+    "app\\api\\files\\route.ts",
+    "components\\evidence\\evidence-files.tsx",
+    "features\\evidence\\schemas\\evidence-upload.schema.ts",
+    "lib\\ocr-service.ts",
+    "middleware.ts",
+    "tailwind.config.js",
+    "app\\(app)\\fieldwork\\Page-v2.tsx",
+    "app\\api\\auth\\[...nextauth]\\route.ts",
+    "app\\api\\evidence\\batch-upload\\route.ts",
+    "app\\api\\fieldwork\\test-runs\\route.ts",
+    "app\\api\\files\\route.ts",
+    "components\\evidence\\evidence-files.tsx",
+    "features\\evidence\\schemas\\evidence-upload.schema.ts",
+    "lib\\ocr-service.ts",
+    "middleware.ts",
+    "tailwind.config.js",
+    "app\\(app)\\fieldwork\\[engagementId]\\Page-v2.tsx",
+    "app\\api\\auth\\[...nextauth]\\route.ts",
+    "app\\api\\evidence\\batch-upload\\route.ts",
+    "app\\api\\fieldwork\\test-runs\\route.ts",
+    "app\\api\\files\\route.ts",
+    "components\\evidence\\evidence-files.tsx",
+    "features\\evidence\\schemas\\evidence-upload.schema.ts",
+    "lib\\ocr-service.ts",
+    "middleware.ts",
+    "tailwind.config.js",
+    "components\\ui\\Input-v2.tsx",
+    "app\\(app)\\auth\\login\\page.tsx",
+    "app\\(app)\\auth\\register\\page.tsx",
+    "app\\(app)\\shell\\AppShell.tsx",
+    "components\\evidence\\file-upload.tsx",
+    "components\\pbc\\pbc-table.tsx",
+    "features\\evidence\\forms\\evidence-uploader.form.tsx",
+    "features\\fieldwork\\forms\\test-execution.form.tsx",
+    "features\\planning\\engagement\\engagement.form.tsx",
+    "features\\planning\\pbc\\pbc.form.tsx",
+    "features\\program\\sampling\\sampling.form.tsx",
+    "features\\program\\tests\\test.form.tsx",
+    "lib\\utils.ts",
+    "scripts\\clean-code-scan.ts"
+  ],
+  "errors": [
+    "Lint/format failed: Error: Command failed: npm run fix\n\nOops! Something went wrong! :(\n\nESLint: 8.57.0\n\nESLint couldn't find the config \"@typescript-eslint/recommended\" to extend from. Please check that the name of the config is correct.\n\nThe config \"@typescript-eslint/recommended\" was referenced from the config file in \"D:\\AUDITOR-PRO\\qaudit-pro\\.eslintrc.json\".\n\nIf you still have problems, please stop by https://eslint.org/chat/help to chat with the team.\n\n",
+    "Lint/format failed: Error: Command failed: npm run fix\n\nOops! Something went wrong! :(\n\nESLint: 8.57.0\n\nESLint couldn't find the config \"@typescript-eslint/recommended\" to extend from. Please check that the name of the config is correct.\n\nThe config \"@typescript-eslint/recommended\" was referenced from the config file in \"D:\\AUDITOR-PRO\\qaudit-pro\\.eslintrc.json\".\n\nIf you still have problems, please stop by https://eslint.org/chat/help to chat with the team.\n\n",
+    "Lint/format failed: Error: Command failed: npm run fix\n\nOops! Something went wrong! :(\n\nESLint: 8.57.0\n\nESLint couldn't find the config \"@typescript-eslint/recommended\" to extend from. Please check that the name of the config is correct.\n\nThe config \"@typescript-eslint/recommended\" was referenced from the config file in \"D:\\AUDITOR-PRO\\qaudit-pro\\.eslintrc.json\".\n\nIf you still have problems, please stop by https://eslint.org/chat/help to chat with the team.\n\n",
+    "Lint/format failed: Error: Command failed: npm run fix\n\nOops! Something went wrong! :(\n\nESLint: 8.57.0\n\nESLint couldn't find the config \"@typescript-eslint/recommended\" to extend from. Please check that the name of the config is correct.\n\nThe config \"@typescript-eslint/recommended\" was referenced from the config file in \"D:\\AUDITOR-PRO\\qaudit-pro\\.eslintrc.json\".\n\nIf you still have problems, please stop by https://eslint.org/chat/help to chat with the team.\n\n",
+    "Lint/format failed: Error: Command failed: npm run fix\n\nOops! Something went wrong! :(\n\nESLint: 8.57.0\n\nESLint couldn't find the config \"@typescript-eslint/recommended\" to extend from. Please check that the name of the config is correct.\n\nThe config \"@typescript-eslint/recommended\" was referenced from the config file in \"D:\\AUDITOR-PRO\\qaudit-pro\\.eslintrc.json\".\n\nIf you still have problems, please stop by https://eslint.org/chat/help to chat with the team.\n\n"
+  ]
+}

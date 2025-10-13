@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
-import { pbcSchema, type PBCFormValues } from '@/features/planning/pbc/pbc.schema';
-import { useToast } from '@/components/ui/toast';
+
+import { useToast } from '@/components/ui/Toast-v2';
+import { type PBCFormValues } from '@/features/planning/pbc/pbc.schema';
 
 interface PBCFormProps {
   open: boolean;
@@ -13,7 +14,12 @@ interface PBCFormProps {
 export default function PBCForm({ open, onOpenChange, engagementId, onSuccess }: PBCFormProps) {
   const [loading, setLoading] = useState(false);
   const { addToast } = useToast();
-  const { register, handleSubmit, reset, formState: { errors } } = useForm<PBCFormValues>({
+  const {
+    register,
+    handleSubmit,
+    reset,
+    formState: { errors },
+  } = useForm<PBCFormValues>({
     defaultValues: {
       engagementId,
       code: '',
@@ -22,8 +28,8 @@ export default function PBCForm({ open, onOpenChange, engagementId, onSuccess }:
       dueDate: '',
       status: 'open',
       attachments: [],
-      notes: ''
-    }
+      notes: '',
+    },
   });
 
   async function onSubmit(data: PBCFormValues) {
@@ -32,7 +38,7 @@ export default function PBCForm({ open, onOpenChange, engagementId, onSuccess }:
       const response = await fetch('/api/pbc', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ ...data, engagementId })
+        body: JSON.stringify({ ...data, engagementId }),
       });
 
       if (response.ok) {
@@ -40,7 +46,7 @@ export default function PBCForm({ open, onOpenChange, engagementId, onSuccess }:
         addToast({
           type: 'success',
           title: 'تم إنشاء PBC بنجاح',
-          message: `تم حفظ طلب المستندات: ${data.code}`
+          message: `تم حفظ طلب المستندات: ${data.code}`,
         });
         reset();
         onSuccess();
@@ -49,14 +55,14 @@ export default function PBCForm({ open, onOpenChange, engagementId, onSuccess }:
         addToast({
           type: 'error',
           title: 'خطأ في حفظ PBC',
-          message: error.error || 'حدث خطأ غير متوقع'
+          message: error.error || 'حدث خطأ غير متوقع',
         });
       }
     } catch (error) {
       addToast({
         type: 'error',
         title: 'خطأ في الاتصال',
-        message: 'تعذر الاتصال بالخادم'
+        message: 'تعذر الاتصال بالخادم',
       });
     } finally {
       setLoading(false);
@@ -71,10 +77,7 @@ export default function PBCForm({ open, onOpenChange, engagementId, onSuccess }:
       <div className="relative bg-white rounded-2xl shadow-xl border border-gray-200 w-full max-w-2xl p-6">
         <div className="flex items-center justify-between mb-4">
           <h3 className="text-lg font-semibold">طلب مستندات جديد (PBC)</h3>
-          <button
-            className="text-gray-500 hover:text-gray-700"
-            onClick={() => onOpenChange(false)}
-          >
+          <button className="text-gray-500 hover:text-gray-700" onClick={() => onOpenChange(false)}>
             ✕
           </button>
         </div>
@@ -98,7 +101,9 @@ export default function PBCForm({ open, onOpenChange, engagementId, onSuccess }:
                 className="w-full rounded-lg border border-gray-300 px-3 py-2"
                 placeholder="owner@example.com"
               />
-              {errors.ownerId && <p className="text-red-500 text-xs mt-1">{errors.ownerId.message}</p>}
+              {errors.ownerId && (
+                <p className="text-red-500 text-xs mt-1">{errors.ownerId.message}</p>
+              )}
             </div>
           </div>
 
@@ -109,7 +114,9 @@ export default function PBCForm({ open, onOpenChange, engagementId, onSuccess }:
               className="w-full rounded-lg border border-gray-300 px-3 py-2 h-20"
               placeholder="وصف المستندات المطلوبة"
             />
-            {errors.description && <p className="text-red-500 text-xs mt-1">{errors.description.message}</p>}
+            {errors.description && (
+              <p className="text-red-500 text-xs mt-1">{errors.description.message}</p>
+            )}
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -120,7 +127,9 @@ export default function PBCForm({ open, onOpenChange, engagementId, onSuccess }:
                 {...register('dueDate')}
                 className="w-full rounded-lg border border-gray-300 px-3 py-2"
               />
-              {errors.dueDate && <p className="text-red-500 text-xs mt-1">{errors.dueDate.message}</p>}
+              {errors.dueDate && (
+                <p className="text-red-500 text-xs mt-1">{errors.dueDate.message}</p>
+              )}
             </div>
 
             <div>

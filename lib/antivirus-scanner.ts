@@ -38,7 +38,7 @@ class AntivirusScanner {
       clamavPort: parseInt(process.env.CLAMAV_PORT || '3310'),
       maxFileSize: parseInt(process.env.MAX_SCAN_FILE_SIZE || '52428800'), // 50MB
       timeout: parseInt(process.env.ANTIVIRUS_TIMEOUT || '30000'), // 30 seconds
-      ...config
+      ...config,
     };
   }
 
@@ -52,7 +52,7 @@ class AntivirusScanner {
           status: 'clean',
           scanEngine: 'hybrid',
           scanTime: Date.now() - startTime,
-          details: 'Antivirus scanning disabled in configuration'
+          details: 'Antivirus scanning disabled in configuration',
         };
       }
 
@@ -63,7 +63,7 @@ class AntivirusScanner {
           status: 'error',
           scanEngine: this.config.preferredEngine,
           scanTime: Date.now() - startTime,
-          details: `File too large for scanning: ${stats.size} bytes (max: ${this.config.maxFileSize})`
+          details: `File too large for scanning: ${stats.size} bytes (max: ${this.config.maxFileSize})`,
         };
       }
 
@@ -84,7 +84,7 @@ class AntivirusScanner {
         status: 'error',
         scanEngine: this.config.preferredEngine,
         scanTime: Date.now() - startTime,
-        details: error instanceof Error ? error.message : 'Unknown scan error'
+        details: error instanceof Error ? error.message : 'Unknown scan error',
       };
     }
   }
@@ -98,7 +98,7 @@ class AntivirusScanner {
           status: 'clean',
           scanEngine: 'hybrid',
           scanTime: Date.now() - startTime,
-          details: 'Antivirus scanning disabled in configuration'
+          details: 'Antivirus scanning disabled in configuration',
         };
       }
 
@@ -107,20 +107,19 @@ class AntivirusScanner {
           status: 'error',
           scanEngine: this.config.preferredEngine,
           scanTime: Date.now() - startTime,
-          details: `Buffer too large for scanning: ${buffer.length} bytes`
+          details: `Buffer too large for scanning: ${buffer.length} bytes`,
         };
       }
 
       // For buffer scanning, we'll use VirusTotal or simulate based on file patterns
       return await this.scanBufferWithVirusTotal(buffer, fileName, startTime);
-
     } catch (error) {
       console.error('Buffer antivirus scan error:', error);
       return {
         status: 'error',
         scanEngine: this.config.preferredEngine,
         scanTime: Date.now() - startTime,
-        details: error instanceof Error ? error.message : 'Unknown buffer scan error'
+        details: error instanceof Error ? error.message : 'Unknown buffer scan error',
       };
     }
   }
@@ -139,12 +138,12 @@ class AntivirusScanner {
         'EICAR-STANDARD-ANTIVIRUS-TEST-FILE',
         'X5O!P%@AP[4\\PZX54(P^)7CC)7}$',
         'malware',
-        'virus'
+        'virus',
       ];
 
       const fileContent = fileBuffer.toString('ascii').toLowerCase();
       const foundThreats = suspiciousPatterns.filter(pattern =>
-        fileContent.includes(pattern.toLowerCase())
+        fileContent.includes(pattern.toLowerCase()),
       );
 
       if (foundThreats.length > 0) {
@@ -153,7 +152,7 @@ class AntivirusScanner {
           scanEngine: 'clamav',
           scanTime: Date.now() - startTime,
           threats: foundThreats,
-          details: `ClamAV detected ${foundThreats.length} threat(s)`
+          details: `ClamAV detected ${foundThreats.length} threat(s)`,
         };
       }
 
@@ -161,15 +160,14 @@ class AntivirusScanner {
         status: 'clean',
         scanEngine: 'clamav',
         scanTime: Date.now() - startTime,
-        details: 'ClamAV scan completed - no threats detected'
+        details: 'ClamAV scan completed - no threats detected',
       };
-
     } catch (error) {
       return {
         status: 'error',
         scanEngine: 'clamav',
         scanTime: Date.now() - startTime,
-        details: `ClamAV scan failed: ${error instanceof Error ? error.message : 'Unknown error'}`
+        details: `ClamAV scan failed: ${error instanceof Error ? error.message : 'Unknown error'}`,
       };
     }
   }
@@ -181,7 +179,7 @@ class AntivirusScanner {
           status: 'error',
           scanEngine: 'virustotal',
           scanTime: Date.now() - startTime,
-          details: 'VirusTotal API key not configured'
+          details: 'VirusTotal API key not configured',
         };
       }
 
@@ -207,7 +205,7 @@ class AntivirusScanner {
           scanEngine: 'virustotal',
           scanTime: Date.now() - startTime,
           details: `VirusTotal: Suspicious file type (${fileExtension})`,
-          scanId: `VT-${fileHash.substring(0, 8)}`
+          scanId: `VT-${fileHash.substring(0, 8)}`,
         };
       }
 
@@ -216,27 +214,29 @@ class AntivirusScanner {
         scanEngine: 'virustotal',
         scanTime: Date.now() - startTime,
         details: 'VirusTotal scan completed - file appears safe',
-        scanId: `VT-${fileHash.substring(0, 8)}`
+        scanId: `VT-${fileHash.substring(0, 8)}`,
       };
-
     } catch (error) {
       return {
         status: 'error',
         scanEngine: 'virustotal',
         scanTime: Date.now() - startTime,
-        details: `VirusTotal scan failed: ${error instanceof Error ? error.message : 'Unknown error'}`
+        details: `VirusTotal scan failed: ${error instanceof Error ? error.message : 'Unknown error'}`,
       };
     }
   }
 
-  private async scanWithHybridEngine(filePath: string, startTime: number): Promise<VirusScanResult> {
+  private async scanWithHybridEngine(
+    filePath: string,
+    startTime: number,
+  ): Promise<VirusScanResult> {
     console.log(`🔄 Hybrid scan started for: ${path.basename(filePath)}`);
 
     try {
       // Run both ClamAV and VirusTotal scans
       const [clamavResult, virusTotalResult] = await Promise.allSettled([
         this.scanWithClamAV(filePath, startTime),
-        this.scanWithVirusTotal(filePath, startTime)
+        this.scanWithVirusTotal(filePath, startTime),
       ]);
 
       const clamResult = clamavResult.status === 'fulfilled' ? clamavResult.value : null;
@@ -249,7 +249,7 @@ class AntivirusScanner {
           scanEngine: 'hybrid',
           scanTime: Date.now() - startTime,
           threats: [...(clamResult?.threats || []), ...(vtResult?.threats || [])],
-          details: `Hybrid scan: Threats detected by multiple engines`
+          details: `Hybrid scan: Threats detected by multiple engines`,
         };
       }
 
@@ -258,7 +258,7 @@ class AntivirusScanner {
           status: 'suspected',
           scanEngine: 'hybrid',
           scanTime: Date.now() - startTime,
-          details: 'Hybrid scan: File flagged as suspicious by one or more engines'
+          details: 'Hybrid scan: File flagged as suspicious by one or more engines',
         };
       }
 
@@ -267,7 +267,7 @@ class AntivirusScanner {
           status: 'clean',
           scanEngine: 'hybrid',
           scanTime: Date.now() - startTime,
-          details: 'Hybrid scan: File verified clean by multiple engines'
+          details: 'Hybrid scan: File verified clean by multiple engines',
         };
       }
 
@@ -276,20 +276,23 @@ class AntivirusScanner {
         status: 'error',
         scanEngine: 'hybrid',
         scanTime: Date.now() - startTime,
-        details: 'Hybrid scan: One or more scan engines encountered errors'
+        details: 'Hybrid scan: One or more scan engines encountered errors',
       };
-
     } catch (error) {
       return {
         status: 'error',
         scanEngine: 'hybrid',
         scanTime: Date.now() - startTime,
-        details: `Hybrid scan failed: ${error instanceof Error ? error.message : 'Unknown error'}`
+        details: `Hybrid scan failed: ${error instanceof Error ? error.message : 'Unknown error'}`,
       };
     }
   }
 
-  private async scanBufferWithVirusTotal(buffer: Buffer, fileName: string, startTime: number): Promise<VirusScanResult> {
+  private async scanBufferWithVirusTotal(
+    buffer: Buffer,
+    fileName: string,
+    startTime: number,
+  ): Promise<VirusScanResult> {
     try {
       console.log(`🔍 VirusTotal buffer scan for: ${fileName}`);
 
@@ -301,13 +304,7 @@ class AntivirusScanner {
 
       // Simple content-based analysis
       const content = buffer.toString('ascii').toLowerCase();
-      const suspiciousPatterns = [
-        'eicar',
-        'malware',
-        'virus',
-        'trojan',
-        'backdoor'
-      ];
+      const suspiciousPatterns = ['eicar', 'malware', 'virus', 'trojan', 'backdoor'];
 
       const foundPatterns = suspiciousPatterns.filter(pattern => content.includes(pattern));
 
@@ -317,7 +314,7 @@ class AntivirusScanner {
           scanEngine: 'virustotal',
           scanTime: Date.now() - startTime,
           threats: foundPatterns,
-          details: `Buffer scan detected suspicious content patterns`
+          details: `Buffer scan detected suspicious content patterns`,
         };
       }
 
@@ -325,15 +322,14 @@ class AntivirusScanner {
         status: 'clean',
         scanEngine: 'virustotal',
         scanTime: Date.now() - startTime,
-        details: 'Buffer scan completed - no threats detected'
+        details: 'Buffer scan completed - no threats detected',
       };
-
     } catch (error) {
       return {
         status: 'error',
         scanEngine: 'virustotal',
         scanTime: Date.now() - startTime,
-        details: `Buffer scan failed: ${error instanceof Error ? error.message : 'Unknown error'}`
+        details: `Buffer scan failed: ${error instanceof Error ? error.message : 'Unknown error'}`,
       };
     }
   }
@@ -358,17 +354,19 @@ class AntivirusScanner {
         threats: scanResult.threats,
         details: scanResult.details,
         scanId: scanResult.scanId,
-        scannedAt: new Date().toISOString()
+        scannedAt: new Date().toISOString(),
       });
 
       // TODO: Integrate with actual database update
       // await updateEvidenceVirusScanStatus(evidenceId, status, scanDetails);
-
     } catch (error) {
       console.error('Failed to update virus scan status:', error);
       throw error;
     }
-  }  private mapScanResultToDbStatus(status: VirusScanResult['status']): 'pending' | 'clean' | 'suspected' | 'blocked' {
+  }
+  private mapScanResultToDbStatus(
+    status: VirusScanResult['status'],
+  ): 'pending' | 'clean' | 'suspected' | 'blocked' {
     switch (status) {
       case 'clean':
         return 'clean';
@@ -396,6 +394,9 @@ export async function scanFileForVirus(filePath: string): Promise<VirusScanResul
 }
 
 // Helper function for buffer scanning
-export async function scanBufferForVirus(buffer: Buffer, fileName: string): Promise<VirusScanResult> {
+export async function scanBufferForVirus(
+  buffer: Buffer,
+  fileName: string,
+): Promise<VirusScanResult> {
   return antivirusScanner.scanBuffer(buffer, fileName);
 }

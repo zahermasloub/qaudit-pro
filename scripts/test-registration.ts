@@ -1,5 +1,5 @@
 // Simple test script for the registration API
-console.log("Testing registration API...");
+console.log('Testing registration API...');
 
 async function testRegistration() {
   try {
@@ -11,8 +11,8 @@ async function testRegistration() {
       body: JSON.stringify({
         email: 'test@test.com',
         name: 'Test User',
-        password: 'Passw0rd!'
-      })
+        password: 'Passw0rd!',
+      }),
     });
 
     const result = await response.json();

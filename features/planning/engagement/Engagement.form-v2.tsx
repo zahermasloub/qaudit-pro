@@ -3,9 +3,11 @@
 import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { engagementSchema, type EngagementFormValues } from './engagement.schema';
+
 import { Button } from '@/components/ui/button';
-import Input from '@/components/ui/input';
+import Input from '@/components/ui/Input-v2';
+
+import { type EngagementFormValues, engagementSchema } from './engagement.schema';
 
 interface EngagementFormProps {
   open: boolean;
@@ -20,7 +22,7 @@ export function EngagementForm({ open, onOpenChange, onSuccess }: EngagementForm
     criteria: [] as string[],
     constraints: [] as string[],
     auditeeUnits: [] as string[],
-    stakeholders: [] as string[]
+    stakeholders: [] as string[],
   });
 
   const form = useForm<EngagementFormValues>({
@@ -38,8 +40,8 @@ export function EngagementForm({ open, onOpenChange, onSuccess }: EngagementForm
       endDate: '',
       budgetHours: 0,
       independenceDisclosureUrl: '',
-      createdBy: 'user@example.com' // Default for now
-    }
+      createdBy: 'user@example.com', // Default for now
+    },
   });
 
   const addTag = (field: keyof typeof tags, value: string) => {
@@ -68,7 +70,7 @@ export function EngagementForm({ open, onOpenChange, onSuccess }: EngagementForm
       const response = await fetch('/api/engagements', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(values)
+        body: JSON.stringify(values),
       });
 
       if (response.ok) {
@@ -81,7 +83,7 @@ export function EngagementForm({ open, onOpenChange, onSuccess }: EngagementForm
           criteria: [],
           constraints: [],
           auditeeUnits: [],
-          stakeholders: []
+          stakeholders: [],
         });
       } else {
         const error = await response.json();
@@ -151,7 +153,7 @@ export function EngagementForm({ open, onOpenChange, onSuccess }: EngagementForm
             { key: 'criteria', label: 'المعايير', placeholder: 'إضافة معيار جديد' },
             { key: 'constraints', label: 'القيود', placeholder: 'إضافة قيد جديد' },
             { key: 'auditeeUnits', label: 'الوحدات المُدققة', placeholder: 'إضافة وحدة جديدة' },
-            { key: 'stakeholders', label: 'أصحاب المصلحة', placeholder: 'إضافة صاحب مصلحة جديد' }
+            { key: 'stakeholders', label: 'أصحاب المصلحة', placeholder: 'إضافة صاحب مصلحة جديد' },
           ].map(({ key, label, placeholder }) => (
             <div key={key}>
               <label className="block text-sm font-medium mb-1">{label}</label>
@@ -168,7 +170,7 @@ export function EngagementForm({ open, onOpenChange, onSuccess }: EngagementForm
                 />
                 <Button
                   type="button"
-                  onClick={(e) => {
+                  onClick={e => {
                     const input = e.currentTarget.previousElementSibling as HTMLInputElement;
                     addTag(key as keyof typeof tags, input.value);
                     input.value = '';
@@ -208,7 +210,9 @@ export function EngagementForm({ open, onOpenChange, onSuccess }: EngagementForm
               <label className="block text-sm font-medium mb-1">تاريخ البداية</label>
               <Input type="date" {...form.register('startDate')} />
               {form.formState.errors.startDate && (
-                <p className="text-red-600 text-sm mt-1">{form.formState.errors.startDate.message}</p>
+                <p className="text-red-600 text-sm mt-1">
+                  {form.formState.errors.startDate.message}
+                </p>
               )}
             </div>
 
@@ -228,7 +232,9 @@ export function EngagementForm({ open, onOpenChange, onSuccess }: EngagementForm
                 placeholder="160"
               />
               {form.formState.errors.budgetHours && (
-                <p className="text-red-600 text-sm mt-1">{form.formState.errors.budgetHours.message}</p>
+                <p className="text-red-600 text-sm mt-1">
+                  {form.formState.errors.budgetHours.message}
+                </p>
               )}
             </div>
           </div>
@@ -236,10 +242,14 @@ export function EngagementForm({ open, onOpenChange, onSuccess }: EngagementForm
           {/* Optional Fields */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm font-medium mb-1">رابط إفصاح الاستقلالية (اختياري)</label>
+              <label className="block text-sm font-medium mb-1">
+                رابط إفصاح الاستقلالية (اختياري)
+              </label>
               <Input {...form.register('independenceDisclosureUrl')} placeholder="https://..." />
               {form.formState.errors.independenceDisclosureUrl && (
-                <p className="text-red-600 text-sm mt-1">{form.formState.errors.independenceDisclosureUrl.message}</p>
+                <p className="text-red-600 text-sm mt-1">
+                  {form.formState.errors.independenceDisclosureUrl.message}
+                </p>
               )}
             </div>
 
@@ -247,18 +257,16 @@ export function EngagementForm({ open, onOpenChange, onSuccess }: EngagementForm
               <label className="block text-sm font-medium mb-1">البريد الإلكتروني للمنشئ</label>
               <Input {...form.register('createdBy')} placeholder="user@company.com" />
               {form.formState.errors.createdBy && (
-                <p className="text-red-600 text-sm mt-1">{form.formState.errors.createdBy.message}</p>
+                <p className="text-red-600 text-sm mt-1">
+                  {form.formState.errors.createdBy.message}
+                </p>
               )}
             </div>
           </div>
 
           {/* Actions */}
           <div className="flex justify-end gap-3 pt-4 border-t border-gray-200">
-            <Button
-              type="button"
-              variant="outline"
-              onClick={() => onOpenChange(false)}
-            >
+            <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>
               إلغاء
             </Button>
             <Button

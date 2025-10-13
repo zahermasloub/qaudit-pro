@@ -1,6 +1,8 @@
-import { NextRequest, NextResponse } from 'next/server';
-import prisma from '@/lib/prisma';
+import type { NextRequest } from 'next/server';
+import { NextResponse } from 'next/server';
+
 import { engagementSchema } from '@/features/planning/engagement/engagement.schema';
+import prisma from '@/lib/prisma';
 
 export async function POST(req: NextRequest) {
   try {
@@ -21,8 +23,8 @@ export async function POST(req: NextRequest) {
         endDate: new Date(parsed.endDate),
         budgetHours: parsed.budgetHours,
         independenceDisclosureUrl: parsed.independenceDisclosureUrl,
-        createdBy: parsed.createdBy
-      }
+        createdBy: parsed.createdBy,
+      },
     });
 
     return NextResponse.json({ ok: true, id: created.id }, { status: 200 });
