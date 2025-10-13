@@ -398,3 +398,8 @@ export function FieldworkScreen({ locale, engagementId }: { locale: Locale; enga
     </div>
   );
 }
+
+export function AnnualPlanScreen(props: any) {
+  // لاحقًا يمكن تخصيص الشكل عبر props.mode === 'annual'
+  return <PlanningScreen {...props} mode="annual" />;
+}

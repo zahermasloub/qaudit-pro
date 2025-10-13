@@ -389,6 +389,7 @@ import { type Locale, useI18n } from '@/lib/i18n';
 
 import DashboardView from './DashboardView';
 import {
+  AnnualPlanScreen,
   FieldworkScreen,
   PlanningScreen,
   ProcessRiskScreen,
@@ -401,6 +402,7 @@ type Route =
   | 'login'
   | 'register'
   | 'dashboard'
+  | 'annualPlan'
   | 'planning'
   | 'processRisk'
   | 'program'
@@ -417,6 +419,7 @@ const RBAC: Record<Route, Role[]> = {
   login: ['IA_Manager', 'IA_Lead', 'IA_Auditor', 'Process_Owner', 'Viewer'],
   register: ['IA_Manager', 'IA_Lead', 'IA_Auditor', 'Process_Owner', 'Viewer'],
   dashboard: ['IA_Manager', 'IA_Lead', 'IA_Auditor', 'Process_Owner', 'Viewer'],
+  annualPlan: ['IA_Manager', 'IA_Lead', 'IA_Auditor'],
   planning: ['IA_Manager', 'IA_Lead', 'IA_Auditor'],
   processRisk: ['IA_Manager', 'IA_Lead', 'IA_Auditor'],
   program: ['IA_Manager', 'IA_Lead', 'IA_Auditor'],
@@ -441,6 +444,12 @@ const TOOLBARS: Record<
       action: 'refresh',
       roles: ['IA_Manager', 'IA_Lead', 'IA_Auditor', 'Process_Owner', 'Viewer'],
     },
+  ],
+  annualPlan: [
+    { action: 'createPlan', roles: ['IA_Manager', 'IA_Lead'], variant: 'primary' },
+    { action: 'newPBC', roles: ['IA_Manager', 'IA_Lead', 'IA_Auditor'] },
+    { action: 'importCSV', roles: ['IA_Manager', 'IA_Lead', 'IA_Auditor'] },
+    { action: 'exportCSV', roles: ['IA_Manager', 'IA_Lead', 'IA_Auditor'] },
   ],
   planning: [
     { action: 'createPlan', roles: ['IA_Manager', 'IA_Lead'], variant: 'primary' },
@@ -566,6 +575,7 @@ function Topbar({
 
 const MENU_SPEC = [
   { key: 'dashboard', icon: LayoutDashboard },
+  { key: 'annualPlan', icon: ClipboardList },
   { key: 'planning', icon: ClipboardList },
   { key: 'processRisk', icon: Shield },
   { key: 'program', icon: FlaskConical },
@@ -1062,6 +1072,7 @@ export default function AppShell() {
               {allowed && (
                 <>
                   {route === 'dashboard' && <DashboardView locale={locale} />}
+                  {route === 'annualPlan' && <AnnualPlanScreen locale={locale} />}
                   {route === 'planning' && <PlanningScreen locale={locale} />}
                   {route === 'processRisk' && <ProcessRiskScreen locale={locale} />}
                   {route === 'program' && <ProgramScreen locale={locale} />}

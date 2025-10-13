@@ -11,6 +11,7 @@ const I18N = {
     },
     menu: {
       dashboard: 'لوحة القيادة',
+      annualPlan: 'الخطة السنوية',
       planning: '1) التخطيط',
       processRisk: '2) فهم العملية والمخاطر',
       program: '3) برنامج العمل والعينات',
@@ -96,6 +97,7 @@ const I18N = {
     },
     menu: {
       dashboard: 'Dashboard',
+      annualPlan: 'Annual Plan',
       planning: '1) Planning',
       processRisk: '2) Process & Risk',
       program: '3) Program & Sampling',
