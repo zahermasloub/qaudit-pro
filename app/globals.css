@@ -88,3 +88,23 @@ html, body {
   -webkit-mask-image: linear-gradient(to left, transparent, black 12px, black calc(100% - 12px), transparent);
   mask-image: linear-gradient(to left, transparent, black 12px, black calc(100% - 12px), transparent);
 }
+
+/* إلغاء الشفافية الموروثة */
+.not-opaque {
+  opacity: 1 !important;
+}
+
+/* ضبط عالمي للخط والتنعيم */
+html {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+:root {
+  --app-text: #0f172a;     /* slate-900 */
+  --app-subtle: #334155;   /* slate-700 */
+}
+
+body {
+  color: var(--app-text);
+}

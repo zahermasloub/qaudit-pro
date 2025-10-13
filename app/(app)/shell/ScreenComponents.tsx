@@ -392,7 +392,7 @@ export function FieldworkScreen({ locale, engagementId }: { locale: Locale; enga
       </div>
 
       {/* Evidence Table */}
-      <div className="mt-4">
+      <div className="mt-4 table-section not-opaque">
         <EvidenceTable engagementId={engagementId} />
       </div>
     </div>

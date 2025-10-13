@@ -10,8 +10,13 @@ function formatSize(n:number|undefined){
 }
 
 function Badge({text, tone}:{text:string, tone:"ok"|"warn"|"bad"|"info"}){
-  const map:any = { ok:"bg-green-100 text-green-700", warn:"bg-yellow-100 text-yellow-700", bad:"bg-red-100 text-red-700", info:"bg-blue-100 text-blue-700" };
-  return <span className={`px-2 py-0.5 rounded-md text-xs ${map[tone]}`}>{text}</span>;
+  const map:any = {
+    ok:   "bg-emerald-100 text-emerald-800 border border-emerald-200",
+    warn: "bg-amber-100 text-amber-800 border border-amber-200",
+    bad:  "bg-rose-100 text-rose-800 border border-rose-200",
+    info: "bg-sky-100 text-sky-800 border border-sky-200",
+  };
+  return <span className={`px-2 py-0.5 rounded-md text-xs font-medium ${map[tone]}`}>{text}</span>;
 }
 
 export default function EvidenceTable({ engagementId }:{engagementId:string}) {
@@ -129,10 +134,10 @@ export default function EvidenceTable({ engagementId }:{engagementId:string}) {
       </div>
 
       {/* Table */}
-      <div className="table-wrap relative w-full max-w-full overflow-x-auto overscroll-x-contain rounded-xl border bg-white scroll-shadow-x">
+      <div className="table-wrap relative w-full max-w-full overflow-x-auto overscroll-x-contain rounded-xl border border-slate-200 bg-white">
         <table className="min-w-full table-fixed text-sm">
-          <thead className="bg-gray-50">
-            <tr className="[&>th]:px-3 [&>th]:py-2 [&>th]:text-right [&>th]:font-semibold">
+          <thead className="bg-slate-100 text-slate-900">
+            <tr className="[&>th]:px-3 [&>th]:py-2 [&>th]:text-right [&>th]:font-semibold [&>th]:text-[13px]">
               <th>المعرف</th>
               <th>الفئة</th>
               <th>الاسم</th>
@@ -145,19 +150,19 @@ export default function EvidenceTable({ engagementId }:{engagementId:string}) {
               <th className="w-[120px]">الإجراءات</th>
             </tr>
           </thead>
-          <tbody className="[&>tr>td]:px-3 [&>tr>td]:py-2">
+          <tbody className="[&>tr>td]:px-3 [&>tr>td]:py-2 [&>tr>td]:text-slate-800 text-[13px] leading-6">
             {isLoading && (
-              <tr><td colSpan={10} className="text-center text-gray-500 py-6">...تحميل</td></tr>
+              <tr><td colSpan={10} className="text-center text-slate-600 py-6">...تحميل</td></tr>
             )}
             {!isLoading && rows.length===0 && (
-              <tr><td colSpan={10} className="text-center text-gray-500 py-6">لا توجد أدلة مطابقة</td></tr>
+              <tr><td colSpan={10} className="text-center text-slate-600 py-6">لا توجد أدلة مطابقة</td></tr>
             )}
             {rows.map((r:any)=>(
-              <tr key={r.id} className="border-t hover:bg-gray-50">
+              <tr key={r.id} className="border-t border-slate-200 odd:bg-white even:bg-slate-50 hover:bg-sky-50/70 transition-colors">
                 <td className="font-mono text-xs">{r.id}</td>
                 <td className="break-anywhere">{r.category || "—"}</td>
-                <td className="max-w-[220px] truncate break-anywhere" title={r.fileName}>{r.fileName}</td>
-                <td className="text-gray-600 break-anywhere">{r.mimeType || "—"}</td>
+                <td className="max-w-[260px] truncate break-anywhere" title={r.fileName}>{r.fileName}</td>
+                <td className="text-slate-700 break-anywhere">{r.mimeType || "—"}</td>
                 <td>{formatSize(r.fileSize)}</td>
                 <td>
                   <div className="badge-nowrap">
@@ -168,15 +173,15 @@ export default function EvidenceTable({ engagementId }:{engagementId:string}) {
                   </div>
                 </td>
                 <td className="badge-nowrap">{r.ocrTextUrl ? <Badge text="✓" tone="info" /> : "—"}</td>
-                <td className="uppercase badge-nowrap">{r.storage}</td>
-                <td>{new Date(r.uploadedAt).toLocaleString("ar")}</td>
+                <td className="uppercase badge-nowrap text-slate-800">{r.storage}</td>
+                <td className="text-slate-800">{new Date(r.uploadedAt).toLocaleString("ar")}</td>
                 <td>
                   <div className="flex items-center gap-2">
                     <button
                       onClick={() => handleDownload(r)}
                       title="تنزيل"
                       aria-label="تنزيل"
-                      className="p-1.5 rounded-md border hover:bg-gray-50"
+                      className="p-1.5 rounded-md border border-slate-300 hover:bg-slate-100 text-slate-700"
                     >
                       <Download className="w-4 h-4" />
                     </button>
@@ -184,7 +189,7 @@ export default function EvidenceTable({ engagementId }:{engagementId:string}) {
                       onClick={() => handleDelete(r)}
                       title="حذف"
                       aria-label="حذف"
-                      className="p-1.5 rounded-md border hover:bg-red-50 text-red-600"
+                      className="p-1.5 rounded-md border border-rose-300 hover:bg-rose-50 text-rose-600"
                     >
                       <Trash2 className="w-4 h-4" />
                     </button>
