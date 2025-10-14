@@ -30,7 +30,15 @@ interface AnnualPlan {
   createdAt: string;
   updatedAt: string;
   auditTasks?: AuditTask[];
-  approvals?: any[];
+  approvals?: PlanApproval[];
+}
+
+interface PlanApproval {
+  id: string;
+  approverName: string;
+  approverRole: string;
+  approvalDate: string;
+  comments?: string;
 }
 
 interface AuditTask {
@@ -501,18 +509,21 @@ export function AnnualPlanScreen({ locale }: { locale: Locale }) {
                       <button
                         className="text-blue-600 hover:text-blue-800 transition-colors"
                         title={locale === 'ar' ? 'عرض' : 'View'}
+                        aria-label={locale === 'ar' ? 'عرض' : 'View'}
                       >
                         👁️
                       </button>
                       <button
                         className="text-green-600 hover:text-green-800 transition-colors"
                         title={locale === 'ar' ? 'تعديل' : 'Edit'}
+                        aria-label={locale === 'ar' ? 'تعديل' : 'Edit'}
                       >
                         ✏️
                       </button>
                       <button
                         className="text-red-600 hover:text-red-800 transition-colors"
                         title={locale === 'ar' ? 'حذف' : 'Delete'}
+                        aria-label={locale === 'ar' ? 'حذف' : 'Delete'}
                       >
                         🗑️
                       </button>

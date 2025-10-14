@@ -38,7 +38,9 @@ export async function GET(req: Request) {
     const { searchParams } = new URL(req.url);
     const fiscalYear = searchParams.get('fiscalYear');
 
-    const where = fiscalYear ? { fiscalYear: parseInt(fiscalYear) } : {};
+    const where = fiscalYear
+      ? { fiscalYear: !isNaN(parseInt(fiscalYear)) ? parseInt(fiscalYear) : undefined }
+      : {};
 
     const plans = await prisma.annualPlan.findMany({
       where,
