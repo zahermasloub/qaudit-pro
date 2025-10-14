@@ -7,7 +7,7 @@ async function createUser() {
   try {
     // Hash password
     const hashedPassword = await bcrypt.hash('password123', 10);
-    
+
     // Create user
     const user = await prisma.user.create({
       data: {
@@ -20,7 +20,7 @@ async function createUser() {
     });
 
     console.log('✅ User created successfully:', user.email);
-    
+
     // Create another test user
     const hashedPassword2 = await bcrypt.hash('password123', 10);
     const user2 = await prisma.user.create({
@@ -34,7 +34,7 @@ async function createUser() {
     });
 
     console.log('✅ User created successfully:', user2.email);
-    
+
   } catch (error) {
     console.error('❌ Error creating user:', error);
   } finally {
