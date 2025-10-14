@@ -60,6 +60,13 @@ enum StorageProvider {
   s3
 }
 
+enum BackupStatus {
+  pending
+  running
+  success
+  failed
+}
+
 model User {
   id        String   @id @default(cuid())
   name      String?
@@ -69,8 +76,100 @@ model User {
   locale    String   @default("ar")
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+  roles     UserRole[]
 
   @@map("users")
+}
+
+model Role {
+  id          String       @id @default(cuid())
+  name        String       @unique
+  description String?
+  permissions Permission[]
+  users       UserRole[]
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+
+  @@map("roles")
+}
+
+model Permission {
+  id    String @id @default(cuid())
+  key   String @unique
+  label String?
+  roles Role[]
+
+  @@map("permissions")
+}
+
+model UserRole {
+  id     String @id @default(cuid())
+  userId String
+  roleId String
+  User   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  Role   Role   @relation(fields: [roleId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, roleId])
+  @@index([userId])
+  @@index([roleId])
+  @@map("user_roles")
+}
+
+model SystemSetting {
+  id        String   @id @default(cuid())
+  key       String   @unique
+  value     String?
+  type      String?
+  updatedBy String?
+  updatedAt DateTime @updatedAt
+  createdAt DateTime @default(now())
+
+  @@index([key])
+  @@map("system_settings")
+}
+
+model AuditLog {
+  id         String   @id @default(cuid())
+  actorId    String?
+  actorEmail String?
+  action     String
+  target     String?
+  ip         String?
+  userAgent  String?
+  payload    Json?
+  createdAt  DateTime @default(now())
+
+  @@index([action, createdAt])
+  @@index([actorEmail, createdAt])
+  @@map("audit_logs")
+}
+
+model BackupJob {
+  id          String       @id @default(cuid())
+  startedAt   DateTime     @default(now())
+  finishedAt  DateTime?
+  status      BackupStatus @default(pending)
+  storage     String
+  location    String?
+  sizeBytes   Int?
+  message     String?
+  triggeredBy String?
+
+  @@index([status, startedAt])
+  @@map("backup_jobs")
+}
+
+model BackupSchedule {
+  id        String    @id @default(cuid())
+  cronExpr  String
+  enabled   Boolean   @default(true)
+  storage   String    @default("local")
+  lastRunAt DateTime?
+  createdBy String?
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+
+  @@map("backup_schedules")
 }
 
 model Engagement {
@@ -252,4 +351,112 @@ model Evidence {
   @@index([linkedFindingId])
   @@index([category])
   @@index([status])
+}
+
+// Annual Plan Models
+enum AnnualPlanStatus {
+  draft
+  under_review
+  approved
+  cancelled
+  completed
+}
+
+enum RiskLevel {
+  very_high
+  high
+  medium
+  low
+}
+
+enum AuditType {
+  financial
+  operational
+  compliance
+  it_systems
+  performance
+  advisory
+}
+
+enum Quarter {
+  Q1
+  Q2
+  Q3
+  Q4
+}
+
+enum AuditTaskStatus {
+  not_started
+  in_progress
+  completed
+}
+
+model AnnualPlan {
+  id                    String            @id @default(cuid())
+  title                 String
+  fiscalYear            Int
+  version               String            @default("1.0")
+  status                AnnualPlanStatus  @default(draft)
+  introduction          String?           @db.Text
+  totalAvailableHours   Int?
+  plannedTaskHours      Int?
+  advisoryHours         Int?
+  emergencyHours        Int?
+  followUpHours         Int?
+  trainingHours         Int?
+  administrativeHours   Int?
+  estimatedBudget       Float?
+  createdBy             String
+  createdAt             DateTime          @default(now())
+  updatedAt             DateTime          @updatedAt
+
+  // Relations
+  auditTasks            AuditTask[]
+  approvals             PlanApproval[]
+
+  @@map("annual_plans")
+  @@index([fiscalYear])
+  @@index([status])
+}
+
+model AuditTask {
+  id                  String           @id @default(cuid())
+  annualPlanId        String
+  code                String
+  title               String
+  department          String
+  riskLevel           RiskLevel
+  auditType           AuditType
+  objectiveAndScope   String?          @db.Text
+  plannedQuarter      Quarter
+  estimatedHours      Int
+  leadAuditor         String?
+  attachmentsJson     Json             @default("[]")
+  status              AuditTaskStatus  @default(not_started)
+  createdAt           DateTime         @default(now())
+  updatedAt           DateTime         @updatedAt
+
+  // Relations
+  annualPlan          AnnualPlan       @relation(fields: [annualPlanId], references: [id], onDelete: Cascade)
+
+  @@map("audit_tasks")
+  @@index([annualPlanId])
+  @@index([riskLevel])
+  @@index([status])
+  @@unique([code, annualPlanId])
+}
+
+model PlanApproval {
+  id                String      @id @default(cuid())
+  annualPlanId      String
+  approverName      String
+  approverRole      String      // preparer, reviewer, approver
+  approvalDate      DateTime    @default(now())
+  comments          String?     @db.Text
+
+  // Relations
+  annualPlan        AnnualPlan  @relation(fields: [annualPlanId], references: [id], onDelete: Cascade)
+
+  @@map("plan_approvals")
+  @@index([annualPlanId])
 }

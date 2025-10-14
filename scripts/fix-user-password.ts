@@ -22,14 +22,14 @@ async function updateUserPassword() {
     const user = await prisma.user.update({
       where: { email },
       data: {
-        password: hashedPassword
+        password: hashedPassword,
       },
       select: {
         id: true,
         name: true,
         email: true,
-        role: true
-      }
+        role: true,
+      },
     });
 
     console.log('✅ User password updated successfully:');
@@ -37,7 +37,6 @@ async function updateUserPassword() {
     console.log(`   Name: ${user.name}`);
     console.log(`   Role: ${user.role}`);
     console.log(`   Password: ${password}`);
-
   } catch (error) {
     console.error('❌ Error updating user password:', error);
   } finally {

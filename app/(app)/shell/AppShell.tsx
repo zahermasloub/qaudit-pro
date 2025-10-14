@@ -377,6 +377,7 @@ import { useRouter } from 'next/navigation';
 import { signOut, useSession } from 'next-auth/react';
 
 import { ToastProvider } from '@/components/ui/Toast-v2';
+import AnnualPlanForm from '@/features/annual-plan/annual-plan.form';
 import EvidenceForm from '@/features/evidence/evidence.form';
 import EvidenceUploaderForm from '@/features/evidence/forms/EvidenceUploader.form';
 import TestExecutionForm from '@/features/fieldwork/forms/TestExecution.form';
@@ -386,6 +387,7 @@ import PBCForm from '@/features/planning/pbc/Pbc.form-v2';
 import SamplingForm from '@/features/program/sampling/Sampling.form-v2';
 import TestForm from '@/features/program/tests/Test.form-v2';
 import { type Locale, useI18n } from '@/lib/i18n';
+import { canSeeAdmin } from '@/lib/rbac';
 
 import DashboardView from './DashboardView';
 import {
@@ -446,8 +448,8 @@ const TOOLBARS: Record<
     },
   ],
   annualPlan: [
-    { action: 'createPlan', roles: ['IA_Manager', 'IA_Lead'], variant: 'primary' },
-    { action: 'newPBC', roles: ['IA_Manager', 'IA_Lead', 'IA_Auditor'] },
+    { action: 'createAnnualPlan', roles: ['IA_Manager', 'IA_Lead'], variant: 'primary' },
+    { action: 'addAuditTask', roles: ['IA_Manager', 'IA_Lead', 'IA_Auditor'] },
     { action: 'importCSV', roles: ['IA_Manager', 'IA_Lead', 'IA_Auditor'] },
     { action: 'exportCSV', roles: ['IA_Manager', 'IA_Lead', 'IA_Auditor'] },
   ],
@@ -508,6 +510,9 @@ function Topbar({
   role,
   route,
   onToolbarAction,
+  showAdminLink,
+  onAdminNavigate,
+  onOpenSidebar,
 }: {
   locale: Locale;
   setLocale: (l: Locale) => void;
@@ -515,21 +520,38 @@ function Topbar({
   role: Role;
   route: Route;
   onToolbarAction: (action: string) => void;
+  showAdminLink: boolean;
+  onAdminNavigate: () => void;
+  onOpenSidebar: () => void;
 }) {
   const i18n = useI18n(locale);
   const toolbarActions = TOOLBARS[route]?.filter(tool => tool.roles.includes(role)) || [];
 
   return (
     <header className="header-dark sticky top-0 z-40 bg-slate-900 text-white border-b border-slate-800 shadow-sm">
-      <div className="mx-auto w-full max-w-screen-2xl px-3 lg:px-6">
+      <div className="container-shell">
         <div className="flex items-center justify-between h-12">
-          {/* العنوان/اللوجو */}
-          <h1 className="text-sm font-semibold tracking-wide text-white select-none">
-            {i18n.app.title}
-            <span className="text-xs text-white/70 mx-2">•</span>
-            <span className="text-sm text-white/90">{(i18n.sections as any)[route] || route}</span>
-            <span className="text-xs text-white/70 ml-2">({role.replace('_', ' ')})</span>
-          </h1>
+          {/* Mobile Sidebar Button + العنوان/اللوجو */}
+          <div className="flex items-center gap-2">
+            <button
+              type="button"
+              aria-label="Open sidebar"
+              className="md:hidden inline-flex items-center justify-center w-10 h-10 rounded-lg border border-white/20 bg-white/10 hover:bg-white/20"
+              onClick={onOpenSidebar}
+            >
+              <span className="text-xl leading-none">☰</span>
+            </button>
+            <h1 className="text-sm font-semibold tracking-wide text-white select-none">
+              {i18n.app.title}
+              <span className="text-xs text-white/70 mx-2">•</span>
+              <span className="text-sm text-white/90">
+                {(i18n.sections as any)[route] || route}
+              </span>
+              <span className="text-xs text-white/70 ml-2 hidden sm:inline">
+                ({role.replace('_', ' ')})
+              </span>
+            </h1>
+          </div>
 
           {/* Toolbar Actions */}
           {toolbarActions.length > 0 && (
@@ -553,6 +575,15 @@ function Topbar({
 
           {/* User controls */}
           <div className="flex items-center gap-2 rtl:space-x-reverse">
+            {showAdminLink && (
+              <button
+                type="button"
+                onClick={onAdminNavigate}
+                className="inline-flex items-center gap-1.5 rounded-md border border-white/30 bg-white/10 px-3 py-1.5 text-sm font-medium text-white/90 transition-colors hover:bg-white/20 hover:text-white focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-white focus-visible:ring-offset-slate-900"
+              >
+                {i18n.menu.admin}
+              </button>
+            )}
             <button className="rounded-full bg-blue-600 text-white text-sm px-3 py-1.5 hover:bg-blue-700 transition-colors">
               {i18n.common.alerts} 3
             </button>
@@ -564,8 +595,12 @@ function Topbar({
               value={locale}
               onChange={e => setLocale(e.target.value as Locale)}
             >
-              <option value="ar" className="text-gray-900">العربية</option>
-              <option value="en" className="text-gray-900">English</option>
+              <option value="ar" className="text-gray-900">
+                العربية
+              </option>
+              <option value="en" className="text-gray-900">
+                English
+              </option>
             </select>
             <button
               className="text-sm text-white/90 hover:text-white transition-colors px-2 py-1 rounded focus:outline-none focus:ring-2 focus:ring-sky-400/60"
@@ -601,12 +636,16 @@ function Sidebar({
   setRoute,
   statusBadge,
   role,
+  showAdminLink,
+  onAdminNavigate,
 }: {
   locale: Locale;
   route: Route;
   setRoute: (r: Route) => void;
   statusBadge: string;
   role: Role;
+  showAdminLink: boolean;
+  onAdminNavigate: () => void;
 }) {
   const i18n = useI18n(locale);
   const isRTL = locale === 'ar';
@@ -630,10 +669,10 @@ function Sidebar({
               key={it.key}
               onClick={() => setRoute(it.key as Route)}
               className={clsx(
-                'w-full text-sm rounded-xl px-3 py-2 text-start border flex items-center gap-2 transition-colors',
+                'w-full text-[15px] sm:text-sm lg:text-base rounded-xl px-3 py-2.5 text-start border flex items-center gap-2 transition-colors font-medium',
                 active
                   ? 'bg-blue-600 text-white border-blue-600'
-                  : 'bg-white text-gray-900 border-gray-200 hover:bg-gray-50',
+                  : 'bg-white text-slate-900 border-gray-200 hover:bg-gray-50',
               )}
             >
               <Icon className="h-4 w-4" />
@@ -656,6 +695,19 @@ function Sidebar({
             </button>
           );
         })}
+        {showAdminLink && (
+          <button
+            type="button"
+            onClick={onAdminNavigate}
+            className="w-full text-[15px] sm:text-sm lg:text-base rounded-xl px-3 py-2.5 text-start border flex items-center gap-2 transition-colors font-medium bg-white text-blue-700 border-blue-200 hover:bg-blue-50 hover:border-blue-300"
+          >
+            <Shield className="h-4 w-4 text-blue-600" />
+            <span className="grow text-start">{i18n.menu.admin}</span>
+            <span className="text-[11px] px-2 py-0.5 rounded-full border border-blue-200 bg-blue-100 text-blue-700">
+              {i18n.admin.dashboard}
+            </span>
+          </button>
+        )}
       </nav>
 
       {/* Role indicator at bottom */}
@@ -908,12 +960,13 @@ function PlaceholderScreen({ title }: { title: string }) {
 }
 
 export default function AppShell() {
-  const { status } = useSession();
+  const { status, data: session } = useSession();
   const router = useRouter();
   const [locale, setLocale] = useState<Locale>('ar');
   const [route, setRoute] = useState<Route>('dashboard');
   const [role, setRole] = useState<Role>('IA_Manager');
-  const [engagementId, setEngagementId] = useState<string>('TEST-ENG-001');
+  const [engagementId, _setEngagementId] = useState<string>('TEST-ENG-001');
+  const [sidebarOpen, setSidebarOpen] = useState(false);
   const [openEngForm, setOpenEngForm] = useState(false);
   const [openPbc, setOpenPbc] = useState(false);
   const [openTest, setOpenTest] = useState(false);
@@ -922,10 +975,12 @@ export default function AppShell() {
   const [openEvidenceUploader, setOpenEvidenceUploader] = useState(false);
   const [openRun, setOpenRun] = useState(false);
   const [openEv, setOpenEv] = useState(false);
-  const [currentTestId, setCurrentTestId] = useState('TEST-001');
-  const [currentSampleRef, setCurrentSampleRef] = useState('SAMPLE-001');
+  const [openAnnualPlan, setOpenAnnualPlan] = useState(false);
+  const [currentTestId, _setCurrentTestId] = useState('TEST-001');
+  const [currentSampleRef, _setCurrentSampleRef] = useState('SAMPLE-001');
   const isRTL = locale === 'ar';
   const i18n = useI18n(locale);
+  const showAdminLink = canSeeAdmin(session);
 
   useEffect(() => {
     if (typeof document !== 'undefined') {
@@ -933,6 +988,13 @@ export default function AppShell() {
       document.documentElement.lang = isRTL ? 'ar' : 'en';
     }
   }, [isRTL]);
+
+  // Prevent body scroll when sidebar is open
+  useEffect(() => {
+    if (typeof document !== 'undefined') {
+      document.body.style.overflow = sidebarOpen ? 'hidden' : '';
+    }
+  }, [sidebarOpen]);
 
   // Redirect to login if not authenticated
   useEffect(() => {
@@ -978,6 +1040,9 @@ export default function AppShell() {
       case 'createPlan':
         setOpenEngForm(true);
         break;
+      case 'createAnnualPlan':
+        setOpenAnnualPlan(true);
+        break;
       case 'newPBC':
         setOpenPbc(true);
         break;
@@ -1004,9 +1069,11 @@ export default function AppShell() {
         console.log(`Action: ${action}`);
     }
   };
+  const handleAdminNavigate = () => {
+    router.push('/admin/dashboard');
+  };
 
   const allowed = RBAC[route as Route]?.includes(role);
-  const statusBadge = 'In-Field';
 
   // Show loading while checking authentication
   if (status === 'loading')
@@ -1021,8 +1088,8 @@ export default function AppShell() {
 
   return (
     <ToastProvider>
-      <div className="min-h-screen w-full overflow-x-hidden bg-slate-50">
-        <div className="mx-auto w-full max-w-screen-2xl px-3 lg:px-6">
+      <div className="min-h-screen w-full overflow-x-hidden bg-slate-50 safe-area">
+        <div className="container-shell mx-auto w-full px-3 sm:px-4 lg:px-6">
           <Topbar
             locale={locale}
             setLocale={setLocale}
@@ -1030,6 +1097,9 @@ export default function AppShell() {
             role={role}
             route={route}
             onToolbarAction={handleToolbarAction}
+            showAdminLink={showAdminLink}
+            onAdminNavigate={handleAdminNavigate}
+            onOpenSidebar={() => setSidebarOpen(true)}
           />
 
           <div className="mt-3">
@@ -1060,16 +1130,21 @@ export default function AppShell() {
             </div>
           </div>
 
-          <div className="mt-4 grid grid-cols-[260px_1fr] gap-4 lg:gap-6">
-            <aside className="min-w-[240px]">
+          <div className="mt-4 grid grid-cols-1 md:grid-cols-[260px_1fr] lg:grid-cols-[280px_1fr] gap-4 lg:gap-6 ultra-grid">
+            {/* Desktop Sidebar - hidden on mobile */}
+            <aside className="hidden md:block min-w-0 md:min-w-[260px] lg:min-w-[280px]">
               <Sidebar
                 locale={locale}
                 route={route}
                 setRoute={setRoute}
-                statusBadge={'In-Field'}
+                statusBadge="In-Field"
                 role={role}
+                showAdminLink={showAdminLink}
+                onAdminNavigate={handleAdminNavigate}
               />
             </aside>
+
+            {/* Main Content */}
             <main className="min-w-0">
               {!allowed && (
                 <Card>
@@ -1078,12 +1153,16 @@ export default function AppShell() {
               )}
               {allowed && (
                 <>
-                  {route === 'dashboard' && <DashboardView locale={locale} />}
+                  {route === 'dashboard' && (
+                    <DashboardView locale={locale} engagementId={engagementId} />
+                  )}
                   {route === 'annualPlan' && <AnnualPlanScreen locale={locale} />}
                   {route === 'planning' && <PlanningScreen locale={locale} />}
                   {route === 'processRisk' && <ProcessRiskScreen locale={locale} />}
                   {route === 'program' && <ProgramScreen locale={locale} />}
-                  {route === 'fieldwork' && <FieldworkScreen locale={locale} engagementId={engagementId} />}
+                  {route === 'fieldwork' && (
+                    <FieldworkScreen locale={locale} engagementId={engagementId} />
+                  )}
                   {route === 'agile' && <PlaceholderScreen title={i18n.sections.agile} />}
                   {route === 'findings' && <PlaceholderScreen title={i18n.sections.findings} />}
                   {route === 'reporting' && <PlaceholderScreen title={i18n.sections.reporting} />}
@@ -1095,6 +1174,54 @@ export default function AppShell() {
             </main>
           </div>
         </div>
+
+        {/* Mobile Drawer - slides in from appropriate side based on RTL/LTR */}
+        {sidebarOpen && (
+          <>
+            <div
+              className="fixed inset-0 bg-black/40 backdrop-blur-[1px] z-40"
+              onClick={() => setSidebarOpen(false)}
+              aria-hidden="true"
+            />
+            <div
+              role="dialog"
+              aria-modal="true"
+              className={clsx(
+                'fixed top-0 bottom-0 z-50 w-[82vw] max-w-[320px] bg-white border-s shadow-xl',
+                'transition-transform duration-200',
+                'rtl:right-0 rtl:translate-x-0 ltr:left-0 ltr:translate-x-0',
+              )}
+            >
+              <div className="p-3 border-b flex items-center gap-2">
+                <button
+                  aria-label="Close"
+                  className="inline-flex items-center justify-center w-9 h-9 rounded-md border bg-white hover:bg-slate-50"
+                  onClick={() => setSidebarOpen(false)}
+                >
+                  ✕
+                </button>
+                <div className="font-medium">القائمة</div>
+              </div>
+              <div className="p-3 overflow-y-auto h-full">
+                <Sidebar
+                  locale={locale}
+                  route={route}
+                  setRoute={r => {
+                    setRoute(r);
+                    setSidebarOpen(false);
+                  }}
+                  statusBadge="In-Field"
+                  role={role}
+                  showAdminLink={showAdminLink}
+                  onAdminNavigate={() => {
+                    setSidebarOpen(false);
+                    handleAdminNavigate();
+                  }}
+                />
+              </div>
+            </div>
+          </>
+        )}
 
         {/* Modals mounted at root for dashboard shortcuts */}
         <EngagementForm
@@ -1184,6 +1311,44 @@ export default function AppShell() {
           engagementId={engagementId}
           defaultLinks={{ testId: currentTestId, sampleRef: currentSampleRef }}
           onSuccess={() => setOpenEv(false)}
+        />
+
+        {/* Annual Plan Form */}
+        <AnnualPlanForm
+          open={openAnnualPlan}
+          onOpenChange={setOpenAnnualPlan}
+          defaultYear={new Date().getFullYear() + 1}
+          orgOptions={[
+            {
+              id: 'FIN',
+              name: 'الإدارة المالية',
+              depts: [
+                { id: 'AR', name: 'الحسابات' },
+                { id: 'TR', name: 'الخزينة' },
+              ],
+            },
+            {
+              id: 'HR',
+              name: 'إدارة الموارد البشرية',
+              depts: [
+                { id: 'RE', name: 'التوظيف' },
+                { id: 'PY', name: 'الرواتب' },
+              ],
+            },
+            {
+              id: 'IT',
+              name: 'تقنية المعلومات',
+              depts: [
+                { id: 'DEV', name: 'التطوير' },
+                { id: 'SEC', name: 'أمن المعلومات' },
+              ],
+            },
+          ]}
+          onSuccess={id => {
+            console.log('✅ تم حفظ الخطة السنوية بنجاح:', id);
+            setOpenAnnualPlan(false);
+            // TODO: Add toast notification and refresh data
+          }}
         />
       </div>
     </ToastProvider>

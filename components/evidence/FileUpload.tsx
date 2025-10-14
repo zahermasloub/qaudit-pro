@@ -4,7 +4,6 @@
  */
 
 'use client';
-
 import React, { useCallback, useState } from 'react';
 import { useDropzone } from 'react-dropzone';
 import { useForm } from 'react-hook-form';
@@ -61,7 +60,7 @@ const FileUpload: React.FC<FileUploadProps> = ({
     register,
     handleSubmit,
     setValue,
-    watch,
+    // watch, // unused
     formState: { errors },
     reset,
   } = useForm<FileUploadFormData>({
