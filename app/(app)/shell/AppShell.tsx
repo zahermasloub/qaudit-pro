@@ -377,6 +377,7 @@ import { useRouter } from 'next/navigation';
 import { signOut, useSession } from 'next-auth/react';
 
 import { ToastProvider } from '@/components/ui/Toast-v2';
+import AnnualPlanForm from '@/features/annual-plan/annual-plan.form';
 import EvidenceForm from '@/features/evidence/evidence.form';
 import EvidenceUploaderForm from '@/features/evidence/forms/EvidenceUploader.form';
 import TestExecutionForm from '@/features/fieldwork/forms/TestExecution.form';
@@ -926,6 +927,7 @@ export default function AppShell() {
   const [openEvidenceUploader, setOpenEvidenceUploader] = useState(false);
   const [openRun, setOpenRun] = useState(false);
   const [openEv, setOpenEv] = useState(false);
+  const [openAnnualPlan, setOpenAnnualPlan] = useState(false);
   const [currentTestId, setCurrentTestId] = useState('TEST-001');
   const [currentSampleRef, setCurrentSampleRef] = useState('SAMPLE-001');
   const isRTL = locale === 'ar';
@@ -981,6 +983,9 @@ export default function AppShell() {
         break;
       case 'createPlan':
         setOpenEngForm(true);
+        break;
+      case 'createAnnualPlan':
+        setOpenAnnualPlan(true);
         break;
       case 'newPBC':
         setOpenPbc(true);
@@ -1190,6 +1195,44 @@ export default function AppShell() {
           engagementId={engagementId}
           defaultLinks={{ testId: currentTestId, sampleRef: currentSampleRef }}
           onSuccess={() => setOpenEv(false)}
+        />
+
+        {/* Annual Plan Form */}
+        <AnnualPlanForm
+          open={openAnnualPlan}
+          onOpenChange={setOpenAnnualPlan}
+          defaultYear={new Date().getFullYear() + 1}
+          orgOptions={[
+            {
+              id: "FIN",
+              name: "الإدارة المالية",
+              depts: [
+                { id: "AR", name: "الحسابات" },
+                { id: "TR", name: "الخزينة" }
+              ]
+            },
+            {
+              id: "HR",
+              name: "إدارة الموارد البشرية",
+              depts: [
+                { id: "RE", name: "التوظيف" },
+                { id: "PY", name: "الرواتب" }
+              ]
+            },
+            {
+              id: "IT",
+              name: "تقنية المعلومات",
+              depts: [
+                { id: "DEV", name: "التطوير" },
+                { id: "SEC", name: "أمن المعلومات" }
+              ]
+            }
+          ]}
+          onSuccess={(id) => {
+            console.log('✅ تم حفظ الخطة السنوية بنجاح:', id);
+            setOpenAnnualPlan(false);
+            // TODO: Add toast notification and refresh data
+          }}
         />
       </div>
     </ToastProvider>
