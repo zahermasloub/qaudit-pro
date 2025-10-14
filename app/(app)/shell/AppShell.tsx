@@ -509,6 +509,7 @@ function Topbar({
   role,
   route,
   onToolbarAction,
+  onOpenSidebar,
 }: {
   locale: Locale;
   setLocale: (l: Locale) => void;
@@ -516,21 +517,32 @@ function Topbar({
   role: Role;
   route: Route;
   onToolbarAction: (action: string) => void;
+  onOpenSidebar: () => void;
 }) {
   const i18n = useI18n(locale);
   const toolbarActions = TOOLBARS[route]?.filter(tool => tool.roles.includes(role)) || [];
 
   return (
     <header className="header-dark sticky top-0 z-40 bg-slate-900 text-white border-b border-slate-800 shadow-sm">
-      <div className="mx-auto w-full max-w-screen-2xl px-3 lg:px-6">
+      <div className="container-shell">
         <div className="flex items-center justify-between h-12">
-          {/* العنوان/اللوجو */}
-          <h1 className="text-sm font-semibold tracking-wide text-white select-none">
-            {i18n.app.title}
-            <span className="text-xs text-white/70 mx-2">•</span>
-            <span className="text-sm text-white/90">{(i18n.sections as any)[route] || route}</span>
-            <span className="text-xs text-white/70 ml-2">({role.replace('_', ' ')})</span>
-          </h1>
+          {/* Mobile Sidebar Button + العنوان/اللوجو */}
+          <div className="flex items-center gap-2">
+            <button
+              type="button"
+              aria-label="Open sidebar"
+              className="md:hidden inline-flex items-center justify-center w-10 h-10 rounded-lg border border-white/20 bg-white/10 hover:bg-white/20"
+              onClick={onOpenSidebar}
+            >
+              <span className="text-xl leading-none">☰</span>
+            </button>
+            <h1 className="text-sm font-semibold tracking-wide text-white select-none">
+              {i18n.app.title}
+              <span className="text-xs text-white/70 mx-2">•</span>
+              <span className="text-sm text-white/90">{(i18n.sections as any)[route] || route}</span>
+              <span className="text-xs text-white/70 ml-2 hidden sm:inline">({role.replace('_', ' ')})</span>
+            </h1>
+          </div>
 
           {/* Toolbar Actions */}
           {toolbarActions.length > 0 && (
@@ -918,7 +930,8 @@ export default function AppShell() {
   const [locale, setLocale] = useState<Locale>('ar');
   const [route, setRoute] = useState<Route>('dashboard');
   const [role, setRole] = useState<Role>('IA_Manager');
-  const [engagementId, setEngagementId] = useState<string>('TEST-ENG-001');
+  const [engagementId, _setEngagementId] = useState<string>('TEST-ENG-001');
+  const [sidebarOpen, setSidebarOpen] = useState(false);
   const [openEngForm, setOpenEngForm] = useState(false);
   const [openPbc, setOpenPbc] = useState(false);
   const [openTest, setOpenTest] = useState(false);
@@ -928,8 +941,8 @@ export default function AppShell() {
   const [openRun, setOpenRun] = useState(false);
   const [openEv, setOpenEv] = useState(false);
   const [openAnnualPlan, setOpenAnnualPlan] = useState(false);
-  const [currentTestId, setCurrentTestId] = useState('TEST-001');
-  const [currentSampleRef, setCurrentSampleRef] = useState('SAMPLE-001');
+  const [currentTestId, _setCurrentTestId] = useState('TEST-001');
+  const [currentSampleRef, _setCurrentSampleRef] = useState('SAMPLE-001');
   const isRTL = locale === 'ar';
   const i18n = useI18n(locale);
 
@@ -939,6 +952,13 @@ export default function AppShell() {
       document.documentElement.lang = isRTL ? 'ar' : 'en';
     }
   }, [isRTL]);
+
+  // Prevent body scroll when sidebar is open
+  useEffect(() => {
+    if (typeof document !== 'undefined') {
+      document.body.style.overflow = sidebarOpen ? 'hidden' : '';
+    }
+  }, [sidebarOpen]);
 
   // Redirect to login if not authenticated
   useEffect(() => {
@@ -1015,7 +1035,6 @@ export default function AppShell() {
   };
 
   const allowed = RBAC[route as Route]?.includes(role);
-  const statusBadge = 'In-Field';
 
   // Show loading while checking authentication
   if (status === 'loading')
@@ -1030,8 +1049,8 @@ export default function AppShell() {
 
   return (
     <ToastProvider>
-      <div className="min-h-screen w-full overflow-x-hidden bg-slate-50">
-        <div className="mx-auto w-full max-w-screen-2xl px-3 lg:px-6">
+      <div className="min-h-screen w-full overflow-x-hidden bg-slate-50 safe-area">
+        <div className="container-shell">
           <Topbar
             locale={locale}
             setLocale={setLocale}
@@ -1039,6 +1058,7 @@ export default function AppShell() {
             role={role}
             route={route}
             onToolbarAction={handleToolbarAction}
+            onOpenSidebar={() => setSidebarOpen(true)}
           />
 
           <div className="mt-3">
@@ -1069,16 +1089,19 @@ export default function AppShell() {
             </div>
           </div>
 
-          <div className="mt-4 grid grid-cols-[260px_1fr] gap-4 lg:gap-6">
-            <aside className="min-w-[240px]">
+          <div className="mt-4 grid grid-cols-1 md:grid-cols-[260px_1fr] lg:grid-cols-[280px_1fr] gap-4 lg:gap-6 ultra-grid">
+            {/* Desktop Sidebar - hidden on mobile */}
+            <aside className="hidden md:block min-w-0 md:min-w-[260px] lg:min-w-[280px]">
               <Sidebar
                 locale={locale}
                 route={route}
                 setRoute={setRoute}
-                statusBadge={'In-Field'}
+                statusBadge="In-Field"
                 role={role}
               />
             </aside>
+
+            {/* Main Content */}
             <main className="min-w-0">
               {!allowed && (
                 <Card>
@@ -1087,7 +1110,7 @@ export default function AppShell() {
               )}
               {allowed && (
                 <>
-                  {route === 'dashboard' && <DashboardView locale={locale} />}
+                  {route === 'dashboard' && <DashboardView locale={locale} engagementId={engagementId} />}
                   {route === 'annualPlan' && <AnnualPlanScreen locale={locale} />}
                   {route === 'planning' && <PlanningScreen locale={locale} />}
                   {route === 'processRisk' && <ProcessRiskScreen locale={locale} />}
@@ -1106,6 +1129,49 @@ export default function AppShell() {
             </main>
           </div>
         </div>
+
+        {/* Mobile Drawer - slides in from appropriate side based on RTL/LTR */}
+        {sidebarOpen && (
+          <>
+            <div
+              className="fixed inset-0 bg-black/40 backdrop-blur-[1px] z-40"
+              onClick={() => setSidebarOpen(false)}
+              aria-hidden="true"
+            />
+            <div
+              role="dialog"
+              aria-modal="true"
+              className={clsx(
+                "fixed top-0 bottom-0 z-50 w-[82vw] max-w-[320px] bg-white border-s shadow-xl",
+                "transition-transform duration-200",
+                "rtl:right-0 rtl:translate-x-0 ltr:left-0 ltr:translate-x-0"
+              )}
+            >
+              <div className="p-3 border-b flex items-center gap-2">
+                <button
+                  aria-label="Close"
+                  className="inline-flex items-center justify-center w-9 h-9 rounded-md border bg-white hover:bg-slate-50"
+                  onClick={() => setSidebarOpen(false)}
+                >
+                  ✕
+                </button>
+                <div className="font-medium">القائمة</div>
+              </div>
+              <div className="p-3 overflow-y-auto h-full">
+                <Sidebar
+                  locale={locale}
+                  route={route}
+                  setRoute={(r) => {
+                    setRoute(r);
+                    setSidebarOpen(false);
+                  }}
+                  statusBadge="In-Field"
+                  role={role}
+                />
+              </div>
+            </div>
+          </>
+        )}
 
         {/* Modals mounted at root for dashboard shortcuts */}
         <EngagementForm
