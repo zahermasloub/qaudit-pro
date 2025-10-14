@@ -37,13 +37,13 @@ export async function POST(request: NextRequest) {
     // Verify engagement exists
     const engagement = await prisma.engagement.findUnique({
       where: { id: validatedMeta.engagementId },
-      select: { id: true }
+      select: { id: true },
     });
 
     if (!engagement) {
       return NextResponse.json(
         { ok: false, error: `Engagement with ID '${validatedMeta.engagementId}' not found` },
-        { status: 404 }
+        { status: 404 },
       );
     }
 

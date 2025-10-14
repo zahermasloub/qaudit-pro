@@ -16,8 +16,8 @@ async function checkUser() {
         name: true,
         email: true,
         role: true,
-        createdAt: true
-      }
+        createdAt: true,
+      },
     });
 
     if (user) {
@@ -26,7 +26,6 @@ async function checkUser() {
     } else {
       console.log('❌ User not found');
     }
-
   } catch (error) {
     console.error('❌ Error:', error);
   } finally {

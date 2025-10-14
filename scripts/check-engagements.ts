@@ -17,8 +17,8 @@ async function checkEngagements() {
         code: true,
         title: true,
         status: true,
-        createdAt: true
-      }
+        createdAt: true,
+      },
     });
 
     if (engagements.length > 0) {
@@ -35,7 +35,6 @@ async function checkEngagements() {
       console.log('❌ No engagements found in database');
       console.log('💡 Run: npx tsx scripts/create-sprint7-test-data.ts');
     }
-
   } catch (error) {
     console.error('❌ Error:', error);
   } finally {

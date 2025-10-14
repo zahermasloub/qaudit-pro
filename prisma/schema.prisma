@@ -253,3 +253,111 @@ model Evidence {
   @@index([category])
   @@index([status])
 }
+
+// Annual Plan Models
+enum AnnualPlanStatus {
+  draft
+  under_review
+  approved
+  cancelled
+  completed
+}
+
+enum RiskLevel {
+  very_high
+  high
+  medium
+  low
+}
+
+enum AuditType {
+  financial
+  operational
+  compliance
+  it_systems
+  performance
+  advisory
+}
+
+enum Quarter {
+  Q1
+  Q2
+  Q3
+  Q4
+}
+
+enum AuditTaskStatus {
+  not_started
+  in_progress
+  completed
+}
+
+model AnnualPlan {
+  id                    String            @id @default(cuid())
+  title                 String
+  fiscalYear            Int
+  version               String            @default("1.0")
+  status                AnnualPlanStatus  @default(draft)
+  introduction          String?           @db.Text
+  totalAvailableHours   Int?
+  plannedTaskHours      Int?
+  advisoryHours         Int?
+  emergencyHours        Int?
+  followUpHours         Int?
+  trainingHours         Int?
+  administrativeHours   Int?
+  estimatedBudget       Float?
+  createdBy             String
+  createdAt             DateTime          @default(now())
+  updatedAt             DateTime          @updatedAt
+
+  // Relations
+  auditTasks            AuditTask[]
+  approvals             PlanApproval[]
+
+  @@map("annual_plans")
+  @@index([fiscalYear])
+  @@index([status])
+}
+
+model AuditTask {
+  id                  String           @id @default(cuid())
+  annualPlanId        String
+  code                String
+  title               String
+  department          String
+  riskLevel           RiskLevel
+  auditType           AuditType
+  objectiveAndScope   String?          @db.Text
+  plannedQuarter      Quarter
+  estimatedHours      Int
+  leadAuditor         String?
+  attachmentsJson     Json             @default("[]")
+  status              AuditTaskStatus  @default(not_started)
+  createdAt           DateTime         @default(now())
+  updatedAt           DateTime         @updatedAt
+
+  // Relations
+  annualPlan          AnnualPlan       @relation(fields: [annualPlanId], references: [id], onDelete: Cascade)
+
+  @@map("audit_tasks")
+  @@index([annualPlanId])
+  @@index([riskLevel])
+  @@index([status])
+  @@unique([code, annualPlanId])
+}
+
+model PlanApproval {
+  id                String      @id @default(cuid())
+  annualPlanId      String
+  approverName      String
+  approverRole      String      // preparer, reviewer, approver
+  approvalDate      DateTime    @default(now())
+  comments          String?     @db.Text
+
+  // Relations
+  annualPlan        AnnualPlan  @relation(fields: [annualPlanId], references: [id], onDelete: Cascade)
+
+  @@map("plan_approvals")
+  @@index([annualPlanId])
+}

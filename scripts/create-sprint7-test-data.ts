@@ -27,8 +27,8 @@ async function createTestData() {
         endDate: new Date('2025-12-31'),
         budgetHours: 200,
         status: 'IN_PROGRESS',
-        createdBy: 'test-auditor@gov.sa'
-      }
+        createdBy: 'test-auditor@gov.sa',
+      },
     });
 
     console.log('✅ Test engagement created:', engagement.id);
@@ -43,8 +43,8 @@ async function createTestData() {
         objective: 'Testing evidence collection',
         testStepsJson: ['Step 1: Review documents', 'Step 2: Test samples'],
         expectedResults: 'Financial records and supporting documents should be complete',
-        status: 'planned'
-      }
+        status: 'planned',
+      },
     });
 
     console.log('✅ Test audit test created:', auditTest.id);
@@ -52,7 +52,6 @@ async function createTestData() {
     console.log('\n🎯 Ready for Sprint 7 testing!');
     console.log(`Engagement ID: ${engagement.id}`);
     console.log(`Test ID: ${auditTest.id}`);
-
   } catch (error) {
     console.error('❌ Error creating test data:', error);
   } finally {

@@ -28,6 +28,8 @@ const I18N = {
       exportCSV: 'تصدير CSV',
       refresh: 'تحديث',
       createPlan: 'إنشاء خطة',
+      createAnnualPlan: 'إنشاء خطة سنوية',
+      addAuditTask: 'إضافة مهمة تدقيق',
       addMilestone: 'إضافة مرحلة',
       addTask: 'إضافة مهمة',
       newPBC: 'طلب جديد',
@@ -56,6 +58,7 @@ const I18N = {
       qaReview: 'مراجعة جودة',
     },
     sections: {
+      annualPlan: 'الخطة السنوية',
       planning: 'الخطة ومهام PBC',
       processRisk: 'خرائط العملية و RCM',
       program: 'برنامج الاختبارات والعينات',
@@ -114,6 +117,8 @@ const I18N = {
       exportCSV: 'Export CSV',
       refresh: 'Refresh',
       createPlan: 'Create Plan',
+      createAnnualPlan: 'Create Annual Plan',
+      addAuditTask: 'Add Audit Task',
       addMilestone: 'Add Milestone',
       addTask: 'Add Task',
       newPBC: 'New Request',
@@ -142,6 +147,7 @@ const I18N = {
       qaReview: 'QA Review',
     },
     sections: {
+      annualPlan: 'Annual Plan',
       planning: 'Plan & PBC',
       processRisk: 'Process maps & RCM',
       program: 'Test program & sampling',
