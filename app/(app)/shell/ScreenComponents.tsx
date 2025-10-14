@@ -182,7 +182,13 @@ export function ProgramScreen({ locale }: { locale: Locale }) {
   );
 }
 
-export function FieldworkScreen({ locale, engagementId }: { locale: Locale; engagementId: string }) {
+export function FieldworkScreen({
+  locale,
+  engagementId,
+}: {
+  locale: Locale;
+  engagementId: string;
+}) {
   const i18n = useI18n(locale);
 
   return (
@@ -399,7 +405,10 @@ export function FieldworkScreen({ locale, engagementId }: { locale: Locale; enga
   );
 }
 
-export function AnnualPlanScreen(props: any) {
-  // لاحقًا يمكن تخصيص الشكل عبر props.mode === 'annual'
-  return <PlanningScreen {...props} mode="annual" />;
+export function AnnualPlanScreen({ locale }: { locale: Locale }) {
+  // Import the comprehensive Annual Plan screen
+  const {
+    AnnualPlanScreen: AnnualPlanComponent,
+  } = require('@/features/annual-plan/AnnualPlan.screen');
+  return <AnnualPlanComponent locale={locale} />;
 }

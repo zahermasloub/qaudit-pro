@@ -28,18 +28,21 @@ body {
 }
 
 /* Header Dark Theme - Basic Overrides */
-.header-dark, .header-dark * {
+.header-dark,
+.header-dark * {
   opacity: 1 !important;
 }
-.header-dark a, .header-dark button {
-  color: rgba(255,255,255,0.92) !important;
+.header-dark a,
+.header-dark button {
+  color: rgba(255, 255, 255, 0.92) !important;
 }
-.header-dark a:hover, .header-dark button:hover,
-.header-dark [data-active="true"] {
+.header-dark a:hover,
+.header-dark button:hover,
+.header-dark [data-active='true'] {
   color: #fff !important;
 }
 .header-dark .muted {
-  color: rgba(255,255,255,0.7) !important;
+  color: rgba(255, 255, 255, 0.7) !important;
 }
 
 /* تحسين قابلية القراءة عمومًا */
@@ -82,10 +85,11 @@ textarea::placeholder {
 }
 
 /* RTL Overflow Fix */
-html, body {
+html,
+body {
   width: 100%;
   max-width: 100%;
-  overflow-x: hidden;   /* يمنع تمدّد الصفحة ككل */
+  overflow-x: hidden; /* يمنع تمدّد الصفحة ككل */
 }
 
 *,
@@ -95,22 +99,34 @@ html, body {
 }
 
 .table-wrap > table {
-  table-layout: fixed;  /* يمنع تمدد الأعمدة ذات النص الطويل */
+  table-layout: fixed; /* يمنع تمدد الأعمدة ذات النص الطويل */
 }
 
 .break-anywhere {
   word-break: break-word;
-  overflow-wrap: anywhere;  /* يكسر النصوص الطويلة (مثل MIME/URLs) */
+  overflow-wrap: anywhere; /* يكسر النصوص الطويلة (مثل MIME/URLs) */
 }
 
 .badge-nowrap {
-  white-space: nowrap;  /* شارات الحالة لا تكسر السطر */
+  white-space: nowrap; /* شارات الحالة لا تكسر السطر */
 }
 
 .scroll-shadow-x {
   /* ظل خفيف عند الحواف للتلميح بوجود تمرير أفقي */
-  -webkit-mask-image: linear-gradient(to left, transparent, black 12px, black calc(100% - 12px), transparent);
-  mask-image: linear-gradient(to left, transparent, black 12px, black calc(100% - 12px), transparent);
+  -webkit-mask-image: linear-gradient(
+    to left,
+    transparent,
+    black 12px,
+    black calc(100% - 12px),
+    transparent
+  );
+  mask-image: linear-gradient(
+    to left,
+    transparent,
+    black 12px,
+    black calc(100% - 12px),
+    transparent
+  );
 }
 
 /* إلغاء الشفافية الموروثة */
@@ -125,8 +141,8 @@ html {
 }
 
 :root {
-  --app-text: #0f172a;     /* slate-900 */
-  --app-subtle: #334155;   /* slate-700 */
+  --app-text: #0f172a; /* slate-900 */
+  --app-subtle: #334155; /* slate-700 */
 }
 
 body {

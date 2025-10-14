@@ -13,6 +13,6 @@ export const config = {
     // - Registration page
     // - Static files
     // - API routes (for E2E testing)
-    '/((?!api/auth|api/fieldwork|api/evidence|auth/register|_next/static|_next/image|favicon.ico).*)'
+    '/((?!api/auth|api/fieldwork|api/evidence|auth/register|_next/static|_next/image|favicon.ico).*)',
   ],
 };

@@ -446,8 +446,8 @@ const TOOLBARS: Record<
     },
   ],
   annualPlan: [
-    { action: 'createPlan', roles: ['IA_Manager', 'IA_Lead'], variant: 'primary' },
-    { action: 'newPBC', roles: ['IA_Manager', 'IA_Lead', 'IA_Auditor'] },
+    { action: 'createAnnualPlan', roles: ['IA_Manager', 'IA_Lead'], variant: 'primary' },
+    { action: 'addAuditTask', roles: ['IA_Manager', 'IA_Lead', 'IA_Auditor'] },
     { action: 'importCSV', roles: ['IA_Manager', 'IA_Lead', 'IA_Auditor'] },
     { action: 'exportCSV', roles: ['IA_Manager', 'IA_Lead', 'IA_Auditor'] },
   ],
@@ -564,8 +564,12 @@ function Topbar({
               value={locale}
               onChange={e => setLocale(e.target.value as Locale)}
             >
-              <option value="ar" className="text-gray-900">العربية</option>
-              <option value="en" className="text-gray-900">English</option>
+              <option value="ar" className="text-gray-900">
+                العربية
+              </option>
+              <option value="en" className="text-gray-900">
+                English
+              </option>
             </select>
             <button
               className="text-sm text-white/90 hover:text-white transition-colors px-2 py-1 rounded focus:outline-none focus:ring-2 focus:ring-sky-400/60"
@@ -1083,7 +1087,9 @@ export default function AppShell() {
                   {route === 'planning' && <PlanningScreen locale={locale} />}
                   {route === 'processRisk' && <ProcessRiskScreen locale={locale} />}
                   {route === 'program' && <ProgramScreen locale={locale} />}
-                  {route === 'fieldwork' && <FieldworkScreen locale={locale} engagementId={engagementId} />}
+                  {route === 'fieldwork' && (
+                    <FieldworkScreen locale={locale} engagementId={engagementId} />
+                  )}
                   {route === 'agile' && <PlaceholderScreen title={i18n.sections.agile} />}
                   {route === 'findings' && <PlaceholderScreen title={i18n.sections.findings} />}
                   {route === 'reporting' && <PlaceholderScreen title={i18n.sections.reporting} />}

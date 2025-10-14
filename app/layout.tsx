@@ -1,15 +1,18 @@
 import type { Metadata } from 'next';
-import { Tajawal } from 'next/font/google';
 
-import AuthProvider from '@/lib/AuthProvider';
+// Note: Tajawal font is temporarily disabled due to network restrictions in the build environment
+// Uncomment when building in an environment with internet access
+// import { Tajawal } from 'next/font/google';
 
 import './globals.css';
 
-const tajawal = Tajawal({
-  subsets: ['arabic', 'latin'],
-  weight: ['300', '400', '500', '700'],
-  display: 'swap',
-});
+import AuthProvider from '@/lib/AuthProvider';
+
+// const tajawal = Tajawal({
+//   subsets: ['arabic', 'latin'],
+//   weight: ['300', '400', '500', '700'],
+//   display: 'swap',
+// });
 
 export const metadata: Metadata = {
   title: 'QAudit Pro - نظام إدارة التدقيق الاحترافي',
@@ -20,7 +23,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   // لا تضبط dir/lang هنا لتفادي التعارض مع AppShell
   return (
     <html suppressHydrationWarning>
-      <body className={tajawal.className}>
+      <body>
         <AuthProvider>{children}</AuthProvider>
       </body>
     </html>

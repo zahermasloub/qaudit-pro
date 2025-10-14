@@ -1,59 +1,66 @@
-"use client";
-import { useMemo, useState, useEffect } from "react";
-import { Download, Trash2 } from "lucide-react";
+'use client';
 
-function formatSize(n:number|undefined){
-  if(!n && n!==0) return "—";
-  const kb = n/1024, mb = kb/1024;
-  if(mb>=1) return `${mb.toFixed(2)} MB`;
+import { useEffect, useMemo, useState } from 'react';
+import { Download, Trash2 } from 'lucide-react';
+
+function formatSize(n: number | undefined) {
+  if (!n && n !== 0) return '—';
+  const kb = n / 1024,
+    mb = kb / 1024;
+  if (mb >= 1) return `${mb.toFixed(2)} MB`;
   return `${Math.ceil(kb)} KB`;
 }
 
-function Badge({text, tone}:{text:string, tone:"ok"|"warn"|"bad"|"info"}){
-  const map:any = {
-    ok:   "bg-emerald-100 text-emerald-800 border border-emerald-200",
-    warn: "bg-amber-100 text-amber-800 border border-amber-200",
-    bad:  "bg-rose-100 text-rose-800 border border-rose-200",
-    info: "bg-sky-100 text-sky-800 border border-sky-200",
+function Badge({ text, tone }: { text: string; tone: 'ok' | 'warn' | 'bad' | 'info' }) {
+  const map: any = {
+    ok: 'bg-emerald-100 text-emerald-800 border border-emerald-200',
+    warn: 'bg-amber-100 text-amber-800 border border-amber-200',
+    bad: 'bg-rose-100 text-rose-800 border border-rose-200',
+    info: 'bg-sky-100 text-sky-800 border border-sky-200',
   };
   return <span className={`px-2 py-0.5 rounded-md text-xs font-medium ${map[tone]}`}>{text}</span>;
 }
 
-export default function EvidenceTable({ engagementId }:{engagementId:string}) {
-  const [status, setStatus] = useState<string>("");
-  const [q, setQ] = useState<string>("");
+export default function EvidenceTable({ engagementId }: { engagementId: string }) {
+  const [status, setStatus] = useState<string>('');
+  const [q, setQ] = useState<string>('');
 
   const [data, setData] = useState<any>(null);
   const [isLoading, setIsLoading] = useState(false);
 
   async function handleDownload(row: any) {
     try {
-      if (row.storage === "local") {
-        window.open(`/api/evidence/${row.id}/download`, "_blank");
+      if (row.storage === 'local') {
+        window.open(`/api/evidence/${row.id}/download`, '_blank');
         return;
       }
       const r = await fetch(`/api/evidence/${row.id}/presign`);
       const j = await r.json().catch(() => ({}));
-      if (j?.ok && j.url) window.open(j.url, "_blank");
-      else alert("تعذّر إنشاء رابط التنزيل.");
-    } catch { alert("فشل التنزيل."); }
+      if (j?.ok && j.url) window.open(j.url, '_blank');
+      else alert('تعذّر إنشاء رابط التنزيل.');
+    } catch {
+      alert('فشل التنزيل.');
+    }
   }
 
   async function handleDelete(row: any) {
-    const yes = window.confirm("هل تريد حذف هذا الدليل نهائيًا؟");
+    const yes = window.confirm('هل تريد حذف هذا الدليل نهائيًا؟');
     if (!yes) return;
     try {
-      const r = await fetch(`/api/evidence/${row.id}`, { method: "DELETE" });
+      const r = await fetch(`/api/evidence/${row.id}`, { method: 'DELETE' });
       const j = await r.json().catch(() => ({}));
-      if (r.ok && j?.ok) refetch(); else alert(j?.error || "فشل الحذف");
-    } catch { alert("فشل الحذف."); }
+      if (r.ok && j?.ok) refetch();
+      else alert(j?.error || 'فشل الحذف');
+    } catch {
+      alert('فشل الحذف.');
+    }
   }
 
-  const url = useMemo(()=>{
+  const url = useMemo(() => {
     const p = new URLSearchParams();
-    if(engagementId) p.set("engagementId", engagementId);
-    if(status) p.set("status", status);
-    if(q) p.set("q", q);
+    if (engagementId) p.set('engagementId', engagementId);
+    if (status) p.set('status', status);
+    if (q) p.set('q', q);
     return `/api/evidence/list?${p.toString()}`;
   }, [engagementId, status, q]);
 
@@ -77,9 +84,9 @@ export default function EvidenceTable({ engagementId }:{engagementId:string}) {
 
   const refetch = () => {
     const p = new URLSearchParams();
-    if(engagementId) p.set("engagementId", engagementId);
-    if(status) p.set("status", status);
-    if(q) p.set("q", q);
+    if (engagementId) p.set('engagementId', engagementId);
+    if (status) p.set('status', status);
+    if (q) p.set('q', q);
     const newUrl = `/api/evidence/list?${p.toString()}`;
 
     const fetchData = async () => {
@@ -109,7 +116,7 @@ export default function EvidenceTable({ engagementId }:{engagementId:string}) {
           <select
             className="border rounded-md px-3 py-2 text-sm"
             value={status}
-            onChange={(e)=>setStatus(e.target.value)}
+            onChange={e => setStatus(e.target.value)}
             aria-label="فلتر الحالة"
           >
             <option value="">{`الحالة: الكل`}</option>
@@ -122,11 +129,14 @@ export default function EvidenceTable({ engagementId }:{engagementId:string}) {
             placeholder="بحث (الاسم/الفئة)…"
             className="border rounded-md px-3 py-2 text-sm"
             value={q}
-            onChange={(e)=>setQ(e.target.value)}
+            onChange={e => setQ(e.target.value)}
           />
         </div>
         <div className="flex items-center gap-2">
-          <button onClick={()=>refetch()} className="px-3 py-2 text-sm rounded-md border hover:bg-gray-50">
+          <button
+            onClick={() => refetch()}
+            className="px-3 py-2 text-sm rounded-md border hover:bg-gray-50"
+          >
             تحديث
           </button>
           <span className="text-xs text-gray-500">النتائج: {rows.length}</span>
@@ -152,29 +162,44 @@ export default function EvidenceTable({ engagementId }:{engagementId:string}) {
           </thead>
           <tbody className="[&>tr>td]:px-3 [&>tr>td]:py-2 [&>tr>td]:text-slate-800 text-[13px] leading-6">
             {isLoading && (
-              <tr><td colSpan={10} className="text-center text-slate-600 py-6">...تحميل</td></tr>
+              <tr>
+                <td colSpan={10} className="text-center text-slate-600 py-6">
+                  ...تحميل
+                </td>
+              </tr>
             )}
-            {!isLoading && rows.length===0 && (
-              <tr><td colSpan={10} className="text-center text-slate-600 py-6">لا توجد أدلة مطابقة</td></tr>
+            {!isLoading && rows.length === 0 && (
+              <tr>
+                <td colSpan={10} className="text-center text-slate-600 py-6">
+                  لا توجد أدلة مطابقة
+                </td>
+              </tr>
             )}
-            {rows.map((r:any)=>(
-              <tr key={r.id} className="border-t border-slate-200 odd:bg-white even:bg-slate-50 hover:bg-sky-50/70 transition-colors">
+            {rows.map((r: any) => (
+              <tr
+                key={r.id}
+                className="border-t border-slate-200 odd:bg-white even:bg-slate-50 hover:bg-sky-50/70 transition-colors"
+              >
                 <td className="font-mono text-xs">{r.id}</td>
-                <td className="break-anywhere">{r.category || "—"}</td>
-                <td className="max-w-[260px] truncate break-anywhere" title={r.fileName}>{r.fileName}</td>
-                <td className="text-slate-700 break-anywhere">{r.mimeType || "—"}</td>
+                <td className="break-anywhere">{r.category || '—'}</td>
+                <td className="max-w-[260px] truncate break-anywhere" title={r.fileName}>
+                  {r.fileName}
+                </td>
+                <td className="text-slate-700 break-anywhere">{r.mimeType || '—'}</td>
                 <td>{formatSize(r.fileSize)}</td>
                 <td>
                   <div className="badge-nowrap">
-                    {r.virusScanStatus==="clean" && <Badge text="clean" tone="ok" />}
-                    {r.virusScanStatus==="pending" && <Badge text="pending" tone="warn" />}
-                    {r.virusScanStatus==="suspected" && <Badge text="suspected" tone="bad" />}
-                    {r.virusScanStatus==="blocked" && <Badge text="blocked" tone="bad" />}
+                    {r.virusScanStatus === 'clean' && <Badge text="clean" tone="ok" />}
+                    {r.virusScanStatus === 'pending' && <Badge text="pending" tone="warn" />}
+                    {r.virusScanStatus === 'suspected' && <Badge text="suspected" tone="bad" />}
+                    {r.virusScanStatus === 'blocked' && <Badge text="blocked" tone="bad" />}
                   </div>
                 </td>
-                <td className="badge-nowrap">{r.ocrTextUrl ? <Badge text="✓" tone="info" /> : "—"}</td>
+                <td className="badge-nowrap">
+                  {r.ocrTextUrl ? <Badge text="✓" tone="info" /> : '—'}
+                </td>
                 <td className="uppercase badge-nowrap text-slate-800">{r.storage}</td>
-                <td className="text-slate-800">{new Date(r.uploadedAt).toLocaleString("ar")}</td>
+                <td className="text-slate-800">{new Date(r.uploadedAt).toLocaleString('ar')}</td>
                 <td>
                   <div className="flex items-center gap-2">
                     <button
@@ -200,7 +225,6 @@ export default function EvidenceTable({ engagementId }:{engagementId:string}) {
           </tbody>
         </table>
       </div>
-
     </div>
   );
 }
