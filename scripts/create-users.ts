@@ -15,8 +15,8 @@ async function createUser() {
         name: 'Test User',
         password: hashedPassword,
         role: 'IA_Lead',
-        locale: 'ar'
-      }
+        locale: 'ar',
+      },
     });
 
     console.log('✅ User created successfully:', user.email);
@@ -29,12 +29,11 @@ async function createUser() {
         name: 'Adam',
         password: hashedPassword2,
         role: 'Senior_Auditor',
-        locale: 'en'
-      }
+        locale: 'en',
+      },
     });
 
     console.log('✅ User created successfully:', user2.email);
-
   } catch (error) {
     console.error('❌ Error creating user:', error);
   } finally {

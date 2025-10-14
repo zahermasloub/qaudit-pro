@@ -15,14 +15,13 @@ async function createAdminUser() {
         name: 'Admin User',
         password: hashedPassword,
         role: 'IA_Lead',
-        locale: 'ar'
-      }
+        locale: 'ar',
+      },
     });
 
     console.log('✅ Admin user created:', user.email);
     console.log('📧 Email: admin@qaudit.com');
     console.log('🔑 Password: admin123');
-
   } catch (error) {
     console.error('❌ Error creating admin user:', error);
   } finally {

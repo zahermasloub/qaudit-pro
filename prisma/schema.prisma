@@ -60,6 +60,13 @@ enum StorageProvider {
   s3
 }
 
+enum BackupStatus {
+  pending
+  running
+  success
+  failed
+}
+
 model User {
   id        String   @id @default(cuid())
   name      String?
@@ -69,8 +76,100 @@ model User {
   locale    String   @default("ar")
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+  roles     UserRole[]
 
   @@map("users")
+}
+
+model Role {
+  id          String       @id @default(cuid())
+  name        String       @unique
+  description String?
+  permissions Permission[]
+  users       UserRole[]
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+
+  @@map("roles")
+}
+
+model Permission {
+  id    String @id @default(cuid())
+  key   String @unique
+  label String?
+  roles Role[]
+
+  @@map("permissions")
+}
+
+model UserRole {
+  id     String @id @default(cuid())
+  userId String
+  roleId String
+  User   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  Role   Role   @relation(fields: [roleId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, roleId])
+  @@index([userId])
+  @@index([roleId])
+  @@map("user_roles")
+}
+
+model SystemSetting {
+  id        String   @id @default(cuid())
+  key       String   @unique
+  value     String?
+  type      String?
+  updatedBy String?
+  updatedAt DateTime @updatedAt
+  createdAt DateTime @default(now())
+
+  @@index([key])
+  @@map("system_settings")
+}
+
+model AuditLog {
+  id         String   @id @default(cuid())
+  actorId    String?
+  actorEmail String?
+  action     String
+  target     String?
+  ip         String?
+  userAgent  String?
+  payload    Json?
+  createdAt  DateTime @default(now())
+
+  @@index([action, createdAt])
+  @@index([actorEmail, createdAt])
+  @@map("audit_logs")
+}
+
+model BackupJob {
+  id          String       @id @default(cuid())
+  startedAt   DateTime     @default(now())
+  finishedAt  DateTime?
+  status      BackupStatus @default(pending)
+  storage     String
+  location    String?
+  sizeBytes   Int?
+  message     String?
+  triggeredBy String?
+
+  @@index([status, startedAt])
+  @@map("backup_jobs")
+}
+
+model BackupSchedule {
+  id        String    @id @default(cuid())
+  cronExpr  String
+  enabled   Boolean   @default(true)
+  storage   String    @default("local")
+  lastRunAt DateTime?
+  createdBy String?
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+
+  @@map("backup_schedules")
 }
 
 model Engagement {

@@ -4,7 +4,13 @@
 
 import { z } from 'zod';
 
-export const annualPlanStatus = z.enum(['draft', 'under_review', 'approved', 'cancelled', 'completed']);
+export const annualPlanStatus = z.enum([
+  'draft',
+  'under_review',
+  'approved',
+  'cancelled',
+  'completed',
+]);
 
 export const annualPlanSchema = z.object({
   title: z.string().min(5, 'أدخل عنواناً واضحاً'),
@@ -31,7 +37,14 @@ export const annualPlanSchema = z.object({
 export type AnnualPlanFormValues = z.infer<typeof annualPlanSchema>;
 
 export function sumAlloc(v: AnnualPlanFormValues) {
-  return v.plannedTaskHours + v.advisoryHours + v.emergencyHours + v.followUpHours + v.trainingHours + v.administrativeHours;
+  return (
+    v.plannedTaskHours +
+    v.advisoryHours +
+    v.emergencyHours +
+    v.followUpHours +
+    v.trainingHours +
+    v.administrativeHours
+  );
 }
 
 export const auditTaskSchema = z.object({
