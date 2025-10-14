@@ -145,6 +145,12 @@ html {
   --app-subtle: #334155; /* slate-700 */
 }
 
+/* ثيم صفحات الأدمن */
+:root .admin-surface {
+  background-color: #f8fafc;
+  color: #0f172a;
+}
+
 body {
   color: var(--app-text);
 }
@@ -156,17 +162,18 @@ body {
   --shell-max: 1440px;
 }
 
-html, body {
+html,
+body {
   overflow-x: hidden;
 }
 
 .container-shell {
   max-width: var(--shell-max);
   margin-inline: auto;
-  padding-inline: .75rem;
+  padding-inline: 0.75rem;
 }
 
-@media (min-width:768px){
+@media (min-width: 768px) {
   .container-shell {
     padding-inline: 1.5rem;
   }
@@ -177,7 +184,8 @@ html, body {
   padding-bottom: env(safe-area-inset-bottom);
 }
 
-.header-dark, .header-dark * {
+.header-dark,
+.header-dark * {
   opacity: 1 !important;
 }
 
@@ -210,7 +218,7 @@ html, body {
 /* =============================== */
 /* Ultra-wide Support */
 /* =============================== */
-@media (min-width:1536px){
+@media (min-width: 1536px) {
   .ultra-grid {
     grid-template-columns: 320px 1fr;
   }
@@ -219,10 +227,10 @@ html, body {
 /* =============================== */
 /* Accessibility */
 /* =============================== */
-@media (prefers-reduced-motion: reduce){
+@media (prefers-reduced-motion: reduce) {
   * {
-    animation-duration:.01ms!important;
-    animation-iteration-count:1!important;
-    transition-duration:.01ms!important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
   }
 }

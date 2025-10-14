@@ -1,7 +1,9 @@
 # Admin Suite - Complete Documentation
 
 ## Overview
+
 This admin suite provides comprehensive user and system management capabilities for QAudit Pro, including:
+
 - User management with role-based access control (RBAC)
 - Role and permission management
 - System settings configuration
@@ -11,6 +13,7 @@ This admin suite provides comprehensive user and system management capabilities 
 ## Architecture
 
 ### Database Models
+
 The admin suite uses the following Prisma models:
 
 - **User**: Extended with `roles` relation for many-to-many role assignments
@@ -23,6 +26,7 @@ The admin suite uses the following Prisma models:
 - **BackupSchedule**: Manages automated backup schedules using cron expressions
 
 ### API Routes
+
 All admin APIs are located under `/api/admin/`:
 
 - `GET/POST /api/admin/users` - User CRUD operations
@@ -33,6 +37,7 @@ All admin APIs are located under `/api/admin/`:
 - `GET/POST /api/admin/backups/schedule` - Backup scheduling
 
 ### Pages
+
 All admin pages are accessible under `/admin/`:
 
 - `/admin/dashboard` - Overview with KPIs
@@ -45,6 +50,7 @@ All admin pages are accessible under `/admin/`:
 ## Setup Instructions
 
 ### 1. Database Migration
+
 Run Prisma migrations to create the admin tables:
 
 ```bash
@@ -53,6 +59,7 @@ npm run db:push
 ```
 
 ### 2. Seed Initial Data
+
 Populate initial permissions and roles:
 
 ```bash
@@ -60,67 +67,79 @@ npx tsx scripts/seed-admin.ts
 ```
 
 This creates:
+
 - 11 admin permissions
 - Admin role (full access)
 - Viewer role (read-only access)
 
 ### 3. Environment Variables
+
 No additional environment variables are required. The admin suite uses the existing `DATABASE_URL`.
 
 ## Features
 
 ### 1. User Management (`/admin/users`)
+
 - View all users with their roles and creation dates
 - Add new users with email, password, locale selection
 - Assign multiple roles to users
 - Role-based filtering (future enhancement)
 
 **Dialog Features:**
+
 - Name, email, password fields with validation
 - Locale selection (Arabic/English)
 - Role assignment (future enhancement)
 
 ### 2. Roles & Permissions (`/admin/roles`)
+
 - View all roles with their assigned permissions
 - Create new roles with description
 - Multi-select permission assignment
 - Permission grouping by category
 
 **Dialog Features:**
+
 - Role name and description
 - Checkbox list of all available permissions
 - Visual permission badges
 
 ### 3. System Settings (`/admin/settings`)
+
 - Key-value configuration store
 - Type selection (string, number, boolean, json)
 - Last updated timestamp
 - Upsert functionality (create or update)
 
 **Dialog Features:**
+
 - Key input with mono font
 - Value input
 - Type dropdown
 - Automatic timestamp tracking
 
 ### 4. Activity Logs (`/admin/logs`)
+
 - Real-time activity monitoring
 - Time-based filtering (from/to datetime)
 - Search by action, actor, or target
 - Indexed for performance
 
 **Filtering:**
+
 - Search query (action, actorEmail, target)
 - Date range (from/to)
 - Configurable result limit (default 100)
 
 ### 5. Backup Management (`/admin/backups`)
+
 - Manual backup execution
 - Automated backup scheduling
 - Status tracking (pending, running, success, failed)
 - Storage location selection (local/S3)
 
 **Features:**
+
 - Run backup now with storage selection
 - Create backup schedules with cron expressions
 - View backup history with status
@@ -129,21 +148,23 @@ No additional environment variables are required. The admin suite uses the exist
 ## Permissions
 
 ### Available Permissions
+
 ```typescript
-ADMIN_DASHBOARD_READ     // View dashboard
-ADMIN_USERS_READ         // View users
-ADMIN_USERS_WRITE        // Create/edit users
-ADMIN_ROLES_READ         // View roles
-ADMIN_ROLES_WRITE        // Create/edit roles
-ADMIN_SETTINGS_READ      // View settings
-ADMIN_SETTINGS_WRITE     // Create/edit settings
-ADMIN_LOGS_READ          // View activity logs
-ADMIN_BACKUPS_READ       // View backups
-ADMIN_BACKUPS_EXEC       // Execute backups
-ADMIN_BACKUPS_SCHEDULE   // Schedule backups
+ADMIN_DASHBOARD_READ; // View dashboard
+ADMIN_USERS_READ; // View users
+ADMIN_USERS_WRITE; // Create/edit users
+ADMIN_ROLES_READ; // View roles
+ADMIN_ROLES_WRITE; // Create/edit roles
+ADMIN_SETTINGS_READ; // View settings
+ADMIN_SETTINGS_WRITE; // Create/edit settings
+ADMIN_LOGS_READ; // View activity logs
+ADMIN_BACKUPS_READ; // View backups
+ADMIN_BACKUPS_EXEC; // Execute backups
+ADMIN_BACKUPS_SCHEDULE; // Schedule backups
 ```
 
 ### Using Permissions
+
 ```typescript
 import { PERMS, hasPerm } from '@/lib/rbac';
 
@@ -166,13 +187,14 @@ await prisma.auditLog.create({
     payload: { email: userData.email },
     ip: request.ip,
     userAgent: request.headers['user-agent'],
-  }
+  },
 });
 ```
 
 ## Backup Scheduling
 
 ### Cron Expression Examples
+
 ```
 0 3 * * 1     // Every Monday at 3:00 AM
 0 0 * * *     // Daily at midnight
@@ -181,9 +203,11 @@ await prisma.auditLog.create({
 ```
 
 ### Backup Implementation
+
 The current implementation queues backup jobs. To implement actual backup:
 
 1. Create a worker process using `node-cron`:
+
 ```typescript
 import cron from 'node-cron';
 
@@ -194,6 +218,7 @@ cron.schedule('0 3 * * 1', async () => {
 ```
 
 2. Or use BullMQ for better job management:
+
 ```typescript
 import { Queue } from 'bullmq';
 
@@ -207,12 +232,12 @@ All admin UI is bilingual (Arabic/English):
 
 ```typescript
 // Arabic
-menu.admin = "الإدارة"
-menu.admin_users = "المستخدمون"
+menu.admin = 'الإدارة';
+menu.admin_users = 'المستخدمون';
 
 // English
-menu.admin = "Admin"
-menu.admin_users = "Users"
+menu.admin = 'Admin';
+menu.admin_users = 'Users';
 ```
 
 ## Security Considerations
@@ -237,6 +262,7 @@ menu.admin_users = "Users"
 ## Troubleshooting
 
 ### Database Connection Issues
+
 ```bash
 # Check DATABASE_URL in .env
 echo $DATABASE_URL
@@ -246,12 +272,14 @@ npx prisma db push
 ```
 
 ### Missing Permissions
+
 ```bash
 # Re-run seed
 npx tsx scripts/seed-admin.ts
 ```
 
 ### Build Errors
+
 ```bash
 # Clean and rebuild
 rm -rf .next
@@ -261,6 +289,7 @@ npm run build
 ## API Examples
 
 ### Create User
+
 ```typescript
 const response = await fetch('/api/admin/users', {
   method: 'POST',
@@ -270,12 +299,13 @@ const response = await fetch('/api/admin/users', {
     email: 'john@example.com',
     password: 'secure123',
     locale: 'en',
-    roleIds: ['role_id_1', 'role_id_2']
-  })
+    roleIds: ['role_id_1', 'role_id_2'],
+  }),
 });
 ```
 
 ### Create Role with Permissions
+
 ```typescript
 const response = await fetch('/api/admin/roles', {
   method: 'POST',
@@ -283,18 +313,19 @@ const response = await fetch('/api/admin/roles', {
   body: JSON.stringify({
     name: 'Manager',
     description: 'Department manager',
-    permissionKeys: ['admin.users.read', 'admin.logs.read']
-  })
+    permissionKeys: ['admin.users.read', 'admin.logs.read'],
+  }),
 });
 ```
 
 ### Filter Activity Logs
+
 ```typescript
 const params = new URLSearchParams({
   q: 'user.create',
   from: '2024-01-01T00:00:00',
   to: '2024-12-31T23:59:59',
-  take: '50'
+  take: '50',
 });
 const response = await fetch(`/api/admin/logs?${params}`);
 ```

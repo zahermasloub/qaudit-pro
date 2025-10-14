@@ -1,122 +1,117 @@
 'use client';
 
-import { useEffect, useState } from 'react';
-import { format } from 'date-fns';
+import { useCallback, useEffect, useState } from 'react';
 
-type AuditLog = {
+type Log = {
   id: string;
-  actorEmail: string | null;
   action: string;
-  target: string | null;
+  actorEmail?: string | null;
   createdAt: string;
+  targetType?: string | null;
 };
 
-export default function AdminLogs() {
-  const [rows, setRows] = useState<AuditLog[]>([]);
-  const [search, setSearch] = useState('');
-  const [fromDate, setFromDate] = useState('');
-  const [toDate, setToDate] = useState('');
+export default function AdminLogsPage() {
+  const [q, setQ] = useState('');
+  const [from, setFrom] = useState('');
+  const [to, setTo] = useState('');
+  const [rows, setRows] = useState<Log[]>([]);
+  const [loading, setLoading] = useState(false);
+
+  const fetchLogs = useCallback(async () => {
+    try {
+      setLoading(true);
+      const params = new URLSearchParams();
+      if (q) params.set('q', q);
+      if (from) params.set('from', new Date(from).toISOString());
+      if (to) params.set('to', new Date(to).toISOString());
+      const response = await fetch(`/api/admin/logs?${params.toString()}`);
+      const json = await response.json().catch(() => ({ items: [] }));
+      if (Array.isArray(json.items)) {
+        setRows(json.items);
+      } else {
+        setRows([]);
+      }
+    } catch (error) {
+      console.error('Failed to load logs', error);
+      setRows([]);
+    } finally {
+      setLoading(false);
+    }
+  }, [from, q, to]);
 
   useEffect(() => {
     fetchLogs();
-  }, []);
-
-  async function fetchLogs() {
-    try {
-      const params = new URLSearchParams();
-      if (search) params.set('q', search);
-      if (fromDate) params.set('from', fromDate);
-      if (toDate) params.set('to', toDate);
-
-      const res = await fetch(`/api/admin/logs?${params.toString()}`);
-      const data = await res.json();
-      if (data.ok) {
-        setRows(data.rows);
-      }
-    } catch (error) {
-      console.error('Error fetching logs:', error);
-    }
-  }
+  }, [fetchLogs]);
 
   return (
-    <div className="container-shell">
-      <div className="mb-6">
-        <h1 className="text-2xl font-bold text-gray-800 mb-2">سجلات النشاط</h1>
-        <p className="text-gray-600">مراقبة نشاط النظام والمستخدمين</p>
+    <div className="space-y-3">
+      <div className="bg-white border rounded-2xl p-3 flex flex-wrap items-center gap-2">
+        <input
+          className="border rounded-md px-2 py-1 text-sm min-w-[220px]"
+          placeholder="بحث في الإجراءات..."
+          value={q}
+          onChange={event => setQ(event.target.value)}
+        />
+        <input
+          className="border rounded-md px-2 py-1 text-sm"
+          type="datetime-local"
+          value={from}
+          onChange={event => setFrom(event.target.value)}
+        />
+        <input
+          className="border rounded-md px-2 py-1 text-sm"
+          type="datetime-local"
+          value={to}
+          onChange={event => setTo(event.target.value)}
+        />
+        <button
+          type="button"
+          onClick={fetchLogs}
+          className="px-3 py-1.5 text-sm rounded-md border font-medium bg-orange-600 text-white border-orange-600 hover:bg-orange-700"
+        >
+          فلترة
+        </button>
       </div>
 
-      <div className="bg-white rounded-lg border border-gray-200 p-4 mb-4">
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-3">
-          <input
-            type="text"
-            value={search}
-            onChange={e => setSearch(e.target.value)}
-            placeholder="بحث في الإجراءات..."
-            className="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
-          />
-          <input
-            type="datetime-local"
-            value={fromDate}
-            onChange={e => setFromDate(e.target.value)}
-            className="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
-          />
-          <input
-            type="datetime-local"
-            value={toDate}
-            onChange={e => setToDate(e.target.value)}
-            className="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
-          />
-          <button
-            onClick={fetchLogs}
-            className="px-4 py-2 bg-orange-600 text-white rounded-lg hover:bg-orange-700 transition-colors"
-          >
-            فلترة
-          </button>
-        </div>
-      </div>
-
-      <div className="bg-white rounded-lg border border-gray-200 overflow-hidden">
-        <div className="overflow-x-auto">
-          <table className="w-full">
-            <thead className="bg-gray-50 border-b border-gray-200">
-              <tr>
-                <th className="px-4 py-3 text-right text-sm font-semibold text-gray-700">
-                  التاريخ والوقت
-                </th>
-                <th className="px-4 py-3 text-right text-sm font-semibold text-gray-700">
-                  المستخدم
-                </th>
-                <th className="px-4 py-3 text-right text-sm font-semibold text-gray-700">
-                  الإجراء
-                </th>
-                <th className="px-4 py-3 text-right text-sm font-semibold text-gray-700">الهدف</th>
+      <div className="bg-white border rounded-2xl p-0 overflow-hidden">
+        <div className="table-wrap overflow-x-auto">
+          <table className="w-full text-sm">
+            <thead className="bg-slate-100 text-slate-700">
+              <tr className="[&>th]:px-3 [&>th]:py-2 text-right">
+                <th>الحدث</th>
+                <th>الإجراء</th>
+                <th>المستخدم</th>
+                <th>التاريخ والوقت</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-gray-200">
-              {rows.map(log => (
-                <tr key={log.id} className="hover:bg-gray-50">
-                  <td className="px-4 py-3 text-sm whitespace-nowrap">
-                    {format(new Date(log.createdAt), 'yyyy-MM-dd HH:mm:ss')}
+            <tbody className="divide-y">
+              {loading && (
+                <tr>
+                  <td colSpan={4} className="px-3 py-10 text-center text-slate-500">
+                    جارِ التحميل…
                   </td>
-                  <td className="px-4 py-3 text-sm">{log.actorEmail || '-'}</td>
-                  <td className="px-4 py-3 text-sm">
-                    <span className="px-2 py-1 bg-blue-50 text-blue-700 rounded text-xs font-mono">
-                      {log.action}
-                    </span>
-                  </td>
-                  <td className="px-4 py-3 text-sm font-mono text-gray-600">{log.target || '-'}</td>
                 </tr>
-              ))}
+              )}
+              {!loading && rows.length === 0 && (
+                <tr>
+                  <td colSpan={4} className="px-3 py-10 text-center text-slate-500">
+                    لا توجد سجلات
+                  </td>
+                </tr>
+              )}
+              {!loading &&
+                rows.map(log => (
+                  <tr key={log.id} className="[&>td]:px-3 [&>td]:py-2 text-slate-700">
+                    <td>{log.targetType || '-'}</td>
+                    <td className="font-mono break-anywhere">{log.action}</td>
+                    <td>{log.actorEmail || '-'}</td>
+                    <td dir="ltr">{new Date(log.createdAt).toLocaleString()}</td>
+                  </tr>
+                ))}
             </tbody>
           </table>
         </div>
       </div>
-
-      {rows.length === 0 && (
-        <div className="bg-white rounded-lg border border-gray-200 p-8 text-center text-gray-500">
-          لا توجد سجلات
-        </div>
-      )}
     </div>
   );
 }

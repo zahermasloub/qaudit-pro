@@ -387,6 +387,7 @@ import PBCForm from '@/features/planning/pbc/Pbc.form-v2';
 import SamplingForm from '@/features/program/sampling/Sampling.form-v2';
 import TestForm from '@/features/program/tests/Test.form-v2';
 import { type Locale, useI18n } from '@/lib/i18n';
+import { canSeeAdmin } from '@/lib/rbac';
 
 import DashboardView from './DashboardView';
 import {
@@ -509,6 +510,8 @@ function Topbar({
   role,
   route,
   onToolbarAction,
+  showAdminLink,
+  onAdminNavigate,
   onOpenSidebar,
 }: {
   locale: Locale;
@@ -517,6 +520,8 @@ function Topbar({
   role: Role;
   route: Route;
   onToolbarAction: (action: string) => void;
+  showAdminLink: boolean;
+  onAdminNavigate: () => void;
   onOpenSidebar: () => void;
 }) {
   const i18n = useI18n(locale);
@@ -539,8 +544,12 @@ function Topbar({
             <h1 className="text-sm font-semibold tracking-wide text-white select-none">
               {i18n.app.title}
               <span className="text-xs text-white/70 mx-2">•</span>
-              <span className="text-sm text-white/90">{(i18n.sections as any)[route] || route}</span>
-              <span className="text-xs text-white/70 ml-2 hidden sm:inline">({role.replace('_', ' ')})</span>
+              <span className="text-sm text-white/90">
+                {(i18n.sections as any)[route] || route}
+              </span>
+              <span className="text-xs text-white/70 ml-2 hidden sm:inline">
+                ({role.replace('_', ' ')})
+              </span>
             </h1>
           </div>
 
@@ -566,6 +575,15 @@ function Topbar({
 
           {/* User controls */}
           <div className="flex items-center gap-2 rtl:space-x-reverse">
+            {showAdminLink && (
+              <button
+                type="button"
+                onClick={onAdminNavigate}
+                className="inline-flex items-center gap-1.5 rounded-md border border-white/30 bg-white/10 px-3 py-1.5 text-sm font-medium text-white/90 transition-colors hover:bg-white/20 hover:text-white focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-white focus-visible:ring-offset-slate-900"
+              >
+                {i18n.menu.admin}
+              </button>
+            )}
             <button className="rounded-full bg-blue-600 text-white text-sm px-3 py-1.5 hover:bg-blue-700 transition-colors">
               {i18n.common.alerts} 3
             </button>
@@ -618,12 +636,16 @@ function Sidebar({
   setRoute,
   statusBadge,
   role,
+  showAdminLink,
+  onAdminNavigate,
 }: {
   locale: Locale;
   route: Route;
   setRoute: (r: Route) => void;
   statusBadge: string;
   role: Role;
+  showAdminLink: boolean;
+  onAdminNavigate: () => void;
 }) {
   const i18n = useI18n(locale);
   const isRTL = locale === 'ar';
@@ -647,10 +669,10 @@ function Sidebar({
               key={it.key}
               onClick={() => setRoute(it.key as Route)}
               className={clsx(
-                'w-full text-sm rounded-xl px-3 py-2 text-start border flex items-center gap-2 transition-colors',
+                'w-full text-[15px] sm:text-sm lg:text-base rounded-xl px-3 py-2.5 text-start border flex items-center gap-2 transition-colors font-medium',
                 active
                   ? 'bg-blue-600 text-white border-blue-600'
-                  : 'bg-white text-gray-900 border-gray-200 hover:bg-gray-50',
+                  : 'bg-white text-slate-900 border-gray-200 hover:bg-gray-50',
               )}
             >
               <Icon className="h-4 w-4" />
@@ -673,6 +695,19 @@ function Sidebar({
             </button>
           );
         })}
+        {showAdminLink && (
+          <button
+            type="button"
+            onClick={onAdminNavigate}
+            className="w-full text-[15px] sm:text-sm lg:text-base rounded-xl px-3 py-2.5 text-start border flex items-center gap-2 transition-colors font-medium bg-white text-blue-700 border-blue-200 hover:bg-blue-50 hover:border-blue-300"
+          >
+            <Shield className="h-4 w-4 text-blue-600" />
+            <span className="grow text-start">{i18n.menu.admin}</span>
+            <span className="text-[11px] px-2 py-0.5 rounded-full border border-blue-200 bg-blue-100 text-blue-700">
+              {i18n.admin.dashboard}
+            </span>
+          </button>
+        )}
       </nav>
 
       {/* Role indicator at bottom */}
@@ -925,7 +960,7 @@ function PlaceholderScreen({ title }: { title: string }) {
 }
 
 export default function AppShell() {
-  const { status } = useSession();
+  const { status, data: session } = useSession();
   const router = useRouter();
   const [locale, setLocale] = useState<Locale>('ar');
   const [route, setRoute] = useState<Route>('dashboard');
@@ -945,6 +980,7 @@ export default function AppShell() {
   const [currentSampleRef, _setCurrentSampleRef] = useState('SAMPLE-001');
   const isRTL = locale === 'ar';
   const i18n = useI18n(locale);
+  const showAdminLink = canSeeAdmin(session);
 
   useEffect(() => {
     if (typeof document !== 'undefined') {
@@ -1033,6 +1069,9 @@ export default function AppShell() {
         console.log(`Action: ${action}`);
     }
   };
+  const handleAdminNavigate = () => {
+    router.push('/admin/dashboard');
+  };
 
   const allowed = RBAC[route as Route]?.includes(role);
 
@@ -1050,7 +1089,7 @@ export default function AppShell() {
   return (
     <ToastProvider>
       <div className="min-h-screen w-full overflow-x-hidden bg-slate-50 safe-area">
-        <div className="container-shell">
+        <div className="container-shell mx-auto w-full px-3 sm:px-4 lg:px-6">
           <Topbar
             locale={locale}
             setLocale={setLocale}
@@ -1058,6 +1097,8 @@ export default function AppShell() {
             role={role}
             route={route}
             onToolbarAction={handleToolbarAction}
+            showAdminLink={showAdminLink}
+            onAdminNavigate={handleAdminNavigate}
             onOpenSidebar={() => setSidebarOpen(true)}
           />
 
@@ -1098,6 +1139,8 @@ export default function AppShell() {
                 setRoute={setRoute}
                 statusBadge="In-Field"
                 role={role}
+                showAdminLink={showAdminLink}
+                onAdminNavigate={handleAdminNavigate}
               />
             </aside>
 
@@ -1110,7 +1153,9 @@ export default function AppShell() {
               )}
               {allowed && (
                 <>
-                  {route === 'dashboard' && <DashboardView locale={locale} engagementId={engagementId} />}
+                  {route === 'dashboard' && (
+                    <DashboardView locale={locale} engagementId={engagementId} />
+                  )}
                   {route === 'annualPlan' && <AnnualPlanScreen locale={locale} />}
                   {route === 'planning' && <PlanningScreen locale={locale} />}
                   {route === 'processRisk' && <ProcessRiskScreen locale={locale} />}
@@ -1142,9 +1187,9 @@ export default function AppShell() {
               role="dialog"
               aria-modal="true"
               className={clsx(
-                "fixed top-0 bottom-0 z-50 w-[82vw] max-w-[320px] bg-white border-s shadow-xl",
-                "transition-transform duration-200",
-                "rtl:right-0 rtl:translate-x-0 ltr:left-0 ltr:translate-x-0"
+                'fixed top-0 bottom-0 z-50 w-[82vw] max-w-[320px] bg-white border-s shadow-xl',
+                'transition-transform duration-200',
+                'rtl:right-0 rtl:translate-x-0 ltr:left-0 ltr:translate-x-0',
               )}
             >
               <div className="p-3 border-b flex items-center gap-2">
@@ -1161,12 +1206,17 @@ export default function AppShell() {
                 <Sidebar
                   locale={locale}
                   route={route}
-                  setRoute={(r) => {
+                  setRoute={r => {
                     setRoute(r);
                     setSidebarOpen(false);
                   }}
                   statusBadge="In-Field"
                   role={role}
+                  showAdminLink={showAdminLink}
+                  onAdminNavigate={() => {
+                    setSidebarOpen(false);
+                    handleAdminNavigate();
+                  }}
                 />
               </div>
             </div>
