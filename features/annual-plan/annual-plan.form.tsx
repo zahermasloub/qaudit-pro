@@ -4,7 +4,7 @@ import React, { useMemo, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 
-import { annualPlanSchema, sumAlloc, type AnnualPlanFormValues } from './annual-plan.schema';
+import { type AnnualPlanFormValues, annualPlanSchema, sumAlloc } from './annual-plan.schema';
 
 type OrgOption = { id: string; name: string; depts?: OrgOption[] };
 
@@ -89,10 +89,7 @@ export default function AnnualPlanForm({
       <div className="relative bg-white rounded-2xl shadow-xl border border-gray-200 w-full max-w-4xl p-6 max-h-[90vh] overflow-y-auto">
         <div className="flex items-center justify-between mb-4">
           <h3 className="text-xl font-semibold">إنشاء الخطة السنوية</h3>
-          <button
-            className="text-gray-500 hover:text-gray-700"
-            onClick={() => onOpenChange(false)}
-          >
+          <button className="text-gray-500 hover:text-gray-700" onClick={() => onOpenChange(false)}>
             ✕
           </button>
         </div>
@@ -117,7 +114,9 @@ export default function AnnualPlanForm({
 
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">السنة المالية</label>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    السنة المالية
+                  </label>
                   <input
                     type="number"
                     {...form.register('fiscalYear', { valueAsNumber: true })}
@@ -157,7 +156,9 @@ export default function AnnualPlanForm({
                   >
                     <option value="">—</option>
                     {orgOptions.map(o => (
-                      <option key={o.id} value={o.id}>{o.name}</option>
+                      <option key={o.id} value={o.id}>
+                        {o.name}
+                      </option>
                     ))}
                   </select>
                 </div>
@@ -170,7 +171,9 @@ export default function AnnualPlanForm({
                   >
                     <option value="">—</option>
                     {selectedOrg?.depts?.map(d => (
-                      <option key={d.id} value={d.id}>{d.name}</option>
+                      <option key={d.id} value={d.id}>
+                        {d.name}
+                      </option>
                     ))}
                   </select>
                 </div>
@@ -178,7 +181,9 @@ export default function AnnualPlanForm({
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">مقدمة / ملخص تنفيذي</label>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                مقدمة / ملخص تنفيذي
+              </label>
               <textarea
                 rows={4}
                 {...form.register('introduction')}
@@ -190,11 +195,15 @@ export default function AnnualPlanForm({
 
           {/* القسم (2): الموارد والتوزيع */}
           <section className="space-y-4">
-            <h4 className="text-lg font-medium text-gray-900 border-b pb-2">تحديد الموارد وتوزيعها</h4>
+            <h4 className="text-lg font-medium text-gray-900 border-b pb-2">
+              تحديد الموارد وتوزيعها
+            </h4>
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">إجمالي الساعات المتاحة</label>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  إجمالي الساعات المتاحة
+                </label>
                 <input
                   type="number"
                   {...form.register('totalAvailableHours', { valueAsNumber: true })}
@@ -207,11 +216,13 @@ export default function AnnualPlanForm({
                 <div className="text-lg font-semibold">{allocation}</div>
               </div>
 
-              <div className={`rounded-lg border p-3 ${
-                remaining < 0
-                  ? 'bg-rose-50 border-rose-200 text-rose-700'
-                  : 'bg-emerald-50 border-emerald-200 text-emerald-700'
-              }`}>
+              <div
+                className={`rounded-lg border p-3 ${
+                  remaining < 0
+                    ? 'bg-rose-50 border-rose-200 text-rose-700'
+                    : 'bg-emerald-50 border-emerald-200 text-emerald-700'
+                }`}
+              >
                 <div className="text-xs">{remaining < 0 ? 'تجاوز الساعات' : 'المتبقي'}</div>
                 <div className="text-lg font-semibold">{remaining}</div>
               </div>
@@ -219,7 +230,9 @@ export default function AnnualPlanForm({
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">مهام التدقيق المخطط لها</label>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  مهام التدقيق المخطط لها
+                </label>
                 <input
                   type="number"
                   {...form.register('plannedTaskHours', { valueAsNumber: true })}
@@ -227,7 +240,9 @@ export default function AnnualPlanForm({
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">مهام استشارية</label>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  مهام استشارية
+                </label>
                 <input
                   type="number"
                   {...form.register('advisoryHours', { valueAsNumber: true })}
@@ -235,7 +250,9 @@ export default function AnnualPlanForm({
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">مهام خاصة / طارئة</label>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  مهام خاصة / طارئة
+                </label>
                 <input
                   type="number"
                   {...form.register('emergencyHours', { valueAsNumber: true })}
@@ -243,7 +260,9 @@ export default function AnnualPlanForm({
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">متابعة توصيات التدقيق</label>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  متابعة توصيات التدقيق
+                </label>
                 <input
                   type="number"
                   {...form.register('followUpHours', { valueAsNumber: true })}
@@ -251,7 +270,9 @@ export default function AnnualPlanForm({
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">التدريب والتطوير</label>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  التدريب والتطوير
+                </label>
                 <input
                   type="number"
                   {...form.register('trainingHours', { valueAsNumber: true })}
@@ -259,7 +280,9 @@ export default function AnnualPlanForm({
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">الشؤون الإدارية</label>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  الشؤون الإدارية
+                </label>
                 <input
                   type="number"
                   {...form.register('administrativeHours', { valueAsNumber: true })}

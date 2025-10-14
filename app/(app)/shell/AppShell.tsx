@@ -1270,31 +1270,31 @@ export default function AppShell() {
           defaultYear={new Date().getFullYear() + 1}
           orgOptions={[
             {
-              id: "FIN",
-              name: "الإدارة المالية",
+              id: 'FIN',
+              name: 'الإدارة المالية',
               depts: [
-                { id: "AR", name: "الحسابات" },
-                { id: "TR", name: "الخزينة" }
-              ]
+                { id: 'AR', name: 'الحسابات' },
+                { id: 'TR', name: 'الخزينة' },
+              ],
             },
             {
-              id: "HR",
-              name: "إدارة الموارد البشرية",
+              id: 'HR',
+              name: 'إدارة الموارد البشرية',
               depts: [
-                { id: "RE", name: "التوظيف" },
-                { id: "PY", name: "الرواتب" }
-              ]
+                { id: 'RE', name: 'التوظيف' },
+                { id: 'PY', name: 'الرواتب' },
+              ],
             },
             {
-              id: "IT",
-              name: "تقنية المعلومات",
+              id: 'IT',
+              name: 'تقنية المعلومات',
               depts: [
-                { id: "DEV", name: "التطوير" },
-                { id: "SEC", name: "أمن المعلومات" }
-              ]
-            }
+                { id: 'DEV', name: 'التطوير' },
+                { id: 'SEC', name: 'أمن المعلومات' },
+              ],
+            },
           ]}
-          onSuccess={(id) => {
+          onSuccess={id => {
             console.log('✅ تم حفظ الخطة السنوية بنجاح:', id);
             setOpenAnnualPlan(false);
             // TODO: Add toast notification and refresh data

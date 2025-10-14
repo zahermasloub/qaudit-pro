@@ -2,12 +2,20 @@ import type { Metadata } from 'next';
 
 import AuthProvider from '@/lib/AuthProvider';
 
+//<<<<<<< copilot/add-admin-suite-with-crud
+// Note: Tajawal font is temporarily disabled due to network restrictions in the build environment
+// Uncomment when building in an environment with internet access
+// import { Tajawal } from 'next/font/google';
+//import './globals.css';
+
+//=======
 import './globals.css';
 
 // Note: Tajawal font is temporarily disabled due to network restrictions in the build environment
 // Uncomment when building in an environment with internet access
 // import { Tajawal } from 'next/font/google';
 
+//>>>>>>> master
 // const tajawal = Tajawal({
 //   subsets: ['arabic', 'latin'],
 //   weight: ['300', '400', '500', '700'],

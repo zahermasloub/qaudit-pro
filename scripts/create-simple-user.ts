@@ -15,14 +15,13 @@ async function createSimpleUser() {
         name: 'Test User Simple',
         password: hashedPassword,
         role: 'IA_Lead',
-        locale: 'ar'
-      }
+        locale: 'ar',
+      },
     });
 
     console.log('✅ Simple test user created:', user.email);
     console.log('📧 Email: test@test.com');
     console.log('🔑 Password: 123456');
-
   } catch (error) {
     console.error('❌ Error creating simple user:', error);
   } finally {

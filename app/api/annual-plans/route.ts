@@ -11,12 +11,15 @@ export async function POST(req: Request) {
     // تحقق: مجموع التخصيص لا يتجاوز الإجمالي
     const alloc = sumAlloc(v);
     if (alloc > v.totalAvailableHours) {
-      return Response.json({
-        ok: false,
-        error: "total_allocation_exceeds_total_hours",
-        alloc,
-        total: v.totalAvailableHours
-      }, { status: 400 });
+      return Response.json(
+        {
+          ok: false,
+          error: 'total_allocation_exceeds_total_hours',
+          alloc,
+          total: v.totalAvailableHours,
+        },
+        { status: 400 },
+      );
     }
 
     const created = await prisma.annualPlan.create({
@@ -35,12 +38,12 @@ export async function POST(req: Request) {
         administrativeHours: v.administrativeHours ?? null,
         estimatedBudget: v.estimatedBudget ?? null,
         createdBy: v.createdBy,
-      }
+      },
     });
 
     return Response.json({ ok: true, id: created.id }, { status: 201 });
   } catch (e: any) {
-    const msg = e?.errors?.[0]?.message || e?.message || "invalid_payload";
+    const msg = e?.errors?.[0]?.message || e?.message || 'invalid_payload';
     return Response.json({ ok: false, error: msg }, { status: 400 });
   }
 }
