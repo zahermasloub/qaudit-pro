@@ -7,7 +7,7 @@ type Log = {
   action: string;
   actorEmail?: string | null;
   createdAt: string;
-  targetType?: string | null;
+  target?: string | null;
 };
 
 export default function AdminLogsPage() {
@@ -102,7 +102,7 @@ export default function AdminLogsPage() {
               {!loading &&
                 rows.map(log => (
                   <tr key={log.id} className="[&>td]:px-3 [&>td]:py-2 text-slate-700">
-                    <td>{log.targetType || '-'}</td>
+                    <td>{log.target || '-'}</td>
                     <td className="font-mono break-anywhere">{log.action}</td>
                     <td>{log.actorEmail || '-'}</td>
                     <td dir="ltr">{new Date(log.createdAt).toLocaleString()}</td>

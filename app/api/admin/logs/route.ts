@@ -1,4 +1,4 @@
-import { Prisma } from '@prisma/client';
+import type { Prisma } from '@prisma/client';
 
 import prisma from '@/lib/prisma';
 
@@ -31,7 +31,7 @@ export async function GET(req: Request) {
         action: true,
         actorEmail: true,
         createdAt: true,
-        targetType: true,
+        target: true,
       },
     });
 

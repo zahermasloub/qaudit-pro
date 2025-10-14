@@ -39,7 +39,7 @@ type SessionLike =
   | {
       user?: {
         permissions?: string[];
-      };
+      } & Record<string, unknown>;
     }
   | null
   | undefined;
