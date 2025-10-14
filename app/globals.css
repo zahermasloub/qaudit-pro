@@ -148,3 +148,81 @@ html {
 body {
   color: var(--app-text);
 }
+
+/* =============================== */
+/* Container Shell + Responsive Grid */
+/* =============================== */
+:root {
+  --shell-max: 1440px;
+}
+
+html, body {
+  overflow-x: hidden;
+}
+
+.container-shell {
+  max-width: var(--shell-max);
+  margin-inline: auto;
+  padding-inline: .75rem;
+}
+
+@media (min-width:768px){
+  .container-shell {
+    padding-inline: 1.5rem;
+  }
+}
+
+.safe-area {
+  padding-top: env(safe-area-inset-top);
+  padding-bottom: env(safe-area-inset-bottom);
+}
+
+.header-dark, .header-dark * {
+  opacity: 1 !important;
+}
+
+/* =============================== */
+/* Table Overflow Solution */
+/* =============================== */
+.table-wrap {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.table-wrap > table {
+  table-layout: fixed;
+  min-width: 720px;
+}
+
+.th-sticky thead th {
+  position: sticky;
+  top: 0;
+  background: #fff;
+  z-index: 2;
+}
+
+.truncate-cell {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* =============================== */
+/* Ultra-wide Support */
+/* =============================== */
+@media (min-width:1536px){
+  .ultra-grid {
+    grid-template-columns: 320px 1fr;
+  }
+}
+
+/* =============================== */
+/* Accessibility */
+/* =============================== */
+@media (prefers-reduced-motion: reduce){
+  * {
+    animation-duration:.01ms!important;
+    animation-iteration-count:1!important;
+    transition-duration:.01ms!important;
+  }
+}
