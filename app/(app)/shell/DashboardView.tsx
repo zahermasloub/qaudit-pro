@@ -134,7 +134,7 @@ export default function DashboardView({
             </tr>
           </tbody>
         </table>
-      </div>      </div>
+      </div>
     </div>
   );
 }

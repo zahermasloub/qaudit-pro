@@ -65,91 +65,9 @@ export default function PBCTable({ engagementId, onRefresh }: PBCTableProps) {
   const [toDate, setToDate] = useState<string>('');
   const { addToast } = useToast();
 
-  // Due date row styling function
-  function getDueRowClassName(dueDate?: string | null): string {
-    if (!dueDate) return '';
-    if (isOverdue(dueDate)) return 'bg-danger-50 hover:bg-danger-50/70';
-    const days = daysUntil(dueDate);
-    if (days <= 3) return 'bg-warning-50 hover:bg-warning-50/70';
-    if (days <= 7) return 'bg-brand-50 hover:bg-brand-50/60';
-    return '';
-  }
-
-  // Export CSV function
-  const handleExport = () => {
-    const queryParams = new URLSearchParams();
-    if (statusFilter !== 'all') queryParams.set('status', statusFilter);
-    if (searchTerm) queryParams.set('q', searchTerm);
-    if (fromDate) queryParams.set('from', fromDate);
-    if (toDate) queryParams.set('to', toDate);
-
-    const url = `/api/pbc/export?${queryParams.toString()}`;
-    window.open(url, '_blank');
-
-    // Show toast notification
-    addToast({
-      type: 'success',
-      title: 'جارٍ تنزيل CSV',
-      message: 'سيتم تحميل الملف قريباً...',
-      duration: 3000,
-    });
-  };
-
-  // Filter logic
-  useEffect(() => {
-    let filtered = [...pbcs];
-
-    // Status filter
-    if (statusFilter !== 'all') {
-      filtered = filtered.filter(pbc => pbc.status === statusFilter);
-    }
-
-    // Search filter
-    if (searchTerm) {
-      filtered = filtered.filter(
-        pbc =>
-          pbc.code.toLowerCase().includes(searchTerm.toLowerCase()) ||
-          pbc.description.toLowerCase().includes(searchTerm.toLowerCase()),
-      );
-    }
-
-    // Date range filter
-    if (fromDate) {
-      filtered = filtered.filter(pbc => new Date(pbc.dueDate) >= new Date(fromDate));
-    }
-    if (toDate) {
-      filtered = filtered.filter(pbc => new Date(pbc.dueDate) <= new Date(toDate));
-    }
-
-    setFilteredPbcs(filtered);
-  }, [pbcs, statusFilter, searchTerm, fromDate, toDate]);
-
-  const getStatusBadge = (status: string) => {
-    const styles = {
-      open: 'bg-brand-100 text-brand-800 border-brand-200',
-      partial: 'bg-warning-100 text-warning-800 border-warning-200',
-      complete: 'bg-success-100 text-success-800 border-success-200',
-    };
-
-    const labels = {
-      open: 'مفتوح',
-      partial: 'جزئي',
-      complete: 'مكتمل',
-    };
-
-    return (
-      <span
-        className={`px-2 py-1 text-xs rounded-full border ${styles[status as keyof typeof styles]}`}
-      >
-        {labels[status as keyof typeof labels]}
-      </span>
-    );
-  };
-
-  const formatDate = (dateStr: string) => {
-    return formatDateAr(dateStr);
-  };
-
+  // ...existing code...
+  // لا يوجد أقواس زائدة قبل return، فقط return واحد في نهاية الدالة
+  // ...existing code...
   return (
     <div className="space-y-4">
       {/* Filters */}
@@ -167,7 +85,6 @@ export default function PBCTable({ engagementId, onRefresh }: PBCTableProps) {
                 className="w-full rounded-lg border border-neutral-300 px-3 py-2 text-sm focus:ring-2 focus:ring-brand-400 focus:border-brand-400"
               />
             </div>
-
             <div className="sm:w-48">
               <label className="block text-sm font-medium mb-1 text-neutral-700">الحالة</label>
               <select
@@ -182,7 +99,6 @@ export default function PBCTable({ engagementId, onRefresh }: PBCTableProps) {
               </select>
             </div>
           </div>
-
           {/* Second Row - Date Filters */}
           <div className="flex flex-col sm:flex-row gap-4 items-end">
             <div className="flex-1 sm:flex-none sm:w-40">
@@ -194,7 +110,6 @@ export default function PBCTable({ engagementId, onRefresh }: PBCTableProps) {
                 className="w-full rounded-lg border border-neutral-300 px-3 py-2 text-sm focus:ring-2 focus:ring-brand-400 focus:border-brand-400"
               />
             </div>
-
             <div className="flex-1 sm:flex-none sm:w-40">
               <label className="block text-sm font-medium mb-1 text-neutral-700">إلى تاريخ</label>
               <input
@@ -204,12 +119,10 @@ export default function PBCTable({ engagementId, onRefresh }: PBCTableProps) {
                 className="w-full rounded-lg border border-neutral-300 px-3 py-2 text-sm focus:ring-2 focus:ring-brand-400 focus:border-brand-400"
               />
             </div>
-
             <div className="flex gap-2">
               <Button variant="secondary" size="sm" onClick={onRefresh} disabled={loading}>
                 {loading ? 'جارٍ التحديث...' : 'تحديث'}
               </Button>
-
               <Button variant="outline" size="sm" onClick={handleExport}>
                 تصدير CSV
               </Button>
@@ -217,14 +130,12 @@ export default function PBCTable({ engagementId, onRefresh }: PBCTableProps) {
           </div>
         </div>
       </div>
-
       {/* Results Summary */}
       <div className="flex justify-between items-center">
         <div className="text-sm text-neutral-600">
           عرض <span className="font-medium">{filteredPbcs.length}</span> من أصل{' '}
           <span className="font-medium">{pbcs.length}</span> طلب
         </div>
-
         {/* Legend for color coding */}
         <div className="hidden sm:flex items-center gap-4 text-xs">
           <div className="flex items-center gap-1">
@@ -241,27 +152,16 @@ export default function PBCTable({ engagementId, onRefresh }: PBCTableProps) {
           </div>
         </div>
       </div>
-
       {/* Table */}
       <div className="table-wrap rounded-2xl border bg-white shadow-sm">
         <table className="w-full text-sm">
           <thead>
             <tr>
-              <th className="text-right px-4 py-2 text-xs font-medium uppercase tracking-wide text-slate-700 bg-slate-50">
-                ?????
-              </th>
-              <th className="text-right px-4 py-2 text-xs font-medium uppercase tracking-wide text-slate-700 bg-slate-50">
-                ?????
-              </th>
-              <th className="text-right px-4 py-2 text-xs font-medium uppercase tracking-wide text-slate-700 bg-slate-50">
-                ???????
-              </th>
-              <th className="text-right px-4 py-2 text-xs font-medium uppercase tracking-wide text-slate-700 bg-slate-50">
-                ????? ?????????
-              </th>
-              <th className="text-right px-4 py-2 text-xs font-medium uppercase tracking-wide text-slate-700 bg-slate-50">
-                ??????
-              </th>
+              <th className="text-right px-4 py-2 text-xs font-medium uppercase tracking-wide text-slate-700 bg-slate-50">الرمز</th>
+              <th className="text-right px-4 py-2 text-xs font-medium uppercase tracking-wide text-slate-700 bg-slate-50">الوصف</th>
+              <th className="text-right px-4 py-2 text-xs font-medium uppercase tracking-wide text-slate-700 bg-slate-50">المالك</th>
+              <th className="text-right px-4 py-2 text-xs font-medium uppercase tracking-wide text-slate-700 bg-slate-50">تاريخ الاستحقاق</th>
+              <th className="text-right px-4 py-2 text-xs font-medium uppercase tracking-wide text-slate-700 bg-slate-50">الحالة</th>
             </tr>
           </thead>
           <tbody className="bg-white divide-y divide-neutral-200">
@@ -269,8 +169,8 @@ export default function PBCTable({ engagementId, onRefresh }: PBCTableProps) {
               <tr>
                 <td colSpan={5} className="px-4 py-8 text-center text-slate-600">
                   {searchTerm || statusFilter !== 'all' || fromDate || toDate
-                    ? '?? ???? ????? ????? ???????'
-                    : '?? ???? ????? ???????'}
+                    ? 'لا توجد نتائج مطابقة للبحث.'
+                    : 'لا توجد بيانات للعرض.'}
                 </td>
               </tr>
             ) : (
@@ -296,12 +196,12 @@ export default function PBCTable({ engagementId, onRefresh }: PBCTableProps) {
                       {formatDate(pbc.dueDate)}
                       {isOverdue(pbc.dueDate) && (
                         <span className="block text-xs text-red-600 font-medium">
-                          ????? ?? {Math.abs(daysUntil(pbc.dueDate))} ???
+                          متأخر بـ {Math.abs(daysUntil(pbc.dueDate))} يوم
                         </span>
                       )}
                       {!isOverdue(pbc.dueDate) && daysUntil(pbc.dueDate) <= 7 && (
                         <span className="block text-xs text-amber-600 font-medium">
-                          ???? {daysUntil(pbc.dueDate)} ????
+                          متبقي {daysUntil(pbc.dueDate)} يوم
                         </span>
                       )}
                     </div>
@@ -312,7 +212,6 @@ export default function PBCTable({ engagementId, onRefresh }: PBCTableProps) {
             )}
           </tbody>
         </table>
-      </div>
       </div>
     </div>
   );
