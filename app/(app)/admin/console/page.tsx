@@ -7,57 +7,74 @@ import { requireRole } from '@/lib/auth/requireRole';
 
 const ALLOWED_ROLES = ['Admin', 'Audit Manager'] as const;
 
+const TABS = [
+  { key: 'overview', label: 'Overview' },
+  { key: 'regulations', label: 'Regulations' },
+  { key: 'mapping', label: 'Compliance Mapping' },
+  { key: 'modules', label: 'Modules' },
+  { key: 'users', label: 'Users' },
+  { key: 'logs', label: 'Logs' },
+] as const;
+
 export default async function AdminConsolePage() {
   await requireRole(ALLOWED_ROLES);
 
   return (
     <div className="space-y-6">
-      <section className="space-y-2">
-        <h2 className="text-2xl font-bold text-slate-900">Admin Console</h2>
-        <p className="text-sm text-slate-600">
-          إدارة موحّدة لأهم عمليات فريق التدقيق. استخدم التبويبات للتنقّل بين اللوحات المختلفة.
-        </p>
+      <section className="rounded-2xl border border-stroke bg-surface shadow-soft">
+        <div className="px-6 pt-6">
+          <h2 className="text-xl font-semibold text-brand-900 md:text-2xl">لوحة التحكم الموحّدة</h2>
+          <p className="mt-1 text-sm text-neutral-600">
+            إدارة موحّدة لأعمال فريق التدقيق، مع وصول سريع للوحدات الأساسية وسجلات المتابعة.
+          </p>
+        </div>
+
+        <div className="px-4 pb-4 md:px-6">
+          <Tabs defaultValue="overview" className="mt-4">
+            <TabsList className="flex flex-wrap items-center gap-2 rounded-full bg-muted p-1">
+              {TABS.map(tab => (
+                <TabsTrigger
+                  key={tab.key}
+                  value={tab.key}
+                  className="rounded-full px-4 py-2 text-sm transition data-[state=active]:bg-surface data-[state=active]:text-brand-700 data-[state=active]:shadow-soft hover:bg-surface/70"
+                >
+                  {tab.label}
+                </TabsTrigger>
+              ))}
+            </TabsList>
+
+            <TabsContent value="overview" className="p-4 md:p-6">
+              <OverviewPanel />
+            </TabsContent>
+
+            <TabsContent value="regulations" className="p-4 md:p-6">
+              <div className="rounded-2xl border border-dashed border-stroke bg-muted p-6 text-center text-sm text-neutral-600">
+                سيتم ربط لوائح الجهات الرقابية (SOCPA، CBOK، وغيرها) هنا مع جداول المتابعة. شارك فريق الامتثال
+                بالمستندات المحدثة ليتم إدراجها في المرحلة القادمة.
+              </div>
+            </TabsContent>
+
+            <TabsContent value="mapping" className="p-4 md:p-6">
+              <div className="rounded-2xl border border-dashed border-stroke bg-muted p-6 text-center text-sm text-neutral-600">
+                خريطة الامتثال قيد البناء. قريبًا سترى مصفوفة تربط اللوائح بالأدلة والمالكين لمساعدتك على متابعة
+                الثغرات وإغلاقها.
+              </div>
+            </TabsContent>
+
+            <TabsContent value="modules" className="p-4 md:p-6">
+              <ModulesFlagsPanel />
+            </TabsContent>
+
+            <TabsContent value="users" className="p-4 md:p-6">
+              <UsersRolesPanel />
+            </TabsContent>
+
+            <TabsContent value="logs" className="p-4 md:p-6">
+              <LogsPanel />
+            </TabsContent>
+          </Tabs>
+        </div>
       </section>
-
-      <Tabs defaultValue="overview" className="space-y-6">
-        <TabsList className="flex flex-wrap gap-2">
-          <TabsTrigger value="overview">Overview</TabsTrigger>
-          <TabsTrigger value="regulations">Regulations</TabsTrigger>
-          <TabsTrigger value="mapping">Compliance Mapping</TabsTrigger>
-          <TabsTrigger value="modules">Modules</TabsTrigger>
-          <TabsTrigger value="users">Users</TabsTrigger>
-          <TabsTrigger value="logs">Logs</TabsTrigger>
-        </TabsList>
-
-        <TabsContent value="overview">
-          <OverviewPanel />
-        </TabsContent>
-
-        <TabsContent value="regulations">
-          <div className="rounded-2xl border border-dashed border-slate-200 bg-slate-50 p-6 text-center text-sm text-slate-600">
-            سيتم ربط لوائح الجهات الرقابية (SOCPA، CBOK، إلخ) في مرحلة لاحقة. شارك فريق الامتثال بالمستندات
-            المطلوبة وسنربطها هنا.
-          </div>
-        </TabsContent>
-
-        <TabsContent value="mapping">
-          <div className="rounded-2xl border border-dashed border-slate-200 bg-slate-50 p-6 text-center text-sm text-slate-600">
-            خريطة الامتثال قيد التحضير. سترى لاحقًا مصفوفة تربط اللوائح بالدلائل وأصحاب المهام.
-          </div>
-        </TabsContent>
-
-        <TabsContent value="modules">
-          <ModulesFlagsPanel />
-        </TabsContent>
-
-        <TabsContent value="users">
-          <UsersRolesPanel />
-        </TabsContent>
-
-        <TabsContent value="logs">
-          <LogsPanel />
-        </TabsContent>
-      </Tabs>
     </div>
   );
 }

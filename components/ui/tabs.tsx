@@ -1,118 +1,83 @@
 'use client';
 
-import { createContext, type ReactNode, useContext, useId, useMemo, useState } from 'react';
+import * as React from 'react';
 
 import { cn } from '@/lib/utils';
 
 type TabsContextValue = {
-  idPrefix: string;
   value: string;
   setValue: (value: string) => void;
 };
 
-const TabsContext = createContext<TabsContextValue | null>(null);
+const TabsContext = React.createContext<TabsContextValue | null>(null);
 
-type TabsProps = {
+type TabsProps = React.PropsWithChildren<{
   defaultValue: string;
-  children: ReactNode;
   className?: string;
-};
+}>;
 
-export function Tabs({ defaultValue, children, className }: TabsProps) {
-  const [value, setValue] = useState(defaultValue);
-  const id = useId();
-  const contextValue = useMemo<TabsContextValue>(
-    () => ({
-      idPrefix: id,
-      value,
-      setValue,
-    }),
-    [id, setValue, value],
-  );
-
+export function Tabs({ defaultValue, className, children }: TabsProps) {
+  const [value, setValue] = React.useState(defaultValue);
   return (
-    <TabsContext.Provider value={contextValue}>
-      <div className={cn('w-full', className)}>{children}</div>
+    <TabsContext.Provider value={{ value, setValue }}>
+      <div className={cn(className)}>{children}</div>
     </TabsContext.Provider>
   );
 }
 
-type TabsListProps = {
-  children: ReactNode;
-  className?: string;
-};
+type TabsListProps = React.HTMLAttributes<HTMLDivElement>;
 
-export function TabsList({ children, className }: TabsListProps) {
+export function TabsList({ className, children, ...props }: TabsListProps) {
   return (
-    <div
-      className={cn(
-        'inline-flex flex-wrap items-center gap-2 rounded-full border border-slate-200 bg-slate-50 p-1',
-        className,
-      )}
-      role="tablist"
-    >
+    <div role="tablist" className={cn(className)} {...props}>
       {children}
     </div>
   );
 }
 
-type TabsTriggerProps = {
+type TabsTriggerProps = React.ButtonHTMLAttributes<HTMLButtonElement> & {
   value: string;
-  children: ReactNode;
-  className?: string;
 };
 
-export function TabsTrigger({ value, children, className }: TabsTriggerProps) {
+export function TabsTrigger({ value, className, children, ...props }: TabsTriggerProps) {
   const context = useTabsContext();
   const isActive = context.value === value;
 
   return (
     <button
       type="button"
-      className={cn(
-        'rounded-full px-4 py-1.5 text-sm font-medium transition-colors',
-        isActive
-          ? 'bg-white text-slate-900 shadow-sm'
-          : 'text-slate-600 hover:bg-white/80 hover:text-slate-900',
-        className,
-      )}
       role="tab"
       aria-selected={isActive}
-      aria-controls={contentId(context.idPrefix, value)}
+      aria-controls={`tabs-${value}`}
+      data-state={isActive ? 'active' : 'inactive'}
+      className={cn('transition-colors focus-visible:outline-none', className)}
       onClick={() => context.setValue(value)}
+      {...props}
     >
       {children}
     </button>
   );
 }
 
-type TabsContentProps = {
+type TabsContentProps = React.HTMLAttributes<HTMLDivElement> & {
   value: string;
-  children: ReactNode;
-  className?: string;
 };
 
-export function TabsContent({ value, children, className }: TabsContentProps) {
+export function TabsContent({ value, className, children, ...props }: TabsContentProps) {
   const context = useTabsContext();
-  const isActive = context.value === value;
+  if (context.value !== value) {
+    return null;
+  }
+
   return (
-    <div
-      id={contentId(context.idPrefix, value)}
-      role="tabpanel"
-      hidden={!isActive}
-      className={cn(!isActive && 'hidden', className)}
-    >
+    <div id={`tabs-${value}`} role="tabpanel" className={cn(className)} {...props}>
       {children}
     </div>
   );
 }
 
-function contentId(prefix: string, value: string) {
-  return `${prefix}-${value}`;
-}
-
 function useTabsContext() {
-  const context = useContext(TabsContext);
+  const context = React.useContext(TabsContext);
   if (!context) {
     throw new Error('Tabs components must be used inside <Tabs>');
   }

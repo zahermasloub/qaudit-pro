@@ -1,27 +1,29 @@
-/** @type {import('tailwindcss').Config} */
-module.exports = {
+import rtl from 'tailwindcss-rtl';
+import animate from 'tailwindcss-animate';
+
+export default {
   content: [
-    './pages/**/*.{js,ts,jsx,tsx,mdx}',
-    './components/**/*.{js,ts,jsx,tsx,mdx}',
-    './app/**/*.{js,ts,jsx,tsx,mdx}',
-    './features/**/*.{js,ts,jsx,tsx,mdx}',
+    './app/**/*.{ts,tsx}',
+    './components/**/*.{ts,tsx}',
+    './lib/**/*.{ts,tsx}',
   ],
+  darkMode: 'media',
   theme: {
     extend: {
       colors: {
         background: 'var(--background)',
         foreground: 'var(--foreground)',
         brand: {
-          50: '#f0f6ff',
-          100: '#dce9ff',
-          200: '#b8d3ff',
-          300: '#8ab6ff',
-          400: '#5d98ff',
-          500: '#347cff',
-          600: '#1f64e6',
-          700: '#154db4',
-          800: '#123f90',
-          900: '#0e326f',
+          50: '#eef7ff',
+          100: '#d6ebff',
+          200: '#add6ff',
+          300: '#7bbcff',
+          400: '#4a9dff',
+          500: '#1f7fff',
+          600: '#1765d6',
+          700: '#124fac',
+          800: '#0d3b82',
+          900: '#0a2c63',
         },
         success: {
           50: '#ecfdf5',
@@ -54,7 +56,13 @@ module.exports = {
           900: '#0f172a',
         },
       },
+      boxShadow: {
+        soft: '0 1px 2px 0 rgb(0 0 0 / 0.05), 0 8px 24px -20px rgb(0 0 0 / 0.25)',
+      },
+      borderRadius: {
+        '2xl': '1rem',
+      },
     },
   },
-  plugins: [require('tailwindcss-rtl')],
+  plugins: [rtl, animate],
 };

@@ -7,22 +7,31 @@ type ConsoleLayoutProps = {
 
 export default function AdminConsoleLayout({ children }: ConsoleLayoutProps) {
   return (
-    <div className="bg-slate-50">
-      <div className="mx-auto flex min-h-screen w-full max-w-7xl flex-col gap-6 px-4 py-8 sm:px-6 lg:px-8">
-        <header className="flex flex-col gap-3 border-b border-slate-200 pb-4 sm:flex-row sm:items-center sm:justify-between">
-          <div>
-            <p className="text-sm font-medium text-slate-500">الأدمن</p>
-            <h1 className="text-3xl font-bold text-slate-900">لوحة التحكم الموحّدة</h1>
-          </div>
+    <div className="min-h-screen bg-muted">
+      <div className="bg-gradient-to-b from-brand-500/10 to-transparent">
+        <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-6">
+          <h1 className="text-2xl font-semibold tracking-tight text-brand-900">الإدارة</h1>
           <Link
             href="/admin/dashboard"
-            className="inline-flex items-center justify-center rounded-full border border-slate-200 px-4 py-1.5 text-sm font-semibold text-slate-600 transition-colors hover:border-slate-300 hover:text-slate-900"
+            className="inline-flex items-center gap-2 rounded-full border border-stroke bg-surface px-4 py-2 text-sm font-medium text-brand-700 transition hover:shadow-soft focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-400"
           >
-            العودة للوحة القديمة
+            <span className="ltr:hidden">العودة للوحة القديمة</span>
+            <span className="rtl:hidden">Back to legacy</span>
+            <svg
+              aria-hidden
+              className="opacity-70"
+              width="16"
+              height="16"
+              viewBox="0 0 24 24"
+              fill="none"
+            >
+              <path fill="currentColor" d="M10 19l-7-7l7-7v5h8v4h-8z" />
+            </svg>
           </Link>
-        </header>
-        <main className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm sm:p-8">{children}</main>
+        </div>
       </div>
+
+      <main className="mx-auto max-w-7xl p-6">{children}</main>
     </div>
   );
 }

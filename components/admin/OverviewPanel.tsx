@@ -15,7 +15,7 @@ const QUICK_LINKS: QuickLink[] = [
   {
     href: '/admin/users',
     label: 'Users',
-    description: 'إدارة أعضاء الفريق وأدوارهم.',
+    description: 'إدارة أعضاء الفرق وأدوارهم.',
   },
   {
     href: '/admin/roles',
@@ -25,12 +25,12 @@ const QUICK_LINKS: QuickLink[] = [
   {
     href: '/admin/settings',
     label: 'Settings',
-    description: 'إعدادات النظام العامة وتفضيلات الفريق.',
+    description: 'إعدادات النظام العامة وتهيئات العرض.',
   },
   {
     href: '/admin/logs',
     label: 'Logs',
-    description: 'سجل الأحداث والتغييرات الأخيرة.',
+    description: 'سجلّ الأحداث والتغييرات الحرجة.',
   },
   {
     href: '/admin/backups',
@@ -46,16 +46,16 @@ export function OverviewPanel() {
         <Link
           key={link.href}
           href={link.href}
-          className="group flex h-full flex-col justify-between rounded-2xl border border-slate-200 bg-white p-4 shadow-sm transition hover:-translate-y-0.5 hover:border-slate-300 hover:shadow-md"
+          className="group flex h-full flex-col justify-between rounded-2xl border border-stroke bg-surface p-5 transition hover:-translate-y-0.5 hover:shadow-soft"
         >
           <div className="space-y-2">
-            <span className="inline-flex items-center rounded-full bg-slate-100 px-2 py-0.5 text-xs font-semibold text-slate-600">
+            <span className="inline-flex items-center rounded-full bg-muted px-2 py-0.5 text-xs font-semibold text-brand-700">
               {link.label}
             </span>
-            <p className="text-sm text-slate-600">{link.description}</p>
+            <p className="text-sm text-neutral-600">{link.description}</p>
           </div>
-          <span className="mt-4 text-sm font-semibold text-slate-900 group-hover:text-primary">
-            انتقل الآن {'->'}
+          <span className="mt-4 text-sm font-medium text-brand-600 group-hover:text-brand-700">
+            الانتقال الآن →
           </span>
         </Link>
       ))}
