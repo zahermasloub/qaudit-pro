@@ -254,7 +254,7 @@ export function Field({ label, children }: { label: string; children: React.Reac
 /*
 'use client';
 import React, { useState } from 'react';
-import { useForm } from 'react-hook-form';
+// import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { engagementMandateSchema, type EngagementMandateInput } from './engagement.schema';
 import { Dialog, Field } from '@/components/ui/FormDialog';
@@ -359,7 +359,6 @@ export function PBCForm({ engagementId, onCreated }: { engagementId: string; onC
 // ========================= FILE: app/(app)/shell/AppShell.tsx =========
 'use client';
 import React, { useEffect, useState } from 'react';
-import { useForm } from 'react-hook-form';
 import {
   AlertTriangle,
   BadgeCheck,
@@ -377,6 +376,7 @@ import {
 import { useRouter } from 'next/navigation';
 import { signOut, useSession } from 'next-auth/react';
 
+// Removed unused import 'useForm'
 import SidebarDrawer from '@/components/shell/SidebarDrawer';
 import { ToastProvider } from '@/components/ui/Toast-v2';
 import AnnualPlanForm from '@/features/annual-plan/annual-plan.form';
@@ -743,225 +743,8 @@ function Card({ children }: { children: React.ReactNode }) {
     <div className="bg-white rounded-2xl border border-gray-200 p-4 shadow-sm">{children}</div>
   );
 }
-function Toolbar({ children }: { children: React.ReactNode }) {
-  return <div className="flex flex-wrap items-center gap-2">{children}</div>;
-}
 
 // --- Minimal dialog & forms (inlined for demo) ---
-function Dialog({
-  open,
-  onClose,
-  title,
-  children,
-}: {
-  open: boolean;
-  onClose: () => void;
-  title: string;
-  children: React.ReactNode;
-}) {
-  if (!open) return null;
-  return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center">
-      <div className="absolute inset-0 bg-black/40" onClick={onClose} />
-      <div className="relative bg-white rounded-2xl shadow-xl border border-gray-200 w-full max-w-2xl p-5">
-        <div className="flex items-center justify-between mb-3">
-          <h3 className="text-lg font-semibold">{title}</h3>
-          <button className="text-gray-500" onClick={onClose}>
-            ✕
-          </button>
-        </div>
-        {children}
-      </div>
-    </div>
-  );
-}
-function Field({ label, children }: { label: string; children: React.ReactNode }) {
-  return (
-    <label className="block mb-3">
-      <span className="block text-sm text-gray-700 mb-1">{label}</span>
-      {children}
-    </label>
-  );
-}
-
-// --- Forms (React Hook Form + Zod via minimal inline validation) ---
-// NOTE: In a real project, import zod & resolvers; here we keep client clean
-
-function EngagementMandateForm({ onClose }: { onClose: () => void }) {
-  const { register, handleSubmit } = useForm({
-    defaultValues: {
-      engagement_code: 'IA-2025-001',
-      title: '',
-      objective: '',
-      scope: '',
-      criteria: '',
-      constraints: '',
-      auditee_units: '',
-      stakeholders: '',
-      start_date: '',
-      end_date: '',
-      budget_hours: 40,
-      created_by: 'lead@gov.sa',
-      independence_disclosure_url: '',
-    },
-  } as any);
-  async function onSubmit(values: any) {
-    const payload = {
-      engagement_code: values.engagement_code,
-      title: values.title,
-      objective: values.objective,
-      scope: String(values.scope)
-        .split(',')
-        .map(s => s.trim())
-        .filter(Boolean),
-      criteria: String(values.criteria)
-        .split(',')
-        .map(s => s.trim())
-        .filter(Boolean),
-      constraints: String(values.constraints)
-        .split(',')
-        .map(s => s.trim())
-        .filter(Boolean),
-      auditee_units: String(values.auditee_units)
-        .split(',')
-        .map(s => s.trim())
-        .filter(Boolean),
-      stakeholders: String(values.stakeholders)
-        .split(',')
-        .map(s => s.trim())
-        .filter(Boolean),
-      start_date: values.start_date,
-      end_date: values.end_date,
-      budget_hours: Number(values.budget_hours || 0),
-      independence_disclosure_url: values.independence_disclosure_url || undefined,
-      created_by: values.created_by,
-    };
-    await fetch('/api/engagements', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(payload),
-    });
-    onClose();
-  }
-  return (
-    <form onSubmit={handleSubmit(onSubmit)} className="grid grid-cols-1 md:grid-cols-2 gap-3">
-      <Field label="Code">
-        <input {...register('engagement_code')} className="w-full rounded-lg border px-3 py-2" />
-      </Field>
-      <Field label="Title">
-        <input {...register('title')} className="w-full rounded-lg border px-3 py-2" />
-      </Field>
-      <Field label="Objective">
-        <textarea {...register('objective')} className="w-full rounded-lg border px-3 py-2" />
-      </Field>
-      <Field label="Scope (comma)">
-        <input {...register('scope')} className="w-full rounded-lg border px-3 py-2" />
-      </Field>
-      <Field label="Criteria (comma)">
-        <input {...register('criteria')} className="w-full rounded-lg border px-3 py-2" />
-      </Field>
-      <Field label="Constraints (comma)">
-        <input {...register('constraints')} className="w-full rounded-lg border px-3 py-2" />
-      </Field>
-      <Field label="Auditee Units (comma)">
-        <input {...register('auditee_units')} className="w-full rounded-lg border px-3 py-2" />
-      </Field>
-      <Field label="Stakeholders (comma)">
-        <input {...register('stakeholders')} className="w-full rounded-lg border px-3 py-2" />
-      </Field>
-      <Field label="Start">
-        <input
-          type="date"
-          {...register('start_date')}
-          className="w-full rounded-lg border px-3 py-2"
-        />
-      </Field>
-      <Field label="End">
-        <input
-          type="date"
-          {...register('end_date')}
-          className="w-full rounded-lg border px-3 py-2"
-        />
-      </Field>
-      <Field label="Budget Hours">
-        <input
-          type="number"
-          {...register('budget_hours')}
-          className="w-full rounded-lg border px-3 py-2"
-        />
-      </Field>
-      <Field label="Independence URL">
-        <input
-          {...register('independence_disclosure_url')}
-          className="w-full rounded-lg border px-3 py-2"
-        />
-      </Field>
-      <Field label="Created by (email)">
-        <input {...register('created_by')} className="w-full rounded-lg border px-3 py-2" />
-      </Field>
-      <div className="md:col-span-2 flex items-center justify-end gap-2 mt-2">
-        <button type="button" onClick={onClose} className="rounded-lg border px-3 py-2">
-          Cancel
-        </button>
-        <button className="rounded-lg bg-blue-600 text-white px-3 py-2">Save</button>
-      </div>
-    </form>
-  );
-}
-
-function PBCRequestForm({ engagementId, onClose }: { engagementId: string; onClose: () => void }) {
-  const { register, handleSubmit } = useForm({
-    defaultValues: {
-      pbc_code: 'PBC-001',
-      description: '',
-      owner_id: '',
-      due_date: '',
-      status: 'open',
-    },
-  } as any);
-  async function onSubmit(values: any) {
-    const payload = { engagement_id: engagementId, ...values };
-    await fetch('/api/pbc', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(payload),
-    });
-    onClose();
-  }
-  return (
-    <form onSubmit={handleSubmit(onSubmit)} className="grid grid-cols-1 md:grid-cols-2 gap-3">
-      <Field label="PBC Code">
-        <input {...register('pbc_code')} className="w-full rounded-lg border px-3 py-2" />
-      </Field>
-      <Field label="Owner ID">
-        <input {...register('owner_id')} className="w-full rounded-lg border px-3 py-2" />
-      </Field>
-      <Field label="Description">
-        <textarea {...register('description')} className="w-full rounded-lg border px-3 py-2" />
-      </Field>
-      <Field label="Due Date">
-        <input
-          type="date"
-          {...register('due_date')}
-          className="w-full rounded-lg border px-3 py-2"
-        />
-      </Field>
-      <Field label="Status">
-        <select {...register('status')} className="w-full rounded-lg border px-3 py-2">
-          <option value="open">open</option>
-          <option value="partial">partial</option>
-          <option value="complete">complete</option>
-        </select>
-      </Field>
-      <div className="md:col-span-2 flex items-center justify-end gap-2 mt-2">
-        <button type="button" onClick={onClose} className="rounded-lg border px-3 py-2">
-          Cancel
-        </button>
-        <button className="rounded-lg bg-blue-600 text-white px-3 py-2">Save</button>
-      </div>
-    </form>
-  );
-}
 
 // Dashboard component moved to separate file
 
@@ -1120,7 +903,7 @@ export default function AppShell() {
     router.push('/admin/dashboard');
   };
 
-  
+
   const renderSidebar = (closeOnNavigate = false) => (
     <Sidebar
       locale={locale}
@@ -1156,7 +939,7 @@ export default function AppShell() {
       </div>
     );
 
-  
+
   return (
     <ToastProvider>
       <div className="min-h-screen w-full bg-slate-50 safe-area">

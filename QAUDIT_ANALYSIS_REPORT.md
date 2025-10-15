@@ -1,7 +1,5 @@
 # QAUDIT_ANALYSIS_REPORT.md
 
----
-
 ## 1) Project Snapshot
 - **Repo root:** d:/AUDITOR-PRO/qaudit-pro
 - **Node/NPM/Next.js/Prisma/TypeScript versions:**
@@ -86,7 +84,8 @@
 ---
 
 ## 6) Minimal Data Flow Maps (مختصر)
-```
+```mermaid
+%% Data Flow
 Evidence Upload
   ↓
 OCR Service
@@ -103,54 +102,68 @@ Follow-up (غير منفذ)
 ---
 
 ## 7) Proposed Implementation Plan (Sprints)
+
 ### Sprint 1: UI Wiring
+
 - **Goals:**
   1. تحسين SidebarDrawer
   2. إضافة container-shell وtable-wrap
   3. تحسين التباين في Topbar
   4. إضافة Breadcrumbs وRelatedPanel
   5. إصلاح أخطاء JSX
+
 - **Key Patches:** components/shell/SidebarDrawer.tsx, app/(app)/shell/AppShell.tsx, app/layout.tsx
+
 - **Acceptance Criteria:**
   - جميع الصفحات الأساسية تعرض بشكل متجاوب
   - لا يوجد أخطاء JSX
   - وجود Breadcrumbs وRelatedPanel
+
 - **Risks & Mitigations:**
   - خطر تعارضات JSX (حل عبر lint/fix)
 
 ### Sprint 2: Domain Events + State Machines + APIs
-- **Goals:**
+
+**Goals:**
   1. إضافة ملفات events/domain
   2. تحسين ربط الكيانات (Evidence ↔ Test/Finding)
   3. تحسين RBAC لكل API
   4. إضافة إشعارات
   5. إصلاح أخطاء merge/conflict
-- **Key Patches:** lib/rbac.ts, app/api/evidence/[id]/route.ts, features/evidence/
-- **Acceptance Criteria:**
+
+**Key Patches:** lib/rbac.ts, app/api/evidence/[id]/route.ts, features/evidence/
+
+**Acceptance Criteria:**
   - وجود event handlers
   - تحقق RBAC لكل API
   - لا يوجد أخطاء merge/conflict
-- **Risks & Mitigations:**
+
+**Risks & Mitigations:**
   - خطر فقدان العلاقات (حل عبر مراجعة schema)
 
 ### Sprint 3: Unified Search/Tags + KPIs Dashboard + Follow-up flow
-- **Goals:**
+
+**Goals:**
   1. إضافة بحث موحّد
   2. إضافة وسوم
   3. لوحة مؤشرات KPIs
   4. تدفق متابعة (Follow-up)
   5. تحسين التقارير
-- **Key Patches:** features/search/, features/kpi/, features/followup/
-- **Acceptance Criteria:**
+
+**Key Patches:** features/search/, features/kpi/, features/followup/
+
+**Acceptance Criteria:**
   - وجود بحث ووسوم
   - لوحة KPIs تعرض بيانات حية
   - تدفق متابعة مكتمل
-- **Risks & Mitigations:**
+
+**Risks & Mitigations:**
   - خطر نقص البيانات (حل عبر تحسين API)
 
 ---
 
 ## 8) File-Level TODOs
+
 1. [P1][API] app/api/evidence/[id]/route.ts: إصلاح merge conflict + parsing
 2. [P1][UI] app/(app)/shell/DashboardView.tsx: إصلاح أخطاء JSX
 3. [P1][UI] components/pbc/PbcTable.tsx: إصلاح أخطاء JSX

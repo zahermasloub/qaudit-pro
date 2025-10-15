@@ -165,7 +165,7 @@ class FileUploadService {
   /**
    * Upload file to S3 (placeholder - requires AWS SDK)
    */
-  private async uploadToS3(metadata: FileMetadata, storageKey: string): Promise<UploadResult> {
+  private async uploadToS3(metadata: FileMetadata, _storageKey: string): Promise<UploadResult> {
     // TODO: Implement S3 upload when AWS SDK is added
     // For now, return error
     return {

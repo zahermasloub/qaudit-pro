@@ -342,17 +342,6 @@ class OCRService {
     }
 
     try {
-      // Create OCR results object
-      const ocrData = {
-        evidenceId,
-        extractedText: ocrResult.text,
-        confidence: ocrResult.confidence || 0,
-        language: ocrResult.language,
-        processingTime: ocrResult.processingTime,
-        pageCount: ocrResult.pageCount,
-        words: ocrResult.words || [],
-        processedAt: new Date().toISOString(),
-      };
 
       // In production, you would save this to your storage system
       const ocrFileName = `ocr-${evidenceId}-${Date.now()}.json`;

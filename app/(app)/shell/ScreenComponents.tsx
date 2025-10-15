@@ -3,15 +3,13 @@ import EvidenceTable from '@/features/evidence/evidence.table';
 import type { Locale } from '@/lib/i18n';
 import { useI18n } from '@/lib/i18n';
 
-const clsx = (...xs: Array<string | false | null | undefined>) => xs.filter(Boolean).join(' ');
-
 export function PlanningScreen({ locale }: { locale: Locale }) {
-  const i18n = useI18n(locale);
+  const _i18n = useI18n(locale);
 
   return (
     <div className="p-6 space-y-6">
       <div className="flex items-center justify-between">
-        <h1 className="text-2xl font-bold text-gray-900">{(i18n.menu as any).planning}</h1>
+  <h1 className="text-2xl font-bold text-gray-900">{(_i18n.menu as any).planning}</h1>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
@@ -78,12 +76,12 @@ export function PlanningScreen({ locale }: { locale: Locale }) {
 }
 
 export function ProcessRiskScreen({ locale }: { locale: Locale }) {
-  const i18n = useI18n(locale);
+  const _i18n = useI18n(locale);
 
   return (
     <div className="p-6 space-y-6">
       <div className="flex items-center justify-between">
-        <h1 className="text-2xl font-bold text-gray-900">{(i18n.menu as any).processRisk}</h1>
+  <h1 className="text-2xl font-bold text-gray-900">{(_i18n.menu as any).processRisk}</h1>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">

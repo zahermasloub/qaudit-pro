@@ -208,22 +208,7 @@ export class EvidenceProcessingService {
       console.log(`💾 Updating virus scan status for ${evidenceId}: ${scanResult.status}`);
 
       // In production, this would update the actual database
-      const updateData = {
-        virusScanStatus:
-          scanResult.status === 'clean'
-            ? 'clean'
-            : scanResult.status === 'infected'
-              ? 'suspected'
-              : 'pending',
-        virusScanDate: new Date(),
-        virusScanResult: JSON.stringify({
-          status: scanResult.status,
-          engine: scanResult.scanEngine,
-          scanTime: scanResult.scanTime,
-          threats: scanResult.threats || [],
-          details: scanResult.details,
-        }),
-      };
+      // Removed unused updateData
 
       console.log(`✅ Virus scan status updated for ${evidenceId}`);
     } catch (error) {
@@ -239,13 +224,7 @@ export class EvidenceProcessingService {
       );
 
       // In production, this would store OCR text and metadata
-      const ocrData = {
-        ocrText: ocrResult.text || '',
-        ocrConfidence: ocrResult.confidence || 0,
-        ocrLanguage: ocrResult.language,
-        ocrProcessingTime: ocrResult.processingTime,
-        ocrWordCount: ocrResult.words?.length || 0,
-      };
+      // Removed unused ocrData
 
       console.log(`✅ OCR results stored for ${evidenceId}`);
     } catch (error) {

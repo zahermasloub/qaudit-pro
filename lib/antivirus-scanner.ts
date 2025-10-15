@@ -297,7 +297,7 @@ class AntivirusScanner {
       console.log(`🔍 VirusTotal buffer scan for: ${fileName}`);
 
       // Calculate buffer hash
-      const fileHash = createHash('sha256').update(buffer).digest('hex');
+  // Removed unused fileHash
 
       // Simulate scan delay
       await new Promise(resolve => setTimeout(resolve, 1500));

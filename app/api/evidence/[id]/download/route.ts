@@ -32,7 +32,7 @@ export async function GET(request: NextRequest, { params }: { params: { id: stri
           'Content-Length': evidence.fileSize.toString(),
         },
       });
-    } catch (fileError) {
+    } catch {
       return NextResponse.json({ error: 'File not found on disk' }, { status: 410 });
     }
   } catch (error) {

@@ -1,14 +1,7 @@
-<<<<<<< HEAD
-import { promises as fs } from "fs";
-import * as path from "path";
-=======
 import { promises as fs } from 'fs';
 import * as path from 'path';
 
 import prisma from '@/lib/prisma';
->>>>>>> 0f041b44dfc8bc1383b177782b5bf134d958fdd8
-
-import prisma from "@/lib/prisma";
 
 export async function DELETE(_: Request, { params }: { params: { id: string } }) {
   try {
