@@ -3,27 +3,65 @@ import bcrypt from 'bcrypt';
 
 const prisma = new PrismaClient();
 
+const ADMIN_EMAIL = 'admin@qaudit.com';
+const ADMIN_PASSWORD = 'AdminConsole!2025';
+
+async function ensureAdminRole() {
+  const existingRole = await prisma.role.findUnique({ where: { name: 'Admin' } });
+  if (existingRole) {
+    return existingRole;
+  }
+
+  return prisma.role.create({
+    data: {
+      name: 'Admin',
+      description: 'دور الإداري الكامل للوصول إلى لوحة التحكم',
+    },
+  });
+}
+
 async function createAdminUser() {
   try {
-    // Hash admin password
-    const hashedPassword = await bcrypt.hash('admin123', 10);
+    const adminRole = await ensureAdminRole();
 
-    // Create admin user
-    const user = await prisma.user.create({
-      data: {
-        email: 'admin@qaudit.com',
-        name: 'Admin User',
+    const hashedPassword = await bcrypt.hash(ADMIN_PASSWORD, 12);
+
+    const user = await prisma.user.upsert({
+      where: { email: ADMIN_EMAIL },
+      update: {
+        name: 'Admin Console Owner',
         password: hashedPassword,
-        role: 'IA_Lead',
+        role: 'Admin',
+        locale: 'ar',
+      },
+      create: {
+        email: ADMIN_EMAIL,
+        name: 'Admin Console Owner',
+        password: hashedPassword,
+        role: 'Admin',
         locale: 'ar',
       },
     });
 
-    console.log('✅ Admin user created:', user.email);
-    console.log('📧 Email: admin@qaudit.com');
-    console.log('🔑 Password: admin123');
+    await prisma.userRole.upsert({
+      where: {
+        userId_roleId: {
+          userId: user.id,
+          roleId: adminRole.id,
+        },
+      },
+      update: {},
+      create: {
+        userId: user.id,
+        roleId: adminRole.id,
+      },
+    });
+
+    console.log('✅ حساب الأدمن جاهز');
+    console.log('   البريد الإلكتروني :', ADMIN_EMAIL);
+    console.log('   كلمة المرور        :', ADMIN_PASSWORD);
   } catch (error) {
-    console.error('❌ Error creating admin user:', error);
+    console.error('❌ تعذّر إنشاء حساب الأدمن:', error);
   } finally {
     await prisma.$disconnect();
   }
