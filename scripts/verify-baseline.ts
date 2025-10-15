@@ -13,7 +13,7 @@ function main() {
     run("pnpm exec prisma validate");
     console.log("[verify-baseline] BASELINE_OK");
     process.exit(0);
-  } catch (error) {
+  } catch {
     console.error("[verify-baseline] BASELINE_FAILED");
     process.exit(1);
   }
