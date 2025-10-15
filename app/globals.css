@@ -21,9 +21,10 @@
   :root {
     --background: #0a0a0a;
     --foreground: #ededed;
-    --surface: 18 18 20;
-    --muted: 28 28 32;
-    --stroke: 44 46 50;
+    /* أغمق للخلفية + أفتح للحدود لتمييز البطاقات والنص */
+    --surface: 22 24 28; /* خلفية عناصر */
+    --muted: 30 32 38; /* شريط التبويبات/الأقسام */
+    --stroke: 92 96 106; /* حدود أوضح */
   }
 
   .header-dark {
@@ -48,6 +49,26 @@ body {
 
 .border-stroke {
   border-color: rgb(var(--stroke));
+}
+
+.text-contrast {
+  color: rgb(17 24 39); /* neutral-900 */
+}
+
+.dark .text-contrast {
+  color: rgb(229 231 235); /* neutral-200 */
+}
+
+.link {
+  color: #1f7fff;
+}
+
+.dark .link {
+  color: #7bbcff;
+}
+
+.link:hover {
+  text-decoration: underline;
 }
 
 /* High-contrast header overrides */

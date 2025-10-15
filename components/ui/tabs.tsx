@@ -28,8 +28,17 @@ export function Tabs({ defaultValue, className, children }: TabsProps) {
 type TabsListProps = React.HTMLAttributes<HTMLDivElement>;
 
 export function TabsList({ className, children, ...props }: TabsListProps) {
+  const { ['aria-orientation']: ariaOrientation, ...rest } = props as TabsListProps & {
+    'aria-orientation'?: 'horizontal' | 'vertical';
+  };
+
   return (
-    <div role="tablist" className={cn(className)} {...props}>
+    <div
+      role="tablist"
+      aria-orientation={ariaOrientation ?? 'horizontal'}
+      className={cn(className)}
+      {...rest}
+    >
       {children}
     </div>
   );
@@ -50,7 +59,10 @@ export function TabsTrigger({ value, className, children, ...props }: TabsTrigge
       aria-selected={isActive}
       aria-controls={`tabs-${value}`}
       data-state={isActive ? 'active' : 'inactive'}
-      className={cn('transition-colors focus-visible:outline-none', className)}
+      className={cn(
+        'transition-colors outline-none focus-visible:ring-2 focus-visible:ring-brand-400',
+        className,
+      )}
       onClick={() => context.setValue(value)}
       {...props}
     >
