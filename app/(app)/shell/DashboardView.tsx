@@ -84,57 +84,57 @@ export default function DashboardView({
       </div>
 
       {/* Table example with overflow solution */}
-      <div className="table-wrap th-sticky">
-        <table className="w-full text-sm bg-white border rounded-2xl overflow-hidden">
+      <div className="table-wrap rounded-2xl border bg-white th-sticky">
+        <table className="w-full text-sm">
           <thead>
             <tr className="bg-slate-50 border-b">
-              <th className="text-left p-3 font-semibold">{locale === 'ar' ? 'المهمة' : 'Task'}</th>
-              <th className="text-left p-3 font-semibold">
-                {locale === 'ar' ? 'الحالة' : 'Status'}
+              <th className="text-left p-3 font-semibold text-slate-700">{locale === 'ar' ? '??????' : 'Task'}</th>
+              <th className="text-left p-3 font-semibold text-slate-700">
+                {locale === 'ar' ? '??????' : 'Status'}
               </th>
-              <th className="text-left p-3 font-semibold">
-                {locale === 'ar' ? 'التاريخ' : 'Date'}
+              <th className="text-left p-3 font-semibold text-slate-700">
+                {locale === 'ar' ? '???????' : 'Date'}
               </th>
-              <th className="text-left p-3 font-semibold">
-                {locale === 'ar' ? 'المسؤول' : 'Owner'}
+              <th className="text-left p-3 font-semibold text-slate-700">
+                {locale === 'ar' ? '???????' : 'Owner'}
               </th>
-              <th className="text-left p-3 font-semibold">
-                {locale === 'ar' ? 'التقدم' : 'Progress'}
+              <th className="text-left p-3 font-semibold text-slate-700">
+                {locale === 'ar' ? '??????' : 'Progress'}
               </th>
             </tr>
           </thead>
           <tbody>
             <tr className="border-b">
-              <td className="p-3 truncate-cell">
+              <td className="p-3 truncate-cell text-slate-900">
                 ENG-2025-001 -{' '}
-                {locale === 'ar' ? 'مراجعة النظام المالي' : 'Financial System Review'}
+                {locale === 'ar' ? '?????? ?????? ??????' : 'Financial System Review'}
               </td>
-              <td className="p-3">
+              <td className="p-3 text-slate-900">
                 <span className="px-2 py-1 rounded-full text-xs bg-green-100 text-green-800">
-                  {locale === 'ar' ? 'نشط' : 'Active'}
+                  {locale === 'ar' ? '???' : 'Active'}
                 </span>
               </td>
-              <td className="p-3">2025-01-15</td>
-              <td className="p-3">Ahmad M.</td>
-              <td className="p-3">65%</td>
+              <td className="p-3 text-slate-900">2025-01-15</td>
+              <td className="p-3 text-slate-900">Ahmad M.</td>
+              <td className="p-3 text-slate-900">65%</td>
             </tr>
             <tr className="border-b">
-              <td className="p-3 truncate-cell">
+              <td className="p-3 truncate-cell text-slate-900">
                 ENG-2025-002 -{' '}
-                {locale === 'ar' ? 'تدقيق أمان المعلومات' : 'Information Security Audit'}
+                {locale === 'ar' ? '????? ???? ?????????' : 'Information Security Audit'}
               </td>
-              <td className="p-3">
+              <td className="p-3 text-slate-900">
                 <span className="px-2 py-1 rounded-full text-xs bg-blue-100 text-blue-800">
-                  {locale === 'ar' ? 'تخطيط' : 'Planning'}
+                  {locale === 'ar' ? '?????' : 'Planning'}
                 </span>
               </td>
-              <td className="p-3">2025-02-01</td>
-              <td className="p-3">Sara K.</td>
-              <td className="p-3">25%</td>
+              <td className="p-3 text-slate-900">2025-02-01</td>
+              <td className="p-3 text-slate-900">Sara K.</td>
+              <td className="p-3 text-slate-900">25%</td>
             </tr>
           </tbody>
         </table>
-      </div>
+      </div>      </div>
     </div>
   );
 }

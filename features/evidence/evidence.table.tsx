@@ -1,11 +1,4 @@
-<<<<<<< HEAD
-"use client";
-import { useEffect,useMemo, useState } from "react";
-import { Download, Trash2 } from "lucide-react";
-=======
 'use client';
->>>>>>> 0f041b44dfc8bc1383b177782b5bf134d958fdd8
-
 import { useEffect, useMemo, useState } from 'react';
 import { Download, Trash2 } from 'lucide-react';
 
@@ -150,9 +143,9 @@ export default function EvidenceTable({ engagementId }: { engagementId: string }
       </div>
 
       {/* Table */}
-      <div className="table-wrap relative w-full max-w-full overflow-x-auto overscroll-x-contain rounded-xl border border-slate-200 bg-white">
+      <div className="table-wrap relative w-full max-w-full rounded-2xl border border-slate-200 bg-white shadow-sm">
         <table className="min-w-full table-fixed text-sm">
-          <thead className="bg-slate-100 text-slate-900">
+          <thead className="bg-slate-50 text-slate-700">
             <tr className="[&>th]:px-3 [&>th]:py-2 [&>th]:text-right [&>th]:font-semibold [&>th]:text-[13px]">
               <th>المعرف</th>
               <th>الفئة</th>
@@ -166,7 +159,7 @@ export default function EvidenceTable({ engagementId }: { engagementId: string }
               <th className="w-[120px]">الإجراءات</th>
             </tr>
           </thead>
-          <tbody className="[&>tr>td]:px-3 [&>tr>td]:py-2 [&>tr>td]:text-slate-800 text-[13px] leading-6">
+          <tbody className="[&>tr>td]:px-3 [&>tr>td]:py-2 text-slate-900 text-[13px] leading-6">
             {isLoading && (
               <tr>
                 <td colSpan={10} className="text-center text-slate-600 py-6">
@@ -186,13 +179,13 @@ export default function EvidenceTable({ engagementId }: { engagementId: string }
                 key={r.id}
                 className="border-t border-slate-200 odd:bg-white even:bg-slate-50 hover:bg-sky-50/70 transition-colors"
               >
-                <td className="font-mono text-xs">{r.id}</td>
-                <td className="break-anywhere">{r.category || '—'}</td>
+                <td className="font-mono text-xs text-slate-600">{r.id}</td>
+                <td className="break-anywhere">{r.category || '-'}</td>
                 <td className="max-w-[260px] truncate break-anywhere" title={r.fileName}>
                   {r.fileName}
                 </td>
-                <td className="text-slate-700 break-anywhere">{r.mimeType || '—'}</td>
-                <td>{formatSize(r.fileSize)}</td>
+                <td className="text-slate-600 break-anywhere">{r.mimeType || '-'}</td>
+                <td className="text-slate-900">{formatSize(r.fileSize)}</td>
                 <td>
                   <div className="badge-nowrap">
                     {r.virusScanStatus === 'clean' && <Badge text="clean" tone="ok" />}
@@ -205,7 +198,7 @@ export default function EvidenceTable({ engagementId }: { engagementId: string }
                   {r.ocrTextUrl ? <Badge text="✓" tone="info" /> : '—'}
                 </td>
                 <td className="uppercase badge-nowrap text-slate-800">{r.storage}</td>
-                <td className="text-slate-800">{new Date(r.uploadedAt).toLocaleString('ar')}</td>
+                <td className="text-slate-600">{new Date(r.uploadedAt).toLocaleString('ar')}</td>
                 <td>
                   <div className="flex items-center gap-2">
                     <button

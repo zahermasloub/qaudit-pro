@@ -370,12 +370,14 @@ import {
   FileText,
   FlaskConical,
   LayoutDashboard,
+  Menu,
   RotateCcw,
   Shield,
 } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { signOut, useSession } from 'next-auth/react';
 
+import SidebarDrawer from '@/components/shell/SidebarDrawer';
 import { ToastProvider } from '@/components/ui/Toast-v2';
 import AnnualPlanForm from '@/features/annual-plan/annual-plan.form';
 import EvidenceForm from '@/features/evidence/evidence.form';
@@ -503,6 +505,7 @@ function canAccess(route: Route, role: Role): boolean {
   return RBAC[route]?.includes(role) || false;
 }
 
+
 function Topbar({
   locale,
   setLocale,
@@ -513,6 +516,7 @@ function Topbar({
   showAdminLink,
   onAdminNavigate,
   onOpenSidebar,
+  onNavigate,
 }: {
   locale: Locale;
   setLocale: (l: Locale) => void;
@@ -523,98 +527,111 @@ function Topbar({
   showAdminLink: boolean;
   onAdminNavigate: () => void;
   onOpenSidebar: () => void;
+  onNavigate: (route: Route) => void;
 }) {
   const i18n = useI18n(locale);
   const toolbarActions = TOOLBARS[route]?.filter(tool => tool.roles.includes(role)) || [];
+  const navLinks: Array<{ key: Route; label: string }> = [
+    { key: 'dashboard', label: 'لوحة التحكم' },
+    { key: 'planning', label: 'التخطيط' },
+    { key: 'fieldwork', label: 'التنفيذ' },
+    { key: 'reporting', label: 'التقارير' },
+  ];
 
   return (
-    <header className="header-dark sticky top-0 z-40 bg-slate-900 text-white border-b border-slate-800 shadow-sm">
+    <header className="header-dark header-blur sticky top-0 z-header border-b border-slate-800">
       <div className="container-shell">
         <div className="flex items-center justify-between h-12">
-          {/* Mobile Sidebar Button + العنوان/اللوجو */}
           <div className="flex items-center gap-2">
             <button
               type="button"
-              aria-label="Open sidebar"
-              className="md:hidden inline-flex items-center justify-center w-10 h-10 rounded-lg border border-white/20 bg-white/10 hover:bg-white/20"
+              aria-label="فتح القائمة"
+              className="lg:hidden p-2 rounded-md hover:bg-slate-800/60 focus-visible:outline-none"
               onClick={onOpenSidebar}
             >
-              <span className="text-xl leading-none">☰</span>
+              <Menu className="h-5 w-5" aria-hidden="true" />
             </button>
-            <h1 className="text-sm font-semibold tracking-wide text-white select-none">
-              {i18n.app.title}
-              <span className="text-xs text-white/70 mx-2">•</span>
-              <span className="text-sm text-white/90">
-                {(i18n.sections as any)[route] || route}
-              </span>
-              <span className="text-xs text-white/70 ml-2 hidden sm:inline">
+            <h1 className="text-sm font-semibold tracking-wide select-none">نظام التدقيق الداخلي</h1>
+          </div>
+          <div className="flex items-center gap-4">
+            <nav className="hidden lg:flex items-center gap-5 text-sm font-medium">
+              {navLinks.map(item => (
+                <a
+                  key={item.key}
+                  href="#"
+                  className="hover:text-white transition-colors"
+                  data-active={route === item.key}
+                  onClick={event => {
+                    event.preventDefault();
+                    onNavigate(item.key);
+                  }}
+                >
+                  {item.label}
+                </a>
+              ))}
+            </nav>
+            <div className="flex flex-wrap items-center justify-end gap-2 text-sm rtl:space-x-reverse">
+              {showAdminLink && (
+                <button
+                  type="button"
+                  onClick={onAdminNavigate}
+                  className="inline-flex items-center gap-1.5 rounded-md border border-white/30 bg-white/10 px-3 py-1.5 font-medium text-white/90 transition-colors hover:bg-white/20 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-300/80"
+                >
+                  {i18n.menu.admin}
+                </button>
+              )}
+              <button className="rounded-full bg-blue-600 text-white px-3 py-1.5 hover:bg-blue-700 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-sky-300/80 focus-visible:ring-offset-transparent">
+                {i18n.common.alerts} 3
+              </button>
+              <div className="h-8 w-8 rounded-full bg-white/20 text-white grid place-items-center text-xs font-medium">
+                IA
+              </div>
+              <select
+                className="rounded-lg border border-white/20 bg-white/10 text-white px-2 py-1 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-300/80"
+                value={locale}
+                onChange={e => setLocale(e.target.value as Locale)}
+              >
+                <option value="ar" className="text-gray-900">
+                  العربية
+                </option>
+                <option value="en" className="text-gray-900">
+                  English
+                </option>
+              </select>
+              <span className="hidden sm:inline text-xs text-white/70 px-1">
                 ({role.replace('_', ' ')})
               </span>
-            </h1>
-          </div>
-
-          {/* Toolbar Actions */}
-          {toolbarActions.length > 0 && (
-            <div className="flex flex-wrap items-center gap-2 overflow-x-auto max-w-full mx-4">
-              {toolbarActions.map(tool => (
-                <button
-                  key={tool.action}
-                  onClick={() => onToolbarAction(tool.action)}
-                  className={clsx(
-                    'px-3 py-1.5 text-sm rounded-md border font-medium transition-colors whitespace-nowrap',
-                    tool.variant === 'primary'
-                      ? 'bg-blue-600 text-white border-blue-600 hover:bg-blue-700'
-                      : 'bg-white/10 text-white/90 border-white/20 hover:bg-white/20 hover:text-white',
-                  )}
-                >
-                  {i18n.actions[tool.action as keyof typeof i18n.actions] || tool.action}
-                </button>
-              ))}
-            </div>
-          )}
-
-          {/* User controls */}
-          <div className="flex items-center gap-2 rtl:space-x-reverse">
-            {showAdminLink && (
               <button
-                type="button"
-                onClick={onAdminNavigate}
-                className="inline-flex items-center gap-1.5 rounded-md border border-white/30 bg-white/10 px-3 py-1.5 text-sm font-medium text-white/90 transition-colors hover:bg-white/20 hover:text-white focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-white focus-visible:ring-offset-slate-900"
+                className="text-white/90 hover:text-white transition-colors px-2 py-1 rounded focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-300/80"
+                onClick={onLogout}
               >
-                {i18n.menu.admin}
+                {i18n.auth.logout}
               </button>
-            )}
-            <button className="rounded-full bg-blue-600 text-white text-sm px-3 py-1.5 hover:bg-blue-700 transition-colors">
-              {i18n.common.alerts} 3
-            </button>
-            <div className="h-8 w-8 rounded-full bg-white/20 text-white grid place-items-center text-xs font-medium">
-              IA
             </div>
-            <select
-              className="rounded-lg border border-white/20 bg-white/10 text-white px-2 py-1 text-sm focus:outline-none focus:ring-2 focus:ring-sky-400/60"
-              value={locale}
-              onChange={e => setLocale(e.target.value as Locale)}
-            >
-              <option value="ar" className="text-gray-900">
-                العربية
-              </option>
-              <option value="en" className="text-gray-900">
-                English
-              </option>
-            </select>
-            <button
-              className="text-sm text-white/90 hover:text-white transition-colors px-2 py-1 rounded focus:outline-none focus:ring-2 focus:ring-sky-400/60"
-              onClick={onLogout}
-            >
-              {i18n.auth.logout}
-            </button>
           </div>
         </div>
+        {toolbarActions.length > 0 && (
+          <div className="mt-3 flex flex-wrap items-center gap-2 overflow-x-auto max-w-full pb-2">
+            {toolbarActions.map(tool => (
+              <button
+                key={tool.action}
+                onClick={() => onToolbarAction(tool.action)}
+                className={clsx(
+                  'px-3 py-1.5 text-sm rounded-md border font-medium transition-colors whitespace-nowrap',
+                  tool.variant === 'primary'
+                    ? 'bg-sky-500 text-white border-sky-500 hover:bg-sky-600'
+                    : 'bg-white/10 text-white/90 border-white/20 hover:bg-white/20 hover:text-white',
+                )}
+              >
+                {i18n.actions[tool.action as keyof typeof i18n.actions] || tool.action}
+              </button>
+            ))}
+          </div>
+        )}
       </div>
     </header>
   );
 }
-
 const MENU_SPEC = [
   { key: 'dashboard', icon: LayoutDashboard },
   { key: 'annualPlan', icon: ClipboardList },
@@ -966,7 +983,7 @@ export default function AppShell() {
   const [route, setRoute] = useState<Route>('dashboard');
   const [role, setRole] = useState<Role>('IA_Manager');
   const [engagementId, _setEngagementId] = useState<string>('TEST-ENG-001');
-  const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [mobileOpen, setMobileOpen] = useState(false);
   const [openEngForm, setOpenEngForm] = useState(false);
   const [openPbc, setOpenPbc] = useState(false);
   const [openTest, setOpenTest] = useState(false);
@@ -992,9 +1009,9 @@ export default function AppShell() {
   // Prevent body scroll when sidebar is open
   useEffect(() => {
     if (typeof document !== 'undefined') {
-      document.body.style.overflow = sidebarOpen ? 'hidden' : '';
+      document.body.style.overflow = mobileOpen ? 'hidden' : '';
     }
-  }, [sidebarOpen]);
+  }, [mobileOpen]);
 
   // Redirect to login if not authenticated
   useEffect(() => {
@@ -1002,6 +1019,36 @@ export default function AppShell() {
       router.push('/auth/login');
     }
   }, [status, router]);
+
+  useEffect(() => {
+    const el = typeof document !== 'undefined' ? document.querySelector('header') : null;
+    if (!el) return;
+    try {
+      const cs = getComputedStyle(el);
+      const bg = cs.backgroundColor;
+      const fg = cs.color;
+      const toRGB = (value: string) => {
+        const parts = value.match(/\d+(\.\d+)?/g)?.map(Number) ?? [255, 255, 255];
+        return { r: parts[0] ?? 255, g: parts[1] ?? 255, b: parts[2] ?? 255 };
+      };
+      const { r, g, b } = toRGB(bg);
+      const { r: fr, g: fgComp, b: fb } = toRGB(fg);
+      const luminance = (channel: number) => {
+        const normalized = channel / 255;
+        return normalized <= 0.03928
+          ? normalized / 12.92
+          : Math.pow((normalized + 0.055) / 1.055, 2.4);
+      };
+      const L1 = 0.2126 * luminance(fr) + 0.7152 * luminance(fgComp) + 0.0722 * luminance(fb);
+      const L2 = 0.2126 * luminance(r) + 0.7152 * luminance(g) + 0.0722 * luminance(b);
+      const contrast = (Math.max(L1, L2) + 0.05) / (Math.min(L1, L2) + 0.05);
+      if (contrast < 4.5) {
+        el.classList.add('header-dark');
+      }
+    } catch {
+      // Best-effort contrast guard
+    }
+  }, []);
 
   const handleVirusScanAll = async () => {
     try {
@@ -1073,6 +1120,29 @@ export default function AppShell() {
     router.push('/admin/dashboard');
   };
 
+  
+  const renderSidebar = (closeOnNavigate = false) => (
+    <Sidebar
+      locale={locale}
+      route={route}
+      setRoute={value => {
+        setRoute(value);
+        if (closeOnNavigate) {
+          setMobileOpen(false);
+        }
+      }}
+      statusBadge="In-Field"
+      role={role}
+      showAdminLink={showAdminLink}
+      onAdminNavigate={() => {
+        if (closeOnNavigate) {
+          setMobileOpen(false);
+        }
+        handleAdminNavigate();
+      }}
+    />
+  );
+
   const allowed = RBAC[route as Route]?.includes(role);
 
   // Show loading while checking authentication
@@ -1086,65 +1156,55 @@ export default function AppShell() {
       </div>
     );
 
+  
   return (
     <ToastProvider>
-      <div className="min-h-screen w-full overflow-x-hidden bg-slate-50 safe-area">
-        <div className="container-shell mx-auto w-full px-3 sm:px-4 lg:px-6">
-          <Topbar
-            locale={locale}
-            setLocale={setLocale}
-            onLogout={() => signOut({ callbackUrl: '/auth/login' })}
-            role={role}
-            route={route}
-            onToolbarAction={handleToolbarAction}
-            showAdminLink={showAdminLink}
-            onAdminNavigate={handleAdminNavigate}
-            onOpenSidebar={() => setSidebarOpen(true)}
-          />
+      <div className="min-h-screen w-full bg-slate-50 safe-area">
+        <Topbar
+          locale={locale}
+          setLocale={setLocale}
+          onLogout={() => signOut({ callbackUrl: '/auth/login' })}
+          role={role}
+          route={route}
+          onToolbarAction={handleToolbarAction}
+          showAdminLink={showAdminLink}
+          onAdminNavigate={handleAdminNavigate}
+          onOpenSidebar={() => setMobileOpen(true)}
+          onNavigate={setRoute}
+        />
 
-          <div className="mt-3">
-            <div className="bg-white rounded-xl border border-gray-200 p-2 text-sm flex flex-wrap items-center gap-2 overflow-x-auto max-w-full">
-              <span className="text-gray-600">Role:</span>
+        <div className="container-shell">
+          <div className="mt-4">
+            <div className="card-responsive bg-white border border-gray-200 p-3 text-sm flex flex-wrap items-center gap-3">
+              <span className="text-slate-700">Role:</span>
               <select
                 className="border border-gray-200 rounded-md px-2 py-1"
                 value={role}
                 onChange={e => setRole(e.target.value as Role)}
               >
-                {(['IA_Manager', 'IA_Lead', 'IA_Auditor', 'Process_Owner', 'Viewer'] as Role[]).map(
-                  r => (
-                    <option key={r} value={r}>
-                      {r}
-                    </option>
-                  ),
-                )}
+                {(['IA_Manager', 'IA_Lead', 'IA_Auditor', 'Process_Owner', 'Viewer'] as Role[]).map(r => (
+                  <option key={r} value={r}>
+                    {r}
+                  </option>
+                ))}
               </select>
-              <span className="ms-3 text-gray-600">Lang:</span>
+              <span className="text-slate-700">Lang:</span>
               <select
                 className="border border-gray-200 rounded-md px-2 py-1"
                 value={locale}
                 onChange={e => setLocale(e.target.value as Locale)}
               >
-                <option value="ar">العربية</option>
+                <option value="ar">???????</option>
                 <option value="en">English</option>
               </select>
             </div>
           </div>
 
-          <div className="mt-4 grid grid-cols-1 md:grid-cols-[260px_1fr] lg:grid-cols-[280px_1fr] gap-4 lg:gap-6 ultra-grid">
-            {/* Desktop Sidebar - hidden on mobile */}
-            <aside className="hidden md:block min-w-0 md:min-w-[260px] lg:min-w-[280px]">
-              <Sidebar
-                locale={locale}
-                route={route}
-                setRoute={setRoute}
-                statusBadge="In-Field"
-                role={role}
-                showAdminLink={showAdminLink}
-                onAdminNavigate={handleAdminNavigate}
-              />
+          <div className="mt-4 grid grid-cols-1 lg:grid-cols-[300px_1fr] gap-4 lg:gap-6">
+            <aside className="hidden lg:block min-w-[300px] w-[300px]">
+              {renderSidebar()}
             </aside>
 
-            {/* Main Content */}
             <main className="min-w-0">
               {!allowed && (
                 <Card>
@@ -1153,16 +1213,12 @@ export default function AppShell() {
               )}
               {allowed && (
                 <>
-                  {route === 'dashboard' && (
-                    <DashboardView locale={locale} engagementId={engagementId} />
-                  )}
+                  {route === 'dashboard' && <DashboardView locale={locale} engagementId={engagementId} />}
                   {route === 'annualPlan' && <AnnualPlanScreen locale={locale} />}
                   {route === 'planning' && <PlanningScreen locale={locale} />}
                   {route === 'processRisk' && <ProcessRiskScreen locale={locale} />}
                   {route === 'program' && <ProgramScreen locale={locale} />}
-                  {route === 'fieldwork' && (
-                    <FieldworkScreen locale={locale} engagementId={engagementId} />
-                  )}
+                  {route === 'fieldwork' && <FieldworkScreen locale={locale} engagementId={engagementId} />}
                   {route === 'agile' && <PlaceholderScreen title={i18n.sections.agile} />}
                   {route === 'findings' && <PlaceholderScreen title={i18n.sections.findings} />}
                   {route === 'reporting' && <PlaceholderScreen title={i18n.sections.reporting} />}
@@ -1175,53 +1231,11 @@ export default function AppShell() {
           </div>
         </div>
 
-        {/* Mobile Drawer - slides in from appropriate side based on RTL/LTR */}
-        {sidebarOpen && (
-          <>
-            <div
-              className="fixed inset-0 bg-black/40 backdrop-blur-[1px] z-40"
-              onClick={() => setSidebarOpen(false)}
-              aria-hidden="true"
-            />
-            <div
-              role="dialog"
-              aria-modal="true"
-              className={clsx(
-                'fixed top-0 bottom-0 z-50 w-[82vw] max-w-[320px] bg-white border-s shadow-xl',
-                'transition-transform duration-200',
-                'rtl:right-0 rtl:translate-x-0 ltr:left-0 ltr:translate-x-0',
-              )}
-            >
-              <div className="p-3 border-b flex items-center gap-2">
-                <button
-                  aria-label="Close"
-                  className="inline-flex items-center justify-center w-9 h-9 rounded-md border bg-white hover:bg-slate-50"
-                  onClick={() => setSidebarOpen(false)}
-                >
-                  ✕
-                </button>
-                <div className="font-medium">القائمة</div>
-              </div>
-              <div className="p-3 overflow-y-auto h-full">
-                <Sidebar
-                  locale={locale}
-                  route={route}
-                  setRoute={r => {
-                    setRoute(r);
-                    setSidebarOpen(false);
-                  }}
-                  statusBadge="In-Field"
-                  role={role}
-                  showAdminLink={showAdminLink}
-                  onAdminNavigate={() => {
-                    setSidebarOpen(false);
-                    handleAdminNavigate();
-                  }}
-                />
-              </div>
-            </div>
-          </>
-        )}
+        <SidebarDrawer open={mobileOpen} onClose={() => setMobileOpen(false)} dir={isRTL ? 'rtl' : 'ltr'}>
+          <div className="p-4">
+            {renderSidebar(true)}
+          </div>
+        </SidebarDrawer>
 
         {/* Modals mounted at root for dashboard shortcuts */}
         <EngagementForm
@@ -1354,3 +1368,5 @@ export default function AppShell() {
     </ToastProvider>
   );
 }
+
+

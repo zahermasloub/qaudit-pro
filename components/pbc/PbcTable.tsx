@@ -243,77 +243,76 @@ export default function PBCTable({ engagementId, onRefresh }: PBCTableProps) {
       </div>
 
       {/* Table */}
-      <div className="card-base bg-white overflow-hidden">
-        <div className="overflow-x-auto">
-          <table className="w-full table-compact">
-            <thead>
+      <div className="table-wrap rounded-2xl border bg-white shadow-sm">
+        <table className="w-full text-sm">
+          <thead>
+            <tr>
+              <th className="text-right px-4 py-2 text-xs font-medium uppercase tracking-wide text-slate-700 bg-slate-50">
+                ?????
+              </th>
+              <th className="text-right px-4 py-2 text-xs font-medium uppercase tracking-wide text-slate-700 bg-slate-50">
+                ?????
+              </th>
+              <th className="text-right px-4 py-2 text-xs font-medium uppercase tracking-wide text-slate-700 bg-slate-50">
+                ???????
+              </th>
+              <th className="text-right px-4 py-2 text-xs font-medium uppercase tracking-wide text-slate-700 bg-slate-50">
+                ????? ?????????
+              </th>
+              <th className="text-right px-4 py-2 text-xs font-medium uppercase tracking-wide text-slate-700 bg-slate-50">
+                ??????
+              </th>
+            </tr>
+          </thead>
+          <tbody className="bg-white divide-y divide-neutral-200">
+            {filteredPbcs.length === 0 ? (
               <tr>
-                <th className="text-right px-3 py-2 text-xs font-medium text-neutral-700 bg-neutral-50">
-                  الرمز
-                </th>
-                <th className="text-right px-3 py-2 text-xs font-medium text-neutral-700 bg-neutral-50">
-                  الوصف
-                </th>
-                <th className="text-right px-3 py-2 text-xs font-medium text-neutral-700 bg-neutral-50">
-                  المسؤول
-                </th>
-                <th className="text-right px-3 py-2 text-xs font-medium text-neutral-700 bg-neutral-50">
-                  تاريخ الاستحقاق
-                </th>
-                <th className="text-right px-3 py-2 text-xs font-medium text-neutral-700 bg-neutral-50">
-                  الحالة
-                </th>
+                <td colSpan={5} className="px-4 py-8 text-center text-slate-600">
+                  {searchTerm || statusFilter !== 'all' || fromDate || toDate
+                    ? '?? ???? ????? ????? ???????'
+                    : '?? ???? ????? ???????'}
+                </td>
               </tr>
-            </thead>
-            <tbody className="bg-white divide-y divide-neutral-200">
-              {filteredPbcs.length === 0 ? (
-                <tr>
-                  <td colSpan={5} className="px-4 py-8 text-center text-neutral-500">
-                    {searchTerm || statusFilter !== 'all' || fromDate || toDate
-                      ? 'لا توجد نتائج تطابق الفلاتر'
-                      : 'لا توجد طلبات مستندات'}
+            ) : (
+              filteredPbcs.map(pbc => (
+                <tr
+                  key={pbc.id}
+                  className={cn(
+                    'transition-colors hover:bg-slate-50',
+                    getDueRowClassName(pbc.dueDate),
+                  )}
+                >
+                  <td className="px-4 py-2 whitespace-nowrap text-slate-900 font-medium">
+                    {pbc.code}
                   </td>
+                  <td className="px-4 py-2 text-slate-900">
+                    {pbc.description}
+                  </td>
+                  <td className="px-4 py-2 whitespace-nowrap text-slate-600">
+                    {pbc.ownerId}
+                  </td>
+                  <td className="px-4 py-2 whitespace-nowrap">
+                    <div className="text-slate-900 text-sm">
+                      {formatDate(pbc.dueDate)}
+                      {isOverdue(pbc.dueDate) && (
+                        <span className="block text-xs text-red-600 font-medium">
+                          ????? ?? {Math.abs(daysUntil(pbc.dueDate))} ???
+                        </span>
+                      )}
+                      {!isOverdue(pbc.dueDate) && daysUntil(pbc.dueDate) <= 7 && (
+                        <span className="block text-xs text-amber-600 font-medium">
+                          ???? {daysUntil(pbc.dueDate)} ????
+                        </span>
+                      )}
+                    </div>
+                  </td>
+                  <td className="px-4 py-2 whitespace-nowrap">{getStatusBadge(pbc.status)}</td>
                 </tr>
-              ) : (
-                filteredPbcs.map(pbc => (
-                  <tr
-                    key={pbc.id}
-                    className={cn(
-                      'transition-colors hover:bg-neutral-50',
-                      getDueRowClassName(pbc.dueDate),
-                    )}
-                  >
-                    <td className="px-3 py-2 whitespace-nowrap">
-                      <span className="text-sm font-medium text-neutral-900">{pbc.code}</span>
-                    </td>
-                    <td className="px-3 py-2">
-                      <span className="text-sm text-neutral-800">{pbc.description}</span>
-                    </td>
-                    <td className="px-3 py-2 whitespace-nowrap">
-                      <span className="text-sm text-neutral-600">{pbc.ownerId}</span>
-                    </td>
-                    <td className="px-3 py-2 whitespace-nowrap">
-                      <div className="text-sm text-neutral-800">
-                        {formatDate(pbc.dueDate)}
-                        {isOverdue(pbc.dueDate) && (
-                          <span className="block text-xs text-danger-600 font-medium">
-                            متأخر بـ {Math.abs(daysUntil(pbc.dueDate))} يوم
-                          </span>
-                        )}
-                        {!isOverdue(pbc.dueDate) && daysUntil(pbc.dueDate) <= 7 && (
-                          <span className="block text-xs text-warning-600 font-medium">
-                            باقي {daysUntil(pbc.dueDate)} أيام
-                          </span>
-                        )}
-                      </div>
-                    </td>
-                    <td className="px-3 py-2 whitespace-nowrap">{getStatusBadge(pbc.status)}</td>
-                  </tr>
-                ))
-              )}
-            </tbody>
-          </table>
-        </div>
+              ))
+            )}
+          </tbody>
+        </table>
+      </div>
       </div>
     </div>
   );
