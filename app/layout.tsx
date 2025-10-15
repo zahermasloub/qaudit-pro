@@ -1,8 +1,9 @@
+
 import type { Metadata } from 'next';
 
 import AuthProvider from '@/lib/AuthProvider';
-
 import './globals.css';
+
 // Note: Tajawal font is temporarily disabled due to network restrictions in the build environment
 // Uncomment when building in an environment with internet access
 // import { Tajawal } from 'next/font/google';
