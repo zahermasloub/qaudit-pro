@@ -1,0 +1,77 @@
+name: P2 Regulations CI
+on:
+  push:
+    paths:
+      - "app/api/v1/admin/regulations/**"
+      - "components/admin/RegulationsPanel.tsx"
+      - "lib/mime.ts"
+      - "lib/storage.ts"
+      - "prisma/**"
+      - ".github/workflows/p2-regulations.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  p2-regulations:
+    runs-on: ubuntu-latest
+
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: qaudit_ci
+        ports:
+          - "5432:5432"
+        options: >-
+          --health-cmd="pg_isready -U postgres"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=5
+
+    env:
+      DATABASE_URL: postgresql://postgres:postgres@localhost:5432/qaudit_ci
+      STORAGE_DRIVER: local
+      UPLOAD_DIR: ./storage
+      MAX_FILE_BYTES: 52428800
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Install dependencies
+        run: |
+          corepack enable
+          corepack prepare pnpm@9.0.0 --activate
+          pnpm install --frozen-lockfile
+
+      - name: Generate Prisma client
+        run: pnpm exec prisma generate
+
+      - name: Run migrations
+        run: pnpm exec prisma migrate deploy
+
+      - name: Build project
+        run: pnpm build
+
+      - name: Run tests
+        run: pnpm test -- --runInBand
+
+      - name: Save phase report
+        run: |
+          mkdir -p reports
+          node -e "require('fs').writeFileSync('reports/p2-summary.json', JSON.stringify({ phase:'P2', status:'ok', ts:new Date().toISOString() }, null, 2))"
+
+      - name: Upload report artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: p2-artifacts
+          path: reports/p2-summary.json
