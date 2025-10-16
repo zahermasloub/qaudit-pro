@@ -39,6 +39,36 @@ body {
   font-family: Arial, Helvetica, sans-serif;
 }
 
+html[dir='rtl'] {
+  direction: rtl;
+}
+
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+img,
+video,
+svg,
+canvas {
+  max-width: 100%;
+  height: auto;
+}
+
+.prose-wrap {
+  overflow-wrap: anywhere;
+  word-break: break-word;
+}
+
+.min-h-screen {
+  min-height: 100vh;
+}
+
 .bg-surface {
   background-color: rgb(var(--surface));
 }
@@ -306,3 +336,5 @@ body {
     transition-duration: 0.01ms !important;
   }
 }
+img, video, svg, canvas { max-width: 100%; height: auto; }
+

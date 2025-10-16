@@ -1,5 +1,5 @@
-import rtl from 'tailwindcss-rtl';
 import animate from 'tailwindcss-animate';
+import rtl from 'tailwindcss-rtl';
 
 export default {
   content: [
@@ -9,6 +9,15 @@ export default {
   ],
   darkMode: 'class',
   theme: {
+    container: {
+      center: true,
+      padding: {
+        DEFAULT: '1rem',
+        sm: '1.25rem',
+        lg: '2rem',
+        xl: '2.5rem',
+      },
+    },
     extend: {
       colors: {
         background: 'var(--background)',
@@ -61,6 +70,9 @@ export default {
       },
       borderRadius: {
         '2xl': '1rem',
+      },
+      screens: {
+        '2xl': '1440px',
       },
     },
   },

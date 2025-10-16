@@ -1,63 +1,37 @@
-import Link from 'next/link';
+﻿import Link from "next/link";
 
-type QuickLink = {
-  href: string;
-  label: string;
-  description: string;
-};
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
-const QUICK_LINKS: QuickLink[] = [
-  {
-    href: '/admin/dashboard',
-    label: 'Dashboard',
-    description: 'ملخّص مؤشرات العمل والمهام النشطة.',
-  },
-  {
-    href: '/admin/users',
-    label: 'Users',
-    description: 'إدارة أعضاء الفرق وأدوارهم.',
-  },
-  {
-    href: '/admin/roles',
-    label: 'Roles',
-    description: 'تحديث الصلاحيات وتوزيع المهام.',
-  },
-  {
-    href: '/admin/settings',
-    label: 'Settings',
-    description: 'إعدادات النظام العامة وتهيئات العرض.',
-  },
-  {
-    href: '/admin/logs',
-    label: 'Logs',
-    description: 'سجلّ الأحداث والتغييرات الحرجة.',
-  },
-  {
-    href: '/admin/backups',
-    label: 'Backups',
-    description: 'إدارة النسخ الاحتياطية وجدولتها.',
-  },
+const ITEMS = [
+  { title: "Dashboard", desc: "ملخّص مؤشرات العمل وفِعالية الفريق", href: "/admin/dashboard" },
+  { title: "Users", desc: "إدارة أعضاء الفريق وأدوارهم", href: "/admin/users" },
+  { title: "Roles", desc: "تحديث الصلاحيات وتوزيعها", href: "/admin/roles" },
+  { title: "Settings", desc: "الإعدادات العامة وسياسات الحفظ", href: "/admin/settings" },
+  { title: "Logs", desc: "سجل الأحداث وتدقيق السجلات", href: "/admin/logs" },
+  { title: "Backups", desc: "إدارة النسخ الاحتياطية واسترجاعها", href: "/admin/backups" },
 ] as const;
 
-export function OverviewPanel() {
+export async function OverviewPanel() {
   return (
     <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
-      {QUICK_LINKS.map(link => (
-        <Link
-          key={link.href}
-          href={link.href}
-          className="group flex h-full flex-col justify-between rounded-2xl border border-stroke bg-surface p-5 transition hover:-translate-y-0.5 hover:shadow-soft"
+      {ITEMS.map(item => (
+        <Card
+          key={item.href}
+          className="rounded-2xl border border-border/70 bg-background/95 shadow-sm backdrop-blur-sm transition hover:-translate-y-1 hover:shadow-lg dark:bg-neutral-900/70"
         >
-          <div className="space-y-2">
-            <span className="inline-flex items-center rounded-full bg-muted px-2 py-0.5 text-xs font-semibold text-brand-700">
-              {link.label}
-            </span>
-            <p className="text-sm text-neutral-600">{link.description}</p>
-          </div>
-          <span className="mt-4 text-sm font-medium text-brand-600 group-hover:text-brand-700">
-            الانتقال الآن →
-          </span>
-        </Link>
+          <CardHeader className="space-y-2 pb-3">
+            <CardTitle className="text-lg font-semibold text-foreground">{item.title}</CardTitle>
+          </CardHeader>
+          <CardContent className="text-sm text-muted-foreground">
+            <p className="prose-wrap mb-4 leading-relaxed">{item.desc}</p>
+            <Link
+              className="font-medium text-brand-600 underline underline-offset-4 transition hover:text-brand-700"
+              href={item.href}
+            >
+              الانتقال الآن →
+            </Link>
+          </CardContent>
+        </Card>
       ))}
     </div>
   );
