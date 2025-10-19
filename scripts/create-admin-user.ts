@@ -4,7 +4,7 @@ import bcrypt from 'bcrypt';
 const prisma = new PrismaClient();
 
 const ADMIN_EMAIL = 'admin@qaudit.com';
-const ADMIN_PASSWORD = 'AdminConsole!2025';
+const ADMIN_PASSWORD = 'zaher123456';
 
 async function ensureAdminRole() {
   const existingRole = await prisma.role.findUnique({ where: { name: 'Admin' } });
