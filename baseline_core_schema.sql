@@ -1,3 +1,15 @@
+-- تأكد من وجود جميع الأعمدة الأساسية في attachments (للتكامل مع الجداول الأخرى)
+ALTER TABLE core.attachments ADD COLUMN IF NOT EXISTS engagement_id BIGINT REFERENCES core.engagements(engagement_id) ON DELETE CASCADE;
+ALTER TABLE core.attachments ADD COLUMN IF NOT EXISTS file_name TEXT NOT NULL;
+ALTER TABLE core.attachments ADD COLUMN IF NOT EXISTS file_ext TEXT;
+ALTER TABLE core.attachments ADD COLUMN IF NOT EXISTS file_size_bytes BIGINT NOT NULL;
+ALTER TABLE core.attachments ADD COLUMN IF NOT EXISTS content_type TEXT;
+ALTER TABLE core.attachments ADD COLUMN IF NOT EXISTS storage_path TEXT NOT NULL;
+ALTER TABLE core.attachments ADD COLUMN IF NOT EXISTS sha256 TEXT NOT NULL;
+ALTER TABLE core.attachments ADD COLUMN IF NOT EXISTS uploaded_by BIGINT REFERENCES core.users(user_id);
+ALTER TABLE core.attachments ADD COLUMN IF NOT EXISTS uploaded_at TIMESTAMPTZ NOT NULL DEFAULT now();
+ALTER TABLE core.attachments ADD COLUMN IF NOT EXISTS is_quarantined BOOLEAN NOT NULL DEFAULT FALSE;
+ALTER TABLE core.attachments ADD COLUMN IF NOT EXISTS notes TEXT;
 -- baseline_core_schema.sql
 -- الغرض: إنشاء المخطط core وجميع الجداول الأساسية المشار إليها في Phase 3 بأقل أعمدة لازمة للتكامل. آمن للإعادة (IF NOT EXISTS).
 -- التشغيل: psql -U postgres -d auditdb -f baseline_core_schema.sql
@@ -39,6 +51,7 @@ CREATE TABLE IF NOT EXISTS user_roles (
 );
 
 -- 2) هيكل الجهات/الأقسام
+
 CREATE TABLE IF NOT EXISTS orgs (
   org_id SERIAL PRIMARY KEY,
   name TEXT NOT NULL
