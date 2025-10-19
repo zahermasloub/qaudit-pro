@@ -6,6 +6,10 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
+import dynamic from 'next/dynamic';
+
+// Dynamically import the AnnualPlanForm to avoid SSR issues
+const AnnualPlanForm = dynamic(() => import('./annual-plan.form'), { ssr: false });
 
 import type { Locale } from '@/lib/i18n';
 
@@ -59,6 +63,8 @@ interface AuditTask {
 }
 
 export function AnnualPlanScreen({ locale }: { locale: Locale }) {
+  // State for opening/closing the AnnualPlanForm
+  const [openAnnualPlan, setOpenAnnualPlan] = useState(false);
   const isRTL = locale === 'ar';
 
   const [_plans, setPlans] = useState<AnnualPlan[]>([]);
@@ -303,7 +309,10 @@ export function AnnualPlanScreen({ locale }: { locale: Locale }) {
               : `Fiscal Year: ${selectedPlan?.fiscalYear}`}
           </p>
         </div>
-        <button className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-medium">
+        <button
+          className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-medium"
+          onClick={() => setOpenAnnualPlan(true)}
+        >
           + {locale === 'ar' ? 'إنشاء خطة جديدة' : 'Create New Plan'}
         </button>
       </div>
@@ -541,6 +550,8 @@ export function AnnualPlanScreen({ locale }: { locale: Locale }) {
           </div>
         )}
       </div>
+      {/* Annual Plan Form Modal */}
+      <AnnualPlanForm open={openAnnualPlan} onOpenChange={setOpenAnnualPlan} />
     </div>
   );
 }

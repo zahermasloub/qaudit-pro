@@ -12,29 +12,33 @@ export default function DashboardView({
   console.log('Dashboard for engagement:', engagementId);
 
   return (
-    <div className="space-y-4">
+    <div
+      className="flex flex-col items-center justify-center min-h-screen bg-gray-50 py-8 px-4"
+      dir={locale === 'ar' ? 'rtl' : 'ltr'}
+    >
+      <div className="w-full max-w-4xl space-y-6">
       {/* Filters */}
-      <div className="bg-white border rounded-2xl p-3 flex flex-col sm:flex-row flex-wrap items-stretch sm:items-center gap-2">
-        <select className="border rounded-md px-2 py-2 text-sm w-full sm:w-auto">
+  <div className="bg-white border rounded-2xl p-4 flex flex-col sm:flex-row flex-wrap items-stretch sm:items-center gap-3 shadow-md">
+  <select className="border rounded-lg px-4 py-3 text-base w-full sm:w-auto focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
           <option>{locale === 'ar' ? 'آخر 30 يومًا' : 'Last 30 days'}</option>
           <option>{locale === 'ar' ? 'آخر 90 يومًا' : 'Last 90 days'}</option>
         </select>
-        <select className="border rounded-md px-2 py-2 text-sm w-full sm:w-auto">
+  <select className="border rounded-lg px-4 py-3 text-base w-full sm:w-auto focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
           <option>{locale === 'ar' ? 'جميع المهام' : 'All engagements'}</option>
           <option>ENG-DEMO</option>
         </select>
         <div className="ms-auto flex gap-2">
-          <button className="px-3 py-2 rounded-md border text-sm bg-white hover:bg-slate-50">
+          <button className="px-5 py-3 rounded-lg border text-base font-bold bg-white hover:bg-slate-100 transition-colors">
             {locale === 'ar' ? 'تحديث' : 'Refresh'}
           </button>
-          <button className="px-3 py-2 rounded-md border text-sm bg-slate-900 text-white hover:bg-black">
+          <button className="px-5 py-3 rounded-lg border text-base font-bold bg-blue-600 text-white hover:bg-blue-700 transition-colors">
             {locale === 'ar' ? 'تصدير' : 'Export'}
           </button>
         </div>
       </div>
 
       {/* KPI Cards - responsive grid */}
-      <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 2xl:grid-cols-4 gap-3 lg:gap-4">
+  <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
         <div className="bg-white border rounded-2xl p-4 shadow-sm">
           <div className="text-slate-500 text-xs mb-1">
             {locale === 'ar' ? 'إنجاز الخطة' : 'Plan Progress'}
@@ -64,7 +68,7 @@ export default function DashboardView({
       </div>
 
       {/* Charts - responsive grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-3 lg:gap-4">
+  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div className="bg-white border rounded-2xl p-4 min-h-[220px] sm:min-h-[260px]">
           <h3 className="font-semibold text-gray-900 mb-4">
             {locale === 'ar' ? 'مخطط التقدّم' : 'Progress Chart'}
@@ -84,8 +88,8 @@ export default function DashboardView({
       </div>
 
       {/* Table example with overflow solution */}
-      <div className="table-wrap rounded-2xl border bg-white th-sticky">
-        <table className="w-full text-sm">
+      <div className="table-wrap rounded-2xl border bg-white th-sticky overflow-x-auto">
+        <table className="w-full text-base min-w-[700px]">
           <thead>
             <tr className="bg-slate-50 border-b">
               <th className="text-left p-3 font-semibold text-slate-700">{locale === 'ar' ? '??????' : 'Task'}</th>
@@ -101,22 +105,22 @@ export default function DashboardView({
               <th className="text-left p-3 font-semibold text-slate-700">
                 {locale === 'ar' ? '??????' : 'Progress'}
               </th>
-                <th className="text-left p-3 font-semibold text-slate-700">{locale === 'ar' ? 'المهمة' : 'Task'}</th>
-                <th className="text-left p-3 font-semibold text-slate-700">{locale === 'ar' ? 'الحالة' : 'Status'}</th>
-                <th className="text-left p-3 font-semibold text-slate-700">{locale === 'ar' ? 'التاريخ' : 'Date'}</th>
-                <th className="text-left p-3 font-semibold text-slate-700">{locale === 'ar' ? 'المالك' : 'Owner'}</th>
-                <th className="text-left p-3 font-semibold text-slate-700">{locale === 'ar' ? 'التقدم' : 'Progress'}</th>
+                <th className="text-right p-3 font-semibold text-slate-700">{locale === 'ar' ? 'المهمة' : 'Task'}</th>
+                <th className="text-right p-3 font-semibold text-slate-700">{locale === 'ar' ? 'الحالة' : 'Status'}</th>
+                <th className="text-right p-3 font-semibold text-slate-700">{locale === 'ar' ? 'التاريخ' : 'Date'}</th>
+                <th className="text-right p-3 font-semibold text-slate-700">{locale === 'ar' ? 'المالك' : 'Owner'}</th>
+                <th className="text-right p-3 font-semibold text-slate-700">{locale === 'ar' ? 'التقدم' : 'Progress'}</th>
             </tr>
           </thead>
           <tbody>
             <tr className="border-b">
-              <td className="p-3 truncate-cell text-slate-900">
+              <td className="p-3 truncate-cell text-slate-900 text-right">
                 ENG-2025-001 -{' '}
                 {locale === 'ar' ? '?????? ?????? ??????' : 'Financial System Review'}
                   ENG-2025-001 -{' '}
                   {locale === 'ar' ? 'مراجعة النظام المالي' : 'Financial System Review'}
               </td>
-              <td className="p-3 text-slate-900">
+              <td className="p-3 text-slate-900 text-right">
                 <span className="px-2 py-1 rounded-full text-xs bg-green-100 text-green-800">
                   {locale === 'ar' ? '???' : 'Active'}
                 </span>
@@ -124,9 +128,9 @@ export default function DashboardView({
                     {locale === 'ar' ? 'نشط' : 'Active'}
                   </span>
               </td>
-              <td className="p-3 text-slate-900">2025-01-15</td>
-              <td className="p-3 text-slate-900">Ahmad M.</td>
-              <td className="p-3 text-slate-900">65%</td>
+              <td className="p-3 text-slate-900 text-right">2025-01-15</td>
+              <td className="p-3 text-slate-900 text-right">Ahmad M.</td>
+              <td className="p-3 text-slate-900 text-right">65%</td>
             </tr>
             <tr className="border-b">
               <td className="p-3 truncate-cell text-slate-900">
@@ -149,6 +153,7 @@ export default function DashboardView({
             </tr>
           </tbody>
         </table>
+      </div>
       </div>
     </div>
   );

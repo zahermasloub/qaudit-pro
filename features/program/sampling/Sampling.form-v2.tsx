@@ -113,9 +113,9 @@ export default function SamplingForm({
   if (!open) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center">
+    <div className="fixed inset-0 z-50 flex items-center justify-center" dir="rtl">
       <div className="absolute inset-0 bg-black/40" onClick={() => onOpenChange(false)} />
-      <div className="relative bg-white rounded-2xl shadow-xl border border-gray-200 w-full max-w-3xl p-6 max-h-[90vh] overflow-y-auto">
+      <div className="relative bg-white rounded-2xl shadow-xl border border-gray-200 w-full max-w-3xl p-8 max-h-[90vh] overflow-y-auto flex flex-col">
         <div className="flex items-center justify-between mb-4">
           <h3 className="text-lg font-semibold">إنشاء عينة تدقيق</h3>
           <button className="text-gray-500 hover:text-gray-700" onClick={() => onOpenChange(false)}>
@@ -123,7 +123,7 @@ export default function SamplingForm({
           </button>
         </div>
 
-        <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+  <form onSubmit={handleSubmit(onSubmit)} className="space-y-6 grid grid-cols-1 md:grid-cols-2 gap-6">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <div>
               <label className="block text-sm font-medium mb-1">حجم المجتمع</label>
@@ -254,18 +254,18 @@ export default function SamplingForm({
               {method === 'monetary' && <p>• سيتم إنشاء hash SHA256 لضمان سلامة العينة</p>}
             </div>
           </div>
-          <div className="flex justify-end gap-2 pt-4">
+          <div className="sticky bottom-0 bg-white pt-4 flex justify-end gap-3 border-t md:col-span-2">
             <button
               type="button"
               onClick={() => onOpenChange(false)}
-              className="px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50"
+              className="px-5 py-3 border border-gray-300 text-gray-700 rounded-lg font-bold hover:bg-gray-50"
             >
               إلغاء
             </button>
             <button
               type="submit"
               disabled={loading}
-              className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 disabled:opacity-50"
+              className="px-5 py-3 bg-green-600 text-white rounded-lg font-bold hover:bg-green-700 disabled:opacity-50"
             >
               {loading ? 'جارٍ الإنشاء...' : 'إنشاء العينة'}
             </button>

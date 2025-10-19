@@ -17,14 +17,12 @@ export default function RegisterPage() {
     email: '',
     password: '',
     confirmPassword: '',
-    role: 'User',
   });
   const [errors, setErrors] = useState<{
     name?: string;
     email?: string;
     password?: string;
     confirmPassword?: string;
-    role?: string;
   }>({});
   const [isLoading, setIsLoading] = useState(false);
 
@@ -56,8 +54,8 @@ export default function RegisterPage() {
       newErrors.confirmPassword = t.common.passwordMismatch;
     }
 
-  setErrors(newErrors);
-  return Object.keys(newErrors).length === 0;
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -77,7 +75,6 @@ export default function RegisterPage() {
           name: formData.name,
           email: formData.email,
           password: formData.password,
-          role: formData.role,
         }),
       });
 
@@ -137,7 +134,7 @@ export default function RegisterPage() {
               onChange={handleInputChange}
               error={errors.name}
               required
-              className="text-right"
+              className="text-right text-base px-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
               placeholder={t.common.name}
             />
 
@@ -149,24 +146,9 @@ export default function RegisterPage() {
               onChange={handleInputChange}
               error={errors.email}
               required
-              className="text-right"
+              className="text-right text-base px-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
               placeholder={t.common.email}
             />
-
-            <div>
-              <label className="block text-sm font-medium mb-1">الصلاحية</label>
-              <select
-                name="role"
-                value={formData.role}
-                onChange={handleInputChange}
-                className="w-full rounded-lg border border-gray-300 px-3 py-2 text-right"
-                required
-              >
-                <option value="User">User</option>
-                <option value="Admin">Admin</option>
-              </select>
-              {errors.role && <p className="text-red-500 text-xs mt-1">{errors.role}</p>}
-            </div>
 
             <Input
               label={t.common.password}
@@ -176,7 +158,7 @@ export default function RegisterPage() {
               onChange={handleInputChange}
               error={errors.password}
               required
-              className="text-right"
+              className="text-right text-base px-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
               placeholder={t.common.password}
             />
 
@@ -188,11 +170,15 @@ export default function RegisterPage() {
               onChange={handleInputChange}
               error={errors.confirmPassword}
               required
-              className="text-right"
+              className="text-right text-base px-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
               placeholder={t.common.confirm}
             />
 
-            <Button type="submit" disabled={isLoading} className="w-full">
+            <Button
+              type="submit"
+              disabled={isLoading}
+              className="w-full py-3 text-base rounded-lg font-bold bg-blue-600 hover:bg-blue-700 transition-colors"
+            >
               {isLoading ? t.common.loading : t.auth.signup}
             </Button>
 

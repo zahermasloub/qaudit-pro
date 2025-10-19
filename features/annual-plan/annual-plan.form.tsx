@@ -70,12 +70,12 @@ export default function AnnualPlanForm({
       }
 
       // Show success message - you can replace with toast
-      alert('تم إنشاء الخطة السنوية بنجاح');
+      alert('تم حفظ الخطة السنوية بنجاح');
       onSuccess?.(data.id);
       onOpenChange(false);
       form.reset();
     } catch (error: any) {
-      alert(`فشل حفظ الخطة: ${error.message}`);
+      alert(`حدث خطأ أثناء الحفظ: ${error.message}`);
     } finally {
       setIsLoading(false);
     }
@@ -84,233 +84,221 @@ export default function AnnualPlanForm({
   if (!open) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center" dir="rtl">
+    <div className="fixed inset-0 z-50 flex items-center justify-center px-4" dir="rtl">
       <div className="absolute inset-0 bg-black/40" onClick={() => onOpenChange(false)} />
-      <div className="relative bg-white rounded-2xl shadow-xl border border-gray-200 w-full max-w-4xl p-6 max-h-[90vh] overflow-y-auto">
-        <div className="flex items-center justify-between mb-4">
-          <h3 className="text-xl font-semibold">إنشاء الخطة السنوية</h3>
-          <button className="text-gray-500 hover:text-gray-700" onClick={() => onOpenChange(false)}>
-            ✕
-          </button>
-        </div>
-
-        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-          {/* القسم (1): المعلومات الأساسية */}
-          <section className="space-y-4">
-            <h4 className="text-lg font-medium text-gray-900 border-b pb-2">المعلومات الأساسية</h4>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">عنوان الخطة</label>
-                <input
-                  {...form.register('title')}
-                  placeholder="الخطة السنوية للتدقيق الداخلي لعام 2026"
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                />
-                {form.formState.errors.title && (
-                  <p className="mt-1 text-sm text-red-600">{form.formState.errors.title.message}</p>
-                )}
-              </div>
-
-              <div className="grid grid-cols-2 gap-3">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    السنة المالية
-                  </label>
-                  <input
-                    type="number"
-                    {...form.register('fiscalYear', { valueAsNumber: true })}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">الإصدار</label>
-                  <input
-                    {...form.register('version')}
-                    placeholder="1.0"
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                  />
-                </div>
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">حالة الخطة</label>
-                <select
-                  {...form.register('status')}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                >
-                  <option value="draft">مسودة</option>
-                  <option value="under_review">قيد المراجعة</option>
-                  <option value="approved">معتمدة</option>
-                  <option value="cancelled">ملغاة</option>
-                  <option value="completed">مكتملة</option>
-                </select>
-              </div>
-
-              <div className="grid grid-cols-2 gap-3">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">الإدارة</label>
-                  <select
-                    {...form.register('orgUnitId')}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                  >
-                    <option value="">—</option>
-                    {orgOptions.map(o => (
-                      <option key={o.id} value={o.id}>
-                        {o.name}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">القسم</label>
-                  <select
-                    {...form.register('departmentId')}
-                    disabled={!selectedOrg}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 disabled:bg-gray-100"
-                  >
-                    <option value="">—</option>
-                    {selectedOrg?.depts?.map(d => (
-                      <option key={d.id} value={d.id}>
-                        {d.name}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-              </div>
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                مقدمة / ملخص تنفيذي
-              </label>
-              <textarea
-                rows={4}
-                {...form.register('introduction')}
-                placeholder="منهجية التدقيق المبني على المخاطر…"
-                className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-              />
-            </div>
-          </section>
-
-          {/* القسم (2): الموارد والتوزيع */}
-          <section className="space-y-4">
-            <h4 className="text-lg font-medium text-gray-900 border-b pb-2">
-              تحديد الموارد وتوزيعها
-            </h4>
-
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  إجمالي الساعات المتاحة
-                </label>
-                <input
-                  type="number"
-                  {...form.register('totalAvailableHours', { valueAsNumber: true })}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                />
-              </div>
-
-              <div className="rounded-lg border border-gray-200 p-3 bg-slate-50">
-                <div className="text-xs text-slate-500">الإجمالي المُخصص</div>
-                <div className="text-lg font-semibold">{allocation}</div>
-              </div>
-
-              <div
-                className={`rounded-lg border p-3 ${
-                  remaining < 0
-                    ? 'bg-rose-50 border-rose-200 text-rose-700'
-                    : 'bg-emerald-50 border-emerald-200 text-emerald-700'
-                }`}
-              >
-                <div className="text-xs">{remaining < 0 ? 'تجاوز الساعات' : 'المتبقي'}</div>
-                <div className="text-lg font-semibold">{remaining}</div>
-              </div>
-            </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  مهام التدقيق المخطط لها
-                </label>
-                <input
-                  type="number"
-                  {...form.register('plannedTaskHours', { valueAsNumber: true })}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  مهام استشارية
-                </label>
-                <input
-                  type="number"
-                  {...form.register('advisoryHours', { valueAsNumber: true })}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  مهام خاصة / طارئة
-                </label>
-                <input
-                  type="number"
-                  {...form.register('emergencyHours', { valueAsNumber: true })}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  متابعة توصيات التدقيق
-                </label>
-                <input
-                  type="number"
-                  {...form.register('followUpHours', { valueAsNumber: true })}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  التدريب والتطوير
-                </label>
-                <input
-                  type="number"
-                  {...form.register('trainingHours', { valueAsNumber: true })}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  الشؤون الإدارية
-                </label>
-                <input
-                  type="number"
-                  {...form.register('administrativeHours', { valueAsNumber: true })}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                />
-              </div>
-            </div>
-          </section>
-
-          {/* الأزرار */}
-          <div className="flex items-center justify-end gap-3 pt-4 border-t">
+      <div className="relative w-full max-w-4xl">
+        <div className="flex max-h-[88vh] flex-col overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-xl">
+          <div className="flex items-center justify-between border-b px-6 py-4">
+            <h3 className="text-xl font-semibold">إنشاء الخطة السنوية</h3>
             <button
               type="button"
               onClick={() => onOpenChange(false)}
-              className="px-4 py-2 rounded-md border border-gray-300 text-gray-700 hover:bg-gray-50 transition-colors"
-              disabled={isLoading}
+              className="rounded-full p-2 text-gray-500 transition-colors hover:bg-gray-100 hover:text-gray-700"
+              aria-label="إغلاق"
             >
-              إلغاء
-            </button>
-            <button
-              type="submit"
-              disabled={isLoading || remaining < 0}
-              className="px-3 py-1.5 text-sm rounded-md border font-medium transition-colors whitespace-nowrap bg-blue-600 text-white border-blue-600 hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed"
-            >
-              {isLoading ? 'جاري الحفظ...' : 'حفظ'}
+              ✕
             </button>
           </div>
-        </form>
+
+          <form onSubmit={form.handleSubmit(onSubmit)} className="flex flex-1 flex-col overflow-hidden">
+            <div className="flex-1 space-y-5 overflow-y-auto overflow-x-hidden px-6 py-4">
+              {/* القسم (1): البيانات التعريفية */}
+              <section className="space-y-3">
+                <h4 className="border-b pb-2 text-lg font-medium text-gray-900">البيانات التعريفية</h4>
+
+                <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+                  <div>
+                    <label className="mb-1 block text-sm font-medium text-gray-700">عنوان الخطة</label>
+                    <input
+                      {...form.register('title')}
+                      placeholder="الخطة السنوية للإدارة العامة لعام 2026"
+                      className="w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    />
+                    {form.formState.errors.title && (
+                      <p className="mt-1 text-sm text-red-600">{form.formState.errors.title.message}</p>
+                    )}
+                  </div>
+
+                  <div className="grid grid-cols-2 gap-3">
+                    <div>
+                      <label className="mb-1 block text-sm font-medium text-gray-700">السنة المالية</label>
+                      <input
+                        type="number"
+                        {...form.register('fiscalYear', { valueAsNumber: true })}
+                        className="w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      />
+                    </div>
+                    <div>
+                      <label className="mb-1 block text-sm font-medium text-gray-700">الإصدار</label>
+                      <input
+                        {...form.register('version')}
+                        placeholder="1.0"
+                        className="w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      />
+                    </div>
+                  </div>
+
+                  <div>
+                    <label className="mb-1 block text-sm font-medium text-gray-700">حالة الخطة</label>
+                    <select
+                      {...form.register('status')}
+                      className="w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    >
+                      <option value="draft">مسودة</option>
+                      <option value="under_review">قيد المراجعة</option>
+                      <option value="approved">معتمدة</option>
+                      <option value="cancelled">ملغاة</option>
+                      <option value="completed">مغلقة</option>
+                    </select>
+                  </div>
+
+                  <div className="grid grid-cols-2 gap-3">
+                    <div>
+                      <label className="mb-1 block text-sm font-medium text-gray-700">المنشأة</label>
+                      <select
+                        {...form.register('orgUnitId')}
+                        className="w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      >
+                        <option value="">-</option>
+                        {orgOptions.map(o => (
+                          <option key={o.id} value={o.id}>
+                            {o.name}
+                          </option>
+                        ))}
+                      </select>
+                    </div>
+                    <div>
+                      <label className="mb-1 block text-sm font-medium text-gray-700">القسم</label>
+                      <select
+                        {...form.register('departmentId')}
+                        disabled={!selectedOrg}
+                        className="w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:bg-gray-100"
+                      >
+                        <option value="">-</option>
+                        {selectedOrg?.depts?.map(d => (
+                          <option key={d.id} value={d.id}>
+                            {d.name}
+                          </option>
+                        ))}
+                      </select>
+                    </div>
+                  </div>
+                </div>
+
+                <div>
+                  <label className="mb-1 block text-sm font-medium text-gray-700">ملخص / مقدمة الخطة</label>
+                  <textarea
+                    rows={4}
+                    {...form.register('introduction')}
+                    placeholder="أدخل نبذة تعريفية قصيرة عن الخطة."
+                    className="w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  />
+                </div>
+              </section>
+
+              {/* القسم (2): موازنة الساعات */}
+              <section className="space-y-3">
+                <h4 className="border-b pb-2 text-lg font-medium text-gray-900">موازنة الساعات والخطط</h4>
+
+                <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
+                  <div>
+                    <label className="mb-1 block text-sm font-medium text-gray-700">إجمالي الساعات المتاحة</label>
+                    <input
+                      type="number"
+                      {...form.register('totalAvailableHours', { valueAsNumber: true })}
+                      className="w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    />
+                  </div>
+
+                  <div className="rounded-lg border border-gray-200 bg-slate-50 p-3">
+                    <div className="text-xs text-slate-500">إجمالي الساعات المخططة</div>
+                    <div className="text-lg font-semibold">{allocation}</div>
+                  </div>
+
+                  <div
+                    className={`rounded-lg border p-3 ${
+                      remaining < 0
+                        ? 'border-rose-200 bg-rose-50 text-rose-700'
+                        : 'border-emerald-200 bg-emerald-50 text-emerald-700'
+                    }`}
+                  >
+                    <div className="text-xs">{remaining < 0 ? 'عجز في الساعات' : 'ساعات متبقية'}</div>
+                    <div className="text-lg font-semibold">{remaining}</div>
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
+                  <div>
+                    <label className="mb-1 block text-sm font-medium text-gray-700">ساعات المهام المخططة</label>
+                    <input
+                      type="number"
+                      {...form.register('plannedTaskHours', { valueAsNumber: true })}
+                      className="w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    />
+                  </div>
+                  <div>
+                    <label className="mb-1 block text-sm font-medium text-gray-700">ساعات الاستشارات</label>
+                    <input
+                      type="number"
+                      {...form.register('advisoryHours', { valueAsNumber: true })}
+                      className="w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    />
+                  </div>
+                  <div>
+                    <label className="mb-1 block text-sm font-medium text-gray-700">ساعات طوارئ / احتياط</label>
+                    <input
+                      type="number"
+                      {...form.register('emergencyHours', { valueAsNumber: true })}
+                      className="w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    />
+                  </div>
+                  <div>
+                    <label className="mb-1 block text-sm font-medium text-gray-700">ساعات المتابعة اللاحقة</label>
+                    <input
+                      type="number"
+                      {...form.register('followUpHours', { valueAsNumber: true })}
+                      className="w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    />
+                  </div>
+                  <div>
+                    <label className="mb-1 block text-sm font-medium text-gray-700">ساعات التدريب</label>
+                    <input
+                      type="number"
+                      {...form.register('trainingHours', { valueAsNumber: true })}
+                      className="w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    />
+                  </div>
+                  <div>
+                    <label className="mb-1 block text-sm font-medium text-gray-700">ساعات الأعمال الإدارية</label>
+                    <input
+                      type="number"
+                      {...form.register('administrativeHours', { valueAsNumber: true })}
+                      className="w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    />
+                  </div>
+                </div>
+              </section>
+            </div>
+
+            <div className="flex flex-shrink-0 items-center justify-end gap-3 border-t bg-white px-6 py-4">
+              <button
+                type="button"
+                onClick={() => onOpenChange(false)}
+                className="rounded-md border border-gray-300 px-4 py-2 text-gray-700 transition-colors hover:bg-gray-50"
+                disabled={isLoading}
+              >
+                إلغاء
+              </button>
+              <button
+                type="submit"
+                disabled={isLoading || remaining < 0}
+                className="whitespace-nowrap rounded-md border border-blue-600 bg-blue-600 px-3 py-1.5 text-sm font-medium text-white transition-colors hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-50"
+              >
+                {isLoading ? 'جارٍ الحفظ...' : 'حفظ'}
+              </button>
+            </div>
+          </form>
+        </div>
       </div>
     </div>
   );
