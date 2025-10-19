@@ -17,12 +17,14 @@ export default function RegisterPage() {
     email: '',
     password: '',
     confirmPassword: '',
+    role: 'User',
   });
   const [errors, setErrors] = useState<{
     name?: string;
     email?: string;
     password?: string;
     confirmPassword?: string;
+    role?: string;
   }>({});
   const [isLoading, setIsLoading] = useState(false);
 
@@ -54,8 +56,8 @@ export default function RegisterPage() {
       newErrors.confirmPassword = t.common.passwordMismatch;
     }
 
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
+  setErrors(newErrors);
+  return Object.keys(newErrors).length === 0;
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -75,6 +77,7 @@ export default function RegisterPage() {
           name: formData.name,
           email: formData.email,
           password: formData.password,
+          role: formData.role,
         }),
       });
 
@@ -125,6 +128,7 @@ export default function RegisterPage() {
 
         <Card className="mt-8">
           <form onSubmit={handleSubmit} className="space-y-6">
+
             <Input
               label={t.common.name}
               type="text"
@@ -148,6 +152,21 @@ export default function RegisterPage() {
               className="text-right"
               placeholder={t.common.email}
             />
+
+            <div>
+              <label className="block text-sm font-medium mb-1">الصلاحية</label>
+              <select
+                name="role"
+                value={formData.role}
+                onChange={handleInputChange}
+                className="w-full rounded-lg border border-gray-300 px-3 py-2 text-right"
+                required
+              >
+                <option value="User">User</option>
+                <option value="Admin">Admin</option>
+              </select>
+              {errors.role && <p className="text-red-500 text-xs mt-1">{errors.role}</p>}
+            </div>
 
             <Input
               label={t.common.password}
