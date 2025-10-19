@@ -19,6 +19,14 @@ export default {
       },
     },
     extend: {
+      fontFamily: {
+        arabic: [
+          'Tajawal',
+          'Cairo',
+          'Noto Sans Arabic',
+          'sans-serif',
+        ],
+      },
       colors: {
         background: 'var(--background)',
         foreground: 'var(--foreground)',
