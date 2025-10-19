@@ -1,0 +1,14 @@
+ملفات التنفيذ الجاهزة:
+- audit_db_schema.sql: DDL كامل للكيانات الأساسية
+- install_postgres.ps1: سكربت تثبيت وإعداد PostgreSQL
+- backup_postgres.ps1: سكربت نسخ احتياطي يومي
+- settings.ini: إعدادات الاتصال والنسخ الاحتياطي
+- docs/operation_guide.md: دليل التشغيل والصيانة
+
+للاستخدام على ChatGPT أو أي منصة:
+1. انسخ الملفات إلى بيئة العمل.
+2. نفذ install_postgres.ps1 لتثبيت القاعدة.
+3. نفذ audit_db_schema.sql عبر pgAdmin أو psql لإنشاء الجداول.
+4. عدّل settings.ini حسب بيئتك.
+5. استخدم backup_postgres.ps1 للنسخ الاحتياطي.
+6. راجع operation_guide.md لأي استفسار أو صيانة.
