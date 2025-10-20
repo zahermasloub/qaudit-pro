@@ -12,6 +12,7 @@ const I18N = {
     menu: {
       dashboard: 'لوحة القيادة',
       annualPlan: 'الخطة السنوية',
+      rbiaplan: 'الخطة السنوية RBIA',
       planning: '1) التخطيط',
       processRisk: '2) فهم العملية والمخاطر',
       program: '3) برنامج العمل والعينات',
@@ -74,6 +75,7 @@ const I18N = {
     },
     sections: {
       annualPlan: 'الخطة السنوية',
+      rbiaplan: 'الخطة السنوية RBIA',
       planning: 'الخطة ومهام PBC',
       processRisk: 'خرائط العملية و RCM',
       program: 'برنامج الاختبارات والعينات',
@@ -144,6 +146,7 @@ const I18N = {
     menu: {
       dashboard: 'Dashboard',
       annualPlan: 'Annual Plan',
+      rbiaplan: 'RBIA Annual Plan',
       planning: '1) Planning',
       processRisk: '2) Process & Risk',
       program: '3) Program & Sampling',
@@ -206,6 +209,7 @@ const I18N = {
     },
     sections: {
       annualPlan: 'Annual Plan',
+      rbiaplan: 'RBIA Annual Plan',
       planning: 'Plan & PBC',
       processRisk: 'Process maps & RCM',
       program: 'Test program & sampling',

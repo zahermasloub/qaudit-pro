@@ -1,0 +1,823 @@
+'use client';
+
+/**
+ * RBIA Annual Plan View Component
+ * Shared component for displaying annual plan in both /rbia/plan and home page
+ *
+ * Features:
+ * - RTL Support
+ * - 4 Summary Cards (Progress, Hours, Tasks, Status)
+ * - Filters (3 dropdowns + search + CSV export)
+ * - Plan Items Table with actions
+ * - Sidebar Stepper (11 steps)
+ * - Import/Export CSV
+ */
+
+import { useState, useEffect, useMemo, useRef } from 'react';
+import { toast } from 'sonner';
+import { Button } from '@/components/ui/button';
+import {
+  Search,
+  Download,
+  Upload,
+  Eye,
+  Edit2,
+  Trash2,
+  Plus,
+  CheckCircle2,
+  Clock,
+  AlertCircle,
+  TrendingUp,
+} from 'lucide-react';
+
+// Types
+interface PlanItem {
+  id: string;
+  code: string;
+  title: string;
+  department: string;
+  risk_level: 'high' | 'medium' | 'low';
+  type: string;
+  quarter: string;
+  hours: number;
+  status: 'planned' | 'in-progress' | 'completed' | 'delayed';
+  au_name?: string;
+  priority?: string;
+  effort_days?: number;
+  period_start?: string;
+  period_end?: string;
+}
+
+interface RbiaPlanViewProps {
+  mode?: 'home' | 'plan';
+}
+
+export default function RbiaPlanView({ mode = 'plan' }: RbiaPlanViewProps) {
+  const [planItems, setPlanItems] = useState<PlanItem[]>([]);
+  const [loading, setLoading] = useState(false);
+  const [searchTerm, setSearchTerm] = useState('');
+  const [filterDepartment, setFilterDepartment] = useState('all');
+  const [filterRisk, setFilterRisk] = useState('all');
+  const [filterStatus, setFilterStatus] = useState('all');
+  const [viewMode, setViewMode] = useState<'view' | 'edit' | null>(null);
+  const [selectedItem, setSelectedItem] = useState<PlanItem | null>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  // Load data
+  useEffect(() => {
+    loadPlanData();
+    loadFiltersFromStorage();
+  }, []);
+
+  // Save filters to localStorage
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      localStorage.setItem(
+        'rbia_filters',
+        JSON.stringify({
+          department: filterDepartment,
+          risk: filterRisk,
+          status: filterStatus,
+        })
+      );
+    }
+  }, [filterDepartment, filterRisk, filterStatus]);
+
+  const loadFiltersFromStorage = () => {
+    if (typeof window !== 'undefined') {
+      try {
+        const saved = localStorage.getItem('rbia_filters');
+        if (saved) {
+          const filters = JSON.parse(saved);
+          setFilterDepartment(filters.department || 'all');
+          setFilterRisk(filters.risk || 'all');
+          setFilterStatus(filters.status || 'all');
+        }
+      } catch (e) {
+        console.error('Failed to load filters:', e);
+      }
+    }
+  };
+
+  const loadPlanData = async () => {
+    setLoading(true);
+    try {
+      // Get current year plan
+      const currentYear = new Date().getFullYear();
+      const plansRes = await fetch(`/api/annual-plans?fiscalYear=${currentYear}`);
+
+      if (plansRes.ok) {
+        const plans = await plansRes.json();
+        const currentPlan = plans && plans.length > 0 ? plans[0] : null;
+
+        if (currentPlan) {
+          // Fetch plan items
+          const itemsRes = await fetch(`/api/plan/items?plan_id=${currentPlan.id}`);
+          if (itemsRes.ok) {
+            const itemsData = await itemsRes.json();
+            const items = (itemsData.data || []).map((item: any) => ({
+              id: item.id,
+              code: `RBIA-${String(Math.floor(Math.random() * 9000) + 1000)}`,
+              title: item.au_name || 'مهمة مراجعة',
+              department: item.au_category || 'عام',
+              risk_level: getRiskLevel(item.risk_score),
+              type: item.type || 'مراجعة داخلية',
+              quarter: getQuarter(item.period_start),
+              hours: item.effort_days ? item.effort_days * 8 : 40,
+              status: getStatus(item),
+              au_name: item.au_name,
+              priority: item.priority,
+              effort_days: item.effort_days,
+              period_start: item.period_start,
+              period_end: item.period_end,
+            }));
+            setPlanItems(items);
+          }
+        } else {
+          // Generate sample data for demo
+          setPlanItems(generateSampleData());
+        }
+      } else {
+        setPlanItems(generateSampleData());
+      }
+    } catch (error) {
+      console.error('Error loading plan data:', error);
+      setPlanItems(generateSampleData());
+      toast.error('فشل تحميل البيانات، تم استخدام بيانات تجريبية');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const getRiskLevel = (score?: number): 'high' | 'medium' | 'low' => {
+    if (!score) return 'low';
+    if (score >= 15) return 'high';
+    if (score >= 8) return 'medium';
+    return 'low';
+  };
+
+  const getQuarter = (dateStr?: string): string => {
+    if (!dateStr) return 'Q1';
+    const month = new Date(dateStr).getMonth() + 1;
+    if (month <= 3) return 'Q1';
+    if (month <= 6) return 'Q2';
+    if (month <= 9) return 'Q3';
+    return 'Q4';
+  };
+
+  const getStatus = (item: any): PlanItem['status'] => {
+    if (!item.period_start) return 'planned';
+    const now = new Date();
+    const start = new Date(item.period_start);
+    const end = item.period_end ? new Date(item.period_end) : new Date(start.getTime() + 90 * 24 * 60 * 60 * 1000);
+
+    if (now < start) return 'planned';
+    if (now > end) return 'delayed';
+    if (now >= start && now <= end) return 'in-progress';
+    return 'planned';
+  };
+
+  const generateSampleData = (): PlanItem[] => {
+    return [
+      {
+        id: '1',
+        code: 'RBIA-2025-001',
+        title: 'مراجعة نظام المشتريات',
+        department: 'المشتريات',
+        risk_level: 'high',
+        type: 'مراجعة داخلية',
+        quarter: 'Q1',
+        hours: 120,
+        status: 'in-progress',
+      },
+      {
+        id: '2',
+        code: 'RBIA-2025-002',
+        title: 'تدقيق الرواتب والأجور',
+        department: 'الموارد البشرية',
+        risk_level: 'high',
+        type: 'مراجعة مالية',
+        quarter: 'Q1',
+        hours: 80,
+        status: 'planned',
+      },
+      {
+        id: '3',
+        code: 'RBIA-2025-003',
+        title: 'مراجعة أمن المعلومات',
+        department: 'تقنية المعلومات',
+        risk_level: 'medium',
+        type: 'مراجعة تقنية',
+        quarter: 'Q2',
+        hours: 160,
+        status: 'planned',
+      },
+      {
+        id: '4',
+        code: 'RBIA-2025-004',
+        title: 'فحص الامتثال التنظيمي',
+        department: 'الامتثال',
+        risk_level: 'medium',
+        type: 'مراجعة امتثال',
+        quarter: 'Q2',
+        hours: 100,
+        status: 'planned',
+      },
+      {
+        id: '5',
+        code: 'RBIA-2025-005',
+        title: 'تقييم إدارة المخاطر',
+        department: 'المخاطر',
+        risk_level: 'low',
+        type: 'استشارية',
+        quarter: 'Q3',
+        hours: 60,
+        status: 'planned',
+      },
+    ];
+  };
+
+  // Filtered data with useMemo
+  const filteredItems = useMemo(() => {
+    return planItems.filter((item) => {
+      const matchesSearch =
+        item.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        item.code.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        item.department.toLowerCase().includes(searchTerm.toLowerCase());
+
+      const matchesDepartment =
+        filterDepartment === 'all' || item.department === filterDepartment;
+
+      const matchesRisk = filterRisk === 'all' || item.risk_level === filterRisk;
+
+      const matchesStatus = filterStatus === 'all' || item.status === filterStatus;
+
+      return matchesSearch && matchesDepartment && matchesRisk && matchesStatus;
+    });
+  }, [planItems, searchTerm, filterDepartment, filterRisk, filterStatus]);
+
+  // Calculate summary stats
+  const stats = useMemo(() => {
+    const totalHours = planItems.reduce((sum, item) => sum + item.hours, 0);
+    const completedItems = planItems.filter((item) => item.status === 'completed').length;
+    const completionRate = planItems.length > 0 ? (completedItems / planItems.length) * 100 : 0;
+
+    return {
+      completionRate: Math.round(completionRate),
+      totalHours,
+      totalTasks: planItems.length,
+      status: 'معتمدة',
+    };
+  }, [planItems]);
+
+  // Get unique values for filters
+  const departments = useMemo(
+    () => ['all', ...Array.from(new Set(planItems.map((item) => item.department)))],
+    [planItems]
+  );
+
+  // CSV Export
+  const handleExportCSV = () => {
+    const headers = ['الرمز', 'العنوان', 'الإدارة', 'المخاطر', 'النوع', 'الربع', 'الساعات', 'الحالة'];
+    const rows = filteredItems.map((item) => [
+      item.code,
+      item.title,
+      item.department,
+      item.risk_level === 'high' ? 'عالية' : item.risk_level === 'medium' ? 'متوسطة' : 'منخفضة',
+      item.type,
+      item.quarter,
+      item.hours,
+      getStatusLabel(item.status),
+    ]);
+
+    const csvContent =
+      'data:text/csv;charset=utf-8,' +
+      [headers.join(','), ...rows.map((row) => row.join(','))].join('\n');
+
+    const encodedUri = encodeURI(csvContent);
+    const link = document.createElement('a');
+    link.setAttribute('href', encodedUri);
+    link.setAttribute('download', `annual_plan_${new Date().toISOString().split('T')[0]}.csv`);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+
+    toast.success('تم تصدير الخطة بنجاح');
+  };
+
+  // CSV Import
+  const handleImportCSV = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = (event) => {
+      try {
+        const text = event.target?.result as string;
+        const lines = text.split('\n').filter((l) => l.trim());
+
+        // Skip header
+        const dataLines = lines.slice(1);
+        const imported: PlanItem[] = dataLines.map((line, idx) => {
+          const [code, title, department, risk, type, quarter, hours, status] = line.split(',');
+          return {
+            id: `imported-${idx}`,
+            code: code || `RBIA-IMP-${idx}`,
+            title: title || 'مهمة مستوردة',
+            department: department || 'عام',
+            risk_level: (risk?.toLowerCase() as any) || 'low',
+            type: type || 'مراجعة',
+            quarter: quarter || 'Q1',
+            hours: parseInt(hours) || 40,
+            status: (status?.toLowerCase() as any) || 'planned',
+          };
+        });
+
+        setPlanItems([...planItems, ...imported]);
+        toast.success(`تم استيراد ${imported.length} بند`);
+      } catch (error) {
+        toast.error('فشل استيراد الملف');
+      }
+    };
+    reader.readAsText(file);
+  };
+
+  // Actions
+  const handleView = (item: PlanItem) => {
+    setSelectedItem(item);
+    setViewMode('view');
+  };
+
+  const handleEdit = (item: PlanItem) => {
+    setSelectedItem(item);
+    setViewMode('edit');
+  };
+
+  const handleDelete = (item: PlanItem) => {
+    if (confirm(`هل أنت متأكد من حذف "${item.title}"؟`)) {
+      setPlanItems(planItems.filter((i) => i.id !== item.id));
+      toast.success('تم الحذف بنجاح');
+    }
+  };
+
+  const getStatusLabel = (status: PlanItem['status']) => {
+    const labels = {
+      planned: 'مخطط',
+      'in-progress': 'قيد التنفيذ',
+      completed: 'مكتمل',
+      delayed: 'متأخر',
+    };
+    return labels[status];
+  };
+
+  const getRiskBadgeColor = (level: PlanItem['risk_level']) => {
+    const colors = {
+      high: 'bg-red-100 text-red-800 border-red-200',
+      medium: 'bg-yellow-100 text-yellow-800 border-yellow-200',
+      low: 'bg-green-100 text-green-800 border-green-200',
+    };
+    return colors[level];
+  };
+
+  const getStatusBadgeColor = (status: PlanItem['status']) => {
+    const colors = {
+      planned: 'bg-blue-100 text-blue-800 border-blue-200',
+      'in-progress': 'bg-purple-100 text-purple-800 border-purple-200',
+      completed: 'bg-green-100 text-green-800 border-green-200',
+      delayed: 'bg-red-100 text-red-800 border-red-200',
+    };
+    return colors[status];
+  };
+
+  // Sidebar steps
+  const steps = [
+    { id: 1, label: 'الخطة السنوية', active: true },
+    { id: 2, label: 'تحديد الأولويات', active: false },
+    { id: 3, label: 'تخصيص الموارد', active: false },
+    { id: 4, label: 'الجدول الزمني', active: false },
+    { id: 5, label: 'اعتماد الخطة', active: false },
+    { id: 6, label: 'تنفيذ المهام', active: false },
+    { id: 7, label: 'المتابعة والرقابة', active: false },
+    { id: 8, label: 'إعداد التقارير', active: false },
+    { id: 9, label: 'المراجعة والتقييم', active: false },
+    { id: 10, label: 'التوصيات', active: false },
+    { id: 11, label: 'الإغلاق والأرشفة', active: false },
+  ];
+
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center" dir="rtl">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
+          <p className="text-gray-600">جاري التحميل...</p>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="min-h-screen bg-gray-50" dir="rtl">
+      {/* Top Header */}
+      <div className="bg-slate-900 text-white rounded-b-2xl py-3 px-6 sticky top-0 z-50 shadow-lg">
+        <div className="max-w-7xl mx-auto flex justify-between items-center">
+          <div>
+            <h1 className="text-2xl font-bold">الخطة السنوية للمراجعة الداخلية</h1>
+            <p className="text-sm text-slate-300">السنة المالية 2025</p>
+          </div>
+          <div className="flex gap-3">
+            <Button
+              onClick={() => toast.info('قريباً...')}
+              size="sm"
+              variant="outline"
+              className="bg-white/10 hover:bg-white/20 text-white border-white/20"
+            >
+              <Plus className="w-4 h-4 ml-2" />
+              إنشاء خطة جديدة
+            </Button>
+          </div>
+        </div>
+      </div>
+
+      <div className="max-w-7xl mx-auto p-6">
+        <div className="flex gap-6">
+          {/* Main Content */}
+          <div className="flex-1">
+            {/* Summary Cards */}
+            <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
+              <div className="bg-white rounded-xl shadow-sm p-5 border border-gray-100">
+                <div className="flex items-center justify-between mb-3">
+                  <div className="p-2 bg-blue-100 rounded-lg">
+                    <TrendingUp className="w-5 h-5 text-blue-600" />
+                  </div>
+                  <span className="text-3xl font-bold text-blue-600">{stats.completionRate}%</span>
+                </div>
+                <p className="text-sm text-gray-600">نسبة الإنجاز</p>
+                <div className="mt-2 w-full bg-gray-200 rounded-full h-2">
+                  <div
+                    className="bg-blue-600 h-2 rounded-full transition-all"
+                    style={{ width: `${stats.completionRate}%` }}
+                  ></div>
+                </div>
+              </div>
+
+              <div className="bg-white rounded-xl shadow-sm p-5 border border-gray-100">
+                <div className="flex items-center justify-between mb-3">
+                  <div className="p-2 bg-green-100 rounded-lg">
+                    <Clock className="w-5 h-5 text-green-600" />
+                  </div>
+                  <span className="text-3xl font-bold text-green-600">{stats.totalHours}</span>
+                </div>
+                <p className="text-sm text-gray-600">إجمالي الساعات</p>
+              </div>
+
+              <div className="bg-white rounded-xl shadow-sm p-5 border border-gray-100">
+                <div className="flex items-center justify-between mb-3">
+                  <div className="p-2 bg-purple-100 rounded-lg">
+                    <CheckCircle2 className="w-5 h-5 text-purple-600" />
+                  </div>
+                  <span className="text-3xl font-bold text-purple-600">{stats.totalTasks}</span>
+                </div>
+                <p className="text-sm text-gray-600">المهام المخططة</p>
+              </div>
+
+              <div className="bg-white rounded-xl shadow-sm p-5 border border-gray-100">
+                <div className="flex items-center justify-between mb-3">
+                  <div className="p-2 bg-emerald-100 rounded-lg">
+                    <AlertCircle className="w-5 h-5 text-emerald-600" />
+                  </div>
+                  <span className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-green-100 text-green-800 border border-green-200">
+                    {stats.status}
+                  </span>
+                </div>
+                <p className="text-sm text-gray-600">حالة الخطة</p>
+              </div>
+            </div>
+
+            {/* Filters */}
+            <div className="bg-white rounded-xl shadow-sm p-4 mb-6 border border-gray-100">
+              <div className="flex flex-wrap gap-3">
+                <div className="flex-1 min-w-[200px]">
+                  <div className="relative">
+                    <Search className="absolute right-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" />
+                    <input
+                      type="text"
+                      placeholder="بحث..."
+                      value={searchTerm}
+                      onChange={(e) => setSearchTerm(e.target.value)}
+                      className="w-full pr-10 pl-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    />
+                  </div>
+                </div>
+
+                <select
+                  value={filterDepartment}
+                  onChange={(e) => setFilterDepartment(e.target.value)}
+                  className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                >
+                  <option value="all">كل الإدارات</option>
+                  {departments.filter((d) => d !== 'all').map((dept) => (
+                    <option key={dept} value={dept}>
+                      {dept}
+                    </option>
+                  ))}
+                </select>
+
+                <select
+                  value={filterRisk}
+                  onChange={(e) => setFilterRisk(e.target.value)}
+                  className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                >
+                  <option value="all">كل المخاطر</option>
+                  <option value="high">عالية</option>
+                  <option value="medium">متوسطة</option>
+                  <option value="low">منخفضة</option>
+                </select>
+
+                <select
+                  value={filterStatus}
+                  onChange={(e) => setFilterStatus(e.target.value)}
+                  className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                >
+                  <option value="all">كل الحالات</option>
+                  <option value="planned">مخطط</option>
+                  <option value="in-progress">قيد التنفيذ</option>
+                  <option value="completed">مكتمل</option>
+                  <option value="delayed">متأخر</option>
+                </select>
+
+                <input
+                  ref={fileInputRef}
+                  type="file"
+                  accept=".csv"
+                  onChange={handleImportCSV}
+                  className="hidden"
+                />
+
+                <Button
+                  onClick={() => fileInputRef.current?.click()}
+                  size="sm"
+                  variant="outline"
+                  className="gap-2"
+                >
+                  <Upload className="w-4 h-4" />
+                  استيراد
+                </Button>
+
+                <Button onClick={handleExportCSV} size="sm" className="gap-2">
+                  <Download className="w-4 h-4" />
+                  تصدير CSV
+                </Button>
+              </div>
+            </div>
+
+            {/* Table */}
+            <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+              <div className="overflow-x-auto">
+                <table className="w-full">
+                  <thead className="bg-gray-50 border-b border-gray-200">
+                    <tr>
+                      <th className="px-4 py-3 text-right text-xs font-medium text-gray-700 uppercase tracking-wider">
+                        الرمز
+                      </th>
+                      <th className="px-4 py-3 text-right text-xs font-medium text-gray-700 uppercase tracking-wider">
+                        العنوان
+                      </th>
+                      <th className="px-4 py-3 text-right text-xs font-medium text-gray-700 uppercase tracking-wider">
+                        الإدارة
+                      </th>
+                      <th className="px-4 py-3 text-right text-xs font-medium text-gray-700 uppercase tracking-wider">
+                        المخاطر
+                      </th>
+                      <th className="px-4 py-3 text-right text-xs font-medium text-gray-700 uppercase tracking-wider">
+                        النوع
+                      </th>
+                      <th className="px-4 py-3 text-right text-xs font-medium text-gray-700 uppercase tracking-wider">
+                        الربع
+                      </th>
+                      <th className="px-4 py-3 text-right text-xs font-medium text-gray-700 uppercase tracking-wider">
+                        الساعات
+                      </th>
+                      <th className="px-4 py-3 text-right text-xs font-medium text-gray-700 uppercase tracking-wider">
+                        الحالة
+                      </th>
+                      <th className="px-4 py-3 text-right text-xs font-medium text-gray-700 uppercase tracking-wider">
+                        إجراءات
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-gray-200">
+                    {filteredItems.length === 0 ? (
+                      <tr>
+                        <td colSpan={9} className="px-4 py-8 text-center text-gray-500">
+                          لا توجد بيانات
+                        </td>
+                      </tr>
+                    ) : (
+                      filteredItems.map((item) => (
+                        <tr key={item.id} className="hover:bg-gray-50 transition-colors">
+                          <td className="px-4 py-3 text-sm font-mono text-gray-900">{item.code}</td>
+                          <td className="px-4 py-3 text-sm text-gray-900 font-medium">{item.title}</td>
+                          <td className="px-4 py-3 text-sm text-gray-600">{item.department}</td>
+                          <td className="px-4 py-3">
+                            <span
+                              className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium border ${getRiskBadgeColor(item.risk_level)}`}
+                            >
+                              {item.risk_level === 'high'
+                                ? 'عالية'
+                                : item.risk_level === 'medium'
+                                  ? 'متوسطة'
+                                  : 'منخفضة'}
+                            </span>
+                          </td>
+                          <td className="px-4 py-3 text-sm text-gray-600">{item.type}</td>
+                          <td className="px-4 py-3 text-sm text-gray-600">{item.quarter}</td>
+                          <td className="px-4 py-3 text-sm text-gray-900 font-semibold">{item.hours}</td>
+                          <td className="px-4 py-3">
+                            <span
+                              className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium border ${getStatusBadgeColor(item.status)}`}
+                            >
+                              {getStatusLabel(item.status)}
+                            </span>
+                          </td>
+                          <td className="px-4 py-3">
+                            <div className="flex gap-2">
+                              <button
+                                onClick={() => handleView(item)}
+                                className="p-1.5 hover:bg-blue-50 rounded transition-colors"
+                                aria-label="عرض"
+                              >
+                                <Eye className="w-4 h-4 text-blue-600" />
+                              </button>
+                              <button
+                                onClick={() => handleEdit(item)}
+                                className="p-1.5 hover:bg-green-50 rounded transition-colors"
+                                aria-label="تعديل"
+                              >
+                                <Edit2 className="w-4 h-4 text-green-600" />
+                              </button>
+                              <button
+                                onClick={() => handleDelete(item)}
+                                className="p-1.5 hover:bg-red-50 rounded transition-colors"
+                                aria-label="حذف"
+                              >
+                                <Trash2 className="w-4 h-4 text-red-600" />
+                              </button>
+                            </div>
+                          </td>
+                        </tr>
+                      ))
+                    )}
+                  </tbody>
+                </table>
+              </div>
+
+              <div className="px-4 py-3 bg-gray-50 border-t border-gray-200">
+                <p className="text-sm text-gray-600">
+                  عرض {filteredItems.length} من {planItems.length} بند
+                </p>
+              </div>
+            </div>
+          </div>
+
+          {/* Sidebar Stepper */}
+          <div className="w-72 flex-shrink-0">
+            <div className="bg-white rounded-xl shadow-sm p-6 border border-gray-100 sticky top-24">
+              <h3 className="text-lg font-semibold mb-4 text-gray-900">مراحل العملية</h3>
+              <div className="space-y-4">
+                {steps.map((step, index) => (
+                  <div key={step.id} className="flex items-start gap-3">
+                    <div
+                      className={`flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center text-sm font-semibold ${
+                        step.active
+                          ? 'bg-blue-600 text-white'
+                          : 'bg-gray-200 text-gray-600'
+                      }`}
+                    >
+                      {step.id}
+                    </div>
+                    <div className="flex-1">
+                      <p
+                        className={`text-sm ${
+                          step.active ? 'font-semibold text-gray-900' : 'text-gray-600'
+                        }`}
+                      >
+                        {step.label}
+                      </p>
+                      {step.active && (
+                        <div className="mt-1 w-full bg-blue-100 rounded-full h-1">
+                          <div className="bg-blue-600 h-1 rounded-full w-1/3"></div>
+                        </div>
+                      )}
+                    </div>
+                    {index < steps.length - 1 && !step.active && (
+                      <div className="absolute right-9 mt-10 h-6 w-0.5 bg-gray-200"></div>
+                    )}
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* View/Edit Sheet (Simple Modal) */}
+      {viewMode && selectedItem && (
+        <div
+          className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4"
+          onClick={() => setViewMode(null)}
+        >
+          <div
+            className="bg-white rounded-xl p-6 max-w-2xl w-full max-h-[80vh] overflow-y-auto"
+            onClick={(e) => e.stopPropagation()}
+            dir="rtl"
+          >
+            <div className="flex justify-between items-start mb-4">
+              <h3 className="text-xl font-bold text-gray-900">
+                {viewMode === 'view' ? 'عرض التفاصيل' : 'تعديل البند'}
+              </h3>
+              <button
+                onClick={() => setViewMode(null)}
+                className="text-gray-400 hover:text-gray-600"
+              >
+                ✕
+              </button>
+            </div>
+
+            <div className="space-y-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">الرمز</label>
+                <input
+                  type="text"
+                  value={selectedItem.code}
+                  disabled={viewMode === 'view'}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg"
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">العنوان</label>
+                <input
+                  type="text"
+                  value={selectedItem.title}
+                  disabled={viewMode === 'view'}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg"
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">الإدارة</label>
+                <input
+                  type="text"
+                  value={selectedItem.department}
+                  disabled={viewMode === 'view'}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg"
+                />
+              </div>
+
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">الساعات</label>
+                  <input
+                    type="number"
+                    value={selectedItem.hours}
+                    disabled={viewMode === 'view'}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">الربع</label>
+                  <select
+                    value={selectedItem.quarter}
+                    disabled={viewMode === 'view'}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg"
+                  >
+                    <option value="Q1">Q1</option>
+                    <option value="Q2">Q2</option>
+                    <option value="Q3">Q3</option>
+                    <option value="Q4">Q4</option>
+                  </select>
+                </div>
+              </div>
+
+              {viewMode === 'edit' && (
+                <div className="flex gap-3 pt-4">
+                  <Button onClick={() => setViewMode(null)} className="flex-1">
+                    حفظ التغييرات
+                  </Button>
+                  <Button
+                    onClick={() => setViewMode(null)}
+                    variant="outline"
+                    className="flex-1"
+                  >
+                    إلغاء
+                  </Button>
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}

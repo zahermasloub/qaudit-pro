@@ -380,7 +380,6 @@ import { signOut, useSession } from 'next-auth/react';
 import SidebarDrawer from '@/components/shell/SidebarDrawer';
 import { ToastProvider } from '@/components/ui/Toast-v2';
 import { ThemeToggle } from '@/components/ui/ThemeToggle';
-import AnnualPlanForm from '@/features/annual-plan/annual-plan.form';
 import EvidenceForm from '@/features/evidence/evidence.form';
 import EvidenceUploaderForm from '@/features/evidence/forms/EvidenceUploader.form';
 import TestExecutionForm from '@/features/fieldwork/forms/TestExecution.form';
@@ -393,8 +392,8 @@ import { type Locale, useI18n } from '@/lib/i18n';
 import { canSeeAdmin } from '@/lib/rbac';
 
 import DashboardView from './DashboardView';
+import RbiaPlanView from '../rbia/plan/RbiaPlanView';
 import {
-  AnnualPlanScreen,
   FieldworkScreen,
   PlanningScreen,
   ProcessRiskScreen,
@@ -407,7 +406,6 @@ type Route =
   | 'login'
   | 'register'
   | 'dashboard'
-  | 'annualPlan'
   | 'planning'
   | 'processRisk'
   | 'program'
@@ -417,14 +415,14 @@ type Route =
   | 'reporting'
   | 'followup'
   | 'closeout'
-  | 'qa';
+  | 'qa'
+  | 'rbiaplan';
 type Role = 'IA_Manager' | 'IA_Lead' | 'IA_Auditor' | 'Process_Owner' | 'Viewer';
 
 const RBAC: Record<Route, Role[]> = {
   login: ['IA_Manager', 'IA_Lead', 'IA_Auditor', 'Process_Owner', 'Viewer'],
   register: ['IA_Manager', 'IA_Lead', 'IA_Auditor', 'Process_Owner', 'Viewer'],
   dashboard: ['IA_Manager', 'IA_Lead', 'IA_Auditor', 'Process_Owner', 'Viewer'],
-  annualPlan: ['IA_Manager', 'IA_Lead', 'IA_Auditor'],
   planning: ['IA_Manager', 'IA_Lead', 'IA_Auditor'],
   processRisk: ['IA_Manager', 'IA_Lead', 'IA_Auditor'],
   program: ['IA_Manager', 'IA_Lead', 'IA_Auditor'],
@@ -435,6 +433,7 @@ const RBAC: Record<Route, Role[]> = {
   followup: ['IA_Manager', 'IA_Lead', 'Process_Owner'],
   closeout: ['IA_Manager', 'IA_Lead'],
   qa: ['IA_Manager', 'IA_Lead'],
+  rbiaplan: ['IA_Manager', 'IA_Lead', 'IA_Auditor'],
 };
 
 // Toolbar configurations by route
@@ -449,12 +448,6 @@ const TOOLBARS: Record<
       action: 'refresh',
       roles: ['IA_Manager', 'IA_Lead', 'IA_Auditor', 'Process_Owner', 'Viewer'],
     },
-  ],
-  annualPlan: [
-    { action: 'createAnnualPlan', roles: ['IA_Manager', 'IA_Lead'], variant: 'primary' },
-    { action: 'addAuditTask', roles: ['IA_Manager', 'IA_Lead', 'IA_Auditor'] },
-    { action: 'importCSV', roles: ['IA_Manager', 'IA_Lead', 'IA_Auditor'] },
-    { action: 'exportCSV', roles: ['IA_Manager', 'IA_Lead', 'IA_Auditor'] },
   ],
   planning: [
     { action: 'createPlan', roles: ['IA_Manager', 'IA_Lead'], variant: 'primary' },
@@ -498,6 +491,7 @@ const TOOLBARS: Record<
   ],
   closeout: [{ action: 'closeFile', roles: ['IA_Manager', 'IA_Lead'], variant: 'primary' }],
   qa: [{ action: 'qaReview', roles: ['IA_Manager', 'IA_Lead'], variant: 'primary' }],
+  rbiaplan: [],
   login: [],
   register: [],
 };
@@ -638,7 +632,7 @@ function Topbar({
 }
 const MENU_SPEC = [
   { key: 'dashboard', icon: LayoutDashboard },
-  { key: 'annualPlan', icon: ClipboardList },
+  { key: 'rbiaplan', icon: FileText },
   { key: 'planning', icon: ClipboardList },
   { key: 'processRisk', icon: Shield },
   { key: 'program', icon: FlaskConical },
@@ -779,7 +773,6 @@ export default function AppShell() {
   const [openEvidenceUploader, setOpenEvidenceUploader] = useState(false);
   const [openRun, setOpenRun] = useState(false);
   const [openEv, setOpenEv] = useState(false);
-  const [openAnnualPlan, setOpenAnnualPlan] = useState(false);
   const [currentTestId, _setCurrentTestId] = useState('TEST-001');
   const [currentSampleRef, _setCurrentSampleRef] = useState('SAMPLE-001');
   const isRTL = locale === 'ar';
@@ -873,9 +866,6 @@ export default function AppShell() {
         break;
       case 'createPlan':
         setOpenEngForm(true);
-        break;
-      case 'createAnnualPlan':
-        setOpenAnnualPlan(true);
         break;
       case 'newPBC':
         setOpenPbc(true);
@@ -1001,7 +991,6 @@ export default function AppShell() {
               {allowed && (
                 <>
                   {route === 'dashboard' && <DashboardView locale={locale} engagementId={engagementId} />}
-                  {route === 'annualPlan' && <AnnualPlanScreen locale={locale} />}
                   {route === 'planning' && <PlanningScreen locale={locale} />}
                   {route === 'processRisk' && <ProcessRiskScreen locale={locale} />}
                   {route === 'program' && <ProgramScreen locale={locale} />}
@@ -1012,6 +1001,7 @@ export default function AppShell() {
                   {route === 'followup' && <PlaceholderScreen title={i18n.sections.followup} />}
                   {route === 'closeout' && <PlaceholderScreen title={i18n.sections.closeout} />}
                   {route === 'qa' && <PlaceholderScreen title={i18n.sections.qa} />}
+                  {route === 'rbiaplan' && <RbiaPlanView mode="plan" />}
                 </>
               )}
             </main>
@@ -1112,44 +1102,6 @@ export default function AppShell() {
           engagementId={engagementId}
           defaultLinks={{ testId: currentTestId, sampleRef: currentSampleRef }}
           onSuccess={() => setOpenEv(false)}
-        />
-
-        {/* Annual Plan Form */}
-        <AnnualPlanForm
-          open={openAnnualPlan}
-          onOpenChange={setOpenAnnualPlan}
-          defaultYear={new Date().getFullYear() + 1}
-          orgOptions={[
-            {
-              id: 'FIN',
-              name: 'الإدارة المالية',
-              depts: [
-                { id: 'AR', name: 'الحسابات' },
-                { id: 'TR', name: 'الخزينة' },
-              ],
-            },
-            {
-              id: 'HR',
-              name: 'إدارة الموارد البشرية',
-              depts: [
-                { id: 'RE', name: 'التوظيف' },
-                { id: 'PY', name: 'الرواتب' },
-              ],
-            },
-            {
-              id: 'IT',
-              name: 'تقنية المعلومات',
-              depts: [
-                { id: 'DEV', name: 'التطوير' },
-                { id: 'SEC', name: 'أمن المعلومات' },
-              ],
-            },
-          ]}
-          onSuccess={id => {
-            console.log('✅ تم حفظ الخطة السنوية بنجاح:', id);
-            setOpenAnnualPlan(false);
-            // TODO: Add toast notification and refresh data
-          }}
         />
       </div>
     </ToastProvider>
