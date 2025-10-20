@@ -108,6 +108,45 @@ This file tracks the status of database migrations for the Audit Application.
   - Professional user flow
 - Date: 2025-10-20
 
+### Part F: M9C Create Plan Wizard (✔)
+
+**Feature:** Two-step wizard for creating annual audit plans with UI integration in Dashboard and RBIA Plan page.
+
+**Implementation:** (October 20, 2025)
+
+- ✔ **API Endpoints:**
+  - `POST /api/plan` - Create new plan with {year, version?, owner_id?}, defaults to status='draft' and version='v1'
+  - `GET /api/plan/:id` - Retrieve plan details by ID
+  - `PUT /api/plan/:id` - Update plan owner/version, returns 403 if status='baselined' (prevents editing approved plans)
+  - `GET /api/plan/:id/capacity` - Get resource capacity or return default values (2080 total hours, 1500 audit, 300 advisory, 180 training, 100 admin)
+- ✔ **CreatePlanWizard Component** (`/app/(app)/rbia/plan/CreatePlanWizard.tsx`):
+  - **Step 1 (Plan Data):** Year dropdown (current + 5 years), version input (default 'v1'), owner_id field, "إنشاء الخطة" button → POST /api/plan → saves plan_id
+  - **Step 2 (Initial Items):** Dynamic table with quick entry for items:
+    - Fields: au_id, type (audit/advisory/investigation), priority (high/medium/low), effort hours, period_start/end (Q1-Q4), deliverable_type
+    - "+ إضافة بند" button to add rows, remove button for each row (minimum 1 item)
+    - "حفظ البنود والانتقال" → POST /api/plan/items → navigates to /rbia/plan?plan_id=<id>
+  - Progress indicator with 2 circles and connecting line
+  - Full RTL support with Arabic labels
+  - Loading states, error handling with toast notifications
+  - Back navigation between steps
+- ✔ **Dashboard Integration** (`/app/(app)/shell/DashboardView.tsx`):
+  - Added "+ إنشاء خطة سنوية" button (green, in filters section)
+  - Opens CreatePlanWizard in modal dialog overlay
+  - State management with useState hook
+- ✔ **Plan Page Integration** (`/app/(app)/rbia/plan/page.tsx`):
+  - Added support for `?new=1` query parameter
+  - Shows CreatePlanWizard inline when ?new=1 is present
+  - After wizard completion, removes ?new=1 and shows normal RbiaPlanView
+  - Uses useSearchParams and useRouter hooks
+- ✔ **Features:**
+  - Duplicate year+version validation in POST /api/plan
+  - Baseline protection in PUT /api/plan/:id
+  - Capacity fallback values in GET /api/plan/:id/capacity
+  - Minimum 1 item validation in Step 2
+  - All items must have au_id before saving
+  - Smooth navigation flow: Dashboard → Wizard → Plan View
+- Date: 2025-10-20
+
 ## Migration Guidelines
 
 When creating new migrations:
