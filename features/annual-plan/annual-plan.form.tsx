@@ -84,13 +84,13 @@ export default function AnnualPlanForm({
   if (!open) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center px-4" dir="rtl">
+    <div className="fixed inset-0 z-50 flex items-center justify-center px-2 sm:px-4" dir="rtl">
       <div className="absolute inset-0 bg-black/40" onClick={() => onOpenChange(false)} />
-      <div className="relative w-full max-w-4xl">
+      <div className="relative w-full max-w-lg sm:max-w-xl md:max-w-2xl lg:max-w-3xl xl:max-w-4xl">
         <div
-          className="flex flex-col overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-xl w-[894px] h-[813px] border-[1px] p-0 m-0"
+          className="flex flex-col overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-xl w-full min-h-[60vh] max-h-[90vh] border-[1px] p-0 m-0"
         >
-          <div className="flex items-center justify-between border-b px-6 py-4">
+          <div className="flex items-center justify-between border-b px-4 sm:px-6 py-3 sm:py-4">
             <h3 className="text-xl font-semibold">إنشاء الخطة السنوية</h3>
             <button
               type="button"
@@ -103,12 +103,12 @@ export default function AnnualPlanForm({
           </div>
 
           <form onSubmit={form.handleSubmit(onSubmit)} className="flex flex-1 flex-col overflow-hidden">
-            <div className="flex-1 space-y-5 overflow-y-auto overflow-x-hidden px-6 py-4">
+            <div className="flex-1 space-y-4 overflow-y-auto overflow-x-hidden px-2 sm:px-4 md:px-6 py-3 sm:py-4">
               {/* القسم (1): البيانات التعريفية */}
               <section className="space-y-3">
-                <h4 className="border-b pb-2 text-lg font-medium text-gray-900">البيانات التعريفية</h4>
+                <h4 className="border-b pb-2 text-lg font-semibold text-gray-900">البيانات التعريفية</h4>
 
-                <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+                <div className="grid grid-cols-1 gap-3 md:grid-cols-2">
                   <div>
                     <label className="mb-1 block text-sm font-medium text-gray-700">عنوان الخطة</label>
                     <input
@@ -121,7 +121,7 @@ export default function AnnualPlanForm({
                     )}
                   </div>
 
-                  <div className="grid grid-cols-2 gap-3">
+                  <div className="grid grid-cols-2 gap-2">
                     <div>
                       <label className="mb-1 block text-sm font-medium text-gray-700">السنة المالية</label>
                       <input
@@ -154,7 +154,7 @@ export default function AnnualPlanForm({
                     </select>
                   </div>
 
-                  <div className="grid grid-cols-2 gap-3">
+                  <div className="grid grid-cols-2 gap-2">
                     <div>
                       <label className="mb-1 block text-sm font-medium text-gray-700">المنشأة</label>
                       <select
@@ -193,16 +193,16 @@ export default function AnnualPlanForm({
                     rows={4}
                     {...form.register('introduction')}
                     placeholder="أدخل نبذة تعريفية قصيرة عن الخطة."
-                    className="w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
                   />
                 </div>
               </section>
 
               {/* القسم (2): موازنة الساعات */}
               <section className="space-y-3">
-                <h4 className="border-b pb-2 text-lg font-medium text-gray-900">موازنة الساعات والخطط</h4>
+                <h4 className="border-b pb-2 text-lg font-semibold text-gray-900">موازنة الساعات والخطط</h4>
 
-                <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
+                <div className="grid grid-cols-1 gap-3 md:grid-cols-3">
                   <div>
                     <label className="mb-1 block text-sm font-medium text-gray-700">إجمالي الساعات المتاحة</label>
                     <input
@@ -229,7 +229,7 @@ export default function AnnualPlanForm({
                   </div>
                 </div>
 
-                <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
+                <div className="grid grid-cols-1 gap-3 md:grid-cols-3">
                   <div>
                     <label className="mb-1 block text-sm font-medium text-gray-700">ساعات المهام المخططة</label>
                     <input
@@ -282,7 +282,7 @@ export default function AnnualPlanForm({
               </section>
             </div>
 
-            <div className="flex flex-shrink-0 items-center justify-end gap-3 border-t bg-white px-6 py-4">
+            <div className="flex flex-shrink-0 items-center justify-end gap-2 sm:gap-3 border-t bg-white px-2 sm:px-6 py-3 sm:py-4">
               <button
                 type="button"
                 onClick={() => onOpenChange(false)}

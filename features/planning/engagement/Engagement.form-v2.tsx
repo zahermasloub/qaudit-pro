@@ -99,23 +99,24 @@ export function EngagementForm({ open, onOpenChange, onSuccess }: EngagementForm
   if (!open) return null;
 
   return (
-    <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-      <div className="bg-white rounded-lg shadow-xl w-full max-w-4xl max-h-[90vh] overflow-y-auto">
-        <div className="p-6 border-b border-gray-200">
-          <div className="flex items-center justify-between">
-            <h2 className="text-xl font-semibold">إنشاء مهمة تدقيق جديدة</h2>
-            <button
-              onClick={() => onOpenChange(false)}
-              className="text-gray-400 hover:text-gray-600"
-            >
-              ✕
-            </button>
-          </div>
+    <div className="fixed inset-0 z-50 flex items-center justify-center px-2 sm:px-4">
+      <div className="absolute inset-0 bg-black/40" onClick={() => onOpenChange(false)} />
+      <div className="relative w-full max-w-md sm:max-w-lg md:max-w-xl lg:max-w-2xl xl:max-w-4xl bg-white rounded-2xl shadow-xl border border-gray-200 min-h-[40vh] max-h-[90vh] overflow-y-auto">
+        <div className="flex items-center justify-between border-b px-4 sm:px-6 py-3 sm:py-4">
+          <h2 className="text-xl font-semibold">إنشاء مهمة تدقيق جديدة</h2>
+          <button
+            type="button"
+            onClick={() => onOpenChange(false)}
+            className="rounded-full p-2 text-gray-500 transition-colors hover:bg-gray-100 hover:text-gray-700"
+            aria-label="إغلاق"
+          >
+            ✕
+          </button>
         </div>
 
-        <form onSubmit={form.handleSubmit(onSubmit)} className="p-6 space-y-6">
+  <form onSubmit={form.handleSubmit(onSubmit)} className="px-2 sm:px-6 py-4 space-y-6">
           {/* Basic Info */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
             <div>
               <label className="block text-sm font-medium mb-1">كود المهمة</label>
               <Input {...form.register('code')} placeholder="ENG-2024-001" />
@@ -138,7 +139,7 @@ export function EngagementForm({ open, onOpenChange, onSuccess }: EngagementForm
             <label className="block text-sm font-medium mb-1">هدف المهمة</label>
             <textarea
               {...form.register('objective')}
-              className="w-full p-2 border border-gray-300 rounded-md"
+              className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm"
               rows={3}
               placeholder="تقييم فعالية الضوابط الداخلية للعمليات المالية..."
             />
@@ -205,7 +206,7 @@ export function EngagementForm({ open, onOpenChange, onSuccess }: EngagementForm
           ))}
 
           {/* Dates and Budget */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
             <div>
               <label className="block text-sm font-medium mb-1">تاريخ البداية</label>
               <Input type="date" {...form.register('startDate')} />
@@ -240,7 +241,7 @@ export function EngagementForm({ open, onOpenChange, onSuccess }: EngagementForm
           </div>
 
           {/* Optional Fields */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
             <div>
               <label className="block text-sm font-medium mb-1">
                 رابط إفصاح الاستقلالية (اختياري)
@@ -265,7 +266,7 @@ export function EngagementForm({ open, onOpenChange, onSuccess }: EngagementForm
           </div>
 
           {/* Actions */}
-          <div className="flex justify-end gap-3 pt-4 border-t border-gray-200">
+          <div className="flex flex-shrink-0 items-center justify-end gap-2 sm:gap-3 border-t bg-white px-2 sm:px-6 py-3 sm:py-4 mt-4">
             <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>
               إلغاء
             </Button>

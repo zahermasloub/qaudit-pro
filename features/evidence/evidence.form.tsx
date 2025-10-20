@@ -99,18 +99,19 @@ export default function EvidenceForm({
   if (!open) return null;
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4">
-      <div className="bg-white rounded-lg p-6 max-w-lg w-full max-h-[90vh] overflow-y-auto">
-        <h2 className="text-lg font-bold mb-4">Add Evidence</h2>
+    <div className="fixed inset-0 z-50 flex items-center justify-center px-2 sm:px-4">
+      <div className="absolute inset-0 bg-black/40" onClick={() => onOpenChange(false)} />
+      <div className="relative w-full max-w-md sm:max-w-lg md:max-w-xl lg:max-w-2xl bg-white rounded-2xl shadow-xl border border-gray-200 min-h-[40vh] max-h-[90vh] overflow-y-auto p-4 sm:p-6">
+  <h2 className="text-lg font-semibold mb-4">إضافة دليل</h2>
 
-        <form onSubmit={handleSubmit} className="space-y-4">
+  <form onSubmit={handleSubmit} className="space-y-4">
           <div>
             <label className="block text-sm font-medium mb-1">File</label>
             <input
               type="file"
               accept="*/*"
               onChange={e => setFile(e.target.files?.[0] || null)}
-              className="w-full p-2 border rounded"
+              className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm"
               required
             />
             {file && (
@@ -131,8 +132,8 @@ export default function EvidenceForm({
                   category: e.target.value,
                 }))
               }
-              className="w-full p-2 border rounded"
-              placeholder="e.g., audit-evidence, supporting-docs"
+              className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm"
+              placeholder="مثال: audit-evidence, supporting-docs"
               required
             />
           </div>
@@ -148,7 +149,7 @@ export default function EvidenceForm({
                   linkedTestId: e.target.value,
                 }))
               }
-              className="w-full p-2 border rounded"
+              className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm"
             />
           </div>
 
@@ -163,7 +164,7 @@ export default function EvidenceForm({
                   linkedSampleRef: e.target.value,
                 }))
               }
-              className="w-full p-2 border rounded"
+              className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm"
             />
           </div>
 
@@ -178,24 +179,24 @@ export default function EvidenceForm({
                   uploadedBy: e.target.value,
                 }))
               }
-              className="w-full p-2 border rounded"
+              className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm"
               required
             />
           </div>
 
-          <div className="flex justify-end gap-2 pt-4">
+          <div className="flex flex-shrink-0 items-center justify-end gap-2 sm:gap-3 border-t bg-white px-2 sm:px-6 py-3 sm:py-4 mt-4">
             <button
               type="button"
               onClick={() => onOpenChange(false)}
-              className="px-4 py-2 border rounded hover:bg-gray-50"
+              className="rounded-md border border-gray-300 px-4 py-2 text-gray-700 font-medium transition-colors hover:bg-gray-50"
             >
-              Cancel
+              إلغاء
             </button>
             <button
               type="submit"
-              className="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700"
+              className="rounded-md bg-green-600 px-4 py-2 text-white font-medium transition-colors hover:bg-green-700"
             >
-              Upload Evidence
+              رفع الدليل
             </button>
           </div>
         </form>

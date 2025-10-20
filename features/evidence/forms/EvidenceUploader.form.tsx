@@ -239,11 +239,11 @@ const EvidenceUploaderForm: React.FC<EvidenceUploaderFormProps> = ({
   if (!open) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center px-4" dir="rtl">
-      <div className="absolute inset-0 bg-black/50" onClick={() => onOpenChange(false)} />
-      <div className="relative w-full max-w-4xl">
-        <div className="flex max-h-[88vh] flex-col overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-xl">
-          <div className="flex items-center justify-between border-b px-6 py-4">
+    <div className="fixed inset-0 z-50 flex items-center justify-center px-2 sm:px-4" dir="rtl">
+      <div className="absolute inset-0 bg-black/40" onClick={() => onOpenChange(false)} />
+      <div className="relative w-full max-w-md sm:max-w-lg md:max-w-2xl lg:max-w-3xl xl:max-w-4xl">
+        <div className="flex flex-col overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-xl w-full min-h-[40vh] max-h-[90vh]">
+          <div className="flex items-center justify-between border-b px-4 sm:px-6 py-3 sm:py-4">
             <h2 className="text-xl font-semibold text-gray-900">نموذج رفع الأدلة</h2>
             <button
               type="button"
@@ -257,7 +257,7 @@ const EvidenceUploaderForm: React.FC<EvidenceUploaderFormProps> = ({
           </div>
 
           <form onSubmit={handleSubmit(onSubmit)} className="flex flex-1 flex-col overflow-hidden">
-            <div className="flex-1 space-y-6 overflow-y-auto overflow-x-hidden px-6 py-4">
+            <div className="flex-1 space-y-4 overflow-y-auto overflow-x-hidden px-2 sm:px-4 md:px-6 py-3 sm:py-4">
               <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
                 <div>
                   <label className="mb-2 block text-sm font-medium text-gray-700">
@@ -408,7 +408,7 @@ const EvidenceUploaderForm: React.FC<EvidenceUploaderFormProps> = ({
               )}
             </div>
 
-            <div className="flex flex-shrink-0 items-center justify-end gap-3 border-t bg-white px-6 py-4">
+            <div className="flex flex-shrink-0 items-center justify-end gap-2 sm:gap-3 border-t bg-white px-2 sm:px-6 py-3 sm:py-4">
               <Button
                 type="button"
                 variant="secondary"

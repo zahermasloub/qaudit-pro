@@ -48,7 +48,7 @@ function ToastContainer({ toasts, onRemove }: { toasts: Toast[]; onRemove: (id: 
   if (toasts.length === 0) return null;
 
   return (
-    <div className="fixed top-4 right-4 z-50 space-y-2">
+  <div className="fixed top-4 right-2 sm:right-4 z-50 space-y-2 w-full max-w-xs sm:max-w-md md:max-w-lg">
       {toasts.map(toast => (
         <ToastItem key={toast.id} toast={toast} onRemove={onRemove} />
       ))}
@@ -88,7 +88,7 @@ function ToastItem({ toast, onRemove }: { toast: Toast; onRemove: (id: string) =
   };
 
   return (
-    <div className={`min-w-80 max-w-md p-4 rounded-lg border shadow-lg ${getStyles()}`}>
+  <div className={`w-full min-w-[240px] max-w-full sm:max-w-md p-3 sm:p-4 rounded-lg border shadow-lg ${getStyles()}`}>
       <div className="flex items-start justify-between">
         <div className="flex items-start space-x-2 rtl:space-x-reverse">
           <span className="flex-shrink-0 text-lg">{getIcon()}</span>

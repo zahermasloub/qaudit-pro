@@ -1,8 +1,8 @@
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-background overflow-x-hidden">
       <header className="border-b">
-        <div className="flex h-16 items-center px-4">
+        <div className="flex h-16 items-center px-2 sm:px-4">
           <nav className="flex items-center space-x-4 lg:space-x-6">
             <a
               href="/dashboard"
@@ -32,7 +32,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
         </div>
       </header>
       <main className="flex-1 space-y-4 pt-6">
-        <div className="container-custom">{children}</div>
+        <div className="container-custom px-2 sm:px-4">{children}</div>
       </main>
     </div>
   );
