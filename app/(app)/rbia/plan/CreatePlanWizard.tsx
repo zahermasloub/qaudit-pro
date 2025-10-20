@@ -15,6 +15,8 @@ interface PlanItem {
   auditType: string;
   plannedQuarter: string;
   estimatedHours: number;
+  startDate: string;
+  endDate: string;
 }
 
 export default function CreatePlanWizard({ onClose }: CreatePlanWizardProps) {
@@ -38,6 +40,8 @@ export default function CreatePlanWizard({ onClose }: CreatePlanWizardProps) {
       auditType: 'operational',
       plannedQuarter: 'Q1',
       estimatedHours: 40,
+      startDate: '',
+      endDate: '',
     },
   ]);
 
@@ -141,6 +145,8 @@ export default function CreatePlanWizard({ onClose }: CreatePlanWizardProps) {
         auditType: 'operational',
         plannedQuarter: 'Q1',
         estimatedHours: 40,
+        startDate: '',
+        endDate: '',
       },
     ]);
   };
@@ -284,120 +290,151 @@ export default function CreatePlanWizard({ onClose }: CreatePlanWizardProps) {
             {items.map((item, index) => (
               <div
                 key={index}
-                className="grid grid-cols-12 gap-3 p-4 border border-gray-200 rounded-lg bg-gray-50"
+                className="p-4 border border-gray-200 rounded-lg bg-gray-50 space-y-3"
               >
-                <div className="col-span-2">
-                  <label className="block text-xs font-medium text-gray-600 mb-1">
-                    الرمز *
-                  </label>
-                  <input
-                    type="text"
-                    value={item.code}
-                    onChange={e => updateItem(index, 'code', e.target.value)}
-                    placeholder="TASK-001"
-                    className="w-full px-2 py-1 text-sm border border-gray-300 rounded focus:ring-1 focus:ring-blue-500"
-                  />
-                </div>
-
-                <div className="col-span-3">
-                  <label className="block text-xs font-medium text-gray-600 mb-1">
-                    العنوان *
-                  </label>
-                  <input
-                    type="text"
-                    value={item.title}
-                    onChange={e => updateItem(index, 'title', e.target.value)}
-                    placeholder="مراجعة المشتريات"
-                    className="w-full px-2 py-1 text-sm border border-gray-300 rounded focus:ring-1 focus:ring-blue-500"
-                  />
-                </div>
-
-                <div className="col-span-2">
-                  <label className="block text-xs font-medium text-gray-600 mb-1">
-                    القسم
-                  </label>
-                  <input
-                    type="text"
-                    value={item.department}
-                    onChange={e => updateItem(index, 'department', e.target.value)}
-                    placeholder="عام"
-                    className="w-full px-2 py-1 text-sm border border-gray-300 rounded focus:ring-1 focus:ring-blue-500"
-                  />
-                </div>
-
-                <div className="col-span-2">
-                  <label className="block text-xs font-medium text-gray-600 mb-1">
-                    مستوى المخاطر
-                  </label>
-                  <select
-                    value={item.riskLevel}
-                    onChange={e => updateItem(index, 'riskLevel', e.target.value)}
-                    className="w-full px-2 py-1 text-sm border border-gray-300 rounded focus:ring-1 focus:ring-blue-500"
-                  >
-                    <option value="very_high">عالي جداً</option>
-                    <option value="high">عالي</option>
-                    <option value="medium">متوسط</option>
-                    <option value="low">منخفض</option>
-                    <option value="very_low">منخفض جداً</option>
-                  </select>
-                </div>
-
-                <div className="col-span-2">
-                  <label className="block text-xs font-medium text-gray-600 mb-1">
-                    نوع التدقيق
-                  </label>
-                  <select
-                    value={item.auditType}
-                    onChange={e => updateItem(index, 'auditType', e.target.value)}
-                    className="w-full px-2 py-1 text-sm border border-gray-300 rounded focus:ring-1 focus:ring-blue-500"
-                  >
-                    <option value="financial">مالي</option>
-                    <option value="operational">تشغيلي</option>
-                    <option value="compliance">امتثال</option>
-                    <option value="it">تقنية معلومات</option>
-                    <option value="investigative">تحقيقات</option>
-                  </select>
-                </div>
-
-                <div className="col-span-1">
-                  <label className="block text-xs font-medium text-gray-600 mb-1">
-                    الساعات
-                  </label>
-                  <input
-                    type="number"
-                    value={item.estimatedHours}
-                    onChange={e => updateItem(index, 'estimatedHours', Number(e.target.value))}
-                    min="1"
-                    className="w-full px-2 py-1 text-sm border border-gray-300 rounded focus:ring-1 focus:ring-blue-500"
-                  />
-                </div>
-
-                <div className="col-span-2">
-                  <label className="block text-xs font-medium text-gray-600 mb-1">
-                    الربع
-                  </label>
-                  <select
-                    value={item.plannedQuarter}
-                    onChange={e => updateItem(index, 'plannedQuarter', e.target.value)}
-                    className="w-full px-2 py-1 text-sm border border-gray-300 rounded focus:ring-1 focus:ring-blue-500"
-                  >
-                    <option value="Q1">Q1</option>
-                    <option value="Q2">Q2</option>
-                    <option value="Q3">Q3</option>
-                    <option value="Q4">Q4</option>
-                  </select>
-                </div>
-
-                {items.length > 1 && (
-                  <div className="col-span-12 flex justify-end">
-                    <button
-                      onClick={() => removeItem(index)}
-                      className="text-xs text-red-600 hover:text-red-800 font-medium"
-                    >
-                      🗑️ حذف
-                    </button>
+                {/* الصف الأول */}
+                <div className="grid grid-cols-12 gap-3">
+                  <div className="col-span-2">
+                    <label className="block text-xs font-medium text-gray-600 mb-1">
+                      الرمز *
+                    </label>
+                    <input
+                      type="text"
+                      value={item.code}
+                      onChange={e => updateItem(index, 'code', e.target.value)}
+                      placeholder="TASK-001"
+                      className="w-full px-2 py-1 text-sm border border-gray-300 rounded focus:ring-1 focus:ring-blue-500"
+                    />
                   </div>
-                )}
+
+                  <div className="col-span-4">
+                    <label className="block text-xs font-medium text-gray-600 mb-1">
+                      العنوان *
+                    </label>
+                    <input
+                      type="text"
+                      value={item.title}
+                      onChange={e => updateItem(index, 'title', e.target.value)}
+                      placeholder="مراجعة المشتريات"
+                      className="w-full px-2 py-1 text-sm border border-gray-300 rounded focus:ring-1 focus:ring-blue-500"
+                    />
+                  </div>
+
+                  <div className="col-span-2">
+                    <label className="block text-xs font-medium text-gray-600 mb-1">
+                      القسم
+                    </label>
+                    <input
+                      type="text"
+                      value={item.department}
+                      onChange={e => updateItem(index, 'department', e.target.value)}
+                      placeholder="عام"
+                      className="w-full px-2 py-1 text-sm border border-gray-300 rounded focus:ring-1 focus:ring-blue-500"
+                    />
+                  </div>
+
+                  <div className="col-span-2">
+                    <label className="block text-xs font-medium text-gray-600 mb-1">
+                      مستوى المخاطر
+                    </label>
+                    <select
+                      value={item.riskLevel}
+                      onChange={e => updateItem(index, 'riskLevel', e.target.value)}
+                      className="w-full px-2 py-1 text-sm border border-gray-300 rounded focus:ring-1 focus:ring-blue-500"
+                    >
+                      <option value="very_high">عالي جداً</option>
+                      <option value="high">عالي</option>
+                      <option value="medium">متوسط</option>
+                      <option value="low">منخفض</option>
+                      <option value="very_low">منخفض جداً</option>
+                    </select>
+                  </div>
+
+                  <div className="col-span-2">
+                    <label className="block text-xs font-medium text-gray-600 mb-1">
+                      نوع التدقيق
+                    </label>
+                    <select
+                      value={item.auditType}
+                      onChange={e => updateItem(index, 'auditType', e.target.value)}
+                      className="w-full px-2 py-1 text-sm border border-gray-300 rounded focus:ring-1 focus:ring-blue-500"
+                    >
+                      <option value="financial">مالي</option>
+                      <option value="operational">تشغيلي</option>
+                      <option value="compliance">امتثال</option>
+                      <option value="it">تقنية معلومات</option>
+                      <option value="investigative">تحقيقات</option>
+                    </select>
+                  </div>
+                </div>
+
+                {/* الصف الثاني */}
+                <div className="grid grid-cols-12 gap-3">
+                  <div className="col-span-2">
+                    <label className="block text-xs font-medium text-gray-600 mb-1">
+                      الساعات
+                    </label>
+                    <input
+                      type="number"
+                      value={item.estimatedHours}
+                      onChange={e => updateItem(index, 'estimatedHours', Number(e.target.value))}
+                      min="1"
+                      className="w-full px-2 py-1 text-sm border border-gray-300 rounded focus:ring-1 focus:ring-blue-500"
+                    />
+                  </div>
+
+                  <div className="col-span-2">
+                    <label className="block text-xs font-medium text-gray-600 mb-1">
+                      الربع
+                    </label>
+                    <select
+                      value={item.plannedQuarter}
+                      onChange={e => updateItem(index, 'plannedQuarter', e.target.value)}
+                      className="w-full px-2 py-1 text-sm border border-gray-300 rounded focus:ring-1 focus:ring-blue-500"
+                    >
+                      <option value="Q1">Q1</option>
+                      <option value="Q2">Q2</option>
+                      <option value="Q3">Q3</option>
+                      <option value="Q4">Q4</option>
+                    </select>
+                  </div>
+
+                  <div className="col-span-3">
+                    <label className="block text-xs font-medium text-gray-600 mb-1">
+                      تاريخ البداية
+                    </label>
+                    <input
+                      type="date"
+                      value={item.startDate}
+                      onChange={e => updateItem(index, 'startDate', e.target.value)}
+                      className="w-full px-2 py-1 text-sm border border-gray-300 rounded focus:ring-1 focus:ring-blue-500"
+                    />
+                  </div>
+
+                  <div className="col-span-3">
+                    <label className="block text-xs font-medium text-gray-600 mb-1">
+                      تاريخ النهاية
+                    </label>
+                    <input
+                      type="date"
+                      value={item.endDate}
+                      onChange={e => updateItem(index, 'endDate', e.target.value)}
+                      min={item.startDate || undefined}
+                      className="w-full px-2 py-1 text-sm border border-gray-300 rounded focus:ring-1 focus:ring-blue-500"
+                    />
+                  </div>
+
+                  <div className="col-span-2 flex items-end">
+                    {items.length > 1 && (
+                      <button
+                        onClick={() => removeItem(index)}
+                        className="w-full px-3 py-1.5 text-sm text-white bg-red-600 hover:bg-red-700 rounded font-medium transition-colors"
+                      >
+                        🗑️ حذف
+                      </button>
+                    )}
+                  </div>
+                </div>
               </div>
             ))}
           </div>

@@ -116,6 +116,14 @@ export async function GET(
  *                       enum: [Q1, Q2, Q3, Q4]
  *                     estimatedHours:
  *                       type: integer
+ *                     startDate:
+ *                       type: string
+ *                       format: date
+ *                       description: تاريخ بداية المهمة
+ *                     endDate:
+ *                       type: string
+ *                       format: date
+ *                       description: تاريخ نهاية المهمة
  *     responses:
  *       201:
  *         description: تم إنشاء المهام بنجاح
@@ -156,8 +164,16 @@ export async function POST(
 
     // Create tasks
     const createdTasks = await Promise.all(
-      tasks.map((task, index) =>
-        prisma.auditTask.create({
+      tasks.map((task, index) => {
+        // Store dates in attachmentsJson as metadata
+        const metadata: any = {
+          dates: {
+            startDate: task.startDate || null,
+            endDate: task.endDate || null,
+          },
+        };
+
+        return prisma.auditTask.create({
           data: {
             annualPlanId: id,
             code: task.code || `TASK-${Date.now()}-${index}`,
@@ -169,10 +185,11 @@ export async function POST(
             plannedQuarter: task.plannedQuarter || 'Q1',
             estimatedHours: task.estimatedHours || 40,
             leadAuditor: task.leadAuditor || null,
+            attachmentsJson: metadata,
             status: 'not_started',
           },
-        })
-      )
+        });
+      })
     );
 
     return NextResponse.json(
