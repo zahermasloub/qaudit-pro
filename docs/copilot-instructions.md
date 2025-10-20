@@ -147,9 +147,50 @@ This file tracks the status of database migrations for the Audit Application.
   - Smooth navigation flow: Dashboard → Wizard → Plan View
 - Date: 2025-10-20
 
-## Migration Guidelines
+### Part G: Home KPIs Dashboard (✔)
 
-When creating new migrations:
+**Feature:** KPI metrics dashboard displaying key performance indicators for annual audit plans on the home page.
+
+**Implementation:** (October 20, 2025)
+
+- ✔ **Library Module** (`lib/plan-metrics.ts`):
+  - `getPlanItems(planId)` - Fetches all AuditTasks for a given annual plan using Prisma
+  - `calcKpis(items)` - Calculates metrics from plan items:
+    - `completionPct` - Percentage of completed tasks (0-100)
+    - `totalHours` - Sum of estimatedHours for all tasks
+    - `itemsCount` - Total number of tasks in plan
+    - `status` - Overall plan status (draft/in_progress/nearly_complete/completed)
+  - `getPlanKpis(planId)` - Convenience function combining fetch and calculation
+  - Uses Prisma ORM to query `AuditTask` model
+- ✔ **API Endpoints:**
+  - `GET /api/plan/latest` - Returns the most recent annual plan (ordered by fiscalYear DESC, createdAt DESC)
+  - `GET /api/plan/:id/kpis` - Returns KPI metrics for a specific plan
+- ✔ **KpiCards Component** (`app/(components)/KpiCards.tsx`):
+  - 4 Responsive Cards displayed in grid layout (1 col mobile → 4 cols desktop):
+    1. **نسبة الإنجاز** - Completion percentage with progress bar
+    2. **إجمالي الساعات** - Total estimated hours with formatted numbers (ar-SA locale)
+    3. **عدد المهام** - Total task count
+    4. **حالة الخطة** - Status badge with color coding (green=completed, blue=nearly_complete, yellow=in_progress, gray=draft)
+  - Auto-fetches latest plan if no planId provided
+  - Loading skeleton states (4 animated cards)
+  - Error handling with red alert banner
+  - RTL support with dir="rtl"
+  - Hover effects (shadow transition)
+  - Status descriptions in Arabic
+- ✔ **Dashboard Integration** (`app/(app)/shell/DashboardView.tsx`):
+  - Added `<KpiCards />` at top of dashboard
+  - Component automatically fetches latest annual plan
+  - Displays metrics above existing dashboard content (filters, KPIs, charts, table)
+- ✔ **Features:**
+  - Automatic latest plan detection (no manual planId required)
+  - Responsive grid layout (sm:grid-cols-2 lg:grid-cols-4)
+  - Arabic number formatting with toLocaleString('ar-SA')
+  - Color-coded status badges
+  - Progress bar visualization for completion %
+  - Graceful error handling (404 if no plans exist)
+- Date: 2025-10-20
+
+## Migration GuidelinesWhen creating new migrations:
 
 1. Use sequential numbering: `000X_description.sql`
 2. Always use `IF NOT EXISTS` for CREATE statements

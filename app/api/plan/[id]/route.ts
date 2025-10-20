@@ -31,22 +31,28 @@ export async function GET(
   try {
     const { id } = params;
 
-    const result = await prisma.$queryRawUnsafe<any[]>(
-      `SELECT id, fiscal_year as year, version, status, owner_id,
-              created_at, updated_at
-       FROM audit.annualplans
-       WHERE id = $1`,
-      id
-    );
+    const plan = await prisma.annualPlan.findUnique({
+      where: { id },
+    });
 
-    if (result.length === 0) {
+    if (!plan) {
       return NextResponse.json(
         { error: 'الخطة غير موجودة' },
         { status: 404 }
       );
     }
 
-    return NextResponse.json(result[0]);
+    // Return with API-friendly field names
+    return NextResponse.json({
+      id: plan.id,
+      year: plan.fiscalYear,
+      version: plan.version,
+      status: plan.status,
+      title: plan.title,
+      owner_id: plan.createdBy,
+      created_at: plan.createdAt,
+      updated_at: plan.updatedAt,
+    });
   } catch (error: any) {
     console.error('❌ Error fetching plan:', error);
     return NextResponse.json(
@@ -104,61 +110,61 @@ export async function PUT(
     const { owner_id, version } = body;
 
     // Check if plan exists and get status
-    const existing = await prisma.$queryRawUnsafe<any[]>(
-      `SELECT status FROM audit.annualplans WHERE id = $1`,
-      id
-    );
+    const existing = await prisma.annualPlan.findUnique({
+      where: { id },
+      select: { status: true },
+    });
 
-    if (existing.length === 0) {
+    if (!existing) {
       return NextResponse.json(
         { error: 'الخطة غير موجودة' },
         { status: 404 }
       );
     }
 
-    // Check if baselined
-    if (existing[0].status === 'baselined') {
+    // Check if baselined (status is approved or completed)
+    if (existing.status === 'approved' || existing.status === 'completed') {
       return NextResponse.json(
-        { error: 'لا يمكن تعديل خطة محفوظة كـ baseline' },
+        { error: 'لا يمكن تعديل خطة معتمدة أو مكتملة' },
         { status: 403 }
       );
     }
 
-    // Build update query dynamically
-    const updates: string[] = [];
-    const values: any[] = [];
-    let paramIndex = 1;
+    // Build update data
+    const updateData: any = {};
 
     if (owner_id !== undefined) {
-      updates.push(`owner_id = $${paramIndex++}`);
-      values.push(owner_id);
+      updateData.createdBy = owner_id;
     }
 
     if (version !== undefined) {
-      updates.push(`version = $${paramIndex++}`);
-      values.push(version);
+      updateData.version = version;
     }
 
-    if (updates.length === 0) {
+    if (Object.keys(updateData).length === 0) {
       return NextResponse.json(
         { error: 'لا توجد بيانات للتحديث' },
         { status: 400 }
       );
     }
 
-    updates.push(`updated_at = NOW()`);
-    values.push(id);
+    // Update plan
+    const plan = await prisma.annualPlan.update({
+      where: { id },
+      data: updateData,
+    });
 
-    const query = `
-      UPDATE audit.annualplans
-      SET ${updates.join(', ')}
-      WHERE id = $${paramIndex}
-      RETURNING id, fiscal_year as year, version, status, owner_id, created_at, updated_at
-    `;
-
-    const result = await prisma.$queryRawUnsafe<any[]>(query, ...values);
-
-    return NextResponse.json(result[0]);
+    // Return with API-friendly field names
+    return NextResponse.json({
+      id: plan.id,
+      year: plan.fiscalYear,
+      version: plan.version,
+      status: plan.status,
+      title: plan.title,
+      owner_id: plan.createdBy,
+      created_at: plan.createdAt,
+      updated_at: plan.updatedAt,
+    });
   } catch (error: any) {
     console.error('❌ Error updating plan:', error);
     return NextResponse.json(

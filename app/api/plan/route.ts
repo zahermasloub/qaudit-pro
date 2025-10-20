@@ -56,7 +56,7 @@ import prisma from '@/lib/prisma';
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
-    const { year, version = 'v1', owner_id } = body;
+    const { year, version = '1.0', owner_id, title } = body;
 
     // Validation
     if (!year || typeof year !== 'number') {
@@ -67,30 +67,45 @@ export async function POST(req: NextRequest) {
     }
 
     // Check if plan already exists for this year/version
-    const existing = await prisma.$queryRawUnsafe<any[]>(
-      `SELECT id FROM audit.annualplans WHERE fiscal_year = $1 AND version = $2 LIMIT 1`,
-      year,
-      version
-    );
+    const existing = await prisma.annualPlan.findFirst({
+      where: {
+        fiscalYear: year,
+        version: version,
+      },
+    });
 
-    if (existing.length > 0) {
+    if (existing) {
       return NextResponse.json(
         { error: `خطة للسنة ${year} بالنسخة ${version} موجودة مسبقاً` },
         { status: 400 }
       );
     }
 
-    // Create plan
-    const result = await prisma.$queryRawUnsafe<any[]>(
-      `INSERT INTO audit.annualplans (fiscal_year, version, status, owner_id, created_at, updated_at)
-       VALUES ($1, $2, 'draft', $3, NOW(), NOW())
-       RETURNING id, fiscal_year as year, version, status, owner_id, created_at, updated_at`,
-      year,
-      version,
-      owner_id || null
-    );
+    // Create plan using Prisma
+    const plan = await prisma.annualPlan.create({
+      data: {
+        title: title || `خطة التدقيق السنوية ${year}`,
+        fiscalYear: year,
+        version: version,
+        status: 'draft',
+        createdBy: owner_id || 'system',
+      },
+    });
 
-    return NextResponse.json(result[0], { status: 201 });
+    // Return with API-friendly field names
+    return NextResponse.json(
+      {
+        id: plan.id,
+        year: plan.fiscalYear,
+        version: plan.version,
+        status: plan.status,
+        title: plan.title,
+        owner_id: plan.createdBy,
+        created_at: plan.createdAt,
+        updated_at: plan.updatedAt,
+      },
+      { status: 201 }
+    );
   } catch (error: any) {
     console.error('❌ Error creating plan:', error);
     return NextResponse.json(

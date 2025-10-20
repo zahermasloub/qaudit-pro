@@ -2,6 +2,7 @@
 import { useState } from 'react';
 import type { Locale } from '@/lib/i18n';
 import CreatePlanWizard from '@/app/(app)/rbia/plan/CreatePlanWizard';
+import KpiCards from '@/app/(components)/KpiCards';
 
 export default function DashboardView({
   locale,
@@ -20,6 +21,8 @@ export default function DashboardView({
       dir={locale === 'ar' ? 'rtl' : 'ltr'}
     >
       <div className="w-full max-w-4xl space-y-6">
+      {/* KPI Cards - displays metrics for latest annual plan */}
+      <KpiCards />
       {/* Filters */}
   <div className="bg-white border rounded-2xl p-4 flex flex-col sm:flex-row flex-wrap items-stretch sm:items-center gap-3 shadow-md">
   <select className="border rounded-lg px-4 py-3 text-base w-full sm:w-auto focus:ring-2 focus:ring-blue-500 focus:border-blue-500">

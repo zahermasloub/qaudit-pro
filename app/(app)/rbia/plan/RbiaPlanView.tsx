@@ -102,51 +102,90 @@ export default function RbiaPlanView({ mode = 'plan' }: RbiaPlanViewProps) {
   const loadPlanData = async () => {
     setLoading(true);
     try {
-      // Get current year plan
-      const currentYear = new Date().getFullYear();
-      const plansRes = await fetch(`/api/annual-plans?fiscalYear=${currentYear}`);
+      // Get latest annual plan
+      const planRes = await fetch('/api/plan/latest');
 
-      if (plansRes.ok) {
-        const plans = await plansRes.json();
-        const currentPlan = plans && plans.length > 0 ? plans[0] : null;
+      if (planRes.ok) {
+        const currentPlan = await planRes.json();
 
-        if (currentPlan) {
-          // Fetch plan items
-          const itemsRes = await fetch(`/api/plan/items?plan_id=${currentPlan.id}`);
-          if (itemsRes.ok) {
-            const itemsData = await itemsRes.json();
-            const items = (itemsData.data || []).map((item: any) => ({
-              id: item.id,
-              code: `RBIA-${String(Math.floor(Math.random() * 9000) + 1000)}`,
-              title: item.au_name || 'مهمة مراجعة',
-              department: item.au_category || 'عام',
-              risk_level: getRiskLevel(item.risk_score),
-              type: item.type || 'مراجعة داخلية',
-              quarter: getQuarter(item.period_start),
-              hours: item.effort_days ? item.effort_days * 8 : 40,
-              status: getStatus(item),
-              au_name: item.au_name,
-              priority: item.priority,
-              effort_days: item.effort_days,
-              period_start: item.period_start,
-              period_end: item.period_end,
+        if (currentPlan && currentPlan.id) {
+          // Fetch audit tasks for this plan
+          const tasksRes = await fetch(`/api/plan/${currentPlan.id}/tasks`);
+
+          if (tasksRes.ok) {
+            const tasksData = await tasksRes.json();
+            const tasks = tasksData.tasks || [];
+
+            const items: PlanItem[] = tasks.map((task: any) => ({
+              id: task.id,
+              code: task.code,
+              title: task.title,
+              department: task.department,
+              risk_level: mapRiskLevel(task.riskLevel),
+              type: mapAuditType(task.auditType),
+              quarter: task.plannedQuarter,
+              hours: task.estimatedHours,
+              status: mapTaskStatus(task.status),
+              au_name: task.title,
+              priority: task.riskLevel,
+              effort_days: Math.ceil(task.estimatedHours / 8),
+              period_start: task.plannedQuarter,
+              period_end: task.plannedQuarter,
             }));
+
             setPlanItems(items);
+          } else {
+            // No tasks yet
+            setPlanItems([]);
+            toast.info('لا توجد مهام في الخطة الحالية');
           }
         } else {
-          // Generate sample data for demo
-          setPlanItems(generateSampleData());
+          // No plan found
+          setPlanItems([]);
+          toast.info('لا توجد خطة سنوية');
         }
       } else {
+        // Generate sample data for demo
         setPlanItems(generateSampleData());
+        toast.info('عرض بيانات تجريبية');
       }
     } catch (error) {
       console.error('Error loading plan data:', error);
       setPlanItems(generateSampleData());
+      toast.error('خطأ في تحميل البيانات');
       toast.error('فشل تحميل البيانات، تم استخدام بيانات تجريبية');
     } finally {
       setLoading(false);
     }
+  };
+
+  // Mapping functions for data transformation
+  const mapRiskLevel = (riskLevel: string): 'high' | 'medium' | 'low' => {
+    const level = riskLevel.toLowerCase();
+    if (level === 'very_high' || level === 'high') return 'high';
+    if (level === 'medium') return 'medium';
+    return 'low';
+  };
+
+  const mapAuditType = (auditType: string): string => {
+    const types: { [key: string]: string } = {
+      financial: 'مالي',
+      operational: 'تشغيلي',
+      compliance: 'امتثال',
+      it: 'تقنية معلومات',
+      investigative: 'تحقيقات',
+    };
+    return types[auditType] || auditType;
+  };
+
+  const mapTaskStatus = (status: string): PlanItem['status'] => {
+    const statusMap: { [key: string]: PlanItem['status'] } = {
+      not_started: 'planned',
+      in_progress: 'in-progress',
+      completed: 'completed',
+      on_hold: 'delayed',
+    };
+    return statusMap[status] || 'planned';
   };
 
   const getRiskLevel = (score?: number): 'high' | 'medium' | 'low' => {
@@ -640,27 +679,33 @@ export default function RbiaPlanView({ mode = 'plan' }: RbiaPlanViewProps) {
                             </span>
                           </td>
                           <td className="px-4 py-3">
-                            <div className="flex gap-2">
+                            <div className="flex gap-2 justify-end">
                               <button
                                 onClick={() => handleView(item)}
-                                className="p-1.5 hover:bg-blue-50 rounded transition-colors"
-                                aria-label="عرض"
+                                className="flex items-center gap-1.5 px-3 py-2 hover:bg-blue-50 rounded-lg transition-colors border border-blue-200 text-sm font-medium"
+                                aria-label="عرض التفاصيل"
+                                title="عرض التفاصيل"
                               >
                                 <Eye className="w-4 h-4 text-blue-600" />
+                                <span className="text-blue-600">عرض</span>
                               </button>
                               <button
                                 onClick={() => handleEdit(item)}
-                                className="p-1.5 hover:bg-green-50 rounded transition-colors"
+                                className="flex items-center gap-1.5 px-3 py-2 hover:bg-green-50 rounded-lg transition-colors border border-green-200 text-sm font-medium"
                                 aria-label="تعديل"
+                                title="تعديل المهمة"
                               >
                                 <Edit2 className="w-4 h-4 text-green-600" />
+                                <span className="text-green-600">تعديل</span>
                               </button>
                               <button
                                 onClick={() => handleDelete(item)}
-                                className="p-1.5 hover:bg-red-50 rounded transition-colors"
+                                className="flex items-center gap-1.5 px-3 py-2 hover:bg-red-50 rounded-lg transition-colors border border-red-200 text-sm font-medium"
                                 aria-label="حذف"
+                                title="حذف المهمة"
                               >
                                 <Trash2 className="w-4 h-4 text-red-600" />
+                                <span className="text-red-600">حذف</span>
                               </button>
                             </div>
                           </td>
