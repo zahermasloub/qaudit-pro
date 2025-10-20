@@ -92,64 +92,39 @@ export default function DashboardView({
         <table className="w-full text-base min-w-[700px]">
           <thead>
             <tr className="bg-slate-50 border-b">
-              <th className="text-left p-3 font-semibold text-slate-700">{locale === 'ar' ? '??????' : 'Task'}</th>
-              <th className="text-left p-3 font-semibold text-slate-700">
-                {locale === 'ar' ? '??????' : 'Status'}
-              </th>
-              <th className="text-left p-3 font-semibold text-slate-700">
-                {locale === 'ar' ? '???????' : 'Date'}
-              </th>
-              <th className="text-left p-3 font-semibold text-slate-700">
-                {locale === 'ar' ? '???????' : 'Owner'}
-              </th>
-              <th className="text-left p-3 font-semibold text-slate-700">
-                {locale === 'ar' ? '??????' : 'Progress'}
-              </th>
-                <th className="text-right p-3 font-semibold text-slate-700">{locale === 'ar' ? 'المهمة' : 'Task'}</th>
-                <th className="text-right p-3 font-semibold text-slate-700">{locale === 'ar' ? 'الحالة' : 'Status'}</th>
-                <th className="text-right p-3 font-semibold text-slate-700">{locale === 'ar' ? 'التاريخ' : 'Date'}</th>
-                <th className="text-right p-3 font-semibold text-slate-700">{locale === 'ar' ? 'المالك' : 'Owner'}</th>
-                <th className="text-right p-3 font-semibold text-slate-700">{locale === 'ar' ? 'التقدم' : 'Progress'}</th>
+              <th className="text-right p-3 font-semibold text-slate-700">{locale === 'ar' ? 'المهمة' : 'Task'}</th>
+              <th className="text-right p-3 font-semibold text-slate-700">{locale === 'ar' ? 'الحالة' : 'Status'}</th>
+              <th className="text-right p-3 font-semibold text-slate-700">{locale === 'ar' ? 'التاريخ' : 'Date'}</th>
+              <th className="text-right p-3 font-semibold text-slate-700">{locale === 'ar' ? 'المالك' : 'Owner'}</th>
+              <th className="text-right p-3 font-semibold text-slate-700">{locale === 'ar' ? 'التقدم' : 'Progress'}</th>
             </tr>
           </thead>
           <tbody>
             <tr className="border-b">
               <td className="p-3 truncate-cell text-slate-900 text-right">
-                ENG-2025-001 -{' '}
-                {locale === 'ar' ? '?????? ?????? ??????' : 'Financial System Review'}
-                  ENG-2025-001 -{' '}
-                  {locale === 'ar' ? 'مراجعة النظام المالي' : 'Financial System Review'}
+                ENG-2025-001 - {locale === 'ar' ? 'مراجعة النظام المالي' : 'Financial System Review'}
               </td>
               <td className="p-3 text-slate-900 text-right">
                 <span className="px-2 py-1 rounded-full text-xs bg-green-100 text-green-800">
-                  {locale === 'ar' ? '???' : 'Active'}
+                  {locale === 'ar' ? 'نشط' : 'Active'}
                 </span>
-                  <span className="px-2 py-1 rounded-full text-xs bg-green-100 text-green-800">
-                    {locale === 'ar' ? 'نشط' : 'Active'}
-                  </span>
               </td>
               <td className="p-3 text-slate-900 text-right">2025-01-15</td>
               <td className="p-3 text-slate-900 text-right">Ahmad M.</td>
               <td className="p-3 text-slate-900 text-right">65%</td>
             </tr>
             <tr className="border-b">
-              <td className="p-3 truncate-cell text-slate-900">
-                ENG-2025-002 -{' '}
-                {locale === 'ar' ? '????? ???? ?????????' : 'Information Security Audit'}
-                  ENG-2025-002 -{' '}
-                  {locale === 'ar' ? 'تدقيق أمن المعلومات' : 'Information Security Audit'}
+              <td className="p-3 truncate-cell text-slate-900 text-right">
+                ENG-2025-002 - {locale === 'ar' ? 'تدقيق أمن المعلومات' : 'Information Security Audit'}
               </td>
-              <td className="p-3 text-slate-900">
+              <td className="p-3 text-slate-900 text-right">
                 <span className="px-2 py-1 rounded-full text-xs bg-blue-100 text-blue-800">
-                  {locale === 'ar' ? '?????' : 'Planning'}
+                  {locale === 'ar' ? 'تخطيط' : 'Planning'}
                 </span>
-                  <span className="px-2 py-1 rounded-full text-xs bg-blue-100 text-blue-800">
-                    {locale === 'ar' ? 'تخطيط' : 'Planning'}
-                  </span>
               </td>
-              <td className="p-3 text-slate-900">2025-02-01</td>
-              <td className="p-3 text-slate-900">Sara K.</td>
-              <td className="p-3 text-slate-900">25%</td>
+              <td className="p-3 text-slate-900 text-right">2025-02-01</td>
+              <td className="p-3 text-slate-900 text-right">Sara K.</td>
+              <td className="p-3 text-slate-900 text-right">25%</td>
             </tr>
           </tbody>
         </table>

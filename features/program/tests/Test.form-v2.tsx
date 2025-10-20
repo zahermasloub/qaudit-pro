@@ -14,6 +14,7 @@ interface TestFormProps {
 
 export default function TestForm({ open, onOpenChange, engagementId, onSuccess }: TestFormProps) {
   const [loading, setLoading] = useState(false);
+  const [tab, setTab] = useState<'basic' | 'steps' | 'extra'>('basic');
   const [testSteps, setTestSteps] = useState<string[]>(['']);
   const { addToast } = useToast();
   const {
@@ -79,11 +80,11 @@ export default function TestForm({ open, onOpenChange, engagementId, onSuccess }
   if (!open) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center px-4" dir="rtl">
+    <div className="fixed inset-0 z-50 flex items-center justify-center px-2 sm:px-4" dir="rtl">
       <div className="absolute inset-0 bg-black/40" onClick={() => onOpenChange(false)} />
-      <div className="relative w-full max-w-3xl">
-        <div className="flex max-h-[88vh] flex-col overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-xl">
-          <div className="flex items-center justify-between border-b px-6 py-4">
+      <div className="relative w-full max-w-lg sm:max-w-xl md:max-w-2xl lg:max-w-3xl">
+        <div className="flex flex-col overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-xl w-full min-h-[60vh] max-h-[90vh]">
+          <div className="flex items-center justify-between border-b px-4 sm:px-6 py-3 sm:py-4">
             <h3 className="text-lg font-semibold">إنشاء اختبار جديد</h3>
             <button
               type="button"
@@ -94,80 +95,100 @@ export default function TestForm({ open, onOpenChange, engagementId, onSuccess }
               ✕
             </button>
           </div>
-
+          <div className="flex border-b bg-slate-50 px-2 sm:px-6">
+            <button
+              className={`px-4 py-2 font-medium transition-colors ${tab === 'basic' ? 'border-b-2 border-blue-600 text-blue-700' : 'text-gray-600 hover:text-blue-600'}`}
+              onClick={() => setTab('basic')}
+              type="button"
+            >
+              بيانات أساسية
+            </button>
+            <button
+              className={`px-4 py-2 font-medium transition-colors ${tab === 'steps' ? 'border-b-2 border-blue-600 text-blue-700' : 'text-gray-600 hover:text-blue-600'}`}
+              onClick={() => setTab('steps')}
+              type="button"
+            >
+              خطوات الاختبار
+            </button>
+            <button
+              className={`px-4 py-2 font-medium transition-colors ${tab === 'extra' ? 'border-b-2 border-blue-600 text-blue-700' : 'text-gray-600 hover:text-blue-600'}`}
+              onClick={() => setTab('extra')}
+              type="button"
+            >
+              تفاصيل إضافية
+            </button>
+          </div>
           <form onSubmit={handleSubmit(onSubmit)} className="flex flex-1 flex-col overflow-hidden">
-            <div className="flex-1 overflow-y-auto overflow-x-hidden px-6 py-4">
-              <div className="grid grid-cols-1 gap-5 md:grid-cols-2">
-                <div className="grid grid-cols-1 gap-4 md:col-span-2">
-                  <div>
-                    <label className="mb-1 block text-sm font-medium">كود الاختبار</label>
+            <div className="flex-1 overflow-y-auto overflow-x-hidden px-2 sm:px-4 md:px-6 py-3 sm:py-4">
+              {tab === 'basic' && (
+                <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+                  <div className="grid grid-cols-1 gap-3 md:col-span-2">
+                    <div>
+                      <label className="mb-1 block text-sm font-medium">كود الاختبار</label>
+                      <input
+                        {...register('code')}
+                        className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm"
+                        placeholder="TEST-001"
+                      />
+                      {errors.code && <p className="mt-1 text-xs text-red-500">{errors.code.message}</p>}
+                    </div>
+                    <div>
+                      <label className="mb-1 block text-sm font-medium">الحالة</label>
+                      <select
+                        {...register('status')}
+                        className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm"
+                      >
+                        <option value="planned">مخطط</option>
+                        <option value="in_progress">قيد التنفيذ</option>
+                        <option value="completed">مكتمل</option>
+                        <option value="blocked">معلق</option>
+                      </select>
+                    </div>
+                  </div>
+                  <div className="md:col-span-2">
+                    <label className="mb-1 block text-sm font-medium">عنوان الاختبار</label>
                     <input
-                      {...register('code')}
-                      className="w-full rounded-lg border border-gray-300 px-3 py-2"
-                      placeholder="TEST-001"
+                      {...register('title')}
+                      className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm"
+                      placeholder="اختبار فعالية الرقابة على عمليات الشراء"
                     />
-                    {errors.code && <p className="mt-1 text-xs text-red-500">{errors.code.message}</p>}
+                    {errors.title && (
+                      <p className="mt-1 text-xs text-red-500">{errors.title.message}</p>
+                    )}
                   </div>
-
                   <div>
-                    <label className="mb-1 block text-sm font-medium">الحالة</label>
-                    <select
-                      {...register('status')}
-                      className="w-full rounded-lg border border-gray-300 px-3 py-2"
-                    >
-                      <option value="planned">مخطط</option>
-                      <option value="in_progress">قيد التنفيذ</option>
-                      <option value="completed">مكتمل</option>
-                      <option value="blocked">معلق</option>
-                    </select>
-                  </div>
-                </div>
-
-                <div className="md:col-span-2">
-                  <label className="mb-1 block text-sm font-medium">عنوان الاختبار</label>
-                  <input
-                    {...register('title')}
-                    className="w-full rounded-lg border border-gray-300 px-3 py-2"
-                    placeholder="اختبار فعالية الرقابة على عمليات الشراء"
-                  />
-                  {errors.title && (
-                    <p className="mt-1 text-xs text-red-500">{errors.title.message}</p>
-                  )}
-                </div>
-
-                <div>
-                  <label className="mb-1 block text-sm font-medium">هدف الاختبار</label>
-                  <textarea
-                    {...register('objective')}
-                    className="h-20 w-full rounded-lg border border-gray-300 px-3 py-2"
-                    placeholder="وضح الهدف من هذا الاختبار والإجراءات التي سيغطيها..."
-                  />
-                  {errors.objective && (
-                    <p className="mt-1 text-xs text-red-500">{errors.objective.message}</p>
-                  )}
-                </div>
-
-                <div className="grid grid-cols-1 gap-4 md:col-span-2 md:grid-cols-2">
-                  <div>
-                    <label className="mb-1 block text-sm font-medium">معرّف الرقابة</label>
-                    <input
-                      {...register('controlId')}
-                      className="w-full rounded-lg border border-gray-300 px-3 py-2"
-                      placeholder="CTL-001 (اختياري)"
+                    <label className="mb-1 block text-sm font-medium">هدف الاختبار</label>
+                    <textarea
+                      {...register('objective')}
+                      className="h-20 w-full rounded-md border border-gray-300 px-3 py-2 text-sm"
+                      placeholder="وضح الهدف من هذا الاختبار والإجراءات التي سيغطيها..."
                     />
+                    {errors.objective && (
+                      <p className="mt-1 text-xs text-red-500">{errors.objective.message}</p>
+                    )}
                   </div>
-
-                  <div>
-                    <label className="mb-1 block text-sm font-medium">معرّف الخطر</label>
-                    <input
-                      {...register('riskId')}
-                      className="w-full rounded-lg border border-gray-300 px-3 py-2"
-                      placeholder="RISK-001 (اختياري)"
-                    />
+                  <div className="grid grid-cols-1 gap-2 md:col-span-2 md:grid-cols-2">
+                    <div>
+                      <label className="mb-1 block text-sm font-medium">معرّف الرقابة</label>
+                      <input
+                        {...register('controlId')}
+                        className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm"
+                        placeholder="CTL-001 (اختياري)"
+                      />
+                    </div>
+                    <div>
+                      <label className="mb-1 block text-sm font-medium">معرّف الخطر</label>
+                      <input
+                        {...register('riskId')}
+                        className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm"
+                        placeholder="RISK-001 (اختياري)"
+                      />
+                    </div>
                   </div>
                 </div>
-
-                <div className="md:col-span-2">
+              )}
+              {tab === 'steps' && (
+                <>
                   <div className="mb-2 flex items-center justify-between">
                     <label className="block text-sm font-medium">خطوات الاختبار</label>
                     <button
@@ -193,7 +214,7 @@ export default function TestForm({ open, onOpenChange, engagementId, onSuccess }
                             setTestSteps(newSteps);
                             setValue('testSteps', newSteps);
                           }}
-                          className="flex-1 rounded-lg border border-gray-300 px-3 py-2"
+                          className="flex-1 rounded-md border border-gray-300 px-3 py-2 text-sm"
                           placeholder={`الخطوة ${index + 1}`}
                         />
                         {testSteps.length > 1 && (
@@ -215,48 +236,48 @@ export default function TestForm({ open, onOpenChange, engagementId, onSuccess }
                   {errors.testSteps && (
                     <p className="mt-1 text-xs text-red-500">{errors.testSteps.message}</p>
                   )}
-                </div>
-
-                <div>
-                  <label className="mb-1 block text-sm font-medium">النتائج المتوقعة</label>
-                  <textarea
-                    {...register('expectedResults')}
-                    className="h-16 w-full rounded-lg border border-gray-300 px-3 py-2"
-                    placeholder="أدخل النتائج التي تتوقع الوصول إليها عند تنفيذ الاختبار..."
-                  />
-                  {errors.expectedResults && (
-                    <p className="mt-1 text-xs text-red-500">{errors.expectedResults.message}</p>
-                  )}
-                </div>
-
-                <div className="grid grid-cols-1 gap-4 md:col-span-2 md:grid-cols-2">
+                </>
+              )}
+              {tab === 'extra' && (
+                <>
                   <div>
-                    <label className="mb-1 block text-sm font-medium">المكلف بالتنفيذ</label>
-                    <input
-                      {...register('assignedTo')}
-                      className="w-full rounded-lg border border-gray-300 px-3 py-2"
-                      placeholder="auditor@example.com"
+                    <label className="mb-1 block text-sm font-medium">النتائج المتوقعة</label>
+                    <textarea
+                      {...register('expectedResults')}
+                      className="h-16 w-full rounded-md border border-gray-300 px-3 py-2 text-sm"
+                      placeholder="أدخل النتائج التي تتوقع الوصول إليها عند تنفيذ الاختبار..."
                     />
+                    {errors.expectedResults && (
+                      <p className="mt-1 text-xs text-red-500">{errors.expectedResults.message}</p>
+                    )}
                   </div>
-
-                  <div>
-                    <label className="mb-1 block text-sm font-medium">الساعات المخططة</label>
-                    <input
-                      type="number"
-                      {...register('plannedHours', { valueAsNumber: true })}
-                      className="w-full rounded-lg border border-gray-300 px-3 py-2"
-                      placeholder="8"
-                    />
+                  <div className="grid grid-cols-1 gap-2 md:col-span-2 md:grid-cols-2">
+                    <div>
+                      <label className="mb-1 block text-sm font-medium">المكلف بالتنفيذ</label>
+                      <input
+                        {...register('assignedTo')}
+                        className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm"
+                        placeholder="auditor@example.com"
+                      />
+                    </div>
+                    <div>
+                      <label className="mb-1 block text-sm font-medium">الساعات المخططة</label>
+                      <input
+                        type="number"
+                        {...register('plannedHours', { valueAsNumber: true })}
+                        className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm"
+                        placeholder="8"
+                      />
+                    </div>
                   </div>
-                </div>
-              </div>
+                </>
+              )}
             </div>
-
-            <div className="flex flex-shrink-0 items-center justify-end gap-3 border-t bg-white px-6 py-4">
+            <div className="sticky bottom-0 flex flex-shrink-0 items-center justify-end gap-2 sm:gap-3 border-t bg-white px-2 sm:px-6 py-3 sm:py-4">
               <button
                 type="button"
                 onClick={() => onOpenChange(false)}
-                className="rounded-lg border border-gray-300 px-5 py-2.5 font-bold text-gray-700 transition-colors hover:bg-gray-50"
+                className="rounded-md border border-gray-300 px-4 py-2 text-gray-700 font-medium transition-colors hover:bg-gray-50"
                 disabled={loading}
               >
                 إلغاء
@@ -264,7 +285,7 @@ export default function TestForm({ open, onOpenChange, engagementId, onSuccess }
               <button
                 type="submit"
                 disabled={loading}
-                className="rounded-lg bg-blue-600 px-5 py-2.5 font-bold text-white transition-colors hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-50"
+                className="rounded-md bg-blue-600 px-4 py-2 text-white font-medium transition-colors hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-50"
               >
                 {loading ? 'جارٍ الحفظ...' : 'حفظ الاختبار'}
               </button>

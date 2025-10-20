@@ -83,12 +83,13 @@ export default function RunForm({
   if (!open) return null;
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4">
-      <div className="bg-white rounded-lg p-6 max-w-2xl w-full max-h-[90vh] overflow-y-auto">
-        <h2 className="text-lg font-bold mb-4">Execute Test Step</h2>
+    <div className="fixed inset-0 z-50 flex items-center justify-center px-2 sm:px-4">
+      <div className="absolute inset-0 bg-black/40" onClick={() => onOpenChange(false)} />
+      <div className="relative w-full max-w-md sm:max-w-lg md:max-w-xl lg:max-w-2xl bg-white rounded-2xl shadow-xl border border-gray-200 min-h-[40vh] max-h-[90vh] overflow-y-auto p-4 sm:p-6">
+  <h2 className="text-lg font-semibold mb-4">تنفيذ خطوة اختبار</h2>
 
         <form onSubmit={handleSubmit} className="space-y-4">
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-2 gap-3">
             <div>
               <label className="block text-sm font-medium mb-1">Step Index</label>
               <input
@@ -100,7 +101,7 @@ export default function RunForm({
                     stepIndex: parseInt(e.target.value) || 0,
                   }))
                 }
-                className="w-full p-2 border rounded"
+                className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm"
                 required
               />
             </div>
@@ -114,7 +115,7 @@ export default function RunForm({
                     result: e.target.value as 'pass' | 'fail' | 'exception',
                   }))
                 }
-                className="w-full p-2 border rounded"
+                className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm"
               >
                 <option value="pass">Pass</option>
                 <option value="fail">Fail</option>
@@ -133,7 +134,7 @@ export default function RunForm({
                   actionTaken: e.target.value,
                 }))
               }
-              className="w-full p-2 border rounded"
+              className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm"
               rows={3}
               required
             />
@@ -149,12 +150,12 @@ export default function RunForm({
                   notes: e.target.value,
                 }))
               }
-              className="w-full p-2 border rounded"
+              className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm"
               rows={2}
             />
           </div>
 
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-2 gap-3">
             <div>
               <label className="block text-sm font-medium mb-1">Sample Reference</label>
               <input
@@ -166,7 +167,7 @@ export default function RunForm({
                     sampleRef: e.target.value,
                   }))
                 }
-                className="w-full p-2 border rounded"
+                className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm"
               />
             </div>
             <div>
@@ -180,25 +181,25 @@ export default function RunForm({
                     executedBy: e.target.value,
                   }))
                 }
-                className="w-full p-2 border rounded"
+                className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm"
                 required
               />
             </div>
           </div>
 
-          <div className="flex justify-end gap-2 pt-4">
+          <div className="flex flex-shrink-0 items-center justify-end gap-2 sm:gap-3 border-t bg-white px-2 sm:px-6 py-3 sm:py-4 mt-4">
             <button
               type="button"
               onClick={() => onOpenChange(false)}
-              className="px-4 py-2 border rounded hover:bg-gray-50"
+              className="rounded-md border border-gray-300 px-4 py-2 text-gray-700 font-medium transition-colors hover:bg-gray-50"
             >
-              Cancel
+              إلغاء
             </button>
             <button
               type="submit"
-              className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
+              className="rounded-md bg-blue-600 px-4 py-2 text-white font-medium transition-colors hover:bg-blue-700"
             >
-              Save Test Run
+              حفظ التنفيذ
             </button>
           </div>
         </form>
