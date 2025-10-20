@@ -2,6 +2,7 @@ import "@fontsource/tajawal/400.css";
 import "@fontsource/tajawal/700.css";
 import type { Metadata } from 'next';
 import AuthProvider from '@/lib/AuthProvider';
+import { ThemeProvider } from '@/lib/ThemeProvider';
 import { Toaster } from '@/components/ui/Toaster';
 import './globals.css';
 
@@ -18,8 +19,10 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
       </head>
       <body className="font-arabic antialiased">
-        <AuthProvider>{children}</AuthProvider>
-        <Toaster />
+        <ThemeProvider>
+          <AuthProvider>{children}</AuthProvider>
+          <Toaster />
+        </ThemeProvider>
       </body>
     </html>
   );

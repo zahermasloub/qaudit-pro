@@ -25,6 +25,7 @@
   }
 }
 
+/* Dark Mode - Auto (System Preference) */
 @media (prefers-color-scheme: dark) {
   :root {
     --background: #0a0a0a;
@@ -39,6 +40,29 @@
     background: #0b1220;
     color: rgba(255, 255, 255, 0.95);
   }
+}
+
+/* Dark Mode - Manual Toggle */
+.dark {
+  --background: #0a0a0a;
+  --foreground: #ededed;
+  --surface: 22 24 28;
+  --muted: 30 32 38;
+  --stroke: 92 96 106;
+}
+
+.dark .header-dark {
+  background: #0b1220;
+  color: rgba(255, 255, 255, 0.95);
+}
+
+/* Light Mode - Manual Toggle */
+.light {
+  --background: #ffffff;
+  --foreground: #171717;
+  --surface: 255 255 255;
+  --muted: 247 247 248;
+  --stroke: 230 232 236;
 }
 
 body {

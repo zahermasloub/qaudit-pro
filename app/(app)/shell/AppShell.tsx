@@ -379,6 +379,7 @@ import { signOut, useSession } from 'next-auth/react';
 // Removed unused import 'useForm'
 import SidebarDrawer from '@/components/shell/SidebarDrawer';
 import { ToastProvider } from '@/components/ui/Toast-v2';
+import { ThemeToggle } from '@/components/ui/ThemeToggle';
 import AnnualPlanForm from '@/features/annual-plan/annual-plan.form';
 import EvidenceForm from '@/features/evidence/evidence.form';
 import EvidenceUploaderForm from '@/features/evidence/forms/EvidenceUploader.form';
@@ -580,6 +581,9 @@ function Topbar({
                   {i18n.menu.admin}
                 </button>
               )}
+              <div className="hidden sm:block">
+                <ThemeToggle />
+              </div>
               <button className="rounded-full bg-blue-600 text-white px-3 py-1.5 hover:bg-blue-700 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-sky-300/80 focus-visible:ring-offset-transparent">
                 {i18n.common.alerts} 3
               </button>

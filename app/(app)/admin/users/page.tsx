@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { Edit, Trash2, UserPlus } from 'lucide-react';
+import { Edit, Trash2, UserPlus, Download, Shield } from 'lucide-react';
 import { ColumnDef } from '@tanstack/react-table';
 import { toast } from 'sonner';
 
@@ -10,6 +10,10 @@ import { FiltersBar, FilterOption } from '@/components/ui/FiltersBar';
 import { Breadcrumbs, BreadcrumbItem } from '@/components/ui/Breadcrumbs';
 import { EmptyState } from '@/components/ui/EmptyState';
 import { ConfirmDialog } from '@/components/ui/ConfirmDialog';
+import { BulkActionsBar, BulkAction } from '@/components/ui/BulkActionsBar';
+import { RoleAssignDialog } from '@/components/admin/RoleAssignDialog';
+import { RLSPreviewBar } from '@/components/admin/RLSPreviewBar';
+import { useRLSPreview } from '@/lib/RLSPreviewContext';
 
 interface User {
   id: string;
@@ -27,12 +31,20 @@ interface User {
 }
 
 export default function AdminUsersPage() {
+  const { isPreviewMode, previewUser } = useRLSPreview();
+
   const [users, setUsers] = useState<User[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
   const [filterValues, setFilterValues] = useState<Record<string, string>>({});
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [userToDelete, setUserToDelete] = useState<User | null>(null);
+
+  // Bulk Actions State
+  const [selectedUsers, setSelectedUsers] = useState<User[]>([]);
+  const [bulkDeleteDialogOpen, setBulkDeleteDialogOpen] = useState(false);
+  const [roleAssignDialogOpen, setRoleAssignDialogOpen] = useState(false);
+  const [bulkProcessing, setBulkProcessing] = useState(false);
 
   const breadcrumbItems: BreadcrumbItem[] = [
     { label: 'لوحة التحكم', href: '/admin/dashboard' },
@@ -86,7 +98,7 @@ export default function AdminUsersPage() {
     }
   }
 
-  // حذف مستخدم
+  // حذف مستخدم واحد
   async function handleDelete(user: User) {
     try {
       const response = await fetch(`/api/admin/users/${user.id}`, {
@@ -107,6 +119,129 @@ export default function AdminUsersPage() {
     } finally {
       setDeleteDialogOpen(false);
       setUserToDelete(null);
+    }
+  }
+
+  // حذف عدة مستخدمين
+  async function handleBulkDelete() {
+    if (selectedUsers.length === 0) return;
+
+    setBulkProcessing(true);
+    let successCount = 0;
+    let failCount = 0;
+
+    try {
+      // حذف كل مستخدم على حدة
+      for (const user of selectedUsers) {
+        try {
+          const response = await fetch(`/api/admin/users/${user.id}`, {
+            method: 'DELETE',
+          });
+          const data = await response.json();
+
+          if (data.ok) {
+            successCount++;
+          } else {
+            failCount++;
+          }
+        } catch (error) {
+          failCount++;
+        }
+      }
+
+      // عرض النتيجة
+      if (successCount > 0) {
+        toast.success(`تم حذف ${successCount} مستخدم بنجاح`);
+      }
+      if (failCount > 0) {
+        toast.error(`فشل في حذف ${failCount} مستخدم`);
+      }
+
+      // إعادة تحميل البيانات
+      await fetchUsers();
+      setSelectedUsers([]);
+    } catch (error) {
+      console.error('Error bulk deleting users:', error);
+      toast.error('حدث خطأ أثناء الحذف الجماعي');
+    } finally {
+      setBulkProcessing(false);
+      setBulkDeleteDialogOpen(false);
+    }
+  }
+
+  // تصدير المستخدمين المحددين إلى CSV
+  function handleExportSelected() {
+    if (selectedUsers.length === 0) return;
+
+    const csvHeaders = ['البريد الإلكتروني', 'الاسم', 'الدور', 'اللغة', 'تاريخ الإنشاء'];
+    const csvRows = selectedUsers.map((user) => [
+      user.email,
+      user.name || '—',
+      user.role,
+      user.locale === 'ar' ? 'العربية' : 'الإنجليزية',
+      new Date(user.createdAt).toLocaleDateString('ar-EG'),
+    ]);
+
+    const csvContent = [
+      csvHeaders.join(','),
+      ...csvRows.map((row) => row.join(',')),
+    ].join('\n');
+
+    const blob = new Blob(['\ufeff' + csvContent], { type: 'text/csv;charset=utf-8;' });
+    const link = document.createElement('a');
+    link.href = URL.createObjectURL(blob);
+    link.download = `users_export_${new Date().toISOString().split('T')[0]}.csv`;
+    link.click();
+
+    toast.success(`تم تصدير ${selectedUsers.length} مستخدم`);
+  }
+
+  // تعيين دور جماعي
+  async function handleBulkAssignRole(roleId: string) {
+    if (selectedUsers.length === 0) return;
+
+    setBulkProcessing(true);
+    let successCount = 0;
+    let failCount = 0;
+
+    try {
+      // تعيين الدور لكل مستخدم
+      for (const user of selectedUsers) {
+        try {
+          const response = await fetch(`/api/admin/users/${user.id}/roles`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ roleId }),
+          });
+          const data = await response.json();
+
+          if (data.ok) {
+            successCount++;
+          } else {
+            failCount++;
+          }
+        } catch (error) {
+          failCount++;
+        }
+      }
+
+      // عرض النتيجة
+      if (successCount > 0) {
+        toast.success(`تم تعيين الدور لـ ${successCount} مستخدم بنجاح`);
+      }
+      if (failCount > 0) {
+        toast.error(`فشل في تعيين الدور لـ ${failCount} مستخدم`);
+      }
+
+      // إعادة تحميل البيانات
+      await fetchUsers();
+      setSelectedUsers([]);
+    } catch (error) {
+      console.error('Error bulk assigning role:', error);
+      toast.error('حدث خطأ أثناء تعيين الدور');
+    } finally {
+      setBulkProcessing(false);
+      setRoleAssignDialogOpen(false);
     }
   }
 
@@ -212,6 +347,41 @@ export default function AdminUsersPage() {
 
   // تطبيق الفلاتر
   const filteredUsers = users.filter((user) => {
+    // فلتر RLS Preview Mode
+    // في وضع المعاينة، نعرض فقط المستخدمين الذين لهم نفس الدور أو أقل
+    if (isPreviewMode && previewUser) {
+      // قواعد RLS بسيطة للتوضيح:
+      // - Admin يرى الجميع
+      // - IA_Lead يرى IA_Auditor و User فقط (لا يرى Admin)
+      // - IA_Auditor يرى User فقط
+      // - User يرى نفسه فقط
+
+      const roleHierarchy: Record<string, number> = {
+        'Admin': 4,
+        'IA_Lead': 3,
+        'IA_Auditor': 2,
+        'User': 1,
+      };
+
+      const previewUserLevel = roleHierarchy[previewUser.role] || 0;
+      const userLevel = roleHierarchy[user.role] || 0;
+
+      // User يرى نفسه فقط
+      if (previewUser.role === 'User' && user.id !== previewUser.id) {
+        return false;
+      }
+
+      // غير Admin لا يرى Admin
+      if (previewUser.role !== 'Admin' && user.role === 'Admin') {
+        return false;
+      }
+
+      // كل دور يرى من هم في نفس المستوى أو أقل
+      if (userLevel > previewUserLevel) {
+        return false;
+      }
+    }
+
     // فلتر البحث
     if (searchQuery) {
       const query = searchQuery.toLowerCase();
@@ -235,6 +405,9 @@ export default function AdminUsersPage() {
 
   return (
     <div className="space-y-6">
+      {/* RLS Preview Bar */}
+      <RLSPreviewBar pageName="المستخدمين" />
+
       {/* Breadcrumbs */}
       <Breadcrumbs items={breadcrumbItems} />
 
@@ -303,10 +476,44 @@ export default function AdminUsersPage() {
           data={filteredUsers}
           pagination
           pageSize={10}
+          selectable
+          getRowId={(row) => row.id}
+          onSelectionChange={setSelectedUsers}
         />
       )}
 
-      {/* Delete Confirmation Dialog */}
+      {/* Bulk Actions Bar */}
+      <BulkActionsBar
+        selectedCount={selectedUsers.length}
+        loading={bulkProcessing}
+        loadingMessage={`جارٍ حذف ${selectedUsers.length} مستخدم...`}
+        onClearSelection={() => setSelectedUsers([])}
+        actions={[
+          {
+            id: 'export',
+            label: 'تصدير CSV',
+            icon: Download,
+            onClick: handleExportSelected,
+            variant: 'default',
+          },
+          {
+            id: 'assign-role',
+            label: 'تعيين دور',
+            icon: Shield,
+            onClick: () => setRoleAssignDialogOpen(true),
+            variant: 'default',
+          },
+          {
+            id: 'delete',
+            label: `حذف (${selectedUsers.length})`,
+            icon: Trash2,
+            onClick: () => setBulkDeleteDialogOpen(true),
+            variant: 'danger',
+          },
+        ]}
+      />
+
+      {/* Delete Confirmation Dialog (Single) */}
       {userToDelete && (
         <ConfirmDialog
           open={deleteDialogOpen}
@@ -322,6 +529,27 @@ export default function AdminUsersPage() {
           cancelLabel="إلغاء"
         />
       )}
+
+      {/* Bulk Delete Confirmation Dialog */}
+      <ConfirmDialog
+        open={bulkDeleteDialogOpen}
+        onClose={() => setBulkDeleteDialogOpen(false)}
+        onConfirm={handleBulkDelete}
+        type="danger"
+        title="حذف جماعي"
+        message={`هل أنت متأكد من حذف ${selectedUsers.length} مستخدم؟ هذا الإجراء لا يمكن التراجع عنه.`}
+        confirmLabel={`حذف ${selectedUsers.length} مستخدم`}
+        cancelLabel="إلغاء"
+      />
+
+      {/* Role Assign Dialog */}
+      <RoleAssignDialog
+        open={roleAssignDialogOpen}
+        onClose={() => setRoleAssignDialogOpen(false)}
+        onConfirm={handleBulkAssignRole}
+        userCount={selectedUsers.length}
+        loading={bulkProcessing}
+      />
     </div>
   );
 }

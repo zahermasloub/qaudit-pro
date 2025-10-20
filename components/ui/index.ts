@@ -23,6 +23,9 @@ export { KPICard, KPICardGrid } from './KPICard';
 export { ChartWidget } from './ChartWidget';
 export { FileUploader } from './FileUploader';
 export { Breadcrumbs } from './Breadcrumbs';
+export { ThemeToggle } from './ThemeToggle';
+export { CommandPalette } from './CommandPalette';
+export { BulkActionsBar } from './BulkActionsBar';
 
 // Type Exports
 export type { FilterOption } from './FiltersBar';
@@ -30,3 +33,7 @@ export type { KPICardProps } from './KPICard';
 export type { ChartType, ChartDataPoint } from './ChartWidget';
 export type { UploadedFile } from './FileUploader';
 export type { BreadcrumbItem } from './Breadcrumbs';
+export type { CommandAction } from './CommandPalette';
+
+// Bulk Actions
+export type { BulkAction } from './BulkActionsBar';

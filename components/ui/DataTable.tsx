@@ -11,6 +11,7 @@ import {
   getPaginationRowModel,
   getSortedRowModel,
   useReactTable,
+  Row,
 } from '@tanstack/react-table';
 import { ArrowDown, ArrowUp, ArrowUpDown, ChevronLeft, ChevronRight } from 'lucide-react';
 import React from 'react';
@@ -37,6 +38,11 @@ interface DataTableProps<TData, TValue> {
    * دالة عند تحديد الصفوف
    */
   onSelectionChange?: (selectedRows: TData[]) => void;
+
+  /**
+   * دالة للحصول على ID فريد لكل صف (مطلوب عند استخدام selectable)
+   */
+  getRowId?: (row: TData) => string;
 
   /**
    * هل يعرض pagination
@@ -95,6 +101,7 @@ export function DataTable<TData, TValue>({
   data,
   selectable = false,
   onSelectionChange,
+  getRowId,
   pagination = true,
   pageSize = 10,
   loading = false,
@@ -106,9 +113,55 @@ export function DataTable<TData, TValue>({
   const [columnVisibility, setColumnVisibility] = React.useState<VisibilityState>({});
   const [rowSelection, setRowSelection] = React.useState({});
 
+  // إنشاء أعمدة مع checkbox إذا كان الجدول قابل للتحديد
+  const tableColumns = React.useMemo(() => {
+    if (!selectable) return columns;
+
+    const selectColumn: ColumnDef<TData, TValue> = {
+      id: 'select',
+      header: ({ table }) => (
+        <div className="flex items-center justify-center">
+          <input
+            type="checkbox"
+            checked={table.getIsAllPageRowsSelected()}
+            onChange={table.getToggleAllPageRowsSelectedHandler()}
+            aria-label="تحديد الكل"
+            className="
+              w-4 h-4 rounded border-2 border-border-base
+              text-brand-600 focus:ring-2 focus:ring-brand-500 focus:ring-offset-2
+              cursor-pointer transition-fast
+              checked:bg-brand-600 checked:border-brand-600
+            "
+          />
+        </div>
+      ),
+      cell: ({ row }) => (
+        <div className="flex items-center justify-center">
+          <input
+            type="checkbox"
+            checked={row.getIsSelected()}
+            onChange={row.getToggleSelectedHandler()}
+            aria-label={`تحديد الصف ${row.id}`}
+            className="
+              w-4 h-4 rounded border-2 border-border-base
+              text-brand-600 focus:ring-2 focus:ring-brand-500 focus:ring-offset-2
+              cursor-pointer transition-fast
+              checked:bg-brand-600 checked:border-brand-600
+            "
+          />
+        </div>
+      ),
+      size: 50,
+      enableSorting: false,
+      enableHiding: false,
+    };
+
+    return [selectColumn, ...columns];
+  }, [selectable, columns]);
+
   const table = useReactTable({
     data,
-    columns,
+    columns: tableColumns,
     getCoreRowModel: getCoreRowModel(),
     getPaginationRowModel: pagination ? getPaginationRowModel() : undefined,
     getSortedRowModel: getSortedRowModel(),
@@ -117,6 +170,7 @@ export function DataTable<TData, TValue>({
     onColumnFiltersChange: setColumnFilters,
     onColumnVisibilityChange: setColumnVisibility,
     onRowSelectionChange: setRowSelection,
+    getRowId: getRowId,
     state: {
       sorting,
       columnFilters,
@@ -128,6 +182,7 @@ export function DataTable<TData, TValue>({
         pageSize,
       },
     },
+    enableRowSelection: selectable,
   });
 
   // تحديث الصفوف المحددة
