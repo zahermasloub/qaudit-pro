@@ -977,7 +977,7 @@ export default function AppShell() {
                 value={locale}
                 onChange={e => setLocale(e.target.value as Locale)}
               >
-                <option value="ar">???????</option>
+                <option value="ar">العربية</option>
                 <option value="en">English</option>
               </select>
             </div>
