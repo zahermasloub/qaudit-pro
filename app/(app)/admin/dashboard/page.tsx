@@ -56,6 +56,9 @@ export default function AdminDashboardPage() {
         }
 
         const json = await response.json();
+        console.log('📊 KPI Data received:', json);
+        console.log('📋 Recent Logs:', json.recentLogs);
+        console.log('📈 Daily Activity:', json.trends?.dailyActivity);
         setData(json);
       } catch (err: any) {
         setError(err.message || 'حدث خطأ غير متوقع');
@@ -76,15 +79,17 @@ export default function AdminDashboardPage() {
           variant="error"
           title="فشل في تحميل البيانات"
           message={error}
-          actionLabel="إعادة المحاولة"
-          onAction={() => window.location.reload()}
+          action={{
+            label: "إعادة المحاولة",
+            onClick: () => window.location.reload()
+          }}
         />
       </div>
     );
   }
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6" style={{ backgroundColor: 'var(--bg)' }}>
       {/* Breadcrumbs */}
       <Breadcrumbs items={breadcrumbItems} showHome={false} />
 
@@ -138,11 +143,15 @@ export default function AdminDashboardPage() {
             title="النشاط اليومي"
             type="line"
             data={data.trends.dailyActivity}
-            color="#3b82f6"
+            color="var(--primary)"
           />
         ) : (
-          <div className="p-6 rounded-xl border border-border-base bg-bg-elevated">
-            <h3 className="text-sm font-semibold text-text-primary mb-4">النشاط اليومي</h3>
+          <div className="p-6 rounded-xl border shadow-card" style={{
+            borderColor: 'var(--border)',
+            backgroundColor: 'var(--surface)',
+            borderRadius: 'var(--radius)'
+          }}>
+            <h3 className="text-sm font-semibold mb-4" style={{ color: 'var(--text)' }}>النشاط اليومي</h3>
             <EmptyState
               title="لا توجد بيانات"
               message="لم يتم تسجيل نشاط هذا الشهر"
@@ -151,8 +160,12 @@ export default function AdminDashboardPage() {
         )}
 
         {/* Recent Logs */}
-        <div className="p-6 rounded-xl border border-border-base bg-bg-elevated">
-          <h3 className="text-sm font-semibold text-text-primary mb-4">أحدث السجلات</h3>
+        <div className="p-6 rounded-xl border shadow-card" style={{
+          borderColor: 'var(--border)',
+          backgroundColor: 'var(--surface)',
+          borderRadius: 'var(--radius)'
+        }}>
+          <h3 className="text-sm font-semibold mb-4" style={{ color: 'var(--text)' }}>أحدث السجلات</h3>
           {loading ? (
             <div className="space-y-3">
               <Skeleton variant="text" />
@@ -165,16 +178,29 @@ export default function AdminDashboardPage() {
               {data.recentLogs.map((log) => (
                 <div
                   key={log.id}
-                  className="flex items-start justify-between p-3 rounded-lg bg-bg-muted hover:bg-bg-subtle transition-fast"
+                  className="flex items-start justify-between p-3 rounded-lg transition-fast"
+                  style={{
+                    backgroundColor: 'var(--surface-hover)',
+                    border: '1px solid var(--border)',
+                    borderRadius: '8px'
+                  }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.backgroundColor = 'var(--row-hover)';
+                    e.currentTarget.style.borderColor = 'var(--color-border-strong)';
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.backgroundColor = 'var(--surface-hover)';
+                    e.currentTarget.style.borderColor = 'var(--border)';
+                  }}
                 >
                   <div className="flex-1">
-                    <p className="text-sm font-medium text-text-primary">{log.action}</p>
-                    <p className="text-xs text-text-tertiary mt-1">
+                    <p className="text-sm font-medium" style={{ color: 'var(--text)' }}>{log.action}</p>
+                    <p className="text-xs mt-1" style={{ color: 'var(--text-2)' }}>
                       بواسطة {log.actorEmail}
                       {log.target && ` • ${log.target}`}
                     </p>
                   </div>
-                  <time className="text-xs text-text-tertiary">
+                  <time className="text-xs" style={{ color: 'var(--muted)' }}>
                     {new Date(log.createdAt).toLocaleString('ar-EG', {
                       month: 'short',
                       day: 'numeric',

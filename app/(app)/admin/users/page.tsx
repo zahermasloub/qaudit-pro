@@ -14,6 +14,7 @@ import { BulkActionsBar, BulkAction } from '@/components/ui/BulkActionsBar';
 import { RoleAssignDialog } from '@/components/admin/RoleAssignDialog';
 import { RLSPreviewBar } from '@/components/admin/RLSPreviewBar';
 import { useRLSPreview } from '@/lib/RLSPreviewContext';
+import { useUndo } from '@/lib/UndoContext';
 
 interface User {
   id: string;
@@ -32,6 +33,7 @@ interface User {
 
 export default function AdminUsersPage() {
   const { isPreviewMode, previewUser } = useRLSPreview();
+  const { registerAction } = useUndo();
 
   const [users, setUsers] = useState<User[]>([]);
   const [loading, setLoading] = useState(true);
@@ -108,7 +110,15 @@ export default function AdminUsersPage() {
       const data = await response.json();
 
       if (data.ok) {
-        toast.success('تم حذف المستخدم بنجاح');
+        // تسجيل الإجراء للتراجع
+        registerAction({
+          type: 'delete',
+          entityType: 'user',
+          entityId: user.id,
+          data: user,
+          description: `تم حذف ${user.email}`,
+        });
+
         fetchUsers(); // إعادة تحميل القائمة
       } else {
         toast.error(data.error || 'فشل في حذف المستخدم');
@@ -461,14 +471,16 @@ export default function AdminUsersPage() {
         </div>
       ) : filteredUsers.length === 0 ? (
         <EmptyState
-          title="لا توجد نتائج"
+          title="لا يوجد مستخدمين"
           message={
             searchQuery || Object.keys(filterValues).length > 0
               ? 'لم يتم العثور على مستخدمين مطابقين للبحث أو الفلاتر'
               : 'لا يوجد مستخدمين في النظام'
           }
-          actionLabel="إضافة مستخدم"
-          onAction={() => toast.info('قريباً: حوار إضافة مستخدم')}
+          action={{
+            label: "إضافة مستخدم",
+            onClick: () => toast.info('قريباً: حوار إضافة مستخدم')
+          }}
         />
       ) : (
         <DataTable

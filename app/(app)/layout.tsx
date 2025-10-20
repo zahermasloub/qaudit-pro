@@ -1,30 +1,30 @@
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
   return (
     <div className="min-h-screen bg-background overflow-x-hidden">
-      <header className="border-b">
+      <header className="border-b bg-slate-900">
         <div className="flex h-16 items-center px-2 sm:px-4">
           <nav className="flex items-center space-x-4 lg:space-x-6">
             <a
               href="/dashboard"
-              className="text-sm font-medium transition-colors hover:text-primary"
+              className="text-sm font-medium text-white transition-colors hover:text-blue-300"
             >
               لوحة التحكم
             </a>
             <a
               href="/planning"
-              className="text-sm font-medium text-muted-foreground transition-colors hover:text-primary"
+              className="text-sm font-medium text-white/90 transition-colors hover:text-blue-300"
             >
               التخطيط
             </a>
             <a
               href="/execution"
-              className="text-sm font-medium text-muted-foreground transition-colors hover:text-primary"
+              className="text-sm font-medium text-white/90 transition-colors hover:text-blue-300"
             >
               التنفيذ
             </a>
             <a
               href="/reporting"
-              className="text-sm font-medium text-muted-foreground transition-colors hover:text-primary"
+              className="text-sm font-medium text-white/90 transition-colors hover:text-blue-300"
             >
               التقارير
             </a>

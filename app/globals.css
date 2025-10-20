@@ -1,4 +1,9 @@
+/* ============================================
+   QAUDIT PRO - GLOBAL STYLES
+   ============================================ */
+
 @import '../styles/design-tokens.css';
+@import '../styles/theme-light.css';
 
 @tailwind base;
 @tailwind components;
@@ -283,9 +288,16 @@ html {
 }
 
 /* ثيم صفحات الأدمن */
-:root .admin-surface {
+:root .admin-surface,
+.light .admin-surface {
   background-color: #f8fafc;
   color: #0f172a;
+}
+
+.dark .admin-surface,
+[data-theme='dark'] .admin-surface {
+  background-color: #0a0a0a;
+  color: #fafafa;
 }
 
 body {

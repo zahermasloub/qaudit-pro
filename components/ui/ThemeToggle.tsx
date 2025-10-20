@@ -1,31 +1,103 @@
-'use client';
-
-import { Monitor, Moon, Sun } from 'lucide-react';
-import React, { useState } from 'react';
-
-import { useTheme } from '@/lib/ThemeProvider';
-
 /**
- * ThemeToggle Component
- * زر تبديل الثيم مع قائمة منسدلة للاختيار بين Light/Dark/System
+ * ========================================
+ * ThemeToggle Component (Enhanced)
+ * ========================================
+ * مكون محسّن لتبديل الثيم بين الفاتح والداكن
  *
- * @example
+ * الميزات:
+ * - تبديل بين light/dark/system
+ * - حفظ الاختيار في localStorage (عبر ThemeProvider)
+ * - اختصار لوحة المفاتيح: Shift+L
+ * - دعم A11y كامل (ARIA labels، focus visible، keyboard navigation)
+ * - أيقونة متحركة تعكس الحالة الحالية
+ *
+ * الاستخدام:
  * ```tsx
  * <ThemeToggle />
  * ```
  */
+
+'use client';
+
+import { Monitor, Moon, Sun } from 'lucide-react';
+import React, { useEffect, useState } from 'react';
+
+import { useTheme } from '@/lib/ThemeProvider';
+
+type ThemeOption = 'light' | 'dark' | 'system';
+
+/**
+ * ThemeToggle Component
+ * زر تبديل الثيم مع قائمة منسدلة للاختيار بين Light/Dark/System
+ */
 export function ThemeToggle() {
   const { theme, setTheme, resolvedTheme } = useTheme();
   const [isOpen, setIsOpen] = useState(false);
+  const [mounted, setMounted] = useState(false);
 
-  const options = [
-    { value: 'light' as const, label: 'فاتح', icon: Sun },
-    { value: 'dark' as const, label: 'داكن', icon: Moon },
-    { value: 'system' as const, label: 'النظام', icon: Monitor },
+  // منع hydration mismatch
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  // اختصار لوحة المفاتيح: Shift+L للتبديل السريع
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.shiftKey && e.key === 'L') {
+        e.preventDefault();
+        // تبديل دوري: light -> dark -> system -> light
+        const nextTheme: Record<ThemeOption, ThemeOption> = {
+          light: 'dark',
+          dark: 'system',
+          system: 'light',
+        };
+        setTheme(nextTheme[theme]);
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [theme, setTheme]);
+
+  // إغلاق القائمة عند الضغط على Escape
+  useEffect(() => {
+    const handleEscape = (e: KeyboardEvent) => {
+      if (e.key === 'Escape' && isOpen) {
+        setIsOpen(false);
+      }
+    };
+
+    if (isOpen) {
+      window.addEventListener('keydown', handleEscape);
+      return () => window.removeEventListener('keydown', handleEscape);
+    }
+  }, [isOpen]);
+
+  // Skeleton أثناء التحميل لمنع flash
+  if (!mounted) {
+    return (
+      <div
+        className="h-10 w-10 rounded-lg animate-pulse"
+        style={{ backgroundColor: 'var(--color-bg-muted)' }}
+        aria-hidden="true"
+      />
+    );
+  }
+
+  const options: Array<{ value: ThemeOption; label: string; icon: typeof Sun }> = [
+    { value: 'light', label: 'فاتح', icon: Sun },
+    { value: 'dark', label: 'داكن', icon: Moon },
+    { value: 'system', label: 'النظام', icon: Monitor },
   ];
 
-  const currentOption = options.find((opt) => opt.value === theme) || options[2];
+  const currentOption = options.find((opt) => opt.value === theme) || options[0];
   const CurrentIcon = currentOption.icon;
+
+  const themeLabels: Record<ThemeOption, string> = {
+    light: 'الوضع الفاتح',
+    dark: 'الوضع الداكن',
+    system: 'حسب النظام',
+  };
 
   return (
     <div className="relative">
@@ -34,23 +106,37 @@ export function ThemeToggle() {
         type="button"
         onClick={() => setIsOpen(!isOpen)}
         className="
-          p-2 rounded-lg
-          border border-border-base bg-bg-base
-          text-text-secondary hover:text-text-primary
-          hover:bg-bg-muted
-          transition-fast
-          focus-ring
+          inline-flex items-center justify-center
+          h-10 w-10 rounded-lg
+          border transition-all
+          focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2
         "
-        aria-label="تبديل الثيم"
+        style={{
+          backgroundColor: 'var(--color-bg-elevated)',
+          borderColor: 'var(--color-border-base)',
+          color: 'var(--color-text-secondary)',
+        }}
+        onMouseEnter={(e) => {
+          e.currentTarget.style.backgroundColor = 'var(--color-bg-muted)';
+          e.currentTarget.style.color = 'var(--color-text-primary)';
+        }}
+        onMouseLeave={(e) => {
+          e.currentTarget.style.backgroundColor = 'var(--color-bg-elevated)';
+          e.currentTarget.style.color = 'var(--color-text-secondary)';
+        }}
+        aria-label={`قائمة اختيار الثيم - الحالي: ${themeLabels[theme]}`}
         aria-expanded={isOpen}
+        aria-haspopup="true"
+        title={`الثيم: ${themeLabels[theme]} (اضغط Shift+L للتبديل)`}
       >
-        <CurrentIcon size={20} />
+        <CurrentIcon size={20} aria-hidden="true" />
+        <span className="sr-only">تبديل الثيم</span>
       </button>
 
       {/* Dropdown Menu */}
       {isOpen && (
         <>
-          {/* Backdrop */}
+          {/* Backdrop للإغلاق عند الضغط خارج القائمة */}
           <div
             className="fixed inset-0 z-40"
             onClick={() => setIsOpen(false)}
@@ -60,14 +146,22 @@ export function ThemeToggle() {
           {/* Menu */}
           <div
             className="
-              absolute left-0 mt-2 z-50
-              w-40 py-1 rounded-lg
-              border border-border-base bg-bg-elevated
-              shadow-lg
+              absolute mt-2 z-50
+              min-w-[180px] rounded-lg
+              border shadow-lg
               animate-in fade-in slide-in-from-top-2
-              duration-200
             "
+            style={{
+              backgroundColor: 'var(--color-bg-elevated)',
+              borderColor: 'var(--color-border-base)',
+              left: 'auto',
+              right: 0,
+            }}
+            role="menu"
+            aria-orientation="vertical"
+            aria-labelledby="theme-menu-button"
           >
+            <div className="py-1">
             {options.map((option) => {
               const Icon = option.icon;
               const isActive = theme === option.value;
@@ -80,46 +174,123 @@ export function ThemeToggle() {
                     setTheme(option.value);
                     setIsOpen(false);
                   }}
-                  className={`
-                    w-full px-3 py-2
-                    flex items-center gap-3
-                    text-sm text-right
-                    transition-fast
-                    ${
-                      isActive
-                        ? 'bg-brand-50 text-brand-700 dark:bg-brand-900/30 dark:text-brand-300'
-                        : 'text-text-secondary hover:bg-bg-muted hover:text-text-primary'
+                  className="
+                    w-full flex items-center gap-3 px-4 py-2.5
+                    text-sm transition-all
+                    focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset
+                  "
+                  style={{
+                    backgroundColor: isActive
+                      ? 'var(--color-bg-muted)'
+                      : 'transparent',
+                    color: isActive
+                      ? 'var(--color-text-primary)'
+                      : 'var(--color-text-secondary)',
+                  }}
+                  onMouseEnter={(e) => {
+                    if (!isActive) {
+                      e.currentTarget.style.backgroundColor = 'var(--color-bg-subtle)';
+                      e.currentTarget.style.color = 'var(--color-text-primary)';
                     }
-                  `}
+                  }}
+                  onMouseLeave={(e) => {
+                    if (!isActive) {
+                      e.currentTarget.style.backgroundColor = 'transparent';
+                      e.currentTarget.style.color = 'var(--color-text-secondary)';
+                    }
+                  }}
+                  role="menuitem"
+                  aria-current={isActive ? 'true' : undefined}
                 >
-                  <Icon size={18} />
-                  <span className="flex-1">{option.label}</span>
+                  <Icon
+                    size={18}
+                    aria-hidden="true"
+                    style={{
+                      color: isActive
+                        ? 'var(--color-brand-600)'
+                        : 'currentColor',
+                    }}
+                  />
+                  <span className="flex-1 text-right">{option.label}</span>
                   {isActive && (
-                    <svg
-                      className="w-4 h-4 text-brand-600 dark:text-brand-400"
-                      fill="currentColor"
-                      viewBox="0 0 20 20"
+                    <span
+                      className="text-sm font-semibold"
+                      style={{ color: 'var(--color-brand-600)' }}
+                      aria-hidden="true"
                     >
-                      <path
-                        fillRule="evenodd"
-                        d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
-                        clipRule="evenodd"
-                      />
-                    </svg>
+                      ✓
+                    </span>
                   )}
                 </button>
               );
             })}
+            </div>
+
+            {/* Keyboard Shortcut Hint */}
+            <div
+              className="px-4 py-2 border-t text-xs"
+              style={{
+                borderColor: 'var(--color-border-base)',
+                color: 'var(--color-text-tertiary)',
+                backgroundColor: 'var(--color-bg-subtle)',
+              }}
+            >
+              اضغط{' '}
+              <kbd
+                className="px-1.5 py-0.5 rounded text-xs font-mono"
+                style={{
+                  backgroundColor: 'var(--color-bg-muted)',
+                  borderWidth: '1px',
+                  borderStyle: 'solid',
+                  borderColor: 'var(--color-border-base)',
+                }}
+              >
+                Shift+L
+              </kbd>{' '}
+              للتبديل السريع
+            </div>
           </div>
         </>
       )}
-
-      {/* Resolved Theme Indicator (for debugging, can be removed) */}
-      {process.env.NODE_ENV === 'development' && (
-        <div className="absolute -bottom-6 left-0 text-xs text-text-tertiary">
-          {resolvedTheme}
-        </div>
-      )}
     </div>
+  );
+}
+
+/**
+ * ThemeToggleCompact Component
+ * نسخة مدمجة بدون قائمة منسدلة - تبديل مباشر بين light/dark
+ */
+export function ThemeToggleCompact({ className = '' }: { className?: string }) {
+  const { theme, setTheme, resolvedTheme } = useTheme();
+
+  const toggleTheme = () => {
+    setTheme(resolvedTheme === 'dark' ? 'light' : 'dark');
+  };
+
+  const Icon = resolvedTheme === 'dark' ? Moon : Sun;
+
+  return (
+    <button
+      type="button"
+      onClick={toggleTheme}
+      className={`
+        inline-flex items-center justify-center
+        h-10 w-10 rounded-lg
+        border transition-all
+        focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2
+        ${className}
+      `}
+      style={{
+        backgroundColor: 'var(--color-bg-elevated)',
+        borderColor: 'var(--color-border-base)',
+        color: 'var(--color-text-secondary)',
+      }}
+      aria-label={`تبديل إلى ${resolvedTheme === 'dark' ? 'الوضع الفاتح' : 'الوضع الداكن'}`}
+      aria-pressed={resolvedTheme === 'dark'}
+      title={`الوضع الحالي: ${resolvedTheme === 'dark' ? 'داكن' : 'فاتح'}`}
+    >
+      <Icon size={20} aria-hidden="true" />
+      <span className="sr-only">تبديل الثيم</span>
+    </button>
   );
 }

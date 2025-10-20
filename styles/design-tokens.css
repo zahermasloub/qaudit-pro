@@ -1,9 +1,19 @@
 /**
+ * ========================================
  * Design Tokens for QAudit Pro Admin UI
- * Version: 2.0
- * Purpose: Centralized design system with RTL, Dark Mode, and A11y support
+ * ========================================
+ * Version: 3.0 (Light + Dark)
+ * Purpose: Centralized design system with RTL, Light/Dark Modes, and A11y support
+ *
+ * IMPORTANT:
+ * - Light Theme يتم تحميله من theme-light.css
+ * - هذا الملف يحتوي على القيم المشتركة والـ Dark Mode
+ * - الـ Light Mode هو الافتراضي (:root = light)
  */
 
+/* ============================================
+   LIGHT MODE AS DEFAULT
+   ============================================ */
 :root {
   /* ============================================
      SPACING SCALE (8px base)
@@ -161,6 +171,7 @@
 /* ============================================
    DARK MODE
    ============================================ */
+.dark,
 [data-theme='dark'] {
   /* Background */
   --color-bg-base: #0a0a0a;        /* neutral-950 */
@@ -182,25 +193,44 @@
   --color-border-focus: #3b82f6;   /* blue-500 (brighter for dark) */
 
   /* Brand (adjusted for dark) */
+  --color-brand-50: #1e3a5f;       /* dark blue background */
+  --color-brand-100: #2e4a6f;
   --color-brand-500: #3b82f6;      /* blue-500 */
-  --color-brand-600: #2563eb;      /* blue-600 */
-  --color-brand-700: #1d4ed8;      /* blue-700 */
+  --color-brand-600: #60a5fa;      /* lighter for dark mode */
+  --color-brand-700: #93c5fd;      /* blue-300 */
+  --color-brand-950: #0f1c2e;
 
   /* Success */
+  --color-success-50: #0a3d20;     /* dark green background */
+  --color-success-100: #134d28;
   --color-success-500: #22c55e;    /* green-500 */
   --color-success-600: #16a34a;
+  --color-success-700: #15803d;
+  --color-success-950: #052011;
 
   /* Warning */
+  --color-warning-50: #4d2a00;     /* dark orange background */
+  --color-warning-100: #663700;
   --color-warning-500: #f59e0b;
   --color-warning-600: #d97706;
+  --color-warning-700: #b45309;
+  --color-warning-950: #331a00;
 
   /* Danger */
+  --color-danger-50: #4d0a0a;      /* dark red background */
+  --color-danger-100: #661111;
   --color-danger-500: #f87171;     /* red-400 (lighter for visibility) */
   --color-danger-600: #ef4444;
+  --color-danger-700: #dc2626;
+  --color-danger-950: #330505;
 
   /* Info */
+  --color-info-50: #0a3d4d;        /* dark cyan background */
+  --color-info-100: #0e4d5f;
   --color-info-500: #22d3ee;       /* cyan-400 */
   --color-info-600: #06b6d4;
+  --color-info-700: #0891b2;
+  --color-info-950: #052030;
 
   /* Shadows (darker) */
   --shadow-xs: 0 1px 2px 0 rgb(0 0 0 / 0.2);
@@ -246,10 +276,8 @@
 /* ============================================
    RTL SUPPORT (Logical Properties)
    ============================================ */
-[dir='rtl'] {
-  /* Tailwind RTL plugin handles most cases automatically */
-  /* Add custom RTL overrides here if needed */
-}
+/* Tailwind RTL plugin handles most cases automatically */
+/* Add custom RTL overrides below if needed */
 
 /* ============================================
    UTILITY CLASSES (Using Tokens)

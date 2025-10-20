@@ -84,9 +84,15 @@ export function KPICard({
     return (
       <div
         className={cn(
-          'p-6 rounded-xl border border-border-base bg-bg-elevated',
+          'p-6 rounded-xl border',
           className
         )}
+        style={{
+          borderColor: 'var(--border)',
+          backgroundColor: 'var(--surface)',
+          borderRadius: 'var(--radius)',
+          boxShadow: 'var(--shadow-card)'
+        }}
       >
         <div className="space-y-3">
           <Skeleton variant="text" className="w-1/3" />
@@ -102,10 +108,28 @@ export function KPICard({
   return (
     <div
       className={cn(
-        'p-6 rounded-xl border border-border-base bg-bg-elevated transition-fast',
-        isClickable && 'cursor-pointer hover:shadow-md hover:border-brand-300',
+        'p-6 rounded-xl border transition-fast',
+        isClickable && 'cursor-pointer',
         className
       )}
+      style={{
+        borderColor: 'var(--border)',
+        backgroundColor: 'var(--surface)',
+        borderRadius: 'var(--radius)',
+        boxShadow: 'var(--shadow-card)'
+      }}
+      onMouseEnter={(e) => {
+        if (isClickable) {
+          e.currentTarget.style.boxShadow = 'var(--shadow-md)';
+          e.currentTarget.style.borderColor = 'var(--primary)';
+        }
+      }}
+      onMouseLeave={(e) => {
+        if (isClickable) {
+          e.currentTarget.style.boxShadow = 'var(--shadow-card)';
+          e.currentTarget.style.borderColor = 'var(--border)';
+        }
+      }}
       onClick={onClick}
       role={isClickable ? 'button' : undefined}
       tabIndex={isClickable ? 0 : undefined}
@@ -123,39 +147,54 @@ export function KPICard({
       {/* Header */}
       <div className="flex items-start justify-between gap-3 mb-4">
         <div className="flex-1">
-          <h3 className="text-sm font-medium text-text-secondary">{title}</h3>
+          <h3 className="text-sm font-medium" style={{ color: 'var(--text-2)' }}>{title}</h3>
         </div>
         {Icon && (
-          <div className="p-2.5 rounded-lg bg-brand-50 dark:bg-brand-950">
-            <Icon size={20} className="text-brand-600" />
+          <div
+            className="p-2.5 rounded-lg"
+            style={{
+              backgroundColor: 'var(--color-brand-50)',
+              color: 'var(--color-brand-600)'
+            }}
+            aria-hidden="true"
+          >
+            <Icon size={20} />
           </div>
         )}
       </div>
 
       {/* Value */}
       <div className="mb-3">
-        <p className="text-3xl font-bold text-text-primary">{value.toLocaleString('ar-EG')}</p>
+        <p className="text-3xl font-bold" style={{ color: '#111827' }}>{value.toLocaleString('ar-EG')}</p>
       </div>
 
       {/* Change & Description */}
       <div className="flex items-center justify-between gap-2">
         {change !== undefined && (
           <div
-            className={cn(
-              'flex items-center gap-1 px-2 py-1 rounded-full text-xs font-semibold',
-              trend === 'up' && 'bg-success-50 text-success-700 dark:bg-success-950 dark:text-success-300',
-              trend === 'down' && 'bg-error-50 text-error-700 dark:bg-error-950 dark:text-error-300',
-              trend === 'neutral' && 'bg-bg-muted text-text-tertiary'
-            )}
+            className="flex items-center gap-1 px-2 py-1 rounded-full text-xs font-semibold"
+            style={{
+              backgroundColor: trend === 'up'
+                ? 'var(--color-success-50)'
+                : trend === 'down'
+                ? 'var(--color-danger-50)'
+                : 'var(--skeleton-base)',
+              color: trend === 'up'
+                ? 'var(--color-success-700)'
+                : trend === 'down'
+                ? 'var(--color-danger-700)'
+                : 'var(--muted)'
+            }}
+            aria-label={`تغيير ${trend === 'up' ? 'إيجابي' : trend === 'down' ? 'سلبي' : 'محايد'} بنسبة ${Math.abs(change)}%`}
           >
-            {trend === 'up' && <TrendingUp size={14} />}
-            {trend === 'down' && <TrendingDown size={14} />}
+            {trend === 'up' && <TrendingUp size={14} aria-hidden="true" />}
+            {trend === 'down' && <TrendingDown size={14} aria-hidden="true" />}
             <span>{Math.abs(change)}%</span>
           </div>
         )}
 
         {description && (
-          <p className="text-xs text-text-tertiary flex-1 text-left">{description}</p>
+          <p className="text-xs flex-1 text-left" style={{ color: 'var(--text-2)' }}>{description}</p>
         )}
       </div>
     </div>

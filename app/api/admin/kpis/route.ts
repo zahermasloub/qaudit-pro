@@ -89,9 +89,12 @@ export async function GET(request: NextRequest) {
       orderBy: { createdAt: 'desc' },
     });
 
+    console.log('🔍 Recent Logs Count:', recentLogs.length);
+    console.log('🔍 Recent Logs Data:', recentLogs.map(l => ({ id: l.id, action: l.action })));
+
     // جلب اتجاهات الشهر الحالي (للرسم البياني)
     const currentMonth = new Date();
-    currentMonth.setDate(1);
+    currentMonth.setDate(currentMonth.getDate() - 30); // آخر 30 يوماً بدلاً من الشهر الحالي
     currentMonth.setHours(0, 0, 0, 0);
 
     const monthlyLogs = await prisma.$queryRaw<Array<{
@@ -99,15 +102,18 @@ export async function GET(request: NextRequest) {
       count: bigint;
     }>>`
       SELECT
-        DATE_TRUNC('day', timestamp) as day,
+        DATE_TRUNC('day', "createdAt") as day,
         COUNT(*) as count
-      FROM core.audit_logs
-      WHERE timestamp >= ${currentMonth}
-      GROUP BY DATE_TRUNC('day', timestamp)
+      FROM public.audit_logs
+      WHERE "createdAt" >= ${currentMonth}
+      GROUP BY DATE_TRUNC('day', "createdAt")
       ORDER BY day
     `;
 
-    return NextResponse.json({
+    console.log('📊 Monthly Logs Count:', monthlyLogs.length);
+    console.log('📊 Monthly Logs Data:', monthlyLogs);
+
+    const responseData = {
       summary: {
         users: {
           value: usersCount,
@@ -161,7 +167,16 @@ export async function GET(request: NextRequest) {
           value: Number(item.count),
         })),
       },
+    };
+
+    console.log('✅ API Response Summary:', {
+      usersCount,
+      rolesCount,
+      recentLogsLength: responseData.recentLogs.length,
+      dailyActivityLength: responseData.trends.dailyActivity.length,
     });
+
+    return NextResponse.json(responseData);
   } catch (error) {
     console.error('Error fetching KPIs:', error);
     return NextResponse.json(

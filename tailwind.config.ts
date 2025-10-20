@@ -32,6 +32,36 @@ export default {
       colors: {
         background: 'var(--background)',
         foreground: 'var(--foreground)',
+
+        // Design Tokens - Background (Light + Dark)
+        'bg-base': 'var(--color-bg-base)',
+        'bg-subtle': 'var(--color-bg-subtle)',
+        'bg-muted': 'var(--color-bg-muted)',
+        'bg-elevated': 'var(--color-bg-elevated)',
+        'bg-overlay': 'var(--color-bg-overlay)',
+
+        // Design Tokens - Text (Light + Dark)
+        'text-primary': 'var(--color-text-primary)',
+        'text-secondary': 'var(--color-text-secondary)',
+        'text-tertiary': 'var(--color-text-tertiary)',
+        'text-disabled': 'var(--color-text-disabled)',
+        'text-inverse': 'var(--color-text-inverse)',
+
+        // Design Tokens - Border (Light + Dark)
+        'border-base': 'var(--color-border-base)',
+        'border-strong': 'var(--color-border-strong)',
+        'border-focus': 'var(--color-border-focus)',
+
+        // Semantic Aliases for Light Theme
+        'surface': 'var(--surface)',
+        'surface-hover': 'var(--surface-hover)',
+        'border-ui': 'var(--border)',
+        'text': 'var(--text)',
+        'text-2': 'var(--text-2)',
+        'muted': 'var(--muted)',
+        'primary': 'var(--primary)',
+        'primary-hover': 'var(--primary-hover)',
+
         brand: {
           50: '#eef7ff',
           100: '#d6ebff',
@@ -46,21 +76,43 @@ export default {
         },
         success: {
           50: '#ecfdf5',
+          100: '#d1fae5',
           500: '#10b981',
           600: '#059669',
           700: '#047857',
+          950: '#052011',
         },
         warning: {
           50: '#fffbeb',
+          100: '#fef3c7',
           500: '#f59e0b',
           600: '#d97706',
           700: '#b45309',
+          950: '#331a00',
         },
         danger: {
           50: '#fef2f2',
+          100: '#fee2e2',
           500: '#ef4444',
           600: '#dc2626',
           700: '#b91c1c',
+          950: '#330505',
+        },
+        error: {
+          50: '#fef2f2',
+          100: '#fee2e2',
+          500: '#ef4444',
+          600: '#dc2626',
+          700: '#b91c1c',
+          950: '#330505',
+        },
+        info: {
+          50: '#ecfeff',
+          100: '#cffafe',
+          500: '#06b6d4',
+          600: '#0891b2',
+          700: '#0e7490',
+          950: '#052030',
         },
         neutral: {
           50: '#f8fafc',
