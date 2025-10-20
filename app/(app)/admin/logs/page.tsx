@@ -1,117 +1,272 @@
 'use client';
 
 import { useCallback, useEffect, useState } from 'react';
+import { Download, RefreshCw } from 'lucide-react';
+import { ColumnDef } from '@tanstack/react-table';
+import { toast } from 'sonner';
 
-type Log = {
+import { DataTable } from '@/components/ui/DataTable';
+import { FiltersBar, FilterOption } from '@/components/ui/FiltersBar';
+import { Breadcrumbs, BreadcrumbItem } from '@/components/ui/Breadcrumbs';
+import { EmptyState } from '@/components/ui/EmptyState';
+
+interface AuditLog {
   id: string;
   action: string;
-  actorEmail?: string | null;
+  actorEmail: string | null;
   createdAt: string;
-  target?: string | null;
-};
+  target: string | null;
+}
 
 export default function AdminLogsPage() {
-  const [q, setQ] = useState('');
-  const [from, setFrom] = useState('');
-  const [to, setTo] = useState('');
-  const [rows, setRows] = useState<Log[]>([]);
-  const [loading, setLoading] = useState(false);
+  const [logs, setLogs] = useState<AuditLog[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [filterValues, setFilterValues] = useState<Record<string, string>>({});
 
+  const breadcrumbItems: BreadcrumbItem[] = [
+    { label: 'لوحة التحكم', href: '/admin/dashboard' },
+    { label: 'السجلات', current: true },
+  ];
+
+  const filters: FilterOption[] = [
+    {
+      id: 'from',
+      label: 'من تاريخ',
+      type: 'date',
+    },
+    {
+      id: 'to',
+      label: 'إلى تاريخ',
+      type: 'date',
+    },
+    {
+      id: 'actorEmail',
+      label: 'المستخدم',
+      type: 'text',
+    },
+  ];
+
+  // جلب السجلات
   const fetchLogs = useCallback(async () => {
     try {
       setLoading(true);
       const params = new URLSearchParams();
-      if (q) params.set('q', q);
-      if (from) params.set('from', new Date(from).toISOString());
-      if (to) params.set('to', new Date(to).toISOString());
+
+      if (searchQuery) params.set('q', searchQuery);
+      if (filterValues.from) {
+        params.set('from', new Date(filterValues.from).toISOString());
+      }
+      if (filterValues.to) {
+        params.set('to', new Date(filterValues.to).toISOString());
+      }
+
       const response = await fetch(`/api/admin/logs?${params.toString()}`);
-      const json = await response.json().catch(() => ({ items: [] }));
+      const json = await response.json();
+
       if (Array.isArray(json.items)) {
-        setRows(json.items);
+        setLogs(json.items);
       } else {
-        setRows([]);
+        setLogs([]);
+        toast.error('فشل في جلب السجلات');
       }
     } catch (error) {
-      console.error('Failed to load logs', error);
-      setRows([]);
+      console.error('Error fetching logs:', error);
+      setLogs([]);
+      toast.error('حدث خطأ أثناء جلب البيانات');
     } finally {
       setLoading(false);
     }
-  }, [from, q, to]);
+  }, [searchQuery, filterValues]);
 
   useEffect(() => {
     fetchLogs();
   }, [fetchLogs]);
 
-  return (
-    <div className="space-y-3">
-      <div className="bg-white border rounded-2xl p-3 flex flex-wrap items-center gap-2">
-        <input
-          className="border rounded-md px-2 py-1 text-sm min-w-[220px]"
-          placeholder="بحث في الإجراءات..."
-          value={q}
-          onChange={event => setQ(event.target.value)}
-        />
-        <input
-          className="border rounded-md px-2 py-1 text-sm"
-          type="datetime-local"
-          value={from}
-          onChange={event => setFrom(event.target.value)}
-        />
-        <input
-          className="border rounded-md px-2 py-1 text-sm"
-          type="datetime-local"
-          value={to}
-          onChange={event => setTo(event.target.value)}
-        />
-        <button
-          type="button"
-          onClick={fetchLogs}
-          className="px-3 py-1.5 text-sm rounded-md border font-medium bg-orange-600 text-white border-orange-600 hover:bg-orange-700"
-        >
-          فلترة
-        </button>
-      </div>
+  // تصدير CSV
+  function handleExportCSV() {
+    if (logs.length === 0) {
+      toast.error('لا توجد سجلات للتصدير');
+      return;
+    }
 
-      <div className="bg-white border rounded-2xl p-0 overflow-hidden">
-        <div className="table-wrap overflow-x-auto">
-          <table className="w-full text-sm">
-            <thead className="bg-slate-100 text-slate-700">
-              <tr className="[&>th]:px-3 [&>th]:py-2 text-right">
-                <th>الحدث</th>
-                <th>الإجراء</th>
-                <th>المستخدم</th>
-                <th>التاريخ والوقت</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y">
-              {loading && (
-                <tr>
-                  <td colSpan={4} className="px-3 py-10 text-center text-slate-500">
-                    جارِ التحميل…
-                  </td>
-                </tr>
-              )}
-              {!loading && rows.length === 0 && (
-                <tr>
-                  <td colSpan={4} className="px-3 py-10 text-center text-slate-500">
-                    لا توجد سجلات
-                  </td>
-                </tr>
-              )}
-              {!loading &&
-                rows.map(log => (
-                  <tr key={log.id} className="[&>td]:px-3 [&>td]:py-2 text-slate-700">
-                    <td>{log.target || '-'}</td>
-                    <td className="font-mono break-anywhere">{log.action}</td>
-                    <td>{log.actorEmail || '-'}</td>
-                    <td dir="ltr">{new Date(log.createdAt).toLocaleString()}</td>
-                  </tr>
-                ))}
-            </tbody>
-          </table>
+    try {
+      // إنشاء محتوى CSV
+      const headers = ['ID', 'الإجراء', 'المستخدم', 'الهدف', 'التاريخ'];
+      const rows = logs.map((log) => [
+        log.id,
+        log.action,
+        log.actorEmail || '-',
+        log.target || '-',
+        new Date(log.createdAt).toLocaleString('ar-EG'),
+      ]);
+
+      const csvContent = [
+        headers.join(','),
+        ...rows.map((row) => row.map((cell) => `"${cell}"`).join(',')),
+      ].join('\n');
+
+      // إنشاء Blob وتنزيل
+      const blob = new Blob(['\uFEFF' + csvContent], { type: 'text/csv;charset=utf-8;' });
+      const link = document.createElement('a');
+      const url = URL.createObjectURL(blob);
+      link.setAttribute('href', url);
+      link.setAttribute('download', `audit-logs-${new Date().toISOString().split('T')[0]}.csv`);
+      link.style.visibility = 'hidden';
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+
+      toast.success('تم تصدير السجلات بنجاح');
+    } catch (error) {
+      console.error('Error exporting CSV:', error);
+      toast.error('فشل في تصدير السجلات');
+    }
+  }
+
+  // تعريف الأعمدة
+  const columns: ColumnDef<AuditLog>[] = [
+    {
+      accessorKey: 'action',
+      header: 'الإجراء',
+      cell: ({ row }) => (
+        <span className="font-mono text-sm text-text-primary">{row.original.action}</span>
+      ),
+    },
+    {
+      accessorKey: 'actorEmail',
+      header: 'المستخدم',
+      cell: ({ row }) => (
+        <span className="text-text-secondary">
+          {row.original.actorEmail || <span className="text-text-tertiary">—</span>}
+        </span>
+      ),
+    },
+    {
+      accessorKey: 'target',
+      header: 'الهدف',
+      cell: ({ row }) => (
+        <span className="text-text-secondary">
+          {row.original.target || <span className="text-text-tertiary">—</span>}
+        </span>
+      ),
+    },
+    {
+      accessorKey: 'createdAt',
+      header: 'التاريخ والوقت',
+      cell: ({ row }) => (
+        <time className="text-text-tertiary text-sm" dir="ltr">
+          {new Date(row.original.createdAt).toLocaleString('ar-EG', {
+            year: 'numeric',
+            month: '2-digit',
+            day: '2-digit',
+            hour: '2-digit',
+            minute: '2-digit',
+          })}
+        </time>
+      ),
+    },
+  ];
+
+  // تطبيق الفلاتر المحلية (للبريد الإلكتروني)
+  const filteredLogs = logs.filter((log) => {
+    if (filterValues.actorEmail) {
+      const query = filterValues.actorEmail.toLowerCase();
+      if (!log.actorEmail?.toLowerCase().includes(query)) {
+        return false;
+      }
+    }
+    return true;
+  });
+
+  return (
+    <div className="space-y-6">
+      {/* Breadcrumbs */}
+      <Breadcrumbs items={breadcrumbItems} />
+
+      {/* Header */}
+      <div className="flex items-center justify-between">
+        <div>
+          <h1 className="text-2xl font-bold text-text-primary">سجلات النظام</h1>
+          <p className="text-sm text-text-tertiary mt-1">
+            عرض جميع الأحداث والإجراءات في النظام
+          </p>
+        </div>
+        <div className="flex items-center gap-2">
+          <button
+            type="button"
+            onClick={fetchLogs}
+            disabled={loading}
+            className="
+              px-4 py-2 rounded-lg
+              border border-border-base bg-bg-elevated text-text-secondary
+              hover:bg-bg-muted transition-fast
+              focus-ring
+              flex items-center gap-2
+              disabled:opacity-50 disabled:cursor-not-allowed
+            "
+            aria-label="إعادة تحميل"
+          >
+            <RefreshCw size={18} className={loading ? 'animate-spin' : ''} />
+            <span>تحديث</span>
+          </button>
+          <button
+            type="button"
+            onClick={handleExportCSV}
+            disabled={logs.length === 0}
+            className="
+              px-4 py-2 rounded-lg
+              bg-brand-600 text-white font-medium
+              hover:bg-brand-700 transition-fast
+              focus-ring
+              flex items-center gap-2
+              disabled:opacity-50 disabled:cursor-not-allowed
+            "
+          >
+            <Download size={18} />
+            <span>تصدير CSV</span>
+          </button>
         </div>
       </div>
+
+      {/* Filters */}
+      <FiltersBar
+        searchQuery={searchQuery}
+        onSearchChange={setSearchQuery}
+        searchPlaceholder="بحث في الإجراءات..."
+        filters={filters}
+        filterValues={filterValues}
+        onFilterChange={(id, value) =>
+          setFilterValues((prev) => ({ ...prev, [id]: value }))
+        }
+        onClearFilters={() => {
+          setSearchQuery('');
+          setFilterValues({});
+        }}
+      />
+
+      {/* Data Table */}
+      {loading ? (
+        <div className="p-6 rounded-xl border border-border-base bg-bg-elevated">
+          <EmptyState title="جارٍ التحميل..." message="يرجى الانتظار..." />
+        </div>
+      ) : filteredLogs.length === 0 ? (
+        <EmptyState
+          title="لا توجد سجلات"
+          message={
+            searchQuery || Object.keys(filterValues).length > 0
+              ? 'لم يتم العثور على سجلات مطابقة للبحث أو الفلاتر'
+              : 'لم يتم تسجيل أي أحداث بعد'
+          }
+        />
+      ) : (
+        <DataTable
+          columns={columns}
+          data={filteredLogs}
+          pagination
+          pageSize={20}
+        />
+      )}
     </div>
   );
 }
