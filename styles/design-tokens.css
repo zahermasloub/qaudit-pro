@@ -1,0 +1,369 @@
+/**
+ * Design Tokens for QAudit Pro Admin UI
+ * Version: 2.0
+ * Purpose: Centralized design system with RTL, Dark Mode, and A11y support
+ */
+
+:root {
+  /* ============================================
+     SPACING SCALE (8px base)
+     ============================================ */
+  --space-0: 0;
+  --space-1: 0.25rem;   /* 4px */
+  --space-2: 0.5rem;    /* 8px */
+  --space-3: 0.75rem;   /* 12px */
+  --space-4: 1rem;      /* 16px */
+  --space-5: 1.5rem;    /* 24px */
+  --space-6: 2rem;      /* 32px */
+  --space-8: 3rem;      /* 48px */
+  --space-10: 4rem;     /* 64px */
+  --space-12: 6rem;     /* 96px */
+
+  /* ============================================
+     COLORS — LIGHT MODE
+     ============================================ */
+
+  /* Background */
+  --color-bg-base: #ffffff;
+  --color-bg-subtle: #f8fafc;      /* slate-50 */
+  --color-bg-muted: #f1f5f9;       /* slate-100 */
+  --color-bg-elevated: #ffffff;
+  --color-bg-overlay: rgba(15, 23, 42, 0.5); /* slate-900 with opacity */
+
+  /* Text */
+  --color-text-primary: #0f172a;   /* slate-900 — Contrast ratio: 16.1:1 on white */
+  --color-text-secondary: #475569; /* slate-600 — Contrast ratio: 7.3:1 */
+  --color-text-tertiary: #64748b;  /* slate-500 — Contrast ratio: 5.2:1 */
+  --color-text-disabled: #cbd5e1;  /* slate-300 */
+  --color-text-inverse: #ffffff;
+
+  /* Border */
+  --color-border-base: #e2e8f0;    /* slate-200 */
+  --color-border-strong: #cbd5e1;  /* slate-300 */
+  --color-border-focus: #1f7fff;   /* brand-500 */
+
+  /* Brand (Blue) */
+  --color-brand-50: #eef7ff;
+  --color-brand-100: #d6ebff;
+  --color-brand-500: #1f7fff;
+  --color-brand-600: #1765d6;
+  --color-brand-700: #124fac;
+
+  /* Success (Green) */
+  --color-success-50: #ecfdf5;
+  --color-success-100: #d1fae5;
+  --color-success-500: #10b981;
+  --color-success-600: #059669;
+  --color-success-700: #047857;
+
+  /* Warning (Orange) */
+  --color-warning-50: #fffbeb;
+  --color-warning-100: #fef3c7;
+  --color-warning-500: #f59e0b;
+  --color-warning-600: #d97706;
+  --color-warning-700: #b45309;
+
+  /* Danger (Red) */
+  --color-danger-50: #fef2f2;
+  --color-danger-100: #fee2e2;
+  --color-danger-500: #ef4444;
+  --color-danger-600: #dc2626;
+  --color-danger-700: #b91c1c;
+
+  /* Info (Cyan) */
+  --color-info-50: #ecfeff;
+  --color-info-100: #cffafe;
+  --color-info-500: #06b6d4;
+  --color-info-600: #0891b2;
+  --color-info-700: #0e7490;
+
+  /* ============================================
+     SHADOWS
+     ============================================ */
+  --shadow-xs: 0 1px 2px 0 rgb(0 0 0 / 0.03);
+  --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+  --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+  --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+  --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
+  --shadow-2xl: 0 25px 50px -12px rgb(0 0 0 / 0.25);
+  --shadow-inner: inset 0 2px 4px 0 rgb(0 0 0 / 0.05);
+
+  /* ============================================
+     BORDER RADIUS
+     ============================================ */
+  --radius-sm: 0.375rem;   /* 6px */
+  --radius-md: 0.5rem;     /* 8px */
+  --radius-lg: 0.75rem;    /* 12px */
+  --radius-xl: 1rem;       /* 16px */
+  --radius-2xl: 1.5rem;    /* 24px */
+  --radius-full: 9999px;
+
+  /* ============================================
+     TYPOGRAPHY
+     ============================================ */
+  --font-arabic: 'Tajawal', 'Cairo', 'Noto Sans Arabic', system-ui, -apple-system, sans-serif;
+  --font-mono: 'Consolas', 'SF Mono', 'Monaco', 'Courier New', monospace;
+
+  --text-xs: 0.75rem;      /* 12px — line-height: 1rem */
+  --text-sm: 0.875rem;     /* 14px — line-height: 1.25rem */
+  --text-base: 1rem;       /* 16px — line-height: 1.5rem */
+  --text-lg: 1.125rem;     /* 18px — line-height: 1.75rem */
+  --text-xl: 1.25rem;      /* 20px — line-height: 1.75rem */
+  --text-2xl: 1.5rem;      /* 24px — line-height: 2rem */
+  --text-3xl: 1.875rem;    /* 30px — line-height: 2.25rem */
+  --text-4xl: 2.25rem;     /* 36px — line-height: 2.5rem */
+
+  --font-weight-normal: 400;
+  --font-weight-medium: 500;
+  --font-weight-semibold: 600;
+  --font-weight-bold: 700;
+
+  /* ============================================
+     Z-INDEX LAYERS
+     ============================================ */
+  --z-base: 0;
+  --z-dropdown: 1000;
+  --z-sticky: 1100;
+  --z-overlay: 1200;
+  --z-modal: 1300;
+  --z-popover: 1400;
+  --z-toast: 1500;
+  --z-tooltip: 1600;
+
+  /* ============================================
+     TRANSITIONS & ANIMATIONS
+     ============================================ */
+  --transition-fast: 150ms cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-base: 200ms cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-slow: 300ms cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-slowest: 500ms cubic-bezier(0.4, 0, 0.2, 1);
+
+  --easing-in: cubic-bezier(0.4, 0, 1, 1);
+  --easing-out: cubic-bezier(0, 0, 0.2, 1);
+  --easing-in-out: cubic-bezier(0.4, 0, 0.2, 1);
+
+  /* ============================================
+     FOCUS RING (A11y)
+     ============================================ */
+  --focus-ring-width: 2px;
+  --focus-ring-offset: 2px;
+  --focus-ring-color: var(--color-brand-500);
+
+  /* ============================================
+     LAYOUT
+     ============================================ */
+  --container-max: 1440px;
+  --content-max: 1280px;
+  --sidebar-width: 280px;
+  --header-height: 64px;
+}
+
+/* ============================================
+   DARK MODE
+   ============================================ */
+[data-theme='dark'] {
+  /* Background */
+  --color-bg-base: #0a0a0a;        /* neutral-950 */
+  --color-bg-subtle: #171717;      /* neutral-900 */
+  --color-bg-muted: #262626;       /* neutral-800 */
+  --color-bg-elevated: #1c1c1c;
+  --color-bg-overlay: rgba(0, 0, 0, 0.7);
+
+  /* Text */
+  --color-text-primary: #fafafa;   /* neutral-50 — Contrast: 17.2:1 */
+  --color-text-secondary: #d4d4d4; /* neutral-300 — Contrast: 9.1:1 */
+  --color-text-tertiary: #a3a3a3;  /* neutral-400 — Contrast: 5.8:1 */
+  --color-text-disabled: #525252;  /* neutral-600 */
+  --color-text-inverse: #0a0a0a;
+
+  /* Border */
+  --color-border-base: #404040;    /* neutral-700 */
+  --color-border-strong: #525252;  /* neutral-600 */
+  --color-border-focus: #3b82f6;   /* blue-500 (brighter for dark) */
+
+  /* Brand (adjusted for dark) */
+  --color-brand-500: #3b82f6;      /* blue-500 */
+  --color-brand-600: #2563eb;      /* blue-600 */
+  --color-brand-700: #1d4ed8;      /* blue-700 */
+
+  /* Success */
+  --color-success-500: #22c55e;    /* green-500 */
+  --color-success-600: #16a34a;
+
+  /* Warning */
+  --color-warning-500: #f59e0b;
+  --color-warning-600: #d97706;
+
+  /* Danger */
+  --color-danger-500: #f87171;     /* red-400 (lighter for visibility) */
+  --color-danger-600: #ef4444;
+
+  /* Info */
+  --color-info-500: #22d3ee;       /* cyan-400 */
+  --color-info-600: #06b6d4;
+
+  /* Shadows (darker) */
+  --shadow-xs: 0 1px 2px 0 rgb(0 0 0 / 0.2);
+  --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.3);
+  --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.4), 0 2px 4px -2px rgb(0 0 0 / 0.3);
+  --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.5), 0 4px 6px -4px rgb(0 0 0 / 0.4);
+  --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.6), 0 8px 10px -6px rgb(0 0 0 / 0.5);
+}
+
+/* ============================================
+   HIGH CONTRAST MODE (A11y)
+   ============================================ */
+@media (prefers-contrast: high) {
+  :root {
+    --color-border-base: #000000;
+    --color-text-primary: #000000;
+    --color-text-secondary: #1a1a1a;
+    --focus-ring-width: 3px;
+    --focus-ring-offset: 3px;
+  }
+
+  [data-theme='dark'] {
+    --color-border-base: #ffffff;
+    --color-text-primary: #ffffff;
+    --color-text-secondary: #e6e6e6;
+  }
+}
+
+/* ============================================
+   REDUCED MOTION (A11y)
+   ============================================ */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* ============================================
+   RTL SUPPORT (Logical Properties)
+   ============================================ */
+[dir='rtl'] {
+  /* Tailwind RTL plugin handles most cases automatically */
+  /* Add custom RTL overrides here if needed */
+}
+
+/* ============================================
+   UTILITY CLASSES (Using Tokens)
+   ============================================ */
+
+/* Focus Ring */
+.focus-ring:focus-visible {
+  outline: var(--focus-ring-width) solid var(--focus-ring-color);
+  outline-offset: var(--focus-ring-offset);
+  border-radius: var(--radius-md);
+}
+
+/* Text Colors */
+.text-primary {
+  color: var(--color-text-primary);
+}
+
+.text-secondary {
+  color: var(--color-text-secondary);
+}
+
+.text-tertiary {
+  color: var(--color-text-tertiary);
+}
+
+/* Background Colors */
+.bg-base {
+  background-color: var(--color-bg-base);
+}
+
+.bg-subtle {
+  background-color: var(--color-bg-subtle);
+}
+
+.bg-muted {
+  background-color: var(--color-bg-muted);
+}
+
+.bg-elevated {
+  background-color: var(--color-bg-elevated);
+}
+
+/* Borders */
+.border-base {
+  border-color: var(--color-border-base);
+}
+
+.border-strong {
+  border-color: var(--color-border-strong);
+}
+
+/* Shadows */
+.shadow-soft {
+  box-shadow: var(--shadow-sm);
+}
+
+.shadow-card {
+  box-shadow: var(--shadow-md);
+}
+
+.shadow-lifted {
+  box-shadow: var(--shadow-lg);
+}
+
+/* Transitions */
+.transition-fast {
+  transition-duration: var(--transition-fast);
+  transition-timing-function: var(--easing-in-out);
+}
+
+.transition-base {
+  transition-duration: var(--transition-base);
+  transition-timing-function: var(--easing-in-out);
+}
+
+/* Skip to Content (A11y) */
+.skip-to-content {
+  position: absolute;
+  top: -40px;
+  left: 0;
+  background: var(--color-brand-500);
+  color: var(--color-text-inverse);
+  padding: var(--space-2) var(--space-4);
+  text-decoration: none;
+  border-radius: var(--radius-md);
+  z-index: var(--z-toast);
+}
+
+.skip-to-content:focus {
+  top: var(--space-2);
+  left: var(--space-2);
+}
+
+/* Screen Reader Only */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
+}
+
+/* Not SR Only (for revealing) */
+.not-sr-only {
+  position: static;
+  width: auto;
+  height: auto;
+  padding: 0;
+  margin: 0;
+  overflow: visible;
+  clip: auto;
+  white-space: normal;
+}

@@ -35,6 +35,12 @@ importers:
       '@prisma/client':
         specifier: ^5.19.0
         version: 5.22.0(prisma@5.22.0)
+      '@tanstack/react-table':
+        specifier: ^8.21.3
+        version: 8.21.3(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
+      '@tanstack/react-virtual':
+        specifier: ^3.13.12
+        version: 3.13.12(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
       '@types/bcryptjs':
         specifier: ^2.4.6
         version: 2.4.6
@@ -83,6 +89,9 @@ importers:
       react-hook-form:
         specifier: ^7.52.0
         version: 7.65.0(react@18.2.0)
+      sonner:
+        specifier: ^2.0.7
+        version: 2.0.7(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
       tailwind-merge:
         specifier: ^2.0.0
         version: 2.6.0
@@ -1336,6 +1345,26 @@ packages:
 
   '@swc/helpers@0.5.5':
     resolution: {integrity: sha512-KGYxvIOXcceOAbEk4bi/dVLEK9z8sZ0uBB3Il5b1rhfClSpcX0yfRO0KmTkqR2cnQDymwLB+25ZyMzICg/cm/A==}
+
+  '@tanstack/react-table@8.21.3':
+    resolution: {integrity: sha512-5nNMTSETP4ykGegmVkhjcS8tTLW6Vl4axfEGQN3v0zdHYbK4UfoqfPChclTrJ4EoK9QynqAu9oUf8VEmrpZ5Ww==}
+    engines: {node: '>=12'}
+    peerDependencies:
+      react: '>=16.8'
+      react-dom: '>=16.8'
+
+  '@tanstack/react-virtual@3.13.12':
+    resolution: {integrity: sha512-Gd13QdxPSukP8ZrkbgS2RwoZseTTbQPLnQEn7HY/rqtM+8Zt95f7xKC7N0EsKs7aoz0WzZ+fditZux+F8EzYxA==}
+    peerDependencies:
+      react: ^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0
+      react-dom: ^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0
+
+  '@tanstack/table-core@8.21.3':
+    resolution: {integrity: sha512-ldZXEhOBb8Is7xLs01fR3YEc3DERiz5silj8tnGkFZytt1abEvl/GhUmCE0PMLaMPTa3Jk4HbKmRlHmu+gCftg==}
+    engines: {node: '>=12'}
+
+  '@tanstack/virtual-core@3.13.12':
+    resolution: {integrity: sha512-1YBOJfRHV4sXUmWsFSf5rQor4Ss82G8dQWLRbnk3GA4jeP8hQt1hxXh0tmflpC0dz3VgEv/1+qwPyLeWkQuPFA==}
 
   '@ts-graphviz/adapter@2.0.6':
     resolution: {integrity: sha512-kJ10lIMSWMJkLkkCG5gt927SnGZcBuG0s0HHswGzcHTgvtUe7yk5/3zTEr0bafzsodsOq5Gi6FhQeV775nC35Q==}
@@ -3878,6 +3907,12 @@ packages:
     resolution: {integrity: sha512-iOBWFgUX7caIZiuutICxVgX1SdxwAVFFKwt1EvMYYec/NWO5meOJ6K5uQxhrYBdQJne4KxiqZc+KptFOWFSI9w==}
     engines: {node: '>=18'}
 
+  sonner@2.0.7:
+    resolution: {integrity: sha512-W6ZN4p58k8aDKA4XPcx2hpIQXBRAgyiWVkYhT7CvK6D3iAu7xjvVyhQHg2/iaKJZ1XVJ4r7XuwGL+WGEK37i9w==}
+    peerDependencies:
+      react: ^18.0.0 || ^19.0.0 || ^19.0.0-rc
+      react-dom: ^18.0.0 || ^19.0.0 || ^19.0.0-rc
+
   source-map-js@1.2.1:
     resolution: {integrity: sha512-UXWMKhLOwVKb728IUtQPXxfYU+usdybtUrK/8uGE8CQMvrhOpwvzDBwj0QhSL7MQc7vIsISBG8VQ8+IDQxpfQA==}
     engines: {node: '>=0.10.0'}
@@ -6022,6 +6057,22 @@ snapshots:
     dependencies:
       '@swc/counter': 0.1.3
       tslib: 2.8.1
+
+  '@tanstack/react-table@8.21.3(react-dom@18.2.0(react@18.2.0))(react@18.2.0)':
+    dependencies:
+      '@tanstack/table-core': 8.21.3
+      react: 18.2.0
+      react-dom: 18.2.0(react@18.2.0)
+
+  '@tanstack/react-virtual@3.13.12(react-dom@18.2.0(react@18.2.0))(react@18.2.0)':
+    dependencies:
+      '@tanstack/virtual-core': 3.13.12
+      react: 18.2.0
+      react-dom: 18.2.0(react@18.2.0)
+
+  '@tanstack/table-core@8.21.3': {}
+
+  '@tanstack/virtual-core@3.13.12': {}
 
   '@ts-graphviz/adapter@2.0.6':
     dependencies:
@@ -9074,6 +9125,11 @@ snapshots:
     dependencies:
       ansi-styles: 6.2.3
       is-fullwidth-code-point: 5.1.0
+
+  sonner@2.0.7(react-dom@18.2.0(react@18.2.0))(react@18.2.0):
+    dependencies:
+      react: 18.2.0
+      react-dom: 18.2.0(react@18.2.0)
 
   source-map-js@1.2.1: {}
 
