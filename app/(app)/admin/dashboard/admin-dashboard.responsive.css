@@ -1,0 +1,148 @@
+/* 
+ * Admin Dashboard Responsive Styles
+ * Toolbar Swap Implementation - FiltersBar as Primary Toolbar
+ * RTL Support with CSS Logical Properties
+ */
+
+/* الشريط الرئيسي - كان FiltersBar والآن أصبح الشريط الأساسي */
+.admin-toolbar-primary {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  background-color: var(--color-bg-base, #ffffff);
+  backdrop-filter: blur(8px);
+  border-block-end: 1px solid var(--color-border-base, #e5e7eb);
+  padding-block-end: 1rem;
+  margin-block-end: 1.5rem;
+}
+
+/* دعم الوضع الداكن */
+@media (prefers-color-scheme: dark) {
+  .admin-toolbar-primary {
+    background-color: var(--color-bg-base, #1a1a1a);
+    border-block-end-color: var(--color-border-base, #374151);
+  }
+}
+
+/* الحاوية الرئيسية للوحة القيادة */
+.admin-dashboard-container {
+  padding-inline: 0.75rem;
+  padding-block: 1rem;
+}
+
+/* شبكة الرسوم البيانية */
+.admin-charts-grid {
+  width: 100%;
+  min-width: 0; /* منع overflow */
+}
+
+/* === Responsive Breakpoints === */
+
+/* أجهزة صغيرة جداً (≤480px) */
+@media (max-width: 480px) {
+  .admin-dashboard-container {
+    padding-inline: 0.5rem;
+    padding-block: 0.75rem;
+  }
+
+  .admin-toolbar-primary {
+    padding-block-end: 0.75rem;
+    margin-block-end: 1rem;
+  }
+
+  .admin-charts-grid {
+    gap: 0.75rem;
+  }
+
+  /* تصغير العناوين على الشاشات الصغيرة */
+  .admin-dashboard-container h1 {
+    font-size: 1.25rem;
+  }
+
+  .admin-dashboard-container h3 {
+    font-size: 0.875rem;
+  }
+}
+
+/* أجهزة متوسطة (768px - 1023px) */
+@media (min-width: 768px) and (max-width: 1023px) {
+  .admin-dashboard-container {
+    padding-inline: 1rem;
+  }
+
+  .admin-charts-grid {
+    gap: 1.25rem;
+  }
+}
+
+/* أجهزة كبيرة (1024px - 1279px) */
+@media (min-width: 1024px) and (max-width: 1279px) {
+  .admin-dashboard-container {
+    padding-inline: 1.25rem;
+  }
+
+  .admin-charts-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1.5rem;
+  }
+}
+
+/* أجهزة كبيرة جداً (≥1280px) */
+@media (min-width: 1280px) {
+  .admin-dashboard-container {
+    padding-inline: 1.5rem;
+    max-inline-size: 1920px;
+    margin-inline: auto;
+  }
+
+  .admin-charts-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1.5rem;
+  }
+}
+
+/* شاشات فائقة الحجم (≥1440px) */
+@media (min-width: 1440px) {
+  .admin-dashboard-container {
+    padding-inline: 2rem;
+  }
+
+  .admin-charts-grid {
+    gap: 2rem;
+  }
+}
+
+/* === RTL Support === */
+/* استخدام CSS Logical Properties لدعم RTL تلقائياً */
+/* الخصائص المنطقية المستخدمة في الملف (padding-inline, margin-inline, etc.) */
+/* تعمل تلقائياً مع اتجاه RTL بدون الحاجة لقواعد إضافية */
+
+/* === Accessibility === */
+/* تحسين التباين والوصول */
+.admin-toolbar-primary:focus-within {
+  outline: 2px solid var(--color-primary, #3b82f6);
+  outline-offset: 2px;
+}
+
+/* === Print Styles === */
+@media print {
+  .admin-toolbar-primary {
+    position: static;
+    border: none;
+    padding: 0;
+  }
+
+  .admin-dashboard-container {
+    padding: 0;
+  }
+}
+
+/* === Animation للشريط عند التمرير === */
+.admin-toolbar-primary {
+  transition: box-shadow 0.2s ease-in-out;
+}
+
+.admin-toolbar-primary.scrolled {
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1),
+              0 2px 4px -1px rgba(0, 0, 0, 0.06);
+}

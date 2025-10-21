@@ -1,13 +1,15 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { Users, Shield, Settings, Activity } from 'lucide-react';
+import { Users, Shield, Settings, Activity, RefreshCw } from 'lucide-react';
 import { KPICard, KPICardGrid } from '@/components/ui/KPICard';
 import { ChartWidget, ChartDataPoint } from '@/components/ui/ChartWidget';
 import { Skeleton, SkeletonCard } from '@/components/ui/Skeleton';
 import { EmptyState } from '@/components/ui/EmptyState';
 import { Breadcrumbs, BreadcrumbItem } from '@/components/ui/Breadcrumbs';
+import { FiltersBar, FilterOption } from '@/components/ui/FiltersBar';
 import { toast } from 'sonner';
+import './admin-dashboard.responsive.css';
 
 interface KPIData {
   summary: {
@@ -32,9 +34,37 @@ export default function AdminDashboardPage() {
   const [data, setData] = useState<KPIData | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  
+  // State for FiltersBar (التي ستصبح الشريط الرئيسي)
+  const [searchQuery, setSearchQuery] = useState('');
+  const [filterValues, setFilterValues] = useState<Record<string, string>>({});
 
   const breadcrumbItems: BreadcrumbItem[] = [
     { label: 'لوحة التحكم', current: true },
+  ];
+
+  // تعريف خيارات الفلاتر للشريط
+  const filters: FilterOption[] = [
+    {
+      id: 'period',
+      label: 'الفترة الزمنية',
+      type: 'select',
+      options: [
+        { value: '7', label: 'آخر 7 أيام' },
+        { value: '30', label: 'آخر 30 يوم' },
+        { value: '90', label: 'آخر 3 أشهر' },
+      ],
+    },
+    {
+      id: 'metric',
+      label: 'المؤشر',
+      type: 'select',
+      options: [
+        { value: 'all', label: 'جميع المؤشرات' },
+        { value: 'users', label: 'المستخدمون' },
+        { value: 'activity', label: 'النشاط' },
+      ],
+    },
   ];
 
   useEffect(() => {
@@ -71,6 +101,11 @@ export default function AdminDashboardPage() {
     fetchKPIs();
   }, []);
 
+  // دالة إعادة التحميل (تُستخدم من FiltersBar)
+  const handleRefresh = () => {
+    window.location.reload();
+  };
+
   if (error) {
     return (
       <div className="space-y-6">
@@ -81,7 +116,7 @@ export default function AdminDashboardPage() {
           message={error}
           action={{
             label: "إعادة المحاولة",
-            onClick: () => window.location.reload()
+            onClick: handleRefresh
           }}
         />
       </div>
@@ -89,11 +124,36 @@ export default function AdminDashboardPage() {
   }
 
   return (
-    <div className="space-y-6" style={{ backgroundColor: 'var(--bg)' }}>
+    <div className="space-y-6 admin-dashboard-container" style={{ backgroundColor: 'var(--bg)' }}>
       {/* Breadcrumbs */}
       <Breadcrumbs items={breadcrumbItems} showHome={false} />
 
-      {/* KPI Cards */}
+      {/* الشريط الرئيسي (FiltersBar) - كان ثانوياً والآن أصبح أساسياً */}
+      {/* تم إخفاء أزرار: إنشاء مهمة، تصدير CSV، تحديث حسب المتطلبات */}
+      <div className="admin-toolbar-primary sticky top-0 z-20 bg-surface/95 backdrop-blur-sm border-b border-border-base pb-4">
+        <FiltersBar
+          searchQuery={searchQuery}
+          onSearchChange={setSearchQuery}
+          searchPlaceholder="بحث في لوحة التحكم..."
+          filters={filters}
+          filterValues={filterValues}
+          onFilterChange={(id, value) =>
+            setFilterValues((prev) => ({ ...prev, [id]: value }))
+          }
+          onClearFilters={() => {
+            setSearchQuery('');
+            setFilterValues({});
+          }}
+        />
+        {/* TODO: الأزرار التالية تم إخفاؤها حسب المتطلبات:
+            - زر "إنشاء مهمة" (newTask)
+            - زر "تصدير CSV" (exportCSV)
+            - زر "تحديث" (refresh)
+            يمكن إعادتها لاحقاً إذا لزم الأمر
+        */}
+      </div>
+
+      {/* KPI Cards - مع دعم responsive */}
       <KPICardGrid>
         <KPICard
           title={data?.summary.users.label || 'المستخدمون'}
@@ -133,8 +193,8 @@ export default function AdminDashboardPage() {
         />
       </KPICardGrid>
 
-      {/* Charts & Logs */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      {/* Charts & Logs - responsive grid */}
+      <div className="admin-charts-grid grid grid-cols-1 lg:grid-cols-2 gap-4 md:gap-6">
         {/* Daily Activity Chart */}
         {loading ? (
           <SkeletonCard />
