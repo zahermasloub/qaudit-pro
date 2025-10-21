@@ -2,14 +2,87 @@ import PBCTable from '@/components/pbc/PbcTable';
 import EvidenceTable from '@/features/evidence/evidence.table';
 import type { Locale } from '@/lib/i18n';
 import { useI18n } from '@/lib/i18n';
+import './planning-actions.css';
 
 export function PlanningScreen({ locale }: { locale: Locale }) {
   const _i18n = useI18n(locale);
 
   return (
     <div className="p-6 space-y-6">
+      {/* عنوان التخطيط */}
       <div className="flex items-center justify-between">
-  <h1 className="text-2xl font-bold text-gray-900">{(_i18n.menu as any).planning}</h1>
+        <h1 className="text-2xl font-bold text-gray-900">{(_i18n.menu as any).planning}</h1>
+      </div>
+
+      {/* مستطيل لوحة إجراءات التخطيط */}
+      <div
+        className="planning-actions-panel"
+        style={{
+          display: 'flex',
+          flexWrap: 'wrap',
+          justifyContent: 'flex-start',
+          gap: '0.75rem',
+          padding: '1rem 1.25rem',
+          backgroundColor: 'var(--color-bg-muted, #f9fafb)',
+          border: '1px solid var(--color-border-base, #e5e7eb)',
+          borderRadius: '0.75rem',
+        }}
+      >
+        {/* زر إنشاء خطة - Primary */}
+        <button
+          type="button"
+          aria-label="إنشاء خطة جديدة"
+          className="inline-flex items-center gap-2 px-4 py-2.5 text-sm font-medium rounded-lg
+                     bg-blue-600 text-white border border-blue-600
+                     hover:bg-blue-700 hover:border-blue-700
+                     focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2
+                     transition-colors duration-200"
+          style={{ minWidth: '140px' }}
+        >
+          {locale === 'ar' ? 'إنشاء خطة' : 'Create Plan'}
+        </button>
+
+        {/* زر طلب جديد - Secondary */}
+        <button
+          type="button"
+          aria-label="إنشاء طلب PBC جديد"
+          className="inline-flex items-center gap-2 px-4 py-2.5 text-sm font-medium rounded-lg
+                     bg-slate-100 text-slate-900 border border-slate-300
+                     hover:bg-slate-200 hover:border-slate-400
+                     focus:outline-none focus:ring-2 focus:ring-slate-500 focus:ring-offset-2
+                     transition-colors duration-200"
+          style={{ minWidth: '140px' }}
+        >
+          {locale === 'ar' ? 'طلب جديد' : 'New Request'}
+        </button>
+
+        {/* زر استيراد CSV - Ghost/Outline */}
+        <button
+          type="button"
+          aria-label="استيراد بيانات من ملف CSV"
+          className="inline-flex items-center gap-2 px-4 py-2.5 text-sm font-medium rounded-lg
+                     bg-transparent text-slate-700 border border-slate-300
+                     hover:bg-slate-50 hover:border-slate-400
+                     focus:outline-none focus:ring-2 focus:ring-slate-500 focus:ring-offset-2
+                     transition-colors duration-200"
+          style={{ minWidth: '140px' }}
+        >
+          {locale === 'ar' ? 'استيراد CSV' : 'Import CSV'}
+        </button>
+
+        {/* زر تصدير CSV - Ghost/Outline */}
+        <button
+          type="button"
+          aria-label="تصدير البيانات إلى ملف CSV"
+          className="inline-flex items-center gap-2 px-4 py-2.5 text-sm font-medium rounded-lg
+                     bg-transparent text-slate-700 border border-slate-300
+                     hover:bg-slate-50 hover:border-slate-400
+                     focus:outline-none focus:ring-2 focus:ring-slate-500 focus:ring-offset-2
+                     transition-colors duration-200"
+          style={{ minWidth: '140px' }}
+        >
+          {locale === 'ar' ? 'تصدير CSV' : 'Export CSV'}
+        </button>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">

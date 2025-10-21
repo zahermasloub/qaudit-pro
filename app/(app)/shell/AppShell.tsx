@@ -447,11 +447,12 @@ const TOOLBARS: Record<
     // { action: 'exportCSV', roles: ['IA_Manager', 'IA_Lead', 'IA_Auditor'] }, // محذوف
     // { action: 'refresh', roles: ['IA_Manager', 'IA_Lead', 'IA_Auditor', 'Process_Owner', 'Viewer'] }, // محذوف
   ],
+  // ❌ إخفاء أزرار planning من الـ Toolbar - تم نقلها للوحة الإجراءات داخل الصفحة
   planning: [
-    { action: 'createPlan', roles: ['IA_Manager', 'IA_Lead'], variant: 'primary' },
-    { action: 'newPBC', roles: ['IA_Manager', 'IA_Lead', 'IA_Auditor'] },
-    { action: 'importCSV', roles: ['IA_Manager', 'IA_Lead', 'IA_Auditor'] },
-    { action: 'exportCSV', roles: ['IA_Manager', 'IA_Lead', 'IA_Auditor'] },
+    // { action: 'createPlan', roles: ['IA_Manager', 'IA_Lead'], variant: 'primary' }, // محذوف - منقول للوحة
+    // { action: 'newPBC', roles: ['IA_Manager', 'IA_Lead', 'IA_Auditor'] }, // محذوف - منقول للوحة
+    // { action: 'importCSV', roles: ['IA_Manager', 'IA_Lead', 'IA_Auditor'] }, // محذوف - منقول للوحة
+    // { action: 'exportCSV', roles: ['IA_Manager', 'IA_Lead', 'IA_Auditor'] }, // محذوف - منقول للوحة
   ],
   processRisk: [
     { action: 'addRisk', roles: ['IA_Manager', 'IA_Lead', 'IA_Auditor'], variant: 'primary' },
