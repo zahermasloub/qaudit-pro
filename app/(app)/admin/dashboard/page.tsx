@@ -128,8 +128,31 @@ export default function AdminDashboardPage() {
       {/* Breadcrumbs */}
       <Breadcrumbs items={breadcrumbItems} showHome={false} />
 
-      {/* الشريط الرئيسي (FiltersBar) - كان ثانوياً والآن أصبح أساسياً */}
-      {/* تم إخفاء أزرار: إنشاء مهمة، تصدير CSV، تحديث حسب المتطلبات */}
+      {/* 🔴 الشريط العلوي الأسود القديم - تم حذفه/إخفاؤه حسب المتطلبات */}
+      {/*
+      <div className="flex items-center justify-between mb-6">
+        <div>
+          <h1 className="text-2xl font-bold text-text-primary">لوحة التحكم</h1>
+          <p className="text-sm text-text-tertiary mt-1">
+            عرض الإحصائيات والمؤشرات الرئيسية
+          </p>
+        </div>
+        <div className="flex items-center gap-3">
+          <button type="button" className="px-4 py-2 rounded-lg bg-brand-600 text-white">
+            إنشاء مهمة
+          </button>
+          <button type="button" className="px-4 py-2 rounded-lg border">
+            تصدير CSV
+          </button>
+          <button type="button" className="px-4 py-2 rounded-lg border">
+            <RefreshCw size={18} />
+            تحديث
+          </button>
+        </div>
+      </div>
+      */}
+
+      {/* ✅ الشريط الثانوي أصبح الرئيسي (FiltersBar) - sticky في الأعلى */}
       <div className="admin-toolbar-primary sticky top-0 z-20 bg-surface/95 backdrop-blur-sm border-b border-border-base pb-4">
         <FiltersBar
           searchQuery={searchQuery}
@@ -145,11 +168,23 @@ export default function AdminDashboardPage() {
             setFilterValues({});
           }}
         />
-        {/* TODO: الأزرار التالية تم إخفاؤها حسب المتطلبات:
-            - زر "إنشاء مهمة" (newTask)
-            - زر "تصدير CSV" (exportCSV)
-            - زر "تحديث" (refresh)
-            يمكن إعادتها لاحقاً إذا لزم الأمر
+        {/*
+        ❌ تم حذف الأزرار التالية حسب المتطلبات:
+
+        <div className="flex items-center gap-2 mt-4">
+          <button className="px-4 py-2 rounded-lg bg-brand-600 text-white">
+            إنشاء مهمة
+          </button>
+          <button className="px-4 py-2 rounded-lg border">
+            تصدير CSV
+          </button>
+          <button className="px-4 py-2 rounded-lg border">
+            <RefreshCw size={18} />
+            تحديث
+          </button>
+        </div>
+
+        يمكن إعادة الأزرار لاحقاً عن طريق إلغاء التعليق أعلاه
         */}
       </div>
 
