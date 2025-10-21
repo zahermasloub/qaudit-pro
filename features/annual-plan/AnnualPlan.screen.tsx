@@ -266,8 +266,8 @@ export function AnnualPlanScreen({ locale }: { locale: Locale }) {
 
   const getStatusColor = (status: string) => {
     const colors: Record<string, string> = {
-      completed: 'bg-green-100 text-green-800',
-      in_progress: 'bg-blue-100 text-blue-800',
+      completed: 'bg-success-100 text-success-700',
+      in_progress: 'bg-primary-100 text-primary-700',
       not_started: 'bg-gray-100 text-gray-800',
     };
     return colors[status] || 'bg-gray-100 text-gray-800';
@@ -276,10 +276,10 @@ export function AnnualPlanScreen({ locale }: { locale: Locale }) {
   const getPlanStatusColor = (status: string) => {
     const colors: Record<string, string> = {
       draft: 'bg-gray-100 text-gray-800',
-      under_review: 'bg-orange-100 text-orange-800',
-      approved: 'bg-green-100 text-green-800',
-      cancelled: 'bg-red-100 text-red-800',
-      completed: 'bg-blue-100 text-blue-800',
+      under_review: 'bg-warning-100 text-warning-700',
+      approved: 'bg-success-100 text-success-700',
+      cancelled: 'bg-danger-100 text-danger-700',
+      completed: 'bg-primary-100 text-primary-700',
     };
     return colors[status] || 'bg-gray-100 text-gray-800';
   };
@@ -295,22 +295,22 @@ export function AnnualPlanScreen({ locale }: { locale: Locale }) {
   }
 
   return (
-    <div className="p-6 space-y-6" dir={isRTL ? 'rtl' : 'ltr'}>
+    <div className="p-6 space-y-6 bg-bg" dir={isRTL ? 'rtl' : 'ltr'}>
       {/* Header */}
-      <div className="flex items-center justify-between">
+      <div className="flex items-center justify-between bg-surface border border-border rounded-card p-6 shadow-card">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">
+          <h1 className="text-2xl font-bold text-text">
             {selectedPlan?.title ||
               (locale === 'ar' ? 'الخطة السنوية للتدقيق الداخلي' : 'Annual Internal Audit Plan')}
           </h1>
-          <p className="text-sm text-gray-600 mt-1">
+          <p className="text-sm text-text-2 mt-1">
             {locale === 'ar'
               ? `السنة المالية: ${selectedPlan?.fiscalYear}`
               : `Fiscal Year: ${selectedPlan?.fiscalYear}`}
           </p>
         </div>
         <button
-          className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-medium"
+          className="px-4 py-2 bg-primary-600 text-white rounded-btn hover:bg-primary-700 focus:ring-2 focus:ring-primary-600 focus:ring-offset-2 transition-colors font-medium"
           onClick={() => setOpenAnnualPlan(true)}
         >
           + {locale === 'ar' ? 'إنشاء خطة جديدة' : 'Create New Plan'}
@@ -320,9 +320,9 @@ export function AnnualPlanScreen({ locale }: { locale: Locale }) {
       {/* KPI Cards */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
         {/* Plan Status */}
-        <div className="bg-white rounded-lg border border-gray-200 p-6">
+        <div className="bg-surface rounded-card border border-border p-6 shadow-card hover:shadow-lg transition-shadow">
           <div className="flex items-center justify-between mb-3">
-            <h3 className="text-sm font-medium text-gray-600">
+            <h3 className="text-sm font-medium text-text-2">
               {locale === 'ar' ? 'حالة الخطة' : 'Plan Status'}
             </h3>
           </div>
@@ -337,38 +337,38 @@ export function AnnualPlanScreen({ locale }: { locale: Locale }) {
         </div>
 
         {/* Total Tasks */}
-        <div className="bg-white rounded-lg border border-gray-200 p-6">
-          <h3 className="text-sm font-medium text-gray-600 mb-2">
+        <div className="bg-surface rounded-card border border-border p-6 shadow-card hover:shadow-lg transition-shadow">
+          <h3 className="text-sm font-medium text-text-2 mb-2">
             {locale === 'ar' ? 'المهام المخططة' : 'Planned Tasks'}
           </h3>
-          <div className="text-3xl font-bold text-gray-900">{totalTasks}</div>
-          <p className="text-xs text-gray-500 mt-1">
+          <div className="text-3xl font-bold text-text">{totalTasks}</div>
+          <p className="text-xs text-text-2 mt-1">
             {locale === 'ar' ? 'مهمة تدقيق' : 'audit tasks'}
           </p>
         </div>
 
         {/* Total Hours */}
-        <div className="bg-white rounded-lg border border-gray-200 p-6">
-          <h3 className="text-sm font-medium text-gray-600 mb-2">
+        <div className="bg-surface rounded-card border border-border p-6 shadow-card hover:shadow-lg transition-shadow">
+          <h3 className="text-sm font-medium text-text-2 mb-2">
             {locale === 'ar' ? 'إجمالي الساعات' : 'Total Hours'}
           </h3>
-          <div className="text-3xl font-bold text-gray-900">
+          <div className="text-3xl font-bold text-text">
             {totalPlannedHours.toLocaleString()}
           </div>
-          <p className="text-xs text-gray-500 mt-1">
+          <p className="text-xs text-text-2 mt-1">
             {locale === 'ar' ? 'ساعة مخططة' : 'planned hours'}
           </p>
         </div>
 
         {/* Completion Rate */}
-        <div className="bg-white rounded-lg border border-gray-200 p-6">
-          <h3 className="text-sm font-medium text-gray-600 mb-2">
+        <div className="bg-surface rounded-card border border-border p-6 shadow-card hover:shadow-lg transition-shadow">
+          <h3 className="text-sm font-medium text-text-2 mb-2">
             {locale === 'ar' ? 'نسبة الإنجاز' : 'Completion Rate'}
           </h3>
-          <div className="text-3xl font-bold text-gray-900">{completionRate}%</div>
-          <div className="w-full bg-gray-200 rounded-full h-2 mt-2">
+          <div className="text-3xl font-bold text-text">{completionRate}%</div>
+          <div className="w-full bg-border rounded-full h-2 mt-2">
             <div
-              className="bg-blue-600 h-2 rounded-full transition-all"
+              className="bg-primary-600 h-2 rounded-full transition-all"
               style={{ width: `${completionRate}%` }}
             ></div>
           </div>
@@ -376,14 +376,14 @@ export function AnnualPlanScreen({ locale }: { locale: Locale }) {
       </div>
 
       {/* Filters and Search */}
-      <div className="bg-white rounded-lg border border-gray-200 p-4">
+      <div className="bg-surface rounded-card border border-border p-4 shadow-card">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
           {/* Search */}
           <div className="lg:col-span-2">
             <input
               type="text"
               placeholder={locale === 'ar' ? 'بحث...' : 'Search...'}
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full px-3 py-2 bg-surface border border-border rounded-btn text-text focus:outline-none focus:ring-2 focus:ring-primary-600 focus:border-primary-200 transition-colors"
               value={searchQuery}
               onChange={e => setSearchQuery(e.target.value)}
             />
@@ -392,7 +392,12 @@ export function AnnualPlanScreen({ locale }: { locale: Locale }) {
           {/* Department Filter */}
           <div>
             <select
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className={clsx(
+                'w-full px-3 py-2 rounded-btn text-text transition-colors focus:outline-none focus:ring-2 focus:ring-primary-600',
+                filterDepartment
+                  ? 'bg-primary-50 border border-primary-200 text-text'
+                  : 'bg-surface border border-border hover:bg-surface-hover'
+              )}
               value={filterDepartment}
               onChange={e => setFilterDepartment(e.target.value)}
             >
@@ -408,7 +413,12 @@ export function AnnualPlanScreen({ locale }: { locale: Locale }) {
           {/* Risk Level Filter */}
           <div>
             <select
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className={clsx(
+                'w-full px-3 py-2 rounded-btn text-text transition-colors focus:outline-none focus:ring-2 focus:ring-primary-600',
+                filterRiskLevel
+                  ? 'bg-primary-50 border border-primary-200 text-text'
+                  : 'bg-surface border border-border hover:bg-surface-hover'
+              )}
               value={filterRiskLevel}
               onChange={e => setFilterRiskLevel(e.target.value)}
             >
@@ -423,7 +433,12 @@ export function AnnualPlanScreen({ locale }: { locale: Locale }) {
           {/* Status Filter */}
           <div>
             <select
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className={clsx(
+                'w-full px-3 py-2 rounded-btn text-text transition-colors focus:outline-none focus:ring-2 focus:ring-primary-600',
+                filterStatus
+                  ? 'bg-primary-50 border border-primary-200 text-text'
+                  : 'bg-surface border border-border hover:bg-surface-hover'
+              )}
               value={filterStatus}
               onChange={e => setFilterStatus(e.target.value)}
             >
@@ -436,58 +451,58 @@ export function AnnualPlanScreen({ locale }: { locale: Locale }) {
         </div>
 
         <div className="flex items-center justify-between mt-4">
-          <div className="text-sm text-gray-600">
+          <div className="text-sm text-text-2">
             {locale === 'ar'
               ? `عرض ${filteredTasks.length} من ${totalTasks} مهمة`
               : `Showing ${filteredTasks.length} of ${totalTasks} tasks`}
           </div>
-          <button className="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors text-sm font-medium">
+          <button className="px-4 py-2 bg-surface border border-border rounded-btn hover:bg-surface-hover text-text transition-colors text-sm font-medium focus:ring-2 focus:ring-primary-600">
             {locale === 'ar' ? 'تصدير CSV' : 'Export CSV'}
           </button>
         </div>
       </div>
 
       {/* Tasks Table */}
-      <div className="bg-white rounded-lg border border-gray-200 overflow-hidden">
+      <div className="bg-surface rounded-card border border-border overflow-hidden shadow-card">
         <div className="overflow-x-auto">
           <table className="w-full">
-            <thead className="bg-gray-50 border-b border-gray-200">
+            <thead className="bg-[#F3F4F6] border-b border-border">
               <tr>
-                <th className="px-4 py-3 text-start text-xs font-medium text-gray-600 uppercase tracking-wider">
+                <th className="px-4 py-3 text-start text-xs font-medium text-text-2 uppercase tracking-wider">
                   {locale === 'ar' ? 'الرمز' : 'Code'}
                 </th>
-                <th className="px-4 py-3 text-start text-xs font-medium text-gray-600 uppercase tracking-wider">
+                <th className="px-4 py-3 text-start text-xs font-medium text-text-2 uppercase tracking-wider">
                   {locale === 'ar' ? 'عنوان المهمة' : 'Task Title'}
                 </th>
-                <th className="px-4 py-3 text-start text-xs font-medium text-gray-600 uppercase tracking-wider">
+                <th className="px-4 py-3 text-start text-xs font-medium text-text-2 uppercase tracking-wider">
                   {locale === 'ar' ? 'الإدارة' : 'Department'}
                 </th>
-                <th className="px-4 py-3 text-start text-xs font-medium text-gray-600 uppercase tracking-wider">
+                <th className="px-4 py-3 text-start text-xs font-medium text-text-2 uppercase tracking-wider">
                   {locale === 'ar' ? 'المخاطر' : 'Risk Level'}
                 </th>
-                <th className="px-4 py-3 text-start text-xs font-medium text-gray-600 uppercase tracking-wider">
+                <th className="px-4 py-3 text-start text-xs font-medium text-text-2 uppercase tracking-wider">
                   {locale === 'ar' ? 'النوع' : 'Type'}
                 </th>
-                <th className="px-4 py-3 text-start text-xs font-medium text-gray-600 uppercase tracking-wider">
+                <th className="px-4 py-3 text-start text-xs font-medium text-text-2 uppercase tracking-wider">
                   {locale === 'ar' ? 'الربع' : 'Quarter'}
                 </th>
-                <th className="px-4 py-3 text-start text-xs font-medium text-gray-600 uppercase tracking-wider">
+                <th className="px-4 py-3 text-start text-xs font-medium text-text-2 uppercase tracking-wider">
                   {locale === 'ar' ? 'الساعات' : 'Hours'}
                 </th>
-                <th className="px-4 py-3 text-start text-xs font-medium text-gray-600 uppercase tracking-wider">
+                <th className="px-4 py-3 text-start text-xs font-medium text-text-2 uppercase tracking-wider">
                   {locale === 'ar' ? 'الحالة' : 'Status'}
                 </th>
-                <th className="px-4 py-3 text-start text-xs font-medium text-gray-600 uppercase tracking-wider">
+                <th className="px-4 py-3 text-start text-xs font-medium text-text-2 uppercase tracking-wider">
                   {locale === 'ar' ? 'إجراءات' : 'Actions'}
                 </th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-gray-200">
+            <tbody className="divide-y divide-border bg-surface">
               {filteredTasks.map(task => (
-                <tr key={task.id} className="hover:bg-gray-50 transition-colors">
-                  <td className="px-4 py-3 text-sm font-medium text-gray-900">{task.code}</td>
-                  <td className="px-4 py-3 text-sm text-gray-900">{task.title}</td>
-                  <td className="px-4 py-3 text-sm text-gray-600">{task.department}</td>
+                <tr key={task.id} className="hover:bg-row-hover transition-colors">
+                  <td className="px-4 py-3 text-sm font-medium text-text">{task.code}</td>
+                  <td className="px-4 py-3 text-sm text-text">{task.title}</td>
+                  <td className="px-4 py-3 text-sm text-text-2">{task.department}</td>
                   <td className="px-4 py-3">
                     <span
                       className={clsx(
@@ -498,11 +513,11 @@ export function AnnualPlanScreen({ locale }: { locale: Locale }) {
                       {getRiskLevelLabel(task.riskLevel)}
                     </span>
                   </td>
-                  <td className="px-4 py-3 text-sm text-gray-600">
+                  <td className="px-4 py-3 text-sm text-text-2">
                     {getAuditTypeLabel(task.auditType)}
                   </td>
-                  <td className="px-4 py-3 text-sm text-gray-600">{task.plannedQuarter}</td>
-                  <td className="px-4 py-3 text-sm text-gray-600">{task.estimatedHours}</td>
+                  <td className="px-4 py-3 text-sm text-text-2">{task.plannedQuarter}</td>
+                  <td className="px-4 py-3 text-sm text-text-2">{task.estimatedHours}</td>
                   <td className="px-4 py-3">
                     <span
                       className={clsx(
@@ -516,21 +531,21 @@ export function AnnualPlanScreen({ locale }: { locale: Locale }) {
                   <td className="px-4 py-3">
                     <div className="flex items-center gap-2">
                       <button
-                        className="text-blue-600 hover:text-blue-800 transition-colors"
+                        className="text-primary-600 hover:text-primary-700 transition-colors"
                         title={locale === 'ar' ? 'عرض' : 'View'}
                         aria-label={locale === 'ar' ? 'عرض' : 'View'}
                       >
                         👁️
                       </button>
                       <button
-                        className="text-green-600 hover:text-green-800 transition-colors"
+                        className="text-success-600 hover:text-success-700 transition-colors"
                         title={locale === 'ar' ? 'تعديل' : 'Edit'}
                         aria-label={locale === 'ar' ? 'تعديل' : 'Edit'}
                       >
                         ✏️
                       </button>
                       <button
-                        className="text-red-600 hover:text-red-800 transition-colors"
+                        className="text-danger-600 hover:text-danger-700 transition-colors"
                         title={locale === 'ar' ? 'حذف' : 'Delete'}
                         aria-label={locale === 'ar' ? 'حذف' : 'Delete'}
                       >
@@ -545,7 +560,7 @@ export function AnnualPlanScreen({ locale }: { locale: Locale }) {
         </div>
 
         {filteredTasks.length === 0 && (
-          <div className="text-center py-12 text-gray-500">
+          <div className="text-center py-12 text-text-2">
             {locale === 'ar' ? 'لا توجد مهام تدقيق' : 'No audit tasks found'}
           </div>
         )}
