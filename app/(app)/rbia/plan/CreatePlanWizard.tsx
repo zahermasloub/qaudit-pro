@@ -7,16 +7,19 @@ interface CreatePlanWizardProps {
   onClose?: () => void;
 }
 
-interface PlanItem {
-  code: string;
-  title: string;
-  department: string;
-  riskLevel: string;
-  auditType: string;
-  plannedQuarter: string;
-  estimatedHours: number;
-  startDate: string;
-  endDate: string;
+interface PlanTask {
+  seqNo: number;              // الرقم التسلسلي للمهمة
+  taskRef: string;            // الرقم المرجعي للمهمة
+  deptId: string;             // الإدارة / القسم المستهدف
+  title: string;              // اسم المهمة
+  taskType: string;           // نوع المهمة
+  riskLevel: string;          // درجة الخطورة
+  impactLevel: string;        // تقييم الأثر
+  priority: string;           // أولوية التنفيذ
+  scheduledQuarter: string;   // توقيت التنفيذ المقترح
+  durationDays: number;       // المدة التقديرية للتنفيذ (أيام)
+  assignee: string;           // المدقق المسؤول
+  notes: string;              // تعليقات إضافية
 }
 
 export default function CreatePlanWizard({ onClose }: CreatePlanWizardProps) {
@@ -39,17 +42,20 @@ export default function CreatePlanWizard({ onClose }: CreatePlanWizardProps) {
   const [planId, setPlanId] = useState<string | null>(null);
 
   // Step 2 State
-  const [items, setItems] = useState<PlanItem[]>([
+  const [items, setItems] = useState<PlanTask[]>([
     {
-      code: '',
+      seqNo: 1,
+      taskRef: '',
+      deptId: '',
       title: '',
-      department: 'عام',
+      taskType: 'compliance',
       riskLevel: 'medium',
-      auditType: 'operational',
-      plannedQuarter: 'Q1',
-      estimatedHours: 40,
-      startDate: '',
-      endDate: '',
+      impactLevel: 'medium',
+      priority: 'medium',
+      scheduledQuarter: 'Q1',
+      durationDays: 20,
+      assignee: '',
+      notes: '',
     },
   ]);
 
@@ -146,13 +152,13 @@ export default function CreatePlanWizard({ onClose }: CreatePlanWizardProps) {
 
     setLoading(true);
     try {
-      // Filter out empty items (must have code and title)
+      // Filter out empty items (must have title and taskRef)
       const validItems = items.filter(item =>
-        item.code.trim() !== '' && item.title.trim() !== ''
+        item.title.trim() !== '' && item.taskRef.trim() !== ''
       );
 
       if (validItems.length === 0) {
-        toast.error('يجب إضافة مهمة واحدة على الأقل برمز وعنوان');
+        toast.error('يجب إضافة مهمة واحدة على الأقل برقم مرجعي وعنوان');
         setLoading(false);
         return;
       }
@@ -194,18 +200,22 @@ export default function CreatePlanWizard({ onClose }: CreatePlanWizardProps) {
 
   // Add new item row
   const addItem = () => {
+    const newSeqNo = items.length + 1;
     setItems([
       ...items,
       {
-        code: '',
+        seqNo: newSeqNo,
+        taskRef: '',
+        deptId: '',
         title: '',
-        department: 'عام',
+        taskType: 'compliance',
         riskLevel: 'medium',
-        auditType: 'operational',
-        plannedQuarter: 'Q1',
-        estimatedHours: 40,
-        startDate: '',
-        endDate: '',
+        impactLevel: 'medium',
+        priority: 'medium',
+        scheduledQuarter: 'Q1',
+        durationDays: 20,
+        assignee: '',
+        notes: '',
       },
     ]);
   };
@@ -218,7 +228,7 @@ export default function CreatePlanWizard({ onClose }: CreatePlanWizardProps) {
   };
 
   // Update item field
-  const updateItem = (index: number, field: keyof PlanItem, value: any) => {
+  const updateItem = (index: number, field: keyof PlanTask, value: any) => {
     const newItems = [...items];
     newItems[index] = { ...newItems[index], [field]: value };
     setItems(newItems);
@@ -252,7 +262,7 @@ export default function CreatePlanWizard({ onClose }: CreatePlanWizardProps) {
             >
               2
             </div>
-            <span className="text-sm font-medium">البنود الأولية</span>
+            <span className="text-sm font-medium">تفاصيل مهام التدقيق</span>
           </div>
         </div>
       </div>
@@ -492,12 +502,12 @@ export default function CreatePlanWizard({ onClose }: CreatePlanWizardProps) {
         </div>
       )}
 
-      {/* Step 2: Initial Tasks */}
+      {/* Step 2: Task Details */}
       {step === 2 && (
         <div className="bg-white rounded-lg border p-6 space-y-6">
           <div className="flex justify-between items-center">
             <h2 className="text-xl font-bold text-gray-900">
-              إضافة المهام الأولية
+              إضافة تفاصيل المهام
             </h2>
             <button
               onClick={addItem}
@@ -507,77 +517,92 @@ export default function CreatePlanWizard({ onClose }: CreatePlanWizardProps) {
             </button>
           </div>
 
-          <div className="space-y-4 max-h-96 overflow-y-auto">
+          <div className="space-y-4 max-h-[600px] overflow-y-auto">
             {items.map((item, index) => (
               <div
                 key={index}
-                className="p-4 border border-gray-200 rounded-lg bg-gray-50 space-y-3"
+                className="p-4 border border-gray-200 rounded-lg bg-gray-50 space-y-4"
               >
                 {/* الصف الأول */}
                 <div className="grid grid-cols-12 gap-3">
-                  <div className="col-span-2">
+                  {/* الرقم التسلسلي */}
+                  <div className="col-span-1">
                     <label className="block text-xs font-medium text-gray-600 mb-1">
-                      الرمز *
+                      الرقم التسلسلي
                     </label>
                     <input
-                      type="text"
-                      value={item.code}
-                      onChange={e => updateItem(index, 'code', e.target.value)}
-                      placeholder="TASK-001"
-                      className="w-full px-2 py-1 text-sm border border-gray-300 rounded focus:ring-1 focus:ring-blue-500"
+                      type="number"
+                      value={item.seqNo}
+                      onChange={e => updateItem(index, 'seqNo', Number(e.target.value))}
+                      min="1"
+                      className="w-full px-2 py-1 text-sm border border-gray-300 rounded focus:ring-1 focus:ring-blue-500 bg-gray-100"
+                      readOnly
                     />
                   </div>
 
-                  <div className="col-span-4">
+                  {/* الرقم المرجعي */}
+                  <div className="col-span-2">
                     <label className="block text-xs font-medium text-gray-600 mb-1">
-                      العنوان *
+                      الرقم المرجعي *
+                    </label>
+                    <input
+                      type="text"
+                      value={item.taskRef}
+                      onChange={e => updateItem(index, 'taskRef', e.target.value)}
+                      placeholder="T-001"
+                      className="w-full px-2 py-1 text-sm border border-gray-300 rounded focus:ring-1 focus:ring-blue-500"
+                      dir="ltr"
+                    />
+                  </div>
+
+                  {/* الإدارة / القسم */}
+                  <div className="col-span-3">
+                    <label className="block text-xs font-medium text-gray-600 mb-1">
+                      الإدارة / القسم
+                    </label>
+                    <select
+                      value={item.deptId}
+                      onChange={e => updateItem(index, 'deptId', e.target.value)}
+                      className="w-full px-2 py-1 text-sm border border-gray-300 rounded focus:ring-1 focus:ring-blue-500"
+                    >
+                      <option value="">اختر القسم</option>
+                      <option value="finance">المالية</option>
+                      <option value="procurement">المشتريات</option>
+                      <option value="hr">الموارد البشرية</option>
+                      <option value="it">تقنية المعلومات</option>
+                      <option value="operations">العمليات</option>
+                      <option value="legal">الشؤون القانونية</option>
+                      <option value="risk">إدارة المخاطر</option>
+                      <option value="compliance">الامتثال</option>
+                      <option value="general">عام</option>
+                    </select>
+                  </div>
+
+                  {/* اسم المهمة */}
+                  <div className="col-span-6">
+                    <label className="block text-xs font-medium text-gray-600 mb-1">
+                      اسم المهمة *
                     </label>
                     <input
                       type="text"
                       value={item.title}
                       onChange={e => updateItem(index, 'title', e.target.value)}
-                      placeholder="مراجعة المشتريات"
+                      placeholder="مراجعة المشتريات السنوية"
                       className="w-full px-2 py-1 text-sm border border-gray-300 rounded focus:ring-1 focus:ring-blue-500"
                     />
                   </div>
+                </div>
 
-                  <div className="col-span-2">
+                {/* الصف الثاني */}
+                <div className="grid grid-cols-12 gap-3">
+                  {/* نوع المهمة */}
+                  <div className="col-span-3">
                     <label className="block text-xs font-medium text-gray-600 mb-1">
-                      القسم
-                    </label>
-                    <input
-                      type="text"
-                      value={item.department}
-                      onChange={e => updateItem(index, 'department', e.target.value)}
-                      placeholder="عام"
-                      className="w-full px-2 py-1 text-sm border border-gray-300 rounded focus:ring-1 focus:ring-blue-500"
-                    />
-                  </div>
-
-                  <div className="col-span-2">
-                    <label className="block text-xs font-medium text-gray-600 mb-1">
-                      مستوى المخاطر
+                      نوع المهمة
                     </label>
                     <select
-                      value={item.riskLevel}
-                      onChange={e => updateItem(index, 'riskLevel', e.target.value)}
-                      className="w-full px-2 py-1 text-sm border border-gray-300 rounded focus:ring-1 focus:ring-blue-500"
-                    >
-                      <option value="very_high">عالي جداً</option>
-                      <option value="high">عالي</option>
-                      <option value="medium">متوسط</option>
-                      <option value="low">منخفض</option>
-                      <option value="very_low">منخفض جداً</option>
-                    </select>
-                  </div>
-
-                  <div className="col-span-2">
-                    <label className="block text-xs font-medium text-gray-600 mb-1">
-                      نوع التدقيق
-                    </label>
-                    <select
-                      value={item.auditType}
-                      onChange={e => updateItem(index, 'auditType', e.target.value)}
+                      value={item.taskType}
+                      onChange={e => updateItem(index, 'taskType', e.target.value)}
                       className="w-full px-2 py-1 text-sm border border-gray-300 rounded focus:ring-1 focus:ring-blue-500"
                     >
                       <option value="financial">مالي</option>
@@ -585,66 +610,125 @@ export default function CreatePlanWizard({ onClose }: CreatePlanWizardProps) {
                       <option value="compliance">امتثال</option>
                       <option value="it">تقنية معلومات</option>
                       <option value="investigative">تحقيقات</option>
+                      <option value="performance">أداء</option>
+                      <option value="risk">مخاطر</option>
                     </select>
                   </div>
-                </div>
 
-                {/* الصف الثاني */}
-                <div className="grid grid-cols-12 gap-3">
+                  {/* درجة الخطورة */}
                   <div className="col-span-2">
                     <label className="block text-xs font-medium text-gray-600 mb-1">
-                      الساعات
+                      درجة الخطورة
+                    </label>
+                    <select
+                      value={item.riskLevel}
+                      onChange={e => updateItem(index, 'riskLevel', e.target.value)}
+                      className="w-full px-2 py-1 text-sm border border-gray-300 rounded focus:ring-1 focus:ring-blue-500"
+                    >
+                      <option value="critical">حرج</option>
+                      <option value="high">عالي</option>
+                      <option value="medium">متوسط</option>
+                      <option value="low">منخفض</option>
+                    </select>
+                  </div>
+
+                  {/* تقييم الأثر */}
+                  <div className="col-span-2">
+                    <label className="block text-xs font-medium text-gray-600 mb-1">
+                      تقييم الأثر
+                    </label>
+                    <select
+                      value={item.impactLevel}
+                      onChange={e => updateItem(index, 'impactLevel', e.target.value)}
+                      className="w-full px-2 py-1 text-sm border border-gray-300 rounded focus:ring-1 focus:ring-blue-500"
+                    >
+                      <option value="critical">حرج</option>
+                      <option value="high">عالي</option>
+                      <option value="medium">متوسط</option>
+                      <option value="low">منخفض</option>
+                    </select>
+                  </div>
+
+                  {/* أولوية التنفيذ */}
+                  <div className="col-span-2">
+                    <label className="block text-xs font-medium text-gray-600 mb-1">
+                      أولوية التنفيذ
+                    </label>
+                    <select
+                      value={item.priority}
+                      onChange={e => updateItem(index, 'priority', e.target.value)}
+                      className="w-full px-2 py-1 text-sm border border-gray-300 rounded focus:ring-1 focus:ring-blue-500"
+                    >
+                      <option value="urgent">عاجل</option>
+                      <option value="high">عالي</option>
+                      <option value="medium">متوسط</option>
+                      <option value="low">منخفض</option>
+                    </select>
+                  </div>
+
+                  {/* توقيت التنفيذ */}
+                  <div className="col-span-2">
+                    <label className="block text-xs font-medium text-gray-600 mb-1">
+                      توقيت التنفيذ
+                    </label>
+                    <select
+                      value={item.scheduledQuarter}
+                      onChange={e => updateItem(index, 'scheduledQuarter', e.target.value)}
+                      className="w-full px-2 py-1 text-sm border border-gray-300 rounded focus:ring-1 focus:ring-blue-500"
+                    >
+                      <option value="Q1">الربع الأول</option>
+                      <option value="Q2">الربع الثاني</option>
+                      <option value="Q3">الربع الثالث</option>
+                      <option value="Q4">الربع الرابع</option>
+                    </select>
+                  </div>
+
+                  {/* المدة بالأيام */}
+                  <div className="col-span-1">
+                    <label className="block text-xs font-medium text-gray-600 mb-1">
+                      المدة (أيام)
                     </label>
                     <input
                       type="number"
-                      value={item.estimatedHours}
-                      onChange={e => updateItem(index, 'estimatedHours', Number(e.target.value))}
+                      value={item.durationDays}
+                      onChange={e => updateItem(index, 'durationDays', Number(e.target.value))}
                       min="1"
                       className="w-full px-2 py-1 text-sm border border-gray-300 rounded focus:ring-1 focus:ring-blue-500"
                     />
                   </div>
+                </div>
 
-                  <div className="col-span-2">
+                {/* الصف الثالث */}
+                <div className="grid grid-cols-12 gap-3">
+                  {/* المدقق المسؤول */}
+                  <div className="col-span-4">
                     <label className="block text-xs font-medium text-gray-600 mb-1">
-                      الربع
-                    </label>
-                    <select
-                      value={item.plannedQuarter}
-                      onChange={e => updateItem(index, 'plannedQuarter', e.target.value)}
-                      className="w-full px-2 py-1 text-sm border border-gray-300 rounded focus:ring-1 focus:ring-blue-500"
-                    >
-                      <option value="Q1">Q1</option>
-                      <option value="Q2">Q2</option>
-                      <option value="Q3">Q3</option>
-                      <option value="Q4">Q4</option>
-                    </select>
-                  </div>
-
-                  <div className="col-span-3">
-                    <label className="block text-xs font-medium text-gray-600 mb-1">
-                      تاريخ البداية
+                      المدقق المسؤول
                     </label>
                     <input
-                      type="date"
-                      value={item.startDate}
-                      onChange={e => updateItem(index, 'startDate', e.target.value)}
+                      type="text"
+                      value={item.assignee}
+                      onChange={e => updateItem(index, 'assignee', e.target.value)}
+                      placeholder="اسم المدقق"
                       className="w-full px-2 py-1 text-sm border border-gray-300 rounded focus:ring-1 focus:ring-blue-500"
                     />
                   </div>
 
-                  <div className="col-span-3">
+                  {/* تعليقات إضافية */}
+                  <div className="col-span-6">
                     <label className="block text-xs font-medium text-gray-600 mb-1">
-                      تاريخ النهاية
+                      تعليقات إضافية
                     </label>
-                    <input
-                      type="date"
-                      value={item.endDate}
-                      onChange={e => updateItem(index, 'endDate', e.target.value)}
-                      min={item.startDate || undefined}
-                      className="w-full px-2 py-1 text-sm border border-gray-300 rounded focus:ring-1 focus:ring-blue-500"
+                    <textarea
+                      value={item.notes}
+                      onChange={e => updateItem(index, 'notes', e.target.value)}
+                      placeholder="ملاحظات أو تعليمات خاصة..."
+                      rows={1}
+                      className="w-full px-2 py-1 text-sm border border-gray-300 rounded focus:ring-1 focus:ring-blue-500 resize-none"
                     />
                   </div>
 
+                  {/* زر حذف */}
                   <div className="col-span-2 flex items-end">
                     {items.length > 1 && (
                       <button
@@ -672,7 +756,7 @@ export default function CreatePlanWizard({ onClose }: CreatePlanWizardProps) {
               disabled={loading}
               className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed font-medium"
             >
-              {loading ? 'جاري الحفظ...' : 'حفظ البنود والانتقال →'}
+              {loading ? 'جاري الحفظ...' : 'حفظ المهام والانتقال →'}
             </button>
           </div>
         </div>

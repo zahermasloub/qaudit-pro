@@ -75,7 +75,7 @@ export async function GET(
  * /api/plan/{id}/tasks:
  *   post:
  *     summary: إضافة مهام للخطة السنوية
- *     description: Creates audit tasks for an annual plan
+ *     description: Creates audit tasks for an annual plan with RBIA fields
  *     tags:
  *       - Annual Plans
  *     parameters:
@@ -98,32 +98,51 @@ export async function GET(
  *                 type: array
  *                 items:
  *                   type: object
+ *                   required:
+ *                     - seqNo
+ *                     - taskRef
+ *                     - title
  *                   properties:
- *                     code:
+ *                     seqNo:
+ *                       type: integer
+ *                       description: الرقم التسلسلي
+ *                     taskRef:
  *                       type: string
+ *                       description: الرقم المرجعي للمهمة
+ *                     deptId:
+ *                       type: string
+ *                       description: الإدارة / القسم
  *                     title:
  *                       type: string
- *                     department:
+ *                       description: اسم المهمة
+ *                     taskType:
  *                       type: string
+ *                       description: نوع المهمة
  *                     riskLevel:
  *                       type: string
- *                       enum: [very_high, high, medium, low, very_low]
- *                     auditType:
+ *                       enum: [critical, high, medium, low]
+ *                       description: درجة الخطورة
+ *                     impactLevel:
  *                       type: string
- *                       enum: [financial, operational, compliance, it, investigative]
- *                     plannedQuarter:
+ *                       enum: [critical, high, medium, low]
+ *                       description: تقييم الأثر
+ *                     priority:
+ *                       type: string
+ *                       enum: [urgent, high, medium, low]
+ *                       description: أولوية التنفيذ
+ *                     scheduledQuarter:
  *                       type: string
  *                       enum: [Q1, Q2, Q3, Q4]
- *                     estimatedHours:
+ *                       description: توقيت التنفيذ
+ *                     durationDays:
  *                       type: integer
- *                     startDate:
+ *                       description: المدة بالأيام
+ *                     assignee:
  *                       type: string
- *                       format: date
- *                       description: تاريخ بداية المهمة
- *                     endDate:
+ *                       description: المدقق المسؤول
+ *                     notes:
  *                       type: string
- *                       format: date
- *                       description: تاريخ نهاية المهمة
+ *                       description: تعليقات إضافية
  *     responses:
  *       201:
  *         description: تم إنشاء المهام بنجاح
@@ -162,31 +181,57 @@ export async function POST(
       );
     }
 
-    // Create tasks
+    // Create tasks with new RBIA fields
     const createdTasks = await Promise.all(
       tasks.map((task, index) => {
-        // Store dates in attachmentsJson as metadata
-        const metadata: any = {
-          dates: {
-            startDate: task.startDate || null,
-            endDate: task.endDate || null,
-          },
-        };
+        // Map old fields to maintain backward compatibility
+        const code = task.code || task.taskRef || `TASK-${Date.now()}-${index}`;
+        const department = task.department || task.deptId || 'عام';
+        const auditType = task.auditType || task.taskType || 'compliance';
+        const plannedQuarter = task.plannedQuarter || task.scheduledQuarter || 'Q1';
+        const estimatedHours = task.estimatedHours || (task.durationDays ? task.durationDays * 8 : 40);
+        const leadAuditor = task.leadAuditor || task.assignee || null;
+        const objectiveAndScope = task.objectiveAndScope || task.notes || null;
+
+        // Map risk level
+        let riskLevel = task.riskLevel || 'medium';
+        if (riskLevel === 'critical') riskLevel = 'very_high';
+        if (!['very_high', 'high', 'medium', 'low', 'very_low'].includes(riskLevel)) {
+          riskLevel = 'medium';
+        }
+
+        // Validate auditType
+        let validAuditType = auditType;
+        if (!['financial', 'operational', 'compliance', 'it', 'investigative'].includes(auditType)) {
+          validAuditType = 'compliance';
+        }
 
         return prisma.auditTask.create({
           data: {
             annualPlanId: id,
-            code: task.code || `TASK-${Date.now()}-${index}`,
+            // Old fields (maintained for compatibility)
+            code,
             title: task.title || `مهمة ${index + 1}`,
-            department: task.department || 'عام',
-            riskLevel: task.riskLevel || 'medium',
-            auditType: task.auditType || 'operational',
-            objectiveAndScope: task.objectiveAndScope || null,
-            plannedQuarter: task.plannedQuarter || 'Q1',
-            estimatedHours: task.estimatedHours || 40,
-            leadAuditor: task.leadAuditor || null,
-            attachmentsJson: metadata,
+            department,
+            riskLevel: riskLevel as any,
+            auditType: validAuditType as any,
+            objectiveAndScope,
+            plannedQuarter: plannedQuarter as any,
+            estimatedHours,
+            leadAuditor,
+            attachmentsJson: {},
             status: 'not_started',
+            // New RBIA fields
+            seqNo: task.seqNo || index + 1,
+            taskRef: task.taskRef || code,
+            deptId: task.deptId || department,
+            taskType: task.taskType || validAuditType,
+            impactLevel: task.impactLevel || 'medium',
+            priority: task.priority || 'medium',
+            scheduledQuarter: task.scheduledQuarter || plannedQuarter,
+            durationDays: task.durationDays || 20,
+            assignee: task.assignee || leadAuditor || '',
+            notes: task.notes || objectiveAndScope || '',
           },
         });
       })

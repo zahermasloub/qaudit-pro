@@ -443,6 +443,19 @@ model AuditTask {
   leadAuditor         String?
   attachmentsJson     Json             @default("[]")
   status              AuditTaskStatus  @default(not_started)
+
+  // New RBIA fields
+  seqNo               Int              @map("seq_no")
+  taskRef             String           @map("task_ref")
+  deptId              String?          @map("dept_id")
+  taskType            String?          @default("compliance") @map("task_type")
+  impactLevel         String?          @default("medium") @map("impact_level")
+  priority            String?          @default("medium")
+  scheduledQuarter    String           @default("Q1") @map("scheduled_quarter")
+  durationDays        Int              @default(20) @map("duration_days")
+  assignee            String?          @default("")
+  notes               String?          @default("") @db.Text
+
   createdAt           DateTime         @default(now())
   updatedAt           DateTime         @updatedAt
 
@@ -453,7 +466,12 @@ model AuditTask {
   @@index([annualPlanId])
   @@index([riskLevel])
   @@index([status])
+  @@index([seqNo], map: "audit_tasks_seq_no_idx")
+  @@index([taskRef], map: "audit_tasks_task_ref_idx")
+  @@index([deptId], map: "audit_tasks_dept_id_idx")
+  @@index([priority], map: "audit_tasks_priority_idx")
   @@unique([code, annualPlanId])
+  @@unique([taskRef, annualPlanId], map: "audit_tasks_task_ref_annualPlanId_key")
 }
 
 model PlanApproval {
