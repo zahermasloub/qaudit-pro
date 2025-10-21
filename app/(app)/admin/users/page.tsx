@@ -12,6 +12,7 @@ import { EmptyState } from '@/components/ui/EmptyState';
 import { ConfirmDialog } from '@/components/ui/ConfirmDialog';
 import { BulkActionsBar, BulkAction } from '@/components/ui/BulkActionsBar';
 import { RoleAssignDialog } from '@/components/admin/RoleAssignDialog';
+import { CreateUserDialog } from '@/components/admin/CreateUserDialog';
 import { RLSPreviewBar } from '@/components/admin/RLSPreviewBar';
 import { useRLSPreview } from '@/lib/RLSPreviewContext';
 import { useUndo } from '@/lib/UndoContext';
@@ -41,6 +42,7 @@ export default function AdminUsersPage() {
   const [filterValues, setFilterValues] = useState<Record<string, string>>({});
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [userToDelete, setUserToDelete] = useState<User | null>(null);
+  const [createDialogOpen, setCreateDialogOpen] = useState(false);
 
   // Bulk Actions State
   const [selectedUsers, setSelectedUsers] = useState<User[]>([]);
@@ -431,10 +433,7 @@ export default function AdminUsersPage() {
         </div>
         <button
           type="button"
-          onClick={() => {
-            // TODO: فتح حوار الإضافة
-            toast.info('قريباً: حوار إضافة مستخدم جديد');
-          }}
+          onClick={() => setCreateDialogOpen(true)}
           className="
             px-4 py-2 rounded-lg
             bg-brand-600 text-white font-medium
@@ -479,7 +478,7 @@ export default function AdminUsersPage() {
           }
           action={{
             label: "إضافة مستخدم",
-            onClick: () => toast.info('قريباً: حوار إضافة مستخدم')
+            onClick: () => setCreateDialogOpen(true)
           }}
         />
       ) : (
@@ -561,6 +560,13 @@ export default function AdminUsersPage() {
         onConfirm={handleBulkAssignRole}
         userCount={selectedUsers.length}
         loading={bulkProcessing}
+      />
+
+      {/* Create User Dialog */}
+      <CreateUserDialog
+        open={createDialogOpen}
+        onClose={() => setCreateDialogOpen(false)}
+        onSuccess={fetchUsers}
       />
     </div>
   );

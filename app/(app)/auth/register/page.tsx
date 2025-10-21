@@ -17,12 +17,14 @@ export default function RegisterPage() {
     email: '',
     password: '',
     confirmPassword: '',
+    role: 'User', // Default role
   });
   const [errors, setErrors] = useState<{
     name?: string;
     email?: string;
     password?: string;
     confirmPassword?: string;
+    role?: string;
   }>({});
   const [isLoading, setIsLoading] = useState(false);
 
@@ -32,6 +34,7 @@ export default function RegisterPage() {
       email?: string;
       password?: string;
       confirmPassword?: string;
+      role?: string;
     } = {};
 
     if (!formData.name.trim()) {
@@ -52,6 +55,10 @@ export default function RegisterPage() {
       newErrors.confirmPassword = t.common.required;
     } else if (formData.password !== formData.confirmPassword) {
       newErrors.confirmPassword = t.common.passwordMismatch;
+    }
+
+    if (!formData.role) {
+      newErrors.role = 'يرجى اختيار الصلاحية';
     }
 
     setErrors(newErrors);
@@ -75,6 +82,7 @@ export default function RegisterPage() {
           name: formData.name,
           email: formData.email,
           password: formData.password,
+          role: formData.role,
         }),
       });
 
@@ -173,6 +181,45 @@ export default function RegisterPage() {
               className="text-right text-base px-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
               placeholder={t.common.confirm}
             />
+
+            {/* Role Selection Dropdown */}
+            <div>
+              <label htmlFor="role" className="block text-sm font-medium text-gray-700 mb-2 text-right">
+                نوع الحساب <span className="text-red-500">*</span>
+              </label>
+              <select
+                id="role"
+                name="role"
+                value={formData.role}
+                onChange={(e) => {
+                  setFormData(prev => ({ ...prev, role: e.target.value }));
+                  if (errors.role) {
+                    setErrors(prev => ({ ...prev, role: undefined }));
+                  }
+                }}
+                className={`
+                  w-full text-right text-base px-4 py-2 rounded-lg border
+                  ${errors.role ? 'border-red-500' : 'border-gray-300'}
+                  focus:ring-2 focus:ring-blue-500 focus:border-blue-500
+                  bg-white
+                `}
+                required
+              >
+                <option value="">اختر نوع الحساب</option>
+                <option value="Admin">مدير - صلاحيات كاملة (Admin)</option>
+                <option value="User">مستخدم - صلاحيات محدودة (User)</option>
+              </select>
+              {errors.role && (
+                <p className="mt-1 text-sm text-red-600 text-right">{errors.role}</p>
+              )}
+              <p className="mt-1 text-xs text-gray-500 text-right">
+                {formData.role === 'Admin'
+                  ? '✓ المدير لديه صلاحيات كاملة للوصول إلى لوحة الإدارة وجميع الميزات'
+                  : formData.role === 'User'
+                  ? '✓ المستخدم لديه صلاحيات محدودة للوصول إلى الميزات الأساسية فقط'
+                  : 'اختر نوع الحساب المناسب'}
+              </p>
+            </div>
 
             <Button
               type="submit"

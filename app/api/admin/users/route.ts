@@ -24,7 +24,13 @@ export async function POST(req: NextRequest) {
     const v = userCreateSchema.parse(body);
     const hash = await bcryptjs.hash(v.password, 10);
     const user = await prisma.user.create({
-      data: { name: v.name, email: v.email, password: hash, locale: v.locale },
+      data: {
+        name: v.name,
+        email: v.email,
+        password: hash,
+        role: v.role,
+        locale: v.locale
+      },
     });
     if (v.roleIds?.length) {
       await prisma.userRole.createMany({
