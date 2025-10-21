@@ -441,13 +441,11 @@ const TOOLBARS: Record<
   Route,
   { action: string; roles: Role[]; variant?: 'primary' | 'secondary' }[]
 > = {
+  // ❌ الخطوة 3: حذف أزرار "إنشاء مهمة" و "تصدير CSV" و "تحديث" من dashboard
   dashboard: [
-    { action: 'newEng', roles: ['IA_Manager', 'IA_Lead'], variant: 'primary' },
-    { action: 'exportCSV', roles: ['IA_Manager', 'IA_Lead', 'IA_Auditor'] },
-    {
-      action: 'refresh',
-      roles: ['IA_Manager', 'IA_Lead', 'IA_Auditor', 'Process_Owner', 'Viewer'],
-    },
+    // { action: 'newEng', roles: ['IA_Manager', 'IA_Lead'], variant: 'primary' }, // محذوف
+    // { action: 'exportCSV', roles: ['IA_Manager', 'IA_Lead', 'IA_Auditor'] }, // محذوف
+    // { action: 'refresh', roles: ['IA_Manager', 'IA_Lead', 'IA_Auditor', 'Process_Owner', 'Viewer'] }, // محذوف
   ],
   planning: [
     { action: 'createPlan', roles: ['IA_Manager', 'IA_Lead'], variant: 'primary' },
@@ -526,18 +524,21 @@ function Topbar({
 }) {
   const i18n = useI18n(locale);
   const toolbarActions = TOOLBARS[route]?.filter(tool => tool.roles.includes(role)) || [];
-  const navLinks: Array<{ key: Route; label: string }> = [
-    { key: 'dashboard', label: 'لوحة التحكم' },
-    { key: 'planning', label: 'التخطيط' },
-    { key: 'fieldwork', label: 'التنفيذ' },
-    { key: 'reporting', label: 'التقارير' },
-  ];
+
+  // ❌ الخطوة 1: تم حذف navLinks (لوحة التحكم، التخطيط، التنفيذ، التقارير)
+  // const navLinks: Array<{ key: Route; label: string }> = [
+  //   { key: 'dashboard', label: 'لوحة التحكم' },
+  //   { key: 'planning', label: 'التخطيط' },
+  //   { key: 'fieldwork', label: 'التنفيذ' },
+  //   { key: 'reporting', label: 'التقارير' },
+  // ];
 
   return (
     <header className="header-dark header-blur sticky top-0 z-header border-b border-slate-800">
       <div className="container-shell">
-        <div className="flex items-center justify-between h-12">
-          <div className="flex items-center gap-2">
+        {/* الخطوة 2: رفع "نظام التدقيق الداخلي" للأعلى */}
+        <div className="flex items-center justify-between h-14">
+          <div className="flex items-center gap-3">
             <button
               type="button"
               aria-label="فتح القائمة"
@@ -546,25 +547,10 @@ function Topbar({
             >
               <Menu className="h-5 w-5" aria-hidden="true" />
             </button>
-            <h1 className="text-sm font-semibold tracking-wide select-none">نظام التدقيق الداخلي</h1>
+            <h1 className="text-lg font-bold tracking-wide select-none">نظام التدقيق الداخلي</h1>
           </div>
           <div className="flex items-center gap-4">
-            <nav className="hidden lg:flex items-center gap-5 text-sm font-medium">
-              {navLinks.map(item => (
-                <a
-                  key={item.key}
-                  href="#"
-                  className="hover:text-white transition-colors"
-                  data-active={route === item.key}
-                  onClick={event => {
-                    event.preventDefault();
-                    onNavigate(item.key);
-                  }}
-                >
-                  {item.label}
-                </a>
-              ))}
-            </nav>
+            {/* ❌ الخطوة 1: تم حذف nav links */}
             <div className="flex flex-wrap items-center justify-end gap-2 text-sm rtl:space-x-reverse">
               {showAdminLink && (
                 <button
