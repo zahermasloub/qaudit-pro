@@ -28,10 +28,10 @@ export function PlanningScreen({ locale }: { locale: Locale }) {
           borderRadius: '0.75rem',
         }}
       >
-        {/* زر إنشاء خطة - Primary */}
+        {/* زر إنشاء مهمة - Primary Blue */}
         <button
           type="button"
-          aria-label="إنشاء خطة جديدة"
+          aria-label="إنشاء مهمة جديدة"
           className="inline-flex items-center gap-2 px-4 py-2.5 text-sm font-medium rounded-lg
                      bg-blue-600 text-white border border-blue-600
                      hover:bg-blue-700 hover:border-blue-700
@@ -39,53 +39,51 @@ export function PlanningScreen({ locale }: { locale: Locale }) {
                      transition-colors duration-200"
           style={{ minWidth: '140px' }}
         >
-          {locale === 'ar' ? 'إنشاء خطة' : 'Create Plan'}
+          {locale === 'ar' ? 'إنشاء مهمة' : 'Create Task'}
         </button>
 
-        {/* زر طلب جديد - Secondary */}
+        {/* زر طلب جديد - Primary Blue */}
         <button
           type="button"
           aria-label="إنشاء طلب PBC جديد"
           className="inline-flex items-center gap-2 px-4 py-2.5 text-sm font-medium rounded-lg
-                     bg-slate-100 text-slate-900 border border-slate-300
-                     hover:bg-slate-200 hover:border-slate-400
-                     focus:outline-none focus:ring-2 focus:ring-slate-500 focus:ring-offset-2
+                     bg-blue-600 text-white border border-blue-600
+                     hover:bg-blue-700 hover:border-blue-700
+                     focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2
                      transition-colors duration-200"
           style={{ minWidth: '140px' }}
         >
           {locale === 'ar' ? 'طلب جديد' : 'New Request'}
         </button>
 
-        {/* زر استيراد CSV - Ghost/Outline */}
+        {/* زر استيراد CSV - Primary Blue */}
         <button
           type="button"
           aria-label="استيراد بيانات من ملف CSV"
           className="inline-flex items-center gap-2 px-4 py-2.5 text-sm font-medium rounded-lg
-                     bg-transparent text-slate-700 border border-slate-300
-                     hover:bg-slate-50 hover:border-slate-400
-                     focus:outline-none focus:ring-2 focus:ring-slate-500 focus:ring-offset-2
+                     bg-blue-600 text-white border border-blue-600
+                     hover:bg-blue-700 hover:border-blue-700
+                     focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2
                      transition-colors duration-200"
           style={{ minWidth: '140px' }}
         >
           {locale === 'ar' ? 'استيراد CSV' : 'Import CSV'}
         </button>
 
-        {/* زر تصدير CSV - Ghost/Outline */}
+        {/* زر تصدير CSV - Primary Blue */}
         <button
           type="button"
           aria-label="تصدير البيانات إلى ملف CSV"
           className="inline-flex items-center gap-2 px-4 py-2.5 text-sm font-medium rounded-lg
-                     bg-transparent text-slate-700 border border-slate-300
-                     hover:bg-slate-50 hover:border-slate-400
-                     focus:outline-none focus:ring-2 focus:ring-slate-500 focus:ring-offset-2
+                     bg-blue-600 text-white border border-blue-600
+                     hover:bg-blue-700 hover:border-blue-700
+                     focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2
                      transition-colors duration-200"
           style={{ minWidth: '140px' }}
         >
           {locale === 'ar' ? 'تصدير CSV' : 'Export CSV'}
         </button>
-      </div>
-
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      </div>      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Engagement Planning */}
         <div className="bg-white rounded-lg border border-gray-200 p-6">
           <h3 className="font-semibold text-gray-900 mb-4">
