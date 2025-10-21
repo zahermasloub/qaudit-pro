@@ -82,7 +82,7 @@ export default function RbiaPlanView({ mode = 'plan' }: RbiaPlanViewProps) {
           department: filterDepartment,
           risk: filterRisk,
           status: filterStatus,
-        })
+        }),
       );
     }
   }, [filterDepartment, filterRisk, filterStatus]);
@@ -212,7 +212,9 @@ export default function RbiaPlanView({ mode = 'plan' }: RbiaPlanViewProps) {
     if (!item.period_start) return 'planned';
     const now = new Date();
     const start = new Date(item.period_start);
-    const end = item.period_end ? new Date(item.period_end) : new Date(start.getTime() + 90 * 24 * 60 * 60 * 1000);
+    const end = item.period_end
+      ? new Date(item.period_end)
+      : new Date(start.getTime() + 90 * 24 * 60 * 60 * 1000);
 
     if (now < start) return 'planned';
     if (now > end) return 'delayed';
@@ -282,14 +284,13 @@ export default function RbiaPlanView({ mode = 'plan' }: RbiaPlanViewProps) {
 
   // Filtered data with useMemo
   const filteredItems = useMemo(() => {
-    return planItems.filter((item) => {
+    return planItems.filter(item => {
       const matchesSearch =
         item.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
         item.code.toLowerCase().includes(searchTerm.toLowerCase()) ||
         item.department.toLowerCase().includes(searchTerm.toLowerCase());
 
-      const matchesDepartment =
-        filterDepartment === 'all' || item.department === filterDepartment;
+      const matchesDepartment = filterDepartment === 'all' || item.department === filterDepartment;
 
       const matchesRisk = filterRisk === 'all' || item.risk_level === filterRisk;
 
@@ -302,7 +303,7 @@ export default function RbiaPlanView({ mode = 'plan' }: RbiaPlanViewProps) {
   // Calculate summary stats
   const stats = useMemo(() => {
     const totalHours = planItems.reduce((sum, item) => sum + item.hours, 0);
-    const completedItems = planItems.filter((item) => item.status === 'completed').length;
+    const completedItems = planItems.filter(item => item.status === 'completed').length;
     const completionRate = planItems.length > 0 ? (completedItems / planItems.length) * 100 : 0;
 
     return {
@@ -315,14 +316,23 @@ export default function RbiaPlanView({ mode = 'plan' }: RbiaPlanViewProps) {
 
   // Get unique values for filters
   const departments = useMemo(
-    () => ['all', ...Array.from(new Set(planItems.map((item) => item.department)))],
-    [planItems]
+    () => ['all', ...Array.from(new Set(planItems.map(item => item.department)))],
+    [planItems],
   );
 
   // CSV Export
   const handleExportCSV = () => {
-    const headers = ['الرمز', 'العنوان', 'الإدارة', 'المخاطر', 'النوع', 'الربع', 'الساعات', 'الحالة'];
-    const rows = filteredItems.map((item) => [
+    const headers = [
+      'الرمز',
+      'العنوان',
+      'الإدارة',
+      'المخاطر',
+      'النوع',
+      'الربع',
+      'الساعات',
+      'الحالة',
+    ];
+    const rows = filteredItems.map(item => [
       item.code,
       item.title,
       item.department,
@@ -335,7 +345,7 @@ export default function RbiaPlanView({ mode = 'plan' }: RbiaPlanViewProps) {
 
     const csvContent =
       'data:text/csv;charset=utf-8,' +
-      [headers.join(','), ...rows.map((row) => row.join(','))].join('\n');
+      [headers.join(','), ...rows.map(row => row.join(','))].join('\n');
 
     const encodedUri = encodeURI(csvContent);
     const link = document.createElement('a');
@@ -354,10 +364,10 @@ export default function RbiaPlanView({ mode = 'plan' }: RbiaPlanViewProps) {
     if (!file) return;
 
     const reader = new FileReader();
-    reader.onload = (event) => {
+    reader.onload = event => {
       try {
         const text = event.target?.result as string;
-        const lines = text.split('\n').filter((l) => l.trim());
+        const lines = text.split('\n').filter(l => l.trim());
 
         // Skip header
         const dataLines = lines.slice(1);
@@ -398,7 +408,7 @@ export default function RbiaPlanView({ mode = 'plan' }: RbiaPlanViewProps) {
 
   const handleDelete = (item: PlanItem) => {
     if (confirm(`هل أنت متأكد من حذف "${item.title}"؟`)) {
-      setPlanItems(planItems.filter((i) => i.id !== item.id));
+      setPlanItems(planItems.filter(i => i.id !== item.id));
       toast.success('تم الحذف بنجاح');
     }
   };
@@ -570,7 +580,7 @@ export default function RbiaPlanView({ mode = 'plan' }: RbiaPlanViewProps) {
                       type="text"
                       placeholder="بحث..."
                       value={searchTerm}
-                      onChange={(e) => setSearchTerm(e.target.value)}
+                      onChange={e => setSearchTerm(e.target.value)}
                       className="w-full pr-10 pl-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                     />
                   </div>
@@ -578,20 +588,22 @@ export default function RbiaPlanView({ mode = 'plan' }: RbiaPlanViewProps) {
 
                 <select
                   value={filterDepartment}
-                  onChange={(e) => setFilterDepartment(e.target.value)}
+                  onChange={e => setFilterDepartment(e.target.value)}
                   className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                 >
                   <option value="all">كل الإدارات</option>
-                  {departments.filter((d) => d !== 'all').map((dept) => (
-                    <option key={dept} value={dept}>
-                      {dept}
-                    </option>
-                  ))}
+                  {departments
+                    .filter(d => d !== 'all')
+                    .map(dept => (
+                      <option key={dept} value={dept}>
+                        {dept}
+                      </option>
+                    ))}
                 </select>
 
                 <select
                   value={filterRisk}
-                  onChange={(e) => setFilterRisk(e.target.value)}
+                  onChange={e => setFilterRisk(e.target.value)}
                   className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                 >
                   <option value="all">كل المخاطر</option>
@@ -602,7 +614,7 @@ export default function RbiaPlanView({ mode = 'plan' }: RbiaPlanViewProps) {
 
                 <select
                   value={filterStatus}
-                  onChange={(e) => setFilterStatus(e.target.value)}
+                  onChange={e => setFilterStatus(e.target.value)}
                   className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                 >
                   <option value="all">كل الحالات</option>
@@ -680,10 +692,12 @@ export default function RbiaPlanView({ mode = 'plan' }: RbiaPlanViewProps) {
                         </td>
                       </tr>
                     ) : (
-                      filteredItems.map((item) => (
+                      filteredItems.map(item => (
                         <tr key={item.id} className="hover:bg-gray-50 transition-colors">
                           <td className="px-4 py-3 text-sm font-mono text-gray-900">{item.code}</td>
-                          <td className="px-4 py-3 text-sm text-gray-900 font-medium">{item.title}</td>
+                          <td className="px-4 py-3 text-sm text-gray-900 font-medium">
+                            {item.title}
+                          </td>
                           <td className="px-4 py-3 text-sm text-gray-600">{item.department}</td>
                           <td className="px-4 py-3">
                             <span
@@ -698,7 +712,9 @@ export default function RbiaPlanView({ mode = 'plan' }: RbiaPlanViewProps) {
                           </td>
                           <td className="px-4 py-3 text-sm text-gray-600">{item.type}</td>
                           <td className="px-4 py-3 text-sm text-gray-600">{item.quarter}</td>
-                          <td className="px-4 py-3 text-sm text-gray-900 font-semibold">{item.hours}</td>
+                          <td className="px-4 py-3 text-sm text-gray-900 font-semibold">
+                            {item.hours}
+                          </td>
                           <td className="px-4 py-3">
                             <span
                               className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium border ${getStatusBadgeColor(item.status)}`}
@@ -770,7 +786,7 @@ export default function RbiaPlanView({ mode = 'plan' }: RbiaPlanViewProps) {
         >
           <div
             className="bg-white rounded-xl p-6 max-w-2xl w-full max-h-[80vh] overflow-y-auto"
-            onClick={(e) => e.stopPropagation()}
+            onClick={e => e.stopPropagation()}
             dir="rtl"
           >
             <div className="flex justify-between items-start mb-4">
@@ -847,11 +863,7 @@ export default function RbiaPlanView({ mode = 'plan' }: RbiaPlanViewProps) {
                   <Button onClick={() => setViewMode(null)} className="flex-1">
                     حفظ التغييرات
                   </Button>
-                  <Button
-                    onClick={() => setViewMode(null)}
-                    variant="outline"
-                    className="flex-1"
-                  >
+                  <Button onClick={() => setViewMode(null)} variant="outline" className="flex-1">
                     إلغاء
                   </Button>
                 </div>
@@ -863,7 +875,10 @@ export default function RbiaPlanView({ mode = 'plan' }: RbiaPlanViewProps) {
 
       {/* معالج إنشاء الخطة */}
       {showWizard && (
-        <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4" dir="rtl">
+        <div
+          className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4"
+          dir="rtl"
+        >
           <div className="bg-white rounded-xl shadow-2xl max-w-5xl w-full max-h-[90vh] overflow-auto">
             <div className="sticky top-0 bg-gradient-to-r from-blue-600 to-blue-700 text-white p-6 flex items-center justify-between">
               <h2 className="text-2xl font-bold">معالج إنشاء خطة التدقيق السنوية</h2>
@@ -873,7 +888,12 @@ export default function RbiaPlanView({ mode = 'plan' }: RbiaPlanViewProps) {
                 aria-label="إغلاق"
               >
                 <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M6 18L18 6M6 6l12 12"
+                  />
                 </svg>
               </button>
             </div>

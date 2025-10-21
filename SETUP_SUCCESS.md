@@ -1,17 +1,21 @@
 # ✅ تم الحل: تطبيق ترحيل RBIA بنجاح
 
 ## المشكلة الأصلية
+
 كان الأمر `psql` يطلب كلمة مرور بشكل تفاعلي ولا يمكن إدخالها في PowerShell.
 
 ## الحل المُطبّق
 
 ### 1. تمرير كلمة المرور عبر متغير البيئة:
+
 ```powershell
 $env:PGPASSWORD="postgres"; psql -U postgres -d auditdb -f db/migrations/0002_rbia.sql
 ```
 
 ### 2. إصلاح مشكلة Schema:
+
 تم إضافة السطر التالي في بداية `0002_rbia.sql`:
+
 ```sql
 CREATE SCHEMA IF NOT EXISTS audit;
 ```
@@ -19,6 +23,7 @@ CREATE SCHEMA IF NOT EXISTS audit;
 ## ✅ النتيجة
 
 ### الجداول المُنشأة بنجاح (8 جداول):
+
 ```
  Schema |       Name       | Type  |  Owner
 --------+------------------+-------+----------
@@ -33,6 +38,7 @@ CREATE SCHEMA IF NOT EXISTS audit;
 ```
 
 ### السيرفر يعمل:
+
 ```
 ✓ Next.js Server Running
 ✓ Local: http://localhost:3001
@@ -42,11 +48,13 @@ CREATE SCHEMA IF NOT EXISTS audit;
 ## 🚀 الخطوات التالية
 
 ### 1. افتح المتصفح:
+
 ```
 http://localhost:3001/rbia/plan
 ```
 
 ### 2. اختبر الـ Workflow:
+
 - [ ] إضافة عناصر AU في تبويب Universe
 - [ ] تقييم المخاطر في تبويب Risk
 - [ ] توليد بنود الخطة في تبويب Plan Items
@@ -54,6 +62,7 @@ http://localhost:3001/rbia/plan
 - [ ] تنفيذ الـ Workflow: Submit → Approve → Baseline → Generate
 
 ### 3. التحقق من البيانات في Database:
+
 ```powershell
 # عرض عناصر الكون
 $env:PGPASSWORD="postgres"; psql -U postgres -d auditdb -c "SELECT * FROM audit.audituniverse;"
@@ -68,6 +77,7 @@ $env:PGPASSWORD="postgres"; psql -U postgres -d auditdb -c "SELECT * FROM audit.
 ## 📝 ملاحظات مهمة
 
 ### للاتصال بـ PostgreSQL دون إدخال كلمة المرور:
+
 ```powershell
 # الطريقة 1: عبر متغير البيئة
 $env:PGPASSWORD="postgres"
@@ -78,6 +88,7 @@ $env:PGPASSWORD="postgres"
 ```
 
 ### الأوامر المفيدة:
+
 ```powershell
 # الاتصال بـ psql
 $env:PGPASSWORD="postgres"; psql -U postgres -d auditdb

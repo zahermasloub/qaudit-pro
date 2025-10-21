@@ -8,12 +8,14 @@
 ## ⚠️ الوضع الحالي
 
 ### ما هو موجود:
+
 - ✅ **SQL Migration:** `prisma/migrations/create_annual_plans.sql` - جاهز
 - ✅ **UI Form:** CreatePlanWizard Step 1 - محدّث بجميع الحقول
 - ❌ **Database:** لم يتم تطبيق الـ schema الجديد بعد
 - ❌ **Prisma Schema:** لا يزال يستخدم الجدول القديم
 
 ### الجدول القديم (public.annual_plans):
+
 ```prisma
 model AnnualPlan {
   id                    String
@@ -26,6 +28,7 @@ model AnnualPlan {
 ```
 
 ### الجدول الجديد (core.annual_plans):
+
 ```sql
 CREATE TABLE core.annual_plans (
   plan_id BIGSERIAL PRIMARY KEY,
@@ -50,6 +53,7 @@ CREATE TABLE core.annual_plans (
 ### الخيار 1: تطبيق المخطط الجديد (موصى به)
 
 #### 1. تطبيق الـ SQL Migration:
+
 ```bash
 # الاتصال بقاعدة البيانات
 psql -U postgres -d your_database_name
@@ -59,6 +63,7 @@ psql -U postgres -d your_database_name
 ```
 
 أو عبر PowerShell:
+
 ```powershell
 # قراءة وتطبيق الملف
 $sql = Get-Content "prisma\migrations\create_annual_plans.sql" -Raw
@@ -66,38 +71,39 @@ $sql = Get-Content "prisma\migrations\create_annual_plans.sql" -Raw
 ```
 
 #### 2. تحديث Prisma Schema:
+
 يجب استبدال model AnnualPlan في `prisma/schema.prisma`:
 
 ```prisma
 model AnnualPlan {
   planId            BigInt    @id @default(autoincrement()) @map("plan_id")
-  
+
   // Plan Identification
   planRef           String    @unique @map("plan_ref")
   fiscalYear        Int       @map("fiscal_year")
   preparedDate      DateTime  @map("prepared_date") @db.Date
-  
+
   // Approval and Authorship
   approvedBy        String?   @map("approved_by")
   preparedBy        BigInt?   @map("prepared_by")
-  
+
   // Planning Methodology
   standards         String?
   methodology       String?
   objectives        String?
   riskSources       String[]  @map("risk_sources")
-  
+
   // Status
   status            String    @default("draft")
-  
+
   // Audit Trail
   createdAt         DateTime  @default(now()) @map("created_at")
   updatedAt         DateTime  @updatedAt @map("updated_at")
   createdBy         BigInt?   @map("created_by")
-  
+
   // Relations
   tasks             PlanTask[] @relation("PlanToTasks")
-  
+
   @@map("annual_plans")
   @@schema("core")
 }
@@ -105,7 +111,7 @@ model AnnualPlan {
 model PlanTask {
   taskId            BigInt    @id @default(autoincrement()) @map("task_id")
   planId            BigInt    @map("plan_id")
-  
+
   seqNo             Int       @map("seq_no")
   taskRef           String?   @map("task_ref")
   deptId            BigInt?   @map("dept_id")
@@ -118,13 +124,13 @@ model PlanTask {
   durationDays      Int       @map("duration_days")
   assignee          String?
   notes             String?
-  
+
   createdAt         DateTime  @default(now()) @map("created_at")
   updatedAt         DateTime  @updatedAt @map("updated_at")
-  
+
   // Relations
   plan              AnnualPlan @relation("PlanToTasks", fields: [planId], references: [planId], onDelete: Cascade)
-  
+
   @@unique([planId, seqNo])
   @@map("plan_tasks")
   @@schema("core")
@@ -132,11 +138,13 @@ model PlanTask {
 ```
 
 #### 3. تحديث Prisma Client:
+
 ```bash
 npx prisma generate
 ```
 
 #### 4. تحديث API Routes:
+
 يجب تحديث `/api/plan/route.ts` ليتوافق مع الحقول الجديدة:
 
 ```typescript
@@ -147,7 +155,7 @@ const plan = await prisma.annualPlan.create({
     fiscalYear: year,
     version,
     // ...
-  }
+  },
 });
 
 // بعد:
@@ -163,7 +171,7 @@ const plan = await prisma.annualPlan.create({
     objectives,
     riskSources,
     // ...
-  }
+  },
 });
 ```
 
@@ -175,7 +183,7 @@ const plan = await prisma.annualPlan.create({
 
 ```sql
 -- إضافة الأعمدة الجديدة
-ALTER TABLE public.annual_plans 
+ALTER TABLE public.annual_plans
 ADD COLUMN plan_ref TEXT UNIQUE,
 ADD COLUMN prepared_date DATE,
 ADD COLUMN approved_by TEXT,
@@ -197,10 +205,11 @@ ALTER COLUMN plan_ref SET NOT NULL;
 ```
 
 ثم تحديث Prisma schema:
+
 ```prisma
 model AnnualPlan {
   // ... الحقول الموجودة
-  
+
   // الحقول الجديدة
   planRef           String?   @map("plan_ref")
   preparedDate      DateTime? @map("prepared_date") @db.Date
@@ -210,7 +219,7 @@ model AnnualPlan {
   methodology       String?
   objectives        String?
   riskSources       String[]  @default([]) @map("risk_sources")
-  
+
   // ... باقي الحقول
 }
 ```
@@ -222,23 +231,26 @@ model AnnualPlan {
 بعد التطبيق، تحقق من:
 
 ### 1. قاعدة البيانات:
+
 ```sql
 -- فحص الجدول
 \d core.annual_plans
 
 -- فحص البيانات
-SELECT plan_ref, fiscal_year, prepared_date, approved_by 
-FROM core.annual_plans 
+SELECT plan_ref, fiscal_year, prepared_date, approved_by
+FROM core.annual_plans
 LIMIT 5;
 ```
 
 ### 2. Prisma:
+
 ```bash
 npx prisma studio
 # افتح model AnnualPlan وتأكد من ظهور الحقول الجديدة
 ```
 
 ### 3. API:
+
 ```bash
 # اختبار إنشاء خطة جديدة
 curl -X POST http://localhost:3001/api/plan \
@@ -255,6 +267,7 @@ curl -X POST http://localhost:3001/api/plan \
 ```
 
 ### 4. UI:
+
 ```
 1. افتح http://localhost:3001/rbia/plan
 2. اضغط "إنشاء خطة جديدة"
@@ -268,6 +281,7 @@ curl -X POST http://localhost:3001/api/plan \
 ## ⚠️ تحذيرات
 
 1. **Backup أولاً:**
+
    ```bash
    pg_dump -U postgres your_db > backup_$(date +%Y%m%d).sql
    ```
@@ -284,13 +298,13 @@ curl -X POST http://localhost:3001/api/plan \
 
 ## 📊 ملخص الحالة
 
-| العنصر | الحالة | الإجراء المطلوب |
-|--------|---------|-----------------|
-| SQL Migration | ✅ جاهز | تطبيق على قاعدة البيانات |
-| Prisma Schema | ❌ قديم | تحديث model AnnualPlan |
-| API Routes | ❌ قديم | تحديث POST /api/plan |
-| UI Form | ✅ محدّث | لا شيء |
-| Database | ❌ قديم | تطبيق migration |
+| العنصر        | الحالة   | الإجراء المطلوب          |
+| ------------- | -------- | ------------------------ |
+| SQL Migration | ✅ جاهز  | تطبيق على قاعدة البيانات |
+| Prisma Schema | ❌ قديم  | تحديث model AnnualPlan   |
+| API Routes    | ❌ قديم  | تحديث POST /api/plan     |
+| UI Form       | ✅ محدّث | لا شيء                   |
+| Database      | ❌ قديم  | تطبيق migration          |
 
 ---
 

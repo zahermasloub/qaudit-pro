@@ -9,9 +9,11 @@
 ## ✅ ما تم إنجازه (المرحلة 1)
 
 ### 1. Schema قاعدة البيانات ✅
+
 **الملف:** `prisma/migrations/create_annual_plans.sql`
 
 #### الجداول:
+
 - ✅ `core.annual_plans` - الخطط السنوية
 - ✅ `core.plan_tasks` - المهام ضمن كل خطة
 - ✅ Indexes لتحسين الأداء
@@ -20,9 +22,11 @@
 - ✅ View: `vw_plan_overview` للتقارير
 
 ### 2. Validation Schemas ✅
+
 **الملف:** `lib/schemas/annual-plan.schema.ts`
 
 #### المزايا:
+
 - ✅ Zod schemas للتحقق من البيانات
 - ✅ رسائل خطأ بالعربية واضحة
 - ✅ TypeScript types مستخرجة تلقائياً
@@ -30,9 +34,11 @@
 - ✅ Helper functions
 
 ### 3. المكون الرئيسي ✅
+
 **الملف:** `features/annual-plan/AnnualPlanWizard.tsx`
 
 #### المزايا:
+
 - ✅ معالج بمرحلتين مع progress bar
 - ✅ حفظ كمسودة تلقائي
 - ✅ تحذير عند الإغلاق بدون حفظ
@@ -44,6 +50,7 @@
 ## 🔄 المتطلبات الباقية (المرحلة 2)
 
 ### 1. نموذج المرحلة الأولى
+
 **الملف المطلوب:** `features/annual-plan/AnnualPlanStep1Form.tsx`
 
 #### الحقول المطلوبة:
@@ -60,15 +67,15 @@ interface Step1FormProps {
 1. plan_ref (نص) - الرقم المرجعي
    - تحقق: 4-20 حرف، A-Za-z0-9-
    - مثال: ADP-2025
-   
+
 2. fiscal_year (رقم) - السنة المالية
    - تحقق: 2000-2100
    - مثال: 2025
-   
+
 3. prepared_date (تاريخ) - تاريخ الإعداد
    - تحقق: <= اليوم، ضمن السنة المالية
    - صيغة: YYYY-MM-DD
-   
+
 4. approved_by (قائمة) - الجهة المعتمدة
    - خيارات: مجلس الإدارة، اللجنة العليا، إدارة التدقيق...
 
@@ -81,6 +88,7 @@ interface Step1FormProps {
 ```
 
 #### المتطلبات الوظيفية:
+
 - ✅ React Hook Form + Zod validation
 - ✅ رسائل خطأ عربية تحت كل حقل
 - ✅ تحقق فوري (real-time validation)
@@ -90,6 +98,7 @@ interface Step1FormProps {
 - ✅ Responsive للموبايل
 
 ### 2. نموذج المرحلة الثانية
+
 **الملف المطلوب:** `features/annual-plan/AnnualPlanStep2Form.tsx`
 
 #### الميزات المطلوبة:
@@ -107,7 +116,7 @@ interface Step2FormProps {
 
 // جدول/قائمة المهام:
 - عرض جدول بجميع المهام المضافة
-- أعمدة: الرقم التسلسلي، العنوان، الإدارة، نوع المهمة، 
+- أعمدة: الرقم التسلسلي، العنوان، الإدارة، نوع المهمة،
          الخطورة، الأولوية، الربع، المدة، إجراءات
 
 // أزرار:
@@ -136,6 +145,7 @@ interface Step2FormProps {
 ```
 
 #### المتطلبات الوظيفية:
+
 - ✅ إدارة كاملة للمهام (CRUD)
 - ✅ Validation لكل حقل
 - ✅ Auto-save عند كل تغيير
@@ -145,15 +155,18 @@ interface Step2FormProps {
 - ✅ زر "إنهاء وحفظ" (معطل إذا لا توجد مهام)
 
 ### 3. API Routes
+
 **الملفات المطلوبة:**
 
 #### `app/api/annual-plans/route.ts`
+
 ```tsx
 // POST - Create new plan
 // GET - List all plans (with filters)
 ```
 
 #### `app/api/annual-plans/[id]/route.ts`
+
 ```tsx
 // GET - Get plan by ID with tasks
 // PUT - Update plan
@@ -162,18 +175,21 @@ interface Step2FormProps {
 ```
 
 #### `app/api/annual-plans/[id]/tasks/route.ts`
+
 ```tsx
 // POST - Add task to plan
 // GET - List tasks for plan
 ```
 
 #### `app/api/annual-plans/[id]/tasks/[taskId]/route.ts`
+
 ```tsx
 // PUT - Update task
 // DELETE - Delete task
 ```
 
 ### 4. تكامل مع الصفحة الرئيسية
+
 **تعديل:** `app/(app)/rbia/plan/RbiaPlanView.tsx`
 
 ```tsx
@@ -203,6 +219,7 @@ const [showWizard, setShowWizard] = useState(false);
 ## 🎯 معايير القبول (Acceptance Criteria)
 
 ### وظيفي:
+
 - ⏳ المعالج يظهر عند الضغط "إنشاء خطة جديدة"
 - ⏳ لا يمكن الانتقال للمرحلة 2 قبل استكمال الحقول الإلزامية
 - ⏳ "حفظ كمسودة" يعمل في أي وقت
@@ -211,6 +228,7 @@ const [showWizard, setShowWizard] = useState(false);
 - ⏳ عند النجاح: انتقال لملخص الخطة + شارة "تم الحفظ"
 
 ### تقني:
+
 - ✅ سجلات `annual_plans` و `plan_tasks` تُنشأ بشكل صحيح
 - ✅ العلاقات والفهارس موجودة
 - ✅ RLS policies تعمل بشكل صحيح
@@ -218,6 +236,7 @@ const [showWizard, setShowWizard] = useState(false);
 - ⏳ API endpoints تعمل مع proper error handling
 
 ### UI/UX:
+
 - ⏳ RTL support كامل
 - ⏳ Responsive: 1440/1280/1024/768/480px
 - ⏳ رسائل خطأ عربية واضحة
@@ -230,6 +249,7 @@ const [showWizard, setShowWizard] = useState(false);
 ## 📦 الملفات المطلوبة (To-Do)
 
 ### مكونات React:
+
 1. ✅ `AnnualPlanWizard.tsx` - المعالج الرئيسي
 2. ⏳ `AnnualPlanStep1Form.tsx` - نموذج المرحلة 1
 3. ⏳ `AnnualPlanStep2Form.tsx` - نموذج المرحلة 2
@@ -237,16 +257,19 @@ const [showWizard, setShowWizard] = useState(false);
 5. ⏳ `TasksList.tsx` - قائمة المهام مع إجراءات
 
 ### API Routes:
+
 6. ⏳ `app/api/annual-plans/route.ts`
 7. ⏳ `app/api/annual-plans/[id]/route.ts`
 8. ⏳ `app/api/annual-plans/[id]/tasks/route.ts`
 9. ⏳ `app/api/annual-plans/[id]/tasks/[taskId]/route.ts`
 
 ### Schema:
+
 10. ✅ `lib/schemas/annual-plan.schema.ts`
 11. ✅ `prisma/migrations/create_annual_plans.sql`
 
 ### تكامل:
+
 12. ⏳ تعديل `RbiaPlanView.tsx` لإضافة المعالج
 13. ⏳ إنشاء `audit_logs` entries
 
@@ -255,12 +278,14 @@ const [showWizard, setShowWizard] = useState(false);
 ## 🔧 خطوات التنفيذ التالية
 
 ### المرحلة 2 (التالية):
+
 1. إنشاء `AnnualPlanStep1Form.tsx` مع جميع الحقول
 2. إنشاء `AnnualPlanStep2Form.tsx` مع إدارة المهام
 3. إنشاء `TaskForm.tsx` كـ modal/drawer منفصل
 4. إنشاء API routes الأساسية
 
 ### المرحلة 3 (الأخيرة):
+
 5. تكامل مع `RbiaPlanView.tsx`
 6. Audit logging
 7. اختبار شامل للتدفق الكامل
@@ -271,16 +296,19 @@ const [showWizard, setShowWizard] = useState(false);
 ## 💡 ملاحظات تقنية
 
 ### Database:
+
 - استخدام transactions عند إنشاء خطة مع مهام
 - Cascade delete: حذف الخطة يحذف مهامها تلقائياً
 - RLS: فقط منشئ الخطة يمكنه التعديل/الحذف
 
 ### Validation:
+
 - Client-side: Zod schemas
 - Server-side: نفس Zod schemas للأمان
 - Unique constraint على `plan_ref`
 
 ### UX:
+
 - Auto-save كل 30 ثانية أو عند التغيير
 - Loading states واضحة
 - Error boundaries للأخطاء غير المتوقعة

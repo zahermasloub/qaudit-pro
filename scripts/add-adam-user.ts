@@ -34,7 +34,6 @@ async function addAdamUser() {
     console.log('\n🎉 You can now login with:');
     console.log('   Email: adam@qaudit.com');
     console.log('   Password:', password);
-
   } catch (error) {
     console.error('❌ Error creating user:', error);
     throw error;
@@ -48,7 +47,7 @@ addAdamUser()
     console.log('\n✅ Script completed successfully!');
     process.exit(0);
   })
-  .catch((error) => {
+  .catch(error => {
     console.error('\n❌ Script failed:', error);
     process.exit(1);
   });

@@ -17,7 +17,7 @@
 }
 
 /* دعم RTL */
-[dir="rtl"] .planning-actions-panel {
+[dir='rtl'] .planning-actions-panel {
   direction: rtl;
 }
 

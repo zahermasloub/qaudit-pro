@@ -130,7 +130,9 @@ export default function TestForm({ open, onOpenChange, engagementId, onSuccess }
                         className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm"
                         placeholder="TEST-001"
                       />
-                      {errors.code && <p className="mt-1 text-xs text-red-500">{errors.code.message}</p>}
+                      {errors.code && (
+                        <p className="mt-1 text-xs text-red-500">{errors.code.message}</p>
+                      )}
                     </div>
                     <div>
                       <label className="mb-1 block text-sm font-medium">الحالة</label>

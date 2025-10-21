@@ -78,7 +78,7 @@ export function RLSPreviewBar({ pageName = 'البيانات' }: RLSPreviewBarPr
   }
 
   // تصفية المستخدمين حسب البحث
-  const filteredUsers = users.filter((user) => {
+  const filteredUsers = users.filter(user => {
     const query = searchQuery.toLowerCase();
     return (
       user.email.toLowerCase().includes(query) ||
@@ -113,10 +113,8 @@ export function RLSPreviewBar({ pageName = 'البيانات' }: RLSPreviewBarPr
               </div>
               <div className="text-xs text-warning-700 dark:text-warning-300">
                 تعرض {pageName} كما يراها:{' '}
-                <span className="font-semibold">
-                  {previewUser.name || previewUser.email}
-                </span>{' '}
-                ({previewUser.role})
+                <span className="font-semibold">{previewUser.name || previewUser.email}</span> (
+                {previewUser.role})
               </div>
             </div>
           </div>
@@ -195,7 +193,7 @@ export function RLSPreviewBar({ pageName = 'البيانات' }: RLSPreviewBarPr
               w-full max-w-2xl mx-4 max-h-[80vh] flex flex-col
               animate-in zoom-in-95 duration-200
             "
-            onClick={(e) => e.stopPropagation()}
+            onClick={e => e.stopPropagation()}
           >
             {/* Header */}
             <div className="flex items-center justify-between p-6 border-b border-border-base">
@@ -232,7 +230,7 @@ export function RLSPreviewBar({ pageName = 'البيانات' }: RLSPreviewBarPr
               <input
                 type="text"
                 value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
+                onChange={e => setSearchQuery(e.target.value)}
                 placeholder="بحث بالبريد أو الاسم أو الدور..."
                 className="
                   w-full px-4 py-2 rounded-lg
@@ -259,7 +257,7 @@ export function RLSPreviewBar({ pageName = 'البيانات' }: RLSPreviewBarPr
                 </div>
               ) : (
                 <div className="space-y-2">
-                  {filteredUsers.map((user) => (
+                  {filteredUsers.map(user => (
                     <button
                       key={user.id}
                       type="button"
@@ -303,8 +301,8 @@ export function RLSPreviewBar({ pageName = 'البيانات' }: RLSPreviewBarPr
               <div className="flex items-start gap-2 text-xs text-text-tertiary">
                 <AlertTriangle size={14} className="flex-shrink-0 mt-0.5" />
                 <p>
-                  <strong>ملاحظة:</strong> وضع المعاينة يعرض البيانات فقط كما يراها المستخدم المختار.
-                  لن تتمكن من تنفيذ إجراءات بصلاحيات ذلك المستخدم.
+                  <strong>ملاحظة:</strong> وضع المعاينة يعرض البيانات فقط كما يراها المستخدم
+                  المختار. لن تتمكن من تنفيذ إجراءات بصلاحيات ذلك المستخدم.
                 </p>
               </div>
             </div>

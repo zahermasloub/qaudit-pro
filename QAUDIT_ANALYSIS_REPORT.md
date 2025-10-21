@@ -1,6 +1,7 @@
 # QAUDIT_ANALYSIS_REPORT.md
 
 ## 1) Project Snapshot
+
 - **Repo root:** d:/AUDITOR-PRO/qaudit-pro
 - **Node/NPM/Next.js/Prisma/TypeScript versions:**
   - Node: (راجع البيئة المحلية)
@@ -17,6 +18,7 @@
 ---
 
 ## 2) Inventory (جرد سريع)
+
 - **Routes (App Router):**
   - dashboard: app/(app)/dashboard/page.tsx
   - admin: app/(app)/admin/dashboard/page.tsx, app/(app)/admin/users/page.tsx, app/(app)/admin/roles/page.tsx, app/(app)/admin/settings/page.tsx, app/(app)/admin/logs/page.tsx, app/(app)/admin/backups/page.tsx
@@ -38,6 +40,7 @@
 ---
 
 ## 3) Health Check
+
 - **Type/Lint status:**
   - build: أخطاء في JSX (Parsing error: Unexpected token `div` في DashboardView وPbcTable)
   - tsc: لم يتم التعرف على الأمر (راجع إعدادات البيئة)
@@ -59,22 +62,24 @@
 ---
 
 ## 4) Coverage of Audit Lifecycle
-| المرحلة         | التغطية | رابط/ملف |
-|-----------------|---------|----------|
-| Plan            | ❌      | -        |
-| PBC             | ⚠️      | app/api/pbc/route.ts, features/planning/pbc/Pbc.form-v2.tsx |
-| RCM             | ❌      | -        |
-| Program/Tests   | ⚠️      | app/api/tests/route.ts, features/program/tests/Test.form-v2.tsx |
-| Samples         | ⚠️      | app/api/samples/route.ts, features/program/sampling/Sampling.form-v2.tsx |
-| Evidence        | ⚠️      | app/api/evidence/upload/route.ts, features/evidence/forms/EvidenceUploader.form.tsx |
-| Findings        | ❌      | -        |
-| Reports         | ❌      | -        |
-| Follow-up       | ❌      | -        |
-| QAIP            | ❌      | -        |
+
+| المرحلة       | التغطية | رابط/ملف                                                                            |
+| ------------- | ------- | ----------------------------------------------------------------------------------- |
+| Plan          | ❌      | -                                                                                   |
+| PBC           | ⚠️      | app/api/pbc/route.ts, features/planning/pbc/Pbc.form-v2.tsx                         |
+| RCM           | ❌      | -                                                                                   |
+| Program/Tests | ⚠️      | app/api/tests/route.ts, features/program/tests/Test.form-v2.tsx                     |
+| Samples       | ⚠️      | app/api/samples/route.ts, features/program/sampling/Sampling.form-v2.tsx            |
+| Evidence      | ⚠️      | app/api/evidence/upload/route.ts, features/evidence/forms/EvidenceUploader.form.tsx |
+| Findings      | ❌      | -                                                                                   |
+| Reports       | ❌      | -                                                                                   |
+| Follow-up     | ❌      | -                                                                                   |
+| QAIP          | ❌      | -                                                                                   |
 
 ---
 
 ## 5) Gaps & Risks (الفجوات والمخاطر)
+
 - فجوات الربط: Evidence ↔ Test/Control ↔ Finding ↔ ActionPlan ↔ Report ↔ Follow-up (العلاقات جزئية أو غير منفذة)
 - نقص حالات الحياة (State Machines) والأحداث (Domain Events): لا يوجد ملفات events/domain واضحة
 - ثغرات RBAC/Scope: RBAC جزئي (lib/rbac.ts)، لا يوجد تحقق دقيق لكل API
@@ -84,6 +89,7 @@
 ---
 
 ## 6) Minimal Data Flow Maps (مختصر)
+
 ```mermaid
 %% Data Flow
 Evidence Upload
@@ -125,40 +131,46 @@ Follow-up (غير منفذ)
 ### Sprint 2: Domain Events + State Machines + APIs
 
 **Goals:**
-  1. إضافة ملفات events/domain
-  2. تحسين ربط الكيانات (Evidence ↔ Test/Finding)
-  3. تحسين RBAC لكل API
-  4. إضافة إشعارات
-  5. إصلاح أخطاء merge/conflict
+
+1. إضافة ملفات events/domain
+2. تحسين ربط الكيانات (Evidence ↔ Test/Finding)
+3. تحسين RBAC لكل API
+4. إضافة إشعارات
+5. إصلاح أخطاء merge/conflict
 
 **Key Patches:** lib/rbac.ts, app/api/evidence/[id]/route.ts, features/evidence/
 
 **Acceptance Criteria:**
-  - وجود event handlers
-  - تحقق RBAC لكل API
-  - لا يوجد أخطاء merge/conflict
+
+- وجود event handlers
+- تحقق RBAC لكل API
+- لا يوجد أخطاء merge/conflict
 
 **Risks & Mitigations:**
-  - خطر فقدان العلاقات (حل عبر مراجعة schema)
+
+- خطر فقدان العلاقات (حل عبر مراجعة schema)
 
 ### Sprint 3: Unified Search/Tags + KPIs Dashboard + Follow-up flow
 
 **Goals:**
-  1. إضافة بحث موحّد
-  2. إضافة وسوم
-  3. لوحة مؤشرات KPIs
-  4. تدفق متابعة (Follow-up)
-  5. تحسين التقارير
+
+1. إضافة بحث موحّد
+2. إضافة وسوم
+3. لوحة مؤشرات KPIs
+4. تدفق متابعة (Follow-up)
+5. تحسين التقارير
 
 **Key Patches:** features/search/, features/kpi/, features/followup/
 
 **Acceptance Criteria:**
-  - وجود بحث ووسوم
-  - لوحة KPIs تعرض بيانات حية
-  - تدفق متابعة مكتمل
+
+- وجود بحث ووسوم
+- لوحة KPIs تعرض بيانات حية
+- تدفق متابعة مكتمل
 
 **Risks & Mitigations:**
-  - خطر نقص البيانات (حل عبر تحسين API)
+
+- خطر نقص البيانات (حل عبر تحسين API)
 
 ---
 
@@ -183,6 +195,7 @@ Follow-up (غير منفذ)
 ---
 
 ## 9) Final Summary (TL;DR)
+
 - أصلح أخطاء JSX وmerge conflict في الملفات الحرجة
 - أضف وتحسن مكونات UI المشتركة (SidebarDrawer, Breadcrumbs, RelatedPanel)
 - عزز RBAC وتحقق الصلاحيات لكل API
@@ -192,6 +205,7 @@ Follow-up (غير منفذ)
 ---
 
 > **Next Steps:**
+>
 > 1. معالجة أخطاء build/lint أولاً
 > 2. تحسين مكونات UI الأساسية
 > 3. تعزيز RBAC وربط الكيانات

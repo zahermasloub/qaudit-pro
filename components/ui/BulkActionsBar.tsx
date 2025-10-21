@@ -110,12 +110,14 @@ export function BulkActionsBar({
         <>
           {/* Actions */}
           <div className="flex items-center gap-2">
-            {actions.map((action) => {
+            {actions.map(action => {
               const Icon = action.icon;
               const variantStyles = {
                 default: 'bg-bg-muted hover:bg-bg-subtle text-text-primary',
-                danger: 'bg-error-50 hover:bg-error-100 text-error-700 dark:bg-error-950 dark:hover:bg-error-900 dark:text-error-300',
-                success: 'bg-success-50 hover:bg-success-100 text-success-700 dark:bg-success-950 dark:hover:bg-success-900 dark:text-success-300',
+                danger:
+                  'bg-error-50 hover:bg-error-100 text-error-700 dark:bg-error-950 dark:hover:bg-error-900 dark:text-error-300',
+                success:
+                  'bg-success-50 hover:bg-success-100 text-success-700 dark:bg-success-950 dark:hover:bg-success-900 dark:text-success-300',
               };
 
               return (

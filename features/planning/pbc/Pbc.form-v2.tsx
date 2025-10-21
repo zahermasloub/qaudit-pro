@@ -77,7 +77,11 @@ export default function PBCForm({ open, onOpenChange, engagementId, onSuccess }:
       <div className="relative w-full max-w-md sm:max-w-lg md:max-w-xl lg:max-w-2xl bg-white rounded-2xl shadow-xl border border-gray-200 min-h-[40vh] max-h-[90vh] overflow-y-auto p-4 sm:p-6">
         <div className="flex items-center justify-between mb-4">
           <h3 className="text-lg font-semibold">طلب مستندات جديد (PBC)</h3>
-          <button className="rounded-full p-2 text-gray-500 transition-colors hover:bg-gray-100 hover:text-gray-700" onClick={() => onOpenChange(false)} aria-label="إغلاق">
+          <button
+            className="rounded-full p-2 text-gray-500 transition-colors hover:bg-gray-100 hover:text-gray-700"
+            onClick={() => onOpenChange(false)}
+            aria-label="إغلاق"
+          >
             ✕
           </button>
         </div>

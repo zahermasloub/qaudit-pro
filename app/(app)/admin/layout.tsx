@@ -1,8 +1,16 @@
 'use client';
 
-import type { ReactNode } from "react";
+import type { ReactNode } from 'react';
 import { useRouter } from 'next/navigation';
-import { Users, Shield, Settings, FileText, Database, LayoutDashboard, Download } from 'lucide-react';
+import {
+  Users,
+  Shield,
+  Settings,
+  FileText,
+  Database,
+  LayoutDashboard,
+  Download,
+} from 'lucide-react';
 import { CommandPalette, type CommandAction } from '@/components/ui/CommandPalette';
 import { useCommandPalette } from '@/hooks/useCommandPalette';
 import { RLSPreviewProvider } from '@/lib/RLSPreviewContext';
@@ -126,29 +134,38 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
   return (
     <UndoProvider undoTimeout={5000}>
       <RLSPreviewProvider>
-        <div className="admin-surface min-h-screen w-full" style={{
-          backgroundColor: 'var(--color-bg-base)',
-          color: 'var(--color-text-primary)'
-        }}>
+        <div
+          className="admin-surface min-h-screen w-full"
+          style={{
+            backgroundColor: 'var(--color-bg-base)',
+            color: 'var(--color-text-primary)',
+          }}
+        >
           <div className="container-shell mx-auto w-full px-3 sm:px-4 lg:px-6 py-4">
             <div className="flex items-center justify-between mb-4">
               <h1 className="text-xl sm:text-2xl font-semibold">الإدارة</h1>
-              <div className="text-xs hidden sm:block" style={{ color: 'var(--color-text-tertiary)' }}>
-                اضغط <kbd className="px-2 py-0.5 rounded border" style={{
-                  borderColor: 'var(--color-border-base)',
-                  backgroundColor: 'var(--color-bg-muted)'
-                }}>Cmd+K</kbd> للبحث السريع
+              <div
+                className="text-xs hidden sm:block"
+                style={{ color: 'var(--color-text-tertiary)' }}
+              >
+                اضغط{' '}
+                <kbd
+                  className="px-2 py-0.5 rounded border"
+                  style={{
+                    borderColor: 'var(--color-border-base)',
+                    backgroundColor: 'var(--color-bg-muted)',
+                  }}
+                >
+                  Cmd+K
+                </kbd>{' '}
+                للبحث السريع
               </div>
             </div>
             <div className="grid grid-cols-1 gap-4">{children}</div>
           </div>
 
           {/* Command Palette */}
-          <CommandPalette
-            actions={actions}
-            open={isOpen}
-            onClose={closePalette}
-          />
+          <CommandPalette actions={actions} open={isOpen} onClose={closePalette} />
         </div>
       </RLSPreviewProvider>
     </UndoProvider>

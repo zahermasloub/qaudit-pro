@@ -36,7 +36,10 @@ export function UsersRolesPanel() {
             <ul className="space-y-1 text-sm text-neutral-600">
               {role.responsibilities.map(item => (
                 <li key={item} className="flex items-start gap-2">
-                  <span aria-hidden className="mt-1 inline-block h-1.5 w-1.5 rounded-full bg-brand-300" />
+                  <span
+                    aria-hidden
+                    className="mt-1 inline-block h-1.5 w-1.5 rounded-full bg-brand-300"
+                  />
                   <span>{item}</span>
                 </li>
               ))}

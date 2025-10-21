@@ -67,10 +67,7 @@ export function Breadcrumbs({
   className,
 }: BreadcrumbsProps) {
   return (
-    <nav
-      aria-label="مسار التنقل"
-      className={cn('flex items-center gap-2 text-sm', className)}
-    >
+    <nav aria-label="مسار التنقل" className={cn('flex items-center gap-2 text-sm', className)}>
       {/* Home Link */}
       {showHome && (
         <>
@@ -116,9 +113,7 @@ export function Breadcrumbs({
               </span>
             )}
 
-            {!isLast && (
-              <ChevronLeft size={16} className="text-text-tertiary" aria-hidden="true" />
-            )}
+            {!isLast && <ChevronLeft size={16} className="text-text-tertiary" aria-hidden="true" />}
           </React.Fragment>
         );
       })}

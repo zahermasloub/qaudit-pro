@@ -133,7 +133,6 @@ export default function RegisterPage() {
 
         <Card className="mt-8">
           <form onSubmit={handleSubmit} className="space-y-6">
-
             <Input
               label={t.common.name}
               type="text"
@@ -184,14 +183,17 @@ export default function RegisterPage() {
 
             {/* Role Selection Dropdown */}
             <div>
-              <label htmlFor="role" className="block text-sm font-medium text-gray-700 mb-2 text-right">
+              <label
+                htmlFor="role"
+                className="block text-sm font-medium text-gray-700 mb-2 text-right"
+              >
                 نوع الحساب <span className="text-red-500">*</span>
               </label>
               <select
                 id="role"
                 name="role"
                 value={formData.role}
-                onChange={(e) => {
+                onChange={e => {
                   setFormData(prev => ({ ...prev, role: e.target.value }));
                   if (errors.role) {
                     setErrors(prev => ({ ...prev, role: undefined }));
@@ -209,15 +211,13 @@ export default function RegisterPage() {
                 <option value="Admin">مدير - صلاحيات كاملة (Admin)</option>
                 <option value="User">مستخدم - صلاحيات محدودة (User)</option>
               </select>
-              {errors.role && (
-                <p className="mt-1 text-sm text-red-600 text-right">{errors.role}</p>
-              )}
+              {errors.role && <p className="mt-1 text-sm text-red-600 text-right">{errors.role}</p>}
               <p className="mt-1 text-xs text-gray-500 text-right">
                 {formData.role === 'Admin'
                   ? '✓ المدير لديه صلاحيات كاملة للوصول إلى لوحة الإدارة وجميع الميزات'
                   : formData.role === 'User'
-                  ? '✓ المستخدم لديه صلاحيات محدودة للوصول إلى الميزات الأساسية فقط'
-                  : 'اختر نوع الحساب المناسب'}
+                    ? '✓ المستخدم لديه صلاحيات محدودة للوصول إلى الميزات الأساسية فقط'
+                    : 'اختر نوع الحساب المناسب'}
               </p>
             </div>
 

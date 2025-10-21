@@ -2,12 +2,12 @@ name: P2 Regulations CI
 on:
   push:
     paths:
-      - "app/api/v1/admin/regulations/**"
-      - "components/admin/RegulationsPanel.tsx"
-      - "lib/mime.ts"
-      - "lib/storage.ts"
-      - "prisma/**"
-      - ".github/workflows/p2-regulations.yml"
+      - 'app/api/v1/admin/regulations/**'
+      - 'components/admin/RegulationsPanel.tsx'
+      - 'lib/mime.ts'
+      - 'lib/storage.ts'
+      - 'prisma/**'
+      - '.github/workflows/p2-regulations.yml'
   workflow_dispatch:
 
 permissions:
@@ -25,7 +25,7 @@ jobs:
           POSTGRES_PASSWORD: postgres
           POSTGRES_DB: qaudit_ci
         ports:
-          - "5432:5432"
+          - '5432:5432'
         options: >-
           --health-cmd="pg_isready -U postgres"
           --health-interval=10s

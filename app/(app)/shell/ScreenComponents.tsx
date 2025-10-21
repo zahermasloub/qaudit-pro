@@ -13,7 +13,6 @@ export function PlanningScreen({ locale }: { locale: Locale }) {
       <div className="flex items-center justify-between">
         <h1 className="text-2xl font-bold text-gray-900">{(_i18n.menu as any).planning}</h1>
       </div>
-
       {/* مستطيل لوحة إجراءات التخطيط */}
       <div
         className="planning-actions-panel"
@@ -83,7 +82,8 @@ export function PlanningScreen({ locale }: { locale: Locale }) {
         >
           {locale === 'ar' ? 'تصدير CSV' : 'Export CSV'}
         </button>
-      </div>      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      </div>{' '}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Engagement Planning */}
         <div className="bg-white rounded-lg border border-gray-200 p-6">
           <h3 className="font-semibold text-gray-900 mb-4">
@@ -128,7 +128,6 @@ export function PlanningScreen({ locale }: { locale: Locale }) {
           </div>
         </div>
       </div>
-
       {/* PBC Requests Table */}
       <div>
         <h2 className="text-xl font-semibold text-gray-900 mb-4">
@@ -152,7 +151,7 @@ export function ProcessRiskScreen({ locale }: { locale: Locale }) {
   return (
     <div className="p-6 space-y-6">
       <div className="flex items-center justify-between">
-  <h1 className="text-2xl font-bold text-gray-900">{(_i18n.menu as any).processRisk}</h1>
+        <h1 className="text-2xl font-bold text-gray-900">{(_i18n.menu as any).processRisk}</h1>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">

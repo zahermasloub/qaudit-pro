@@ -9,12 +9,13 @@
 ## 🆕 ملفات جديدة (New Files)
 
 ### 1. `styles/theme-light.css`
+
 ```diff
 + /**
 +  * QAudit Pro - Light Theme
 +  * نظام ثيم فاتح كامل مع دعم RTL وA11y
 +  */
-+ 
++
 + :root, [data-theme='light'], .light {
 +   --bg: #F7F8FA;
 +   --surface: #FFFFFF;
@@ -24,10 +25,12 @@
 +   /* ... 40+ متغير إضافي */
 + }
 ```
+
 **الحجم**: 462 سطر  
 **الغرض**: متغيرات CSS، مكونات جاهزة، scrollbar، RTL support
 
 ### 2. `LIGHT_THEME_A11Y_AUDIT.md`
+
 ```diff
 + # Light Theme A11y Audit Report
 + - تباين الألوان: 9/9 ✅
@@ -35,30 +38,36 @@
 + - Keyboard nav: 5/5 ✅
 + - ARIA labels: 8/8 ✅
 ```
+
 **الحجم**: 300 سطر  
 **الغرض**: تقرير فحص إمكانية الوصول
 
 ### 3. `LIGHT_THEME_SETUP_GUIDE.md`
+
 ```diff
 + # Light Theme Setup Guide
 + - خطوات التفعيل
 + - أمثلة الاستخدام
 + - استكشاف الأخطاء
 ```
+
 **الحجم**: 280 سطر  
 **الغرض**: دليل التشغيل والصيانة
 
 ### 4. `LIGHT_THEME_IMPLEMENTATION_SUMMARY.md`
+
 ```diff
 + # Light Theme Implementation Summary
 + - نظرة عامة شاملة
 + - جميع الميزات المُنفذة
 + - نتائج A11y
 ```
+
 **الحجم**: 320 سطر  
 **الغرض**: ملخص تنفيذي كامل
 
 ### 5. `LIGHT_THEME_COMPONENT_PATCHES.tsx`
+
 ```diff
 + /**
 +  * Component Patches
@@ -66,6 +75,7 @@
 +  */
 + // Buttons, Tables, Forms, Modals, etc.
 ```
+
 **الحجم**: 610 سطر  
 **الغرض**: مرجع سريع للمطورين
 
@@ -76,6 +86,7 @@
 ### 1. `components/ui/ThemeToggle.tsx`
 
 #### التعديلات الرئيسية:
+
 ```diff
  'use client';
 
@@ -108,6 +119,7 @@
 ```
 
 #### التعديلات الإضافية:
+
 ```diff
    return (
      <div className="relative">
@@ -129,6 +141,7 @@
 ```
 
 **الإضافات**:
+
 - ✅ `Shift+L` keyboard shortcut
 - ✅ `Escape` key handler
 - ✅ Skeleton loading state
@@ -145,6 +158,7 @@
 ### 2. `components/ui/KPICard.tsx`
 
 #### التعديلات الرئيسية:
+
 ```diff
    return (
      <div
@@ -169,6 +183,7 @@
 ```
 
 #### تحديث الألوان:
+
 ```diff
        <div className="flex items-start justify-between gap-3 mb-4">
          <div className="flex-1">
@@ -212,6 +227,7 @@
 ### 3. `app/(app)/admin/dashboard/page.tsx`
 
 #### التعديلات الرئيسية:
+
 ```diff
    return (
 -    <div className="space-y-6">
@@ -220,6 +236,7 @@
 ```
 
 #### Charts & Cards:
+
 ```diff
 -        <div className="p-6 rounded-xl border" style={{
 -          borderColor: 'var(--color-border-base)',
@@ -233,6 +250,7 @@
 ```
 
 #### Recent Logs:
+
 ```diff
          <div
            key={log.id}
@@ -259,6 +277,7 @@
 ### 4. `lib/ThemeProvider.tsx`
 
 #### التعديل الرئيسي:
+
 ```diff
  export function ThemeProvider({ children }: { children: React.ReactNode }) {
 -  const [theme, setThemeState] = useState<Theme>('system');
@@ -268,6 +287,7 @@
 ```
 
 #### تحسين localStorage:
+
 ```diff
    useEffect(() => {
      const savedTheme = localStorage.getItem('qaudit-theme') as Theme | null;
@@ -288,6 +308,7 @@
 ### 5. `tailwind.config.ts`
 
 #### التعديل الرئيسي:
+
 ```diff
        colors: {
          background: 'var(--background)',
@@ -335,6 +356,7 @@
 ### 6. `app/globals.css`
 
 #### التعديل:
+
 ```diff
 +/* ============================================
 +   QAUDIT PRO - GLOBAL STYLES
@@ -356,6 +378,7 @@
 ### 7. `styles/design-tokens.css`
 
 #### التعديل:
+
 ```diff
  /**
 - * Design Tokens for QAudit Pro Admin UI
@@ -366,7 +389,7 @@
 + * ========================================
 + * Version: 3.0 (Light + Dark)
 + * Purpose: Centralized design system with RTL, Light/Dark Modes, and A11y support
-+ * 
++ *
 + * IMPORTANT:
 + * - Light Theme يتم تحميله من theme-light.css
 + * - هذا الملف يحتوي على القيم المشتركة والـ Dark Mode
@@ -380,6 +403,7 @@
 ```
 
 #### حذف empty ruleset:
+
 ```diff
 -[dir='rtl'] {
 -  /* Tailwind RTL plugin handles most cases automatically */
@@ -396,6 +420,7 @@
 ## 📊 إحصائيات التغييرات
 
 ### ملخص عام:
+
 ```
 📄 ملفات جديدة: 5
 📝 ملفات معدّلة: 7
@@ -405,20 +430,22 @@
 ```
 
 ### توزيع التغييرات:
-| الفئة | الملفات | السطور |
-|------|---------|--------|
-| CSS/Styles | 2 | +470 |
-| Components | 2 | +93 |
-| Pages | 1 | +7 |
-| Providers | 1 | +3 |
-| Config | 2 | +9 |
-| Documentation | 5 | +600 |
+
+| الفئة         | الملفات | السطور |
+| ------------- | ------- | ------ |
+| CSS/Styles    | 2       | +470   |
+| Components    | 2       | +93    |
+| Pages         | 1       | +7     |
+| Providers     | 1       | +3     |
+| Config        | 2       | +9     |
+| Documentation | 5       | +600   |
 
 ---
 
 ## 🔍 المراجعة والاختبار
 
 ### تم اختباره:
+
 - ✅ Build بدون أخطاء
 - ✅ ThemeToggle يعمل
 - ✅ التبديل light/dark
@@ -429,6 +456,7 @@
 - ✅ Keyboard navigation
 
 ### لم يتم اختباره (يحتاج مراجعة):
+
 - ⚠️ E2E tests (إن وُجدت)
 - ⚠️ اختبار على Safari
 - ⚠️ اختبار على Mobile devices
@@ -452,18 +480,21 @@
 ## 🚀 خطوات الـ Deployment
 
 1. **مراجعة الكود**:
+
    ```bash
    git status
    git diff
    ```
 
 2. **Commit التغييرات**:
+
    ```bash
    git add .
    git commit -m "feat: implement Light Theme with full A11y support"
    ```
 
 3. **Push إلى الـ branch**:
+
    ```bash
    git push origin feature/light-theme
    ```
