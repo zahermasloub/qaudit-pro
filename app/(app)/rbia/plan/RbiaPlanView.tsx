@@ -29,6 +29,7 @@ import {
   AlertCircle,
   TrendingUp,
 } from 'lucide-react';
+import ProcessStepper, { ProcessStep } from './ProcessStepper';
 
 // Types
 interface PlanItem {
@@ -61,6 +62,7 @@ export default function RbiaPlanView({ mode = 'plan' }: RbiaPlanViewProps) {
   const [filterStatus, setFilterStatus] = useState('all');
   const [viewMode, setViewMode] = useState<'view' | 'edit' | null>(null);
   const [selectedItem, setSelectedItem] = useState<PlanItem | null>(null);
+  const [activeStepId, setActiveStepId] = useState(1);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   // Load data
@@ -428,20 +430,29 @@ export default function RbiaPlanView({ mode = 'plan' }: RbiaPlanViewProps) {
     return colors[status];
   };
 
-  // Sidebar steps
-  const steps = [
-    { id: 1, label: 'الخطة السنوية', active: true },
-    { id: 2, label: 'تحديد الأولويات', active: false },
-    { id: 3, label: 'تخصيص الموارد', active: false },
-    { id: 4, label: 'الجدول الزمني', active: false },
-    { id: 5, label: 'اعتماد الخطة', active: false },
-    { id: 6, label: 'تنفيذ المهام', active: false },
-    { id: 7, label: 'المتابعة والرقابة', active: false },
-    { id: 8, label: 'إعداد التقارير', active: false },
-    { id: 9, label: 'المراجعة والتقييم', active: false },
-    { id: 10, label: 'التوصيات', active: false },
-    { id: 11, label: 'الإغلاق والأرشفة', active: false },
+  // Process steps with detailed states
+  const processSteps: ProcessStep[] = [
+    { id: 1, label: 'الخطة السنوية', status: 'active' },
+    { id: 2, label: 'تحديد الأولويات', status: 'available' },
+    { id: 3, label: 'تخصيص الموارد', status: 'available' },
+    { id: 4, label: 'الجدول الزمني', status: 'locked', lockReason: 'أكمل المرحلة 3 أولاً' },
+    { id: 5, label: 'اعتماد الخطة', status: 'locked', lockReason: 'أكمل المرحلة 4 أولاً' },
+    { id: 6, label: 'تنفيذ المهام', status: 'locked', lockReason: 'يتطلب اعتماد الخطة' },
+    { id: 7, label: 'المتابعة والرقابة', status: 'locked', lockReason: 'يتطلب بدء التنفيذ' },
+    { id: 8, label: 'إعداد التقارير', status: 'locked', lockReason: 'يتطلب مهام قيد التنفيذ' },
+    { id: 9, label: 'المراجعة والتقييم', status: 'locked', lockReason: 'يتطلب وجود تقارير' },
+    { id: 10, label: 'التوصيات', status: 'locked', lockReason: 'يتطلب إتمام المراجعة' },
+    { id: 11, label: 'الإغلاق والأرشفة', status: 'locked', lockReason: 'يتطلب إتمام جميع المراحل' },
   ];
+
+  const completedSteps = processSteps.filter(s => s.status === 'completed').length;
+
+  const handleStepChange = (stepId: number) => {
+    setActiveStepId(stepId);
+    toast.success(`تم الانتقال إلى: ${processSteps.find(s => s.id === stepId)?.label}`);
+  };
+
+  const activeStep = processSteps.find(s => s.id === activeStepId);
 
   if (loading) {
     return (
@@ -478,8 +489,32 @@ export default function RbiaPlanView({ mode = 'plan' }: RbiaPlanViewProps) {
       </div>
 
       <div className="max-w-7xl mx-auto p-6 overflow-x-hidden">
-        <div className="flex gap-6">{/* Main Content */}
-          <div className="flex-1">
+        {/* Process Stepper - Mobile (Top) / Desktop (Sidebar) */}
+        <ProcessStepper
+          steps={processSteps}
+          activeStepId={activeStepId}
+          onStepClick={handleStepChange}
+          completedCount={completedSteps}
+        />
+
+        <div className="flex gap-6">
+          {/* Main Content */}
+          <div className="flex-1 min-w-0">
+            {/* Active Step Header */}
+            {activeStep && (
+              <div className="bg-gradient-to-r from-blue-600 to-blue-700 text-white rounded-xl p-4 mb-6 shadow-md">
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 bg-white/20 rounded-full flex items-center justify-center font-bold text-lg">
+                    {activeStep.id}
+                  </div>
+                  <div>
+                    <h2 className="text-xl font-bold">{activeStep.label}</h2>
+                    <p className="text-sm text-blue-100">المرحلة النشطة</p>
+                  </div>
+                </div>
+              </div>
+            )}
+
             {/* Summary Cards */}
             <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
               <div className="bg-white rounded-xl shadow-sm p-5 border border-gray-100">
@@ -719,45 +754,6 @@ export default function RbiaPlanView({ mode = 'plan' }: RbiaPlanViewProps) {
                 <p className="text-sm text-gray-600">
                   عرض {filteredItems.length} من {planItems.length} بند
                 </p>
-              </div>
-            </div>
-          </div>
-
-          {/* Sidebar Stepper */}
-          <div className="w-72 flex-shrink-0">
-            <div className="bg-white rounded-xl shadow-sm p-6 border border-gray-100 sticky top-24">
-              <h3 className="text-lg font-semibold mb-4 text-gray-900">مراحل العملية</h3>
-              <div className="space-y-4">
-                {steps.map((step, index) => (
-                  <div key={step.id} className="flex items-start gap-3 relative">
-                    <div
-                      className={`flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center text-sm font-semibold ${
-                        step.active
-                          ? 'bg-blue-600 text-white'
-                          : 'bg-gray-200 text-gray-600'
-                      }`}
-                    >
-                      {step.id}
-                    </div>
-                    <div className="flex-1 min-w-0">
-                      <p
-                        className={`text-sm ${
-                          step.active ? 'font-semibold text-gray-900' : 'text-gray-600'
-                        }`}
-                      >
-                        {step.label}
-                      </p>
-                      {step.active && (
-                        <div className="mt-1 w-full bg-blue-100 rounded-full h-1">
-                          <div className="bg-blue-600 h-1 rounded-full w-1/3"></div>
-                        </div>
-                      )}
-                    </div>
-                    {index < steps.length - 1 && !step.active && (
-                      <div className="absolute start-4 top-10 h-6 w-0.5 bg-gray-200"></div>
-                    )}
-                  </div>
-                ))}
               </div>
             </div>
           </div>
