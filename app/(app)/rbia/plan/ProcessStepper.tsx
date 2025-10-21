@@ -91,7 +91,7 @@ export default function ProcessStepper({
       e.preventDefault();
       const direction = e.key === 'ArrowUp' ? -1 : 1;
       const nextIndex = index + direction;
-      
+
       if (nextIndex >= 0 && nextIndex < steps.length) {
         const nextStep = steps[nextIndex];
         // Focus on next available step (skip locked ones)
