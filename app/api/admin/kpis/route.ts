@@ -6,6 +6,10 @@ const authOptions = {
   providers: [],
 };
 
+// Mark as dynamic to prevent static generation
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
+
 /**
  * GET /api/admin/kpis
  * جلب مؤشرات الأداء الرئيسية من قاعدة البيانات

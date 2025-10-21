@@ -1,7 +1,7 @@
 'use client';
 
 import { useSearchParams, useRouter } from 'next/navigation';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, Suspense } from 'react';
 import { toast } from 'sonner';
 import RbiaPlanView from './RbiaPlanView';
 import CreatePlanWizard from './CreatePlanWizard';
@@ -9,7 +9,7 @@ import EngagementPlanningView from './EngagementPlanningView';
 
 type TabType = 'view' | 'create' | 'planning';
 
-export default function PlanPage() {
+function PlanPageContent() {
   const searchParams = useSearchParams();
   const router = useRouter();
   const [activeTab, setActiveTab] = useState<TabType>('view');
@@ -155,4 +155,17 @@ export default function PlanPage() {
   );
 }
 
-
+export default function PlanPage() {
+  return (
+    <Suspense fallback={
+      <div className="w-full min-h-screen bg-gray-50 py-8 px-4 flex items-center justify-center" dir="rtl">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
+          <p className="text-gray-600">جاري التحميل...</p>
+        </div>
+      </div>
+    }>
+      <PlanPageContent />
+    </Suspense>
+  );
+}
