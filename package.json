@@ -2,6 +2,9 @@
   "name": "qaudit-pro",
   "version": "0.1.0",
   "private": true,
+  "prisma": {
+    "seed": "tsx scripts/seed.ts"
+  },
   "scripts": {
     "dev": "next dev -p 3001",
     "build": "next build",
