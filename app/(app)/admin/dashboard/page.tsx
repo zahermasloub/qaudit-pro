@@ -34,7 +34,7 @@ export default function AdminDashboardPage() {
   const [data, setData] = useState<KPIData | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  
+
   // State for FiltersBar (التي ستصبح الشريط الرئيسي)
   const [searchQuery, setSearchQuery] = useState('');
   const [filterValues, setFilterValues] = useState<Record<string, string>>({});
