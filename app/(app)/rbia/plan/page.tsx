@@ -138,12 +138,14 @@ export default function PlanPage() {
           {activeTab === 'view' && <RbiaPlanView mode="plan" />}
 
           {activeTab === 'create' && (
-            <CreatePlanWizard
-              onClose={() => {
-                checkForExistingPlan();
-                handleTabChange('view');
-              }}
-            />
+            <div className="max-w-4xl mx-auto">
+              <CreatePlanWizard
+                onClose={() => {
+                  checkForExistingPlan();
+                  handleTabChange('view');
+                }}
+              />
+            </div>
           )}
 
           {activeTab === 'planning' && <EngagementPlanningView />}

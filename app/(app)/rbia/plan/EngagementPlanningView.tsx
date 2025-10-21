@@ -311,7 +311,7 @@ export default function EngagementPlanningView() {
         <div>
           <h2 className="text-2xl font-bold text-gray-900">تخطيط المهمات</h2>
           <p className="text-sm text-gray-600 mt-1">
-            إدارة المهام الرئيسية والجزئية للخطة السنوية
+            إدارة المهام التدقيقية بناءً على الخطة السنوية وفق معايير IPPF 2024/2025
           </p>
         </div>
         <Button
@@ -319,14 +319,28 @@ export default function EngagementPlanningView() {
           className="bg-blue-600 hover:bg-blue-700 text-white"
         >
           <Plus className="w-4 h-4 ml-2" />
-          إنشاء مهمة رئيسية
+          إنشاء مهمة تدقيقية
         </Button>
       </div>
 
       {/* Main Engagement Form */}
       {showMainForm && (
-        <div className="bg-blue-50 border border-blue-200 rounded-lg p-6">
-          <h3 className="text-lg font-bold text-gray-900 mb-4">إنشاء مهمة رئيسية جديدة</h3>
+        <div className="bg-gradient-to-br from-blue-50 to-indigo-50 border-2 border-blue-200 rounded-xl p-6 shadow-lg">
+          <div className="flex items-center justify-between mb-4">
+            <h3 className="text-xl font-bold text-gray-900">إنشاء مهمة تدقيقية جديدة</h3>
+            <span className="text-xs bg-blue-100 text-blue-700 px-3 py-1 rounded-full font-medium">
+              وفق معايير IPPF 2024/2025
+            </span>
+          </div>
+
+          {/* Info Box */}
+          <div className="bg-blue-100 border border-blue-300 rounded-lg p-4 mb-4 flex items-start gap-3">
+            <AlertCircle className="w-5 h-5 text-blue-700 flex-shrink-0 mt-0.5" />
+            <div className="text-sm text-blue-900">
+              <p className="font-medium mb-1">ملاحظة هامة:</p>
+              <p>يتم إنشاء المهام التدقيقية بناءً على الخطة السنوية المعتمدة. تأكد من استكمال جميع الحقول الإلزامية (*) وتحديد المعايير المرجعية وفق الإطار الدولي للممارسة المهنية (IPPF) ومعايير COSO و ISO 31000.</p>
+            </div>
+          </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
@@ -350,6 +364,7 @@ export default function EngagementPlanningView() {
                 type="text"
                 value={mainForm.title}
                 onChange={e => setMainForm({ ...mainForm, title: e.target.value })}
+                placeholder="مثال: تدقيق نظام المشتريات والعقود"
                 className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
               />
             </div>
@@ -362,6 +377,7 @@ export default function EngagementPlanningView() {
                 type="text"
                 value={mainForm.department}
                 onChange={e => setMainForm({ ...mainForm, department: e.target.value })}
+                placeholder="مثال: إدارة المشتريات"
                 className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
               />
             </div>
@@ -403,10 +419,13 @@ export default function EngagementPlanningView() {
               </label>
               <input
                 type="number"
+                min="1"
                 value={mainForm.estimatedHours}
                 onChange={e => setMainForm({ ...mainForm, estimatedHours: Number(e.target.value) })}
+                placeholder="120"
                 className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
               />
+              <p className="text-xs text-gray-500 mt-1">الساعات التقديرية للمهمة بالكامل</p>
             </div>
 
             <div>
@@ -417,6 +436,7 @@ export default function EngagementPlanningView() {
                 type="text"
                 value={mainForm.owner}
                 onChange={e => setMainForm({ ...mainForm, owner: e.target.value })}
+                placeholder="مثال: أحمد محمد - مدير التدقيق"
                 className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
               />
             </div>
@@ -429,8 +449,10 @@ export default function EngagementPlanningView() {
                 value={mainForm.scope}
                 onChange={e => setMainForm({ ...mainForm, scope: e.target.value })}
                 rows={3}
+                placeholder="حدد نطاق المهمة التدقيقية بوضوح: الأنشطة المشملة، الفترة الزمنية، المواقع..."
                 className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
               />
+              <p className="text-xs text-gray-500 mt-1">يجب تحديد النطاق بدقة لضمان فعالية التدقيق</p>
             </div>
 
             <div className="md:col-span-2">
@@ -441,41 +463,59 @@ export default function EngagementPlanningView() {
                 value={mainForm.objectives}
                 onChange={e => setMainForm({ ...mainForm, objectives: e.target.value })}
                 rows={3}
+                placeholder="أهداف المهمة التدقيقية: التحقق من كفاءة الضوابط الداخلية، تقييم الامتثال..."
                 className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
               />
+              <p className="text-xs text-gray-500 mt-1">يجب أن تكون الأهداف واضحة وقابلة للقياس (SMART)</p>
             </div>
 
             <div className="md:col-span-2">
               <label className="block text-sm font-medium text-gray-700 mb-2">
                 المعايير المرجعية <span className="text-red-500">*</span>
               </label>
-              <div className="flex flex-wrap gap-2">
-                {['IPPF', 'COSO', 'ISO 31000', 'لوائح قطر'].map(standard => (
-                  <label key={standard} className="flex items-center gap-2">
-                    <input
-                      type="checkbox"
-                      checked={mainForm.standards.includes(standard)}
-                      onChange={e => {
-                        if (e.target.checked) {
-                          setMainForm({ ...mainForm, standards: [...mainForm.standards, standard] });
-                        } else {
-                          setMainForm({ ...mainForm, standards: mainForm.standards.filter(s => s !== standard) });
-                        }
-                      }}
-                      className="rounded"
-                    />
-                    <span className="text-sm">{standard}</span>
-                  </label>
-                ))}
+              <div className="bg-white border border-gray-200 rounded-lg p-4">
+                <div className="grid grid-cols-2 gap-3">
+                  {[
+                    { value: 'IPPF', label: 'IPPF 2024 - الإطار الدولي للممارسة المهنية' },
+                    { value: 'COSO', label: 'COSO - إطار الضوابط الداخلية' },
+                    { value: 'ISO 31000', label: 'ISO 31000 - إدارة المخاطر' },
+                    { value: 'لوائح قطر', label: 'اللوائح والقوانين القطرية' }
+                  ].map(standard => (
+                    <label key={standard.value} className="flex items-start gap-2 cursor-pointer hover:bg-gray-50 p-2 rounded">
+                      <input
+                        type="checkbox"
+                        checked={mainForm.standards.includes(standard.value)}
+                        onChange={e => {
+                          if (e.target.checked) {
+                            setMainForm({ ...mainForm, standards: [...mainForm.standards, standard.value] });
+                          } else {
+                            setMainForm({ ...mainForm, standards: mainForm.standards.filter(s => s !== standard.value) });
+                          }
+                        }}
+                        className="rounded mt-1"
+                      />
+                      <span className="text-sm">{standard.label}</span>
+                    </label>
+                  ))}
+                </div>
               </div>
+              <p className="text-xs text-gray-500 mt-1">اختر معيار واحد على الأقل - يُنصح باختيار IPPF لجميع مهام التدقيق الداخلي</p>
             </div>
           </div>
 
-          <div className="flex gap-2 mt-6">
-            <Button onClick={handleCreateMainEngagement} className="bg-green-600 hover:bg-green-700 text-white">
-              حفظ المهمة
+          <div className="flex gap-3 mt-6 pt-4 border-t border-gray-200">
+            <Button
+              onClick={handleCreateMainEngagement}
+              disabled={loading}
+              className="bg-gradient-to-r from-green-600 to-green-700 hover:from-green-700 hover:to-green-800 text-white px-6 py-2.5 font-medium shadow-md"
+            >
+              {loading ? 'جاري الحفظ...' : '✓ حفظ المهمة'}
             </Button>
-            <Button onClick={() => setShowMainForm(false)} className="bg-gray-200 hover:bg-gray-300 text-gray-800">
+            <Button
+              onClick={() => setShowMainForm(false)}
+              disabled={loading}
+              className="bg-gray-100 hover:bg-gray-200 text-gray-800 px-6 py-2.5 font-medium"
+            >
               إلغاء
             </Button>
           </div>
