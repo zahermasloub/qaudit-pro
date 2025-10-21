@@ -7,9 +7,13 @@
 
 import React, { useEffect, useState } from 'react';
 import dynamic from 'next/dynamic';
+import { toast } from 'sonner';
 
 // Dynamically import the AnnualPlanForm to avoid SSR issues
 const AnnualPlanForm = dynamic(() => import('./annual-plan.form'), { ssr: false });
+
+// Import ProcessStepper from RBIA plan
+import ProcessStepper, { ProcessStep } from '@/app/(app)/rbia/plan/ProcessStepper';
 
 import type { Locale } from '@/lib/i18n';
 
@@ -78,6 +82,51 @@ export function AnnualPlanScreen({ locale }: { locale: Locale }) {
   const [filterDepartment, setFilterDepartment] = useState('');
   const [filterRiskLevel, setFilterRiskLevel] = useState('');
   const [filterStatus, setFilterStatus] = useState('');
+
+  // Process Stepper state
+  const [activeStepId, setActiveStepId] = useState(1);
+
+  // Process steps for Annual Plan workflow
+  const processSteps: ProcessStep[] = [
+    {
+      id: 1,
+      label: locale === 'ar' ? 'إعداد الخطة السنوية' : 'Prepare Annual Plan',
+      status: 'completed',
+    },
+    {
+      id: 2,
+      label: locale === 'ar' ? 'تحديد مهام التدقيق' : 'Define Audit Tasks',
+      status: 'active',
+    },
+    {
+      id: 3,
+      label: locale === 'ar' ? 'تخصيص الموارد' : 'Allocate Resources',
+      status: 'available',
+    },
+    {
+      id: 4,
+      label: locale === 'ar' ? 'مراجعة الجودة' : 'Quality Review',
+      status: 'locked',
+      lockReason: locale === 'ar' ? 'أكمل المرحلة 3 أولاً' : 'Complete Step 3 first',
+    },
+    {
+      id: 5,
+      label: locale === 'ar' ? 'المصادقة والاعتماد' : 'Approval & Authorization',
+      status: 'locked',
+      lockReason: locale === 'ar' ? 'أكمل المرحلة 4 أولاً' : 'Complete Step 4 first',
+    },
+  ];
+
+  const completedSteps = processSteps.filter(s => s.status === 'completed').length;
+
+  const handleStepChange = (stepId: number) => {
+    setActiveStepId(stepId);
+    toast.success(
+      locale === 'ar'
+        ? `تم الانتقال إلى: ${processSteps.find(s => s.id === stepId)?.label}`
+        : `Switched to: ${processSteps.find(s => s.id === stepId)?.label}`
+    );
+  };
 
   // Mock data for demonstration (in a real app, fetch from API)
   useEffect(() => {
@@ -295,30 +344,37 @@ export function AnnualPlanScreen({ locale }: { locale: Locale }) {
   }
 
   return (
-    <div className="p-6 space-y-6 bg-bg" dir={isRTL ? 'rtl' : 'ltr'}>
-      {/* Header */}
-      <div className="flex items-center justify-between bg-surface border border-border rounded-card p-6 shadow-card">
-        <div>
-          <h1 className="text-2xl font-bold text-text">
-            {selectedPlan?.title ||
-              (locale === 'ar' ? 'الخطة السنوية للتدقيق الداخلي' : 'Annual Internal Audit Plan')}
-          </h1>
-          <p className="text-sm text-text-2 mt-1">
-            {locale === 'ar'
-              ? `السنة المالية: ${selectedPlan?.fiscalYear}`
-              : `Fiscal Year: ${selectedPlan?.fiscalYear}`}
-          </p>
+    <div className="min-h-screen bg-bg" dir={isRTL ? 'rtl' : 'ltr'}>
+      {/* Header - Sticky */}
+      <div className="sticky top-0 z-50 bg-surface border-b border-border shadow-sm">
+        <div className="flex items-center justify-between p-6">
+          <div>
+            <h1 className="text-2xl font-bold text-text">
+              {selectedPlan?.title ||
+                (locale === 'ar' ? 'الخطة السنوية للتدقيق الداخلي' : 'Annual Internal Audit Plan')}
+            </h1>
+            <p className="text-sm text-text-2 mt-1">
+              {locale === 'ar'
+                ? `السنة المالية: ${selectedPlan?.fiscalYear}`
+                : `Fiscal Year: ${selectedPlan?.fiscalYear}`}
+            </p>
+          </div>
+          <button
+            className="px-4 py-2 bg-primary-600 text-white rounded-btn hover:bg-primary-700 focus:ring-2 focus:ring-primary-600 focus:ring-offset-2 transition-colors font-medium"
+            onClick={() => setOpenAnnualPlan(true)}
+          >
+            + {locale === 'ar' ? 'إنشاء خطة جديدة' : 'Create New Plan'}
+          </button>
         </div>
-        <button
-          className="px-4 py-2 bg-primary-600 text-white rounded-btn hover:bg-primary-700 focus:ring-2 focus:ring-primary-600 focus:ring-offset-2 transition-colors font-medium"
-          onClick={() => setOpenAnnualPlan(true)}
-        >
-          + {locale === 'ar' ? 'إنشاء خطة جديدة' : 'Create New Plan'}
-        </button>
       </div>
 
-      {/* KPI Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+      {/* Main Content with Sidebar Layout */}
+      <div className="max-w-7xl mx-auto p-6">
+        <div className="flex gap-6">
+          {/* Main Content Area */}
+          <div className="flex-1 min-w-0 space-y-6">
+            {/* KPI Cards */}
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
         {/* Plan Status */}
         <div className="bg-surface rounded-card border border-border p-6 shadow-card hover:shadow-lg transition-shadow">
           <div className="flex items-center justify-between mb-3">
@@ -565,6 +621,18 @@ export function AnnualPlanScreen({ locale }: { locale: Locale }) {
           </div>
         )}
       </div>
+          </div>
+
+          {/* Process Stepper Sidebar */}
+          <ProcessStepper
+            steps={processSteps}
+            activeStepId={activeStepId}
+            onStepClick={handleStepChange}
+            completedCount={completedSteps}
+          />
+        </div>
+      </div>
+
       {/* Annual Plan Form Modal */}
       <AnnualPlanForm open={openAnnualPlan} onOpenChange={setOpenAnnualPlan} />
     </div>
