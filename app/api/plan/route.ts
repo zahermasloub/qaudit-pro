@@ -56,7 +56,20 @@ import prisma from '@/lib/prisma';
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
-    const { year, version = '1.0', owner_id, title } = body;
+    const {
+      year,
+      version = '1.0',
+      owner_id,
+      title,
+      plan_ref,
+      prepared_date,
+      approved_by,
+      prepared_by,
+      standards,
+      methodology,
+      objectives,
+      risk_sources = []
+    } = body;
 
     // Validation
     if (!year || typeof year !== 'number') {
@@ -66,20 +79,21 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    // Check if plan already exists for this year/version
-    const existing = await prisma.annualPlan.findFirst({
-      where: {
-        fiscalYear: year,
-        version: version,
-      },
-    });
-
-    if (existing) {
-      return NextResponse.json(
-        { error: `خطة للسنة ${year} بالنسخة ${version} موجودة مسبقاً` },
-        { status: 400 }
-      );
+    // Validate plan_ref if provided
+    if (plan_ref) {
+      const existingRef = await prisma.annualPlan.findUnique({
+        where: { planRef: plan_ref },
+      });
+      if (existingRef) {
+        return NextResponse.json(
+          { error: `الرقم المرجعي ${plan_ref} مستخدم بالفعل` },
+          { status: 400 }
+        );
+      }
     }
+
+    // Generate plan_ref if not provided
+    const generatedPlanRef = plan_ref || `ADP-${year}-${Date.now().toString(36)}`;
 
     // Create plan using Prisma
     const plan = await prisma.annualPlan.create({
@@ -89,6 +103,14 @@ export async function POST(req: NextRequest) {
         version: version,
         status: 'draft',
         createdBy: owner_id || 'system',
+        planRef: generatedPlanRef,
+        preparedDate: prepared_date ? new Date(prepared_date) : new Date(),
+        approvedBy: approved_by,
+        preparedByName: prepared_by,
+        standards,
+        methodology,
+        objectives,
+        riskSources: risk_sources,
       },
     });
 
@@ -96,11 +118,19 @@ export async function POST(req: NextRequest) {
     return NextResponse.json(
       {
         id: plan.id,
+        plan_ref: plan.planRef,
         year: plan.fiscalYear,
         version: plan.version,
         status: plan.status,
         title: plan.title,
         owner_id: plan.createdBy,
+        prepared_date: plan.preparedDate,
+        approved_by: plan.approvedBy,
+        prepared_by: plan.preparedByName,
+        standards: plan.standards,
+        methodology: plan.methodology,
+        objectives: plan.objectives,
+        risk_sources: plan.riskSources,
         created_at: plan.createdAt,
         updated_at: plan.updatedAt,
       },
