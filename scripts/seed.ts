@@ -57,7 +57,96 @@ async function seedData() {
     // PBC already exists, skip
   }
 
-  console.log('Seeded User, Engagement and PBC');
+  // Create Annual Plan
+  const annualPlan = await prisma.annualPlan.upsert({
+    where: {
+      id: 'sample-plan-2025'
+    },
+    update: {},
+    create: {
+      id: 'sample-plan-2025',
+      title: 'خطة التدقيق السنوية 2025',
+      fiscalYear: 2025,
+      version: '1.0',
+      status: 'approved',
+      introduction: 'خطة التدقيق الداخلي للسنة المالية 2025',
+      totalAvailableHours: 2000,
+      plannedTaskHours: 1500,
+      advisoryHours: 200,
+      emergencyHours: 100,
+      followUpHours: 100,
+      trainingHours: 50,
+      administrativeHours: 50,
+      estimatedBudget: 500000,
+      createdBy: 'lead@example.com',
+    },
+  });
+
+  // Create Sample Audit Tasks
+  const auditTasks = [
+    {
+      code: 'AT-2025-001',
+      title: 'تدقيق العمليات المالية',
+      department: 'المالية',
+      riskLevel: 'high' as const,
+      auditType: 'financial' as const,
+      objectiveAndScope: 'تقييم فعالية الضوابط المالية والامتثال للسياسات',
+      plannedQuarter: 'Q1' as const,
+      estimatedHours: 120,
+      status: 'not_started' as const,
+    },
+    {
+      code: 'AT-2025-002',
+      title: 'تدقيق أمن المعلومات',
+      department: 'تقنية المعلومات',
+      riskLevel: 'high' as const,
+      auditType: 'it_systems' as const,
+      objectiveAndScope: 'مراجعة ضوابط أمن المعلومات وحماية البيانات',
+      plannedQuarter: 'Q2' as const,
+      estimatedHours: 160,
+      status: 'not_started' as const,
+    },
+    {
+      code: 'AT-2025-003',
+      title: 'تدقيق الامتثال التنظيمي',
+      department: 'الامتثال',
+      riskLevel: 'medium' as const,
+      auditType: 'compliance' as const,
+      objectiveAndScope: 'التحقق من الالتزام باللوائح والأنظمة',
+      plannedQuarter: 'Q3' as const,
+      estimatedHours: 100,
+      status: 'not_started' as const,
+    },
+    {
+      code: 'AT-2025-004',
+      title: 'تدقيق العمليات التشغيلية',
+      department: 'العمليات',
+      riskLevel: 'medium' as const,
+      auditType: 'operational' as const,
+      objectiveAndScope: 'تقييم كفاءة وفعالية العمليات التشغيلية',
+      plannedQuarter: 'Q4' as const,
+      estimatedHours: 140,
+      status: 'not_started' as const,
+    },
+  ];
+
+  for (const task of auditTasks) {
+    await prisma.auditTask.upsert({
+      where: {
+        code_annualPlanId: {
+          code: task.code,
+          annualPlanId: annualPlan.id,
+        }
+      },
+      update: {},
+      create: {
+        ...task,
+        annualPlanId: annualPlan.id,
+      },
+    });
+  }
+
+  console.log('Seeded User, Engagement, PBC, Annual Plan and Audit Tasks');
 }
 
 seedData()
