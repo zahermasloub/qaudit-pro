@@ -477,9 +477,8 @@ export default function RbiaPlanView({ mode = 'plan' }: RbiaPlanViewProps) {
         </div>
       </div>
 
-      <div className="max-w-7xl mx-auto p-6">
-        <div className="flex gap-6">
-          {/* Main Content */}
+      <div className="max-w-7xl mx-auto p-6 overflow-x-hidden">
+        <div className="flex gap-6">{/* Main Content */}
           <div className="flex-1">
             {/* Summary Cards */}
             <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
@@ -730,7 +729,7 @@ export default function RbiaPlanView({ mode = 'plan' }: RbiaPlanViewProps) {
               <h3 className="text-lg font-semibold mb-4 text-gray-900">مراحل العملية</h3>
               <div className="space-y-4">
                 {steps.map((step, index) => (
-                  <div key={step.id} className="flex items-start gap-3">
+                  <div key={step.id} className="flex items-start gap-3 relative">
                     <div
                       className={`flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center text-sm font-semibold ${
                         step.active
@@ -740,7 +739,7 @@ export default function RbiaPlanView({ mode = 'plan' }: RbiaPlanViewProps) {
                     >
                       {step.id}
                     </div>
-                    <div className="flex-1">
+                    <div className="flex-1 min-w-0">
                       <p
                         className={`text-sm ${
                           step.active ? 'font-semibold text-gray-900' : 'text-gray-600'
@@ -755,7 +754,7 @@ export default function RbiaPlanView({ mode = 'plan' }: RbiaPlanViewProps) {
                       )}
                     </div>
                     {index < steps.length - 1 && !step.active && (
-                      <div className="absolute right-9 mt-10 h-6 w-0.5 bg-gray-200"></div>
+                      <div className="absolute start-4 top-10 h-6 w-0.5 bg-gray-200"></div>
                     )}
                   </div>
                 ))}
