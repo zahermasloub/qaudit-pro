@@ -1,7 +1,5 @@
 'use client';
-import { useState } from 'react';
 import type { Locale } from '@/lib/i18n';
-import CreatePlanWizard from '@/app/(app)/rbia/plan/CreatePlanWizard';
 import KpiCards from '@/app/(components)/KpiCards';
 
 export default function DashboardView({
@@ -11,7 +9,6 @@ export default function DashboardView({
   locale: Locale;
   engagementId?: string;
 }) {
-  const [showWizard, setShowWizard] = useState(false);
   // engagementId can be used for filtering data in real implementation
   console.log('Dashboard for engagement:', engagementId);
 
@@ -39,12 +36,6 @@ export default function DashboardView({
           </button>
           <button className="px-5 py-3 rounded-lg border text-base font-bold bg-blue-600 text-white hover:bg-blue-700 transition-colors">
             {locale === 'ar' ? 'تصدير' : 'Export'}
-          </button>
-          <button
-            onClick={() => setShowWizard(true)}
-            className="px-5 py-3 rounded-lg border text-base font-bold bg-green-600 text-white hover:bg-green-700 transition-colors"
-          >
-            {locale === 'ar' ? '+ إنشاء خطة سنوية' : '+ Create Annual Plan'}
           </button>
         </div>
       </div>
@@ -142,15 +133,6 @@ export default function DashboardView({
         </table>
       </div>
       </div>
-
-      {/* Wizard Dialog */}
-      {showWizard && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-2xl shadow-2xl max-w-4xl w-full max-h-[90vh] overflow-y-auto">
-            <CreatePlanWizard onClose={() => setShowWizard(false)} />
-          </div>
-        </div>
-      )}
     </div>
   );
 }
