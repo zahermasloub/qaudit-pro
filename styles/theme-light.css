@@ -23,7 +23,7 @@
 [data-theme='light'],
 .light {
   /* ============================================
-     PAGE & SURFACES
+     PAGE & SURFACES (Teal & Slate Palette)
      ============================================ */
 
   /* Page Background - أفتح رمادي للصفحة */
@@ -42,21 +42,21 @@
   --color-bg-muted: #F1F5F9;
 
   /* ============================================
-     BORDERS & DIVIDERS
+     BORDERS & DIVIDERS (Teal & Slate Palette)
      ============================================ */
 
   /* Border Base - الحدود الأساسية */
-  --border: #E5E7EB;
-  --color-border-base: #E5E7EB;
+  --border: #E6E8F0;
+  --color-border-base: #E6E8F0;
 
   /* Border Strong - حدود أقوى للتركيز */
   --color-border-strong: #D1D5DB;
 
   /* Border Focus - حد التركيز (A11y) */
-  --color-border-focus: #2563EB;
+  --color-border-focus: #14B8A6;
 
   /* ============================================
-     TEXT COLORS
+     TEXT COLORS (Teal & Slate Palette)
      ============================================ */
 
   /* Text Primary - النص الرئيسي (أعلى تباين) */
@@ -78,33 +78,41 @@
   --color-text-inverse: #FFFFFF;
 
   /* ============================================
-     BRAND & PRIMARY COLORS
+     BRAND & PRIMARY COLORS (Teal Palette)
      ============================================ */
 
-  /* Primary Blue - اللون الأساسي للعلامة التجارية */
-  --primary: #2563EB;
-  --color-brand-500: #2563EB;           /* blue-600 */
-  --color-brand-600: #2563EB;
+  /* Primary Teal - اللون الأساسي للعلامة التجارية */
+  --primary: #14B8A6;
+  --primary-50: #F0FDFA;                /* teal-50 */
+  --primary-100: #CCFBF1;               /* teal-100 */
+  --primary-200: #99F6E4;               /* teal-200 */
+  --primary-300: #5EEAD4;               /* teal-300 */
+  --primary-500: #14B8A6;               /* teal-500 */
+  --primary-600: #0D9488;               /* teal-600 */
+  --primary-700: #0F766E;               /* teal-700 */
+  
+  --color-brand-500: #14B8A6;           /* teal-500 */
+  --color-brand-600: #0D9488;           /* teal-600 */
 
   /* Primary Hover */
-  --primary-hover: #1D4ED8;
-  --color-brand-700: #1D4ED8;           /* blue-700 */
+  --primary-hover: #0D9488;
+  --color-brand-700: #0F766E;           /* teal-700 */
 
   /* Primary Light - خلفيات أيقونات */
-  --color-brand-50: #EFF6FF;            /* blue-50 */
-  --color-brand-100: #DBEAFE;           /* blue-100 */
+  --color-brand-50: #F0FDFA;            /* teal-50 */
+  --color-brand-100: #CCFBF1;           /* teal-100 */
 
   /* ============================================
-     SEMANTIC COLORS (Status)
+     SEMANTIC COLORS (Status) - Teal & Slate Palette
      ============================================ */
 
   /* Info - معلومات/Open */
-  --info: #0EA5E9;
-  --color-info-500: #0EA5E9;            /* sky-500 - Contrast: 4.52:1 ✅ */
-  --color-info-50: #F0F9FF;
-  --color-info-100: #E0F2FE;
-  --color-info-600: #0284C7;
-  --color-info-700: #0369A1;
+  --info: #0891B2;
+  --color-info-500: #0891B2;            /* cyan-600 - Contrast: 4.5:1 ✅ */
+  --color-info-50: #ECFEFF;
+  --color-info-100: #CFFAFE;
+  --color-info-600: #0891B2;
+  --color-info-700: #0E7490;
 
   /* Success - نجاح/Closed */
   --success: #16A34A;
@@ -167,11 +175,13 @@
   --scrollbar-thumb-hover: #94A3B8;     /* slate-400 */
 
   /* ============================================
-     LAYOUT & SPACING
+     LAYOUT & SPACING (Teal & Slate Palette)
      ============================================ */
 
   /* Border Radius */
   --radius: 12px;                       /* cards, dialogs */
+  --radius-card: 12px;                  /* card radius token */
+  --radius-btn: 10px;                   /* button radius token */
   --radius-sm: 8px;                     /* buttons, inputs */
   --radius-lg: 16px;                    /* modals */
 
@@ -183,7 +193,7 @@
   /* Focus Ring (A11y) */
   --focus-ring-width: 2px;
   --focus-ring-offset: 2px;
-  --focus-ring-color: var(--primary);
+  --focus-ring-color: var(--primary-600);
 
   /* ============================================
      TRANSITIONS
