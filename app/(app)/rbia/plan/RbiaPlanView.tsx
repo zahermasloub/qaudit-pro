@@ -30,6 +30,7 @@ import {
   TrendingUp,
 } from 'lucide-react';
 import ProcessStepper, { ProcessStep } from './ProcessStepper';
+import CreatePlanWizard from './CreatePlanWizard';
 
 // Types
 interface PlanItem {
@@ -64,6 +65,7 @@ export default function RbiaPlanView({ mode = 'plan' }: RbiaPlanViewProps) {
   const [selectedItem, setSelectedItem] = useState<PlanItem | null>(null);
   const [activeStepId, setActiveStepId] = useState(1);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const [showWizard, setShowWizard] = useState(false);
 
   // Load data
   useEffect(() => {
@@ -476,7 +478,7 @@ export default function RbiaPlanView({ mode = 'plan' }: RbiaPlanViewProps) {
           </div>
           <div className="flex gap-3">
             <Button
-              onClick={() => toast.info('قريباً...')}
+              onClick={() => setShowWizard(true)}
               size="sm"
               variant="outline"
               className="bg-white/10 hover:bg-white/20 text-white border-white/20"
@@ -854,6 +856,34 @@ export default function RbiaPlanView({ mode = 'plan' }: RbiaPlanViewProps) {
                   </Button>
                 </div>
               )}
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* معالج إنشاء الخطة */}
+      {showWizard && (
+        <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4" dir="rtl">
+          <div className="bg-white rounded-xl shadow-2xl max-w-5xl w-full max-h-[90vh] overflow-auto">
+            <div className="sticky top-0 bg-gradient-to-r from-blue-600 to-blue-700 text-white p-6 flex items-center justify-between">
+              <h2 className="text-2xl font-bold">معالج إنشاء خطة التدقيق السنوية</h2>
+              <button
+                onClick={() => setShowWizard(false)}
+                className="p-2 hover:bg-white/20 rounded-lg transition-colors"
+                aria-label="إغلاق"
+              >
+                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              </button>
+            </div>
+            <div className="p-6">
+              <CreatePlanWizard
+                onClose={() => {
+                  setShowWizard(false);
+                  loadPlanData(); // Refresh data after creating plan
+                }}
+              />
             </div>
           </div>
         </div>
