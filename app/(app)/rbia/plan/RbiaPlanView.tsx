@@ -489,14 +489,6 @@ export default function RbiaPlanView({ mode = 'plan' }: RbiaPlanViewProps) {
       </div>
 
       <div className="max-w-7xl mx-auto p-6 overflow-x-hidden">
-        {/* Process Stepper - Mobile (Top) / Desktop (Sidebar) */}
-        <ProcessStepper
-          steps={processSteps}
-          activeStepId={activeStepId}
-          onStepClick={handleStepChange}
-          completedCount={completedSteps}
-        />
-
         <div className="flex gap-6">
           {/* Main Content */}
           <div className="flex-1 min-w-0">
@@ -757,6 +749,14 @@ export default function RbiaPlanView({ mode = 'plan' }: RbiaPlanViewProps) {
               </div>
             </div>
           </div>
+
+          {/* Process Stepper Sidebar */}
+          <ProcessStepper
+            steps={processSteps}
+            activeStepId={activeStepId}
+            onStepClick={handleStepChange}
+            completedCount={completedSteps}
+          />
         </div>
       </div>
 
