@@ -75,12 +75,60 @@ export function AnnualPlanScreen({ locale }: { locale: Locale }) {
   const [tasks, setTasks] = useState<AuditTask[]>([]);
   const [filteredTasks, setFilteredTasks] = useState<AuditTask[]>([]);
   const [loading, setLoading] = useState(true);
+  const [tableDensity, setTableDensity] = useState<'comfortable' | 'compact' | 'spacious'>('comfortable');
 
   // Filter states
   const [searchQuery, setSearchQuery] = useState('');
   const [filterDepartment, setFilterDepartment] = useState('');
   const [filterRiskLevel, setFilterRiskLevel] = useState('');
   const [filterStatus, setFilterStatus] = useState('');
+
+  // Initialize from URL params
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const params = new URLSearchParams(window.location.search);
+      const search = params.get('search');
+      const dept = params.get('department');
+      const risk = params.get('risk');
+      const status = params.get('status');
+      const density = params.get('density') as 'comfortable' | 'compact' | 'spacious' | null;
+
+      if (search) setSearchQuery(search);
+      if (dept) setFilterDepartment(dept);
+      if (risk) setFilterRiskLevel(risk);
+      if (status) setFilterStatus(status);
+      if (density && ['comfortable', 'compact', 'spacious'].includes(density)) {
+        setTableDensity(density);
+      }
+    }
+  }, []);
+
+  // Update URL when filters change
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const params = new URLSearchParams();
+      if (searchQuery) params.set('search', searchQuery);
+      if (filterDepartment) params.set('department', filterDepartment);
+      if (filterRiskLevel) params.set('risk', filterRiskLevel);
+      if (filterStatus) params.set('status', filterStatus);
+      if (tableDensity !== 'comfortable') params.set('density', tableDensity);
+
+      const newUrl = params.toString() ? `${window.location.pathname}?${params.toString()}` : window.location.pathname;
+      window.history.replaceState({}, '', newUrl);
+    }
+  }, [searchQuery, filterDepartment, filterRiskLevel, filterStatus, tableDensity]);
+
+  // Get density classes
+  const getDensityClasses = () => {
+    switch (tableDensity) {
+      case 'compact':
+        return 'px-2 py-1';
+      case 'spacious':
+        return 'px-6 py-4';
+      default:
+        return 'px-4 py-3';
+    }
+  };
 
   // Mock data for demonstration (in a real app, fetch from API)
   useEffect(() => {
@@ -444,9 +492,44 @@ export function AnnualPlanScreen({ locale }: { locale: Locale }) {
               ? `عرض ${filteredTasks.length} من ${totalTasks} مهمة`
               : `Showing ${filteredTasks.length} of ${totalTasks} tasks`}
           </div>
-          <button className="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors text-sm font-medium">
-            {locale === 'ar' ? 'تصدير CSV' : 'Export CSV'}
-          </button>
+          <div className="flex items-center gap-2">
+            {/* Density Toggle */}
+            <div className="flex items-center gap-1 border border-gray-300 rounded-lg p-1">
+              <button
+                onClick={() => setTableDensity('compact')}
+                className={`px-2 py-1 rounded text-xs font-medium transition-colors ${
+                  tableDensity === 'compact' ? 'bg-blue-100 text-blue-700' : 'text-gray-600 hover:bg-gray-100'
+                }`}
+                title={locale === 'ar' ? 'مضغوط' : 'Compact'}
+                aria-label={locale === 'ar' ? 'مضغوط' : 'Compact'}
+              >
+                {locale === 'ar' ? 'مضغوط' : 'Compact'}
+              </button>
+              <button
+                onClick={() => setTableDensity('comfortable')}
+                className={`px-2 py-1 rounded text-xs font-medium transition-colors ${
+                  tableDensity === 'comfortable' ? 'bg-blue-100 text-blue-700' : 'text-gray-600 hover:bg-gray-100'
+                }`}
+                title={locale === 'ar' ? 'مريح' : 'Comfortable'}
+                aria-label={locale === 'ar' ? 'مريح' : 'Comfortable'}
+              >
+                {locale === 'ar' ? 'مريح' : 'Comfortable'}
+              </button>
+              <button
+                onClick={() => setTableDensity('spacious')}
+                className={`px-2 py-1 rounded text-xs font-medium transition-colors ${
+                  tableDensity === 'spacious' ? 'bg-blue-100 text-blue-700' : 'text-gray-600 hover:bg-gray-100'
+                }`}
+                title={locale === 'ar' ? 'واسع' : 'Spacious'}
+                aria-label={locale === 'ar' ? 'واسع' : 'Spacious'}
+              >
+                {locale === 'ar' ? 'واسع' : 'Spacious'}
+              </button>
+            </div>
+            <button className="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors text-sm font-medium">
+              {locale === 'ar' ? 'تصدير CSV' : 'Export CSV'}
+            </button>
+          </div>
         </div>
       </div>
 
@@ -454,33 +537,33 @@ export function AnnualPlanScreen({ locale }: { locale: Locale }) {
       <div className="bg-white rounded-lg border border-gray-200 overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full">
-            <thead className="bg-gray-50 border-b border-gray-200">
+            <thead className="bg-gray-50 border-b border-gray-200 sticky top-0 z-10">
               <tr>
-                <th className="px-4 py-3 text-start text-xs font-medium text-gray-600 uppercase tracking-wider">
+                <th className={`text-start text-xs font-medium text-gray-600 uppercase tracking-wider bg-gray-50 ${getDensityClasses()}`}>
                   {locale === 'ar' ? 'الرمز' : 'Code'}
                 </th>
-                <th className="px-4 py-3 text-start text-xs font-medium text-gray-600 uppercase tracking-wider">
+                <th className={`text-start text-xs font-medium text-gray-600 uppercase tracking-wider bg-gray-50 ${getDensityClasses()}`}>
                   {locale === 'ar' ? 'عنوان المهمة' : 'Task Title'}
                 </th>
-                <th className="px-4 py-3 text-start text-xs font-medium text-gray-600 uppercase tracking-wider">
+                <th className={`text-start text-xs font-medium text-gray-600 uppercase tracking-wider bg-gray-50 ${getDensityClasses()}`}>
                   {locale === 'ar' ? 'الإدارة' : 'Department'}
                 </th>
-                <th className="px-4 py-3 text-start text-xs font-medium text-gray-600 uppercase tracking-wider">
+                <th className={`text-start text-xs font-medium text-gray-600 uppercase tracking-wider bg-gray-50 ${getDensityClasses()}`}>
                   {locale === 'ar' ? 'المخاطر' : 'Risk Level'}
                 </th>
-                <th className="px-4 py-3 text-start text-xs font-medium text-gray-600 uppercase tracking-wider">
+                <th className={`text-start text-xs font-medium text-gray-600 uppercase tracking-wider bg-gray-50 ${getDensityClasses()}`}>
                   {locale === 'ar' ? 'النوع' : 'Type'}
                 </th>
-                <th className="px-4 py-3 text-start text-xs font-medium text-gray-600 uppercase tracking-wider">
+                <th className={`text-start text-xs font-medium text-gray-600 uppercase tracking-wider bg-gray-50 ${getDensityClasses()}`}>
                   {locale === 'ar' ? 'الربع' : 'Quarter'}
                 </th>
-                <th className="px-4 py-3 text-start text-xs font-medium text-gray-600 uppercase tracking-wider">
+                <th className={`text-start text-xs font-medium text-gray-600 uppercase tracking-wider bg-gray-50 ${getDensityClasses()}`}>
                   {locale === 'ar' ? 'الساعات' : 'Hours'}
                 </th>
-                <th className="px-4 py-3 text-start text-xs font-medium text-gray-600 uppercase tracking-wider">
+                <th className={`text-start text-xs font-medium text-gray-600 uppercase tracking-wider bg-gray-50 ${getDensityClasses()}`}>
                   {locale === 'ar' ? 'الحالة' : 'Status'}
                 </th>
-                <th className="px-4 py-3 text-start text-xs font-medium text-gray-600 uppercase tracking-wider">
+                <th className={`text-start text-xs font-medium text-gray-600 uppercase tracking-wider bg-gray-50 sticky right-0 ${getDensityClasses()}`}>
                   {locale === 'ar' ? 'إجراءات' : 'Actions'}
                 </th>
               </tr>
@@ -488,10 +571,10 @@ export function AnnualPlanScreen({ locale }: { locale: Locale }) {
             <tbody className="divide-y divide-gray-200">
               {filteredTasks.map(task => (
                 <tr key={task.id} className="hover:bg-gray-50 transition-colors">
-                  <td className="px-4 py-3 text-sm font-medium text-gray-900">{task.code}</td>
-                  <td className="px-4 py-3 text-sm text-gray-900">{task.title}</td>
-                  <td className="px-4 py-3 text-sm text-gray-600">{task.department}</td>
-                  <td className="px-4 py-3">
+                  <td className={`text-sm font-medium text-gray-900 ${getDensityClasses()}`}>{task.code}</td>
+                  <td className={`text-sm text-gray-900 ${getDensityClasses()}`}>{task.title}</td>
+                  <td className={`text-sm text-gray-600 ${getDensityClasses()}`}>{task.department}</td>
+                  <td className={getDensityClasses()}>
                     <span
                       className={clsx(
                         'inline-block px-2 py-1 rounded text-xs font-medium',
@@ -501,12 +584,12 @@ export function AnnualPlanScreen({ locale }: { locale: Locale }) {
                       {getRiskLevelLabel(task.riskLevel)}
                     </span>
                   </td>
-                  <td className="px-4 py-3 text-sm text-gray-600">
+                  <td className={`text-sm text-gray-600 ${getDensityClasses()}`}>
                     {getAuditTypeLabel(task.auditType)}
                   </td>
-                  <td className="px-4 py-3 text-sm text-gray-600">{task.plannedQuarter}</td>
-                  <td className="px-4 py-3 text-sm text-gray-600">{task.estimatedHours}</td>
-                  <td className="px-4 py-3">
+                  <td className={`text-sm text-gray-600 ${getDensityClasses()}`}>{task.plannedQuarter}</td>
+                  <td className={`text-sm text-gray-600 ${getDensityClasses()}`}>{task.estimatedHours}</td>
+                  <td className={getDensityClasses()}>
                     <span
                       className={clsx(
                         'inline-block px-2 py-1 rounded text-xs font-medium',
@@ -516,8 +599,8 @@ export function AnnualPlanScreen({ locale }: { locale: Locale }) {
                       {getStatusLabel(task.status)}
                     </span>
                   </td>
-                  <td className="px-4 py-3">
-                    <div className="flex items-center gap-2">
+                  <td className={getDensityClasses()}>
+                    <div className="flex items-center gap-2 sticky right-0 bg-white">
                       <button
                         className="text-blue-600 hover:text-blue-800 transition-colors"
                         title={locale === 'ar' ? 'عرض' : 'View'}
