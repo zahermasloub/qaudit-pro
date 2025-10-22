@@ -139,7 +139,7 @@ export function AnnualPlanScreen({ locale }: { locale: Locale }) {
 
   // Define process steps (complete 11-stage RBIA)
   const processSteps = [
-    { id: 1, label: locale === 'ar' ? 'الخطة السنوية' : 'Annual Plan', status: currentPlanId && contentView === 'annualPlan' ? 'completed' : 'available' as const },
+    { id: 1, label: locale === 'ar' ? 'الخطة السنوية' : 'Annual Plan', status: (currentPlanId && tasks.length > 0) ? 'completed' : 'available' as const },
     { id: 2, label: locale === 'ar' ? 'التخطيط' : 'Planning', status: 'available' as const },
     { id: 3, label: locale === 'ar' ? 'فهم العملية والمخاطر' : 'Process & Risk Understanding', status: 'available' as const },
     { id: 4, label: locale === 'ar' ? 'برنامج العمل والعينات' : 'Work Program & Sampling', status: 'available' as const },
@@ -198,6 +198,7 @@ export function AnnualPlanScreen({ locale }: { locale: Locale }) {
       const risk = params.get('risk');
       const status = params.get('status');
       const density = params.get('density') as 'comfortable' | 'compact' | 'spacious' | null;
+      const step = params.get('step') as ContentView | null;
 
       if (search) setSearchQuery(search);
       if (dept) setFilterDepartment(dept);
@@ -205,6 +206,27 @@ export function AnnualPlanScreen({ locale }: { locale: Locale }) {
       if (status) setFilterStatus(status);
       if (density && ['comfortable', 'compact', 'spacious'].includes(density)) {
         setTableDensity(density);
+      }
+      
+      // Deep-link to specific step
+      if (step && step !== 'empty') {
+        setContentView(step);
+        // Map content view to step ID
+        const stepMapping: Record<ContentView, number> = {
+          empty: 0,
+          annualPlan: 1,
+          prioritization: 2,
+          resources: 3,
+          timeline: 4,
+          approval: 5,
+          execution: 6,
+          followup: 7,
+          reporting: 8,
+          recommendations: 9,
+          closure: 10,
+          qa: 11,
+        };
+        setActiveStepId(stepMapping[step] || null);
       }
     }
   }, []);
@@ -218,11 +240,12 @@ export function AnnualPlanScreen({ locale }: { locale: Locale }) {
       if (filterRiskLevel) params.set('risk', filterRiskLevel);
       if (filterStatus) params.set('status', filterStatus);
       if (tableDensity !== 'comfortable') params.set('density', tableDensity);
+      if (contentView !== 'empty') params.set('step', contentView);
 
       const newUrl = params.toString() ? `${window.location.pathname}?${params.toString()}` : window.location.pathname;
       window.history.replaceState({}, '', newUrl);
     }
-  }, [searchQuery, filterDepartment, filterRiskLevel, filterStatus, tableDensity]);
+  }, [searchQuery, filterDepartment, filterRiskLevel, filterStatus, tableDensity, contentView]);
 
   // Get density classes
   const getDensityClasses = () => {
@@ -388,7 +411,7 @@ export function AnnualPlanScreen({ locale }: { locale: Locale }) {
               )}
             </div>
             <button
-              className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-medium focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-medium focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
               onClick={() => setOpenAnnualPlan(true)}
               aria-label={locale === 'ar' ? 'إنشاء خطة جديدة' : 'Create New Plan'}
             >
@@ -398,21 +421,23 @@ export function AnnualPlanScreen({ locale }: { locale: Locale }) {
         </div>
       </div>
 
-      {/* Main Content with Sidebar */}
+      {/* Main Content with Grid Layout */}
       <div className="container mx-auto max-w-[1440px] px-6 py-6">
-        <div className="flex gap-6">
-          {/* ProcessStepper Sidebar */}
-          <ProcessStepper
-            steps={processSteps}
-            activeStepId={activeStepId || 1}
-            onStepClick={handleStepClick}
-            completedCount={processSteps.filter(s => s.status === 'completed').length}
-          />
+        <div className="grid grid-cols-[320px_1fr] gap-6 lg:grid-cols-[320px_1fr_320px]">
+          {/* Left Sidebar - ProcessStepper */}
+          <aside className="min-w-[320px] w-[320px] shrink-0">
+            <ProcessStepper
+              steps={processSteps}
+              activeStepId={activeStepId || 1}
+              onStepClick={handleStepClick}
+              completedCount={processSteps.filter(s => s.status === 'completed').length}
+            />
+          </aside>
 
-          {/* Main Content Area */}
-          <div className="flex-1 space-y-6">
+          {/* Main Content Area - Dynamic */}
+          <main className="min-w-0 space-y-6">
             {/* KPI Cards - Only show when plan is loaded */}
-            {selectedPlan && contentView === 'annualPlan' && (
+            {selectedPlan && (
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
                 {/* Plan Status */}
                 <div className="bg-white rounded-lg border border-gray-200 p-6">
@@ -485,7 +510,7 @@ export function AnnualPlanScreen({ locale }: { locale: Locale }) {
                       : 'Start by creating a new annual internal audit plan'}
                   </p>
                   <button
-                    className="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-medium focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-medium focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
                     onClick={() => setOpenAnnualPlan(true)}
                   >
                     + {locale === 'ar' ? 'إنشاء خطة جديدة' : 'Create New Plan'}
@@ -504,7 +529,7 @@ export function AnnualPlanScreen({ locale }: { locale: Locale }) {
                       <input
                         type="text"
                         placeholder={locale === 'ar' ? 'بحث...' : 'Search...'}
-                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
                         value={searchQuery}
                         onChange={e => setSearchQuery(e.target.value)}
                       />
@@ -513,7 +538,7 @@ export function AnnualPlanScreen({ locale }: { locale: Locale }) {
                     {/* Department Filter */}
                     <div>
                       <select
-                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
                         value={filterDepartment}
                         onChange={e => setFilterDepartment(e.target.value)}
                       >
@@ -529,7 +554,7 @@ export function AnnualPlanScreen({ locale }: { locale: Locale }) {
                     {/* Risk Level Filter */}
                     <div>
                       <select
-                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
                         value={filterRiskLevel}
                         onChange={e => setFilterRiskLevel(e.target.value)}
                       >
@@ -544,7 +569,7 @@ export function AnnualPlanScreen({ locale }: { locale: Locale }) {
                     {/* Status Filter */}
                     <div>
                       <select
-                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
                         value={filterStatus}
                         onChange={e => setFilterStatus(e.target.value)}
                       >
@@ -567,7 +592,7 @@ export function AnnualPlanScreen({ locale }: { locale: Locale }) {
                       <div className="flex items-center gap-1 border border-gray-300 rounded-lg p-1">
                         <button
                           onClick={() => setTableDensity('compact')}
-                          className={`px-2 py-1 rounded text-xs font-medium transition-colors ${
+                          className={`px-2 py-1 rounded text-xs font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 ${
                             tableDensity === 'compact' ? 'bg-blue-100 text-blue-700' : 'text-gray-600 hover:bg-gray-100'
                           }`}
                           title={locale === 'ar' ? 'مضغوط' : 'Compact'}
@@ -577,7 +602,7 @@ export function AnnualPlanScreen({ locale }: { locale: Locale }) {
                         </button>
                         <button
                           onClick={() => setTableDensity('comfortable')}
-                          className={`px-2 py-1 rounded text-xs font-medium transition-colors ${
+                          className={`px-2 py-1 rounded text-xs font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 ${
                             tableDensity === 'comfortable' ? 'bg-blue-100 text-blue-700' : 'text-gray-600 hover:bg-gray-100'
                           }`}
                           title={locale === 'ar' ? 'مريح' : 'Comfortable'}
@@ -587,7 +612,7 @@ export function AnnualPlanScreen({ locale }: { locale: Locale }) {
                         </button>
                         <button
                           onClick={() => setTableDensity('spacious')}
-                          className={`px-2 py-1 rounded text-xs font-medium transition-colors ${
+                          className={`px-2 py-1 rounded text-xs font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 ${
                             tableDensity === 'spacious' ? 'bg-blue-100 text-blue-700' : 'text-gray-600 hover:bg-gray-100'
                           }`}
                           title={locale === 'ar' ? 'واسع' : 'Spacious'}
@@ -596,7 +621,7 @@ export function AnnualPlanScreen({ locale }: { locale: Locale }) {
                           {locale === 'ar' ? 'واسع' : 'Spacious'}
                         </button>
                       </div>
-                      <button className="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors text-sm font-medium">
+                      <button className="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors text-sm font-medium focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">
                         {locale === 'ar' ? 'تصدير CSV' : 'Export CSV'}
                       </button>
                     </div>
@@ -611,19 +636,19 @@ export function AnnualPlanScreen({ locale }: { locale: Locale }) {
                     </div>
                   </div>
                 ) : (
-                  <div className="bg-white rounded-lg border border-gray-200 overflow-hidden">
-                    <div className="overflow-x-hidden">
+                  <div className="bg-white rounded-lg border border-gray-200 overflow-hidden shadow-sm">
+                    <div className="w-full overflow-x-hidden">
                       <table className="w-full table-fixed">
                         <colgroup>
-                          <col style={{ width: '96px' }} />
-                          <col style={{ width: '28%' }} />
-                          <col style={{ width: '128px' }} />
-                          <col style={{ width: '96px' }} />
-                          <col style={{ width: '112px' }} />
-                          <col style={{ width: '80px' }} />
-                          <col style={{ width: '96px' }} />
-                          <col style={{ width: '112px' }} />
-                          <col style={{ width: '96px' }} />
+                          <col className="w-24" />
+                          <col className="w-[28%]" />
+                          <col className="w-32" />
+                          <col className="w-24" />
+                          <col className="w-28" />
+                          <col className="w-20" />
+                          <col className="w-24" />
+                          <col className="w-28" />
+                          <col className="w-24" />
                         </colgroup>
                         <thead className="bg-gray-50 border-b border-gray-200">
                           <tr>
@@ -656,12 +681,12 @@ export function AnnualPlanScreen({ locale }: { locale: Locale }) {
                             </th>
                           </tr>
                         </thead>
-                        <tbody className="divide-y divide-gray-200">
+                        <tbody className="divide-y divide-gray-200 bg-white">
                           {filteredTasks.map(task => (
-                            <tr key={task.id} className="hover:bg-gray-50 transition-colors">
-                              <td className={`text-sm font-medium text-gray-900 truncate ${getDensityClasses()}`}>{task.code}</td>
+                            <tr key={task.id} className="hover:bg-gray-50 transition-colors align-top">
+                              <td className={`text-sm font-medium text-gray-900 ${getDensityClasses()}`}>{task.code}</td>
                               <td className={`text-sm text-gray-900 whitespace-normal leading-6 ${getDensityClasses()}`}>{task.title}</td>
-                              <td className={`text-sm text-gray-600 whitespace-normal leading-6 ${getDensityClasses()}`}>{task.department}</td>
+                              <td className={`text-sm text-gray-600 truncate ${getDensityClasses()}`}>{task.department}</td>
                               <td className={getDensityClasses()}>
                                 <span
                                   className={clsx(
@@ -690,16 +715,16 @@ export function AnnualPlanScreen({ locale }: { locale: Locale }) {
                               <td className={getDensityClasses()}>
                                 <div className="flex items-center gap-2">
                                   <button
-                                    className="text-green-600 hover:text-green-800 transition-colors focus:outline-none focus:ring-2 focus:ring-green-500 rounded"
+                                    className="text-green-600 hover:text-green-800 transition-colors focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 rounded"
                                     title={locale === 'ar' ? 'تعديل' : 'Edit'}
-                                    aria-label={locale === 'ar' ? 'تعديل' : 'Edit'}
+                                    aria-label={`${locale === 'ar' ? 'تعديل' : 'Edit'} ${task.title}`}
                                   >
                                     ✏️
                                   </button>
                                   <button
-                                    className="text-red-600 hover:text-red-800 transition-colors focus:outline-none focus:ring-2 focus:ring-red-500 rounded"
+                                    className="text-red-600 hover:text-red-800 transition-colors focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 rounded"
                                     title={locale === 'ar' ? 'حذف' : 'Delete'}
-                                    aria-label={locale === 'ar' ? 'حذف' : 'Delete'}
+                                    aria-label={`${locale === 'ar' ? 'حذف' : 'Delete'} ${task.title}`}
                                     onClick={() => handleDeleteTask(task.id)}
                                   >
                                     🗑️
@@ -738,7 +763,39 @@ export function AnnualPlanScreen({ locale }: { locale: Locale }) {
                 </div>
               </div>
             )}
-          </div>
+          </main>
+
+          {/* Right Sidebar - RBIA Info (Hidden on mobile/tablet) */}
+          <aside className="hidden lg:block min-w-[320px] w-[320px] shrink-0">
+            <div className="bg-white rounded-lg border border-gray-200 p-6 sticky top-[88px]">
+              <h3 className="text-lg font-bold text-gray-900 mb-4">
+                {locale === 'ar' ? 'معلومات RBIA' : 'RBIA Information'}
+              </h3>
+              <div className="space-y-4 text-sm text-gray-600">
+                <div>
+                  <h4 className="font-semibold text-gray-800 mb-2">
+                    {locale === 'ar' ? 'نهج التدقيق القائم على المخاطر' : 'Risk-Based Internal Audit'}
+                  </h4>
+                  <p className="leading-relaxed">
+                    {locale === 'ar' 
+                      ? 'منهجية منظمة لتحديد وتقييم المخاطر وتطوير خطة تدقيق شاملة.'
+                      : 'A systematic approach to identify, assess risks, and develop comprehensive audit plans.'}
+                  </p>
+                </div>
+                <div className="border-t border-gray-200 pt-4">
+                  <h4 className="font-semibold text-gray-800 mb-2">
+                    {locale === 'ar' ? 'المراحل الأساسية' : 'Key Phases'}
+                  </h4>
+                  <ul className="space-y-2 list-disc list-inside">
+                    <li>{locale === 'ar' ? 'التخطيط السنوي' : 'Annual Planning'}</li>
+                    <li>{locale === 'ar' ? 'تقييم المخاطر' : 'Risk Assessment'}</li>
+                    <li>{locale === 'ar' ? 'الأعمال الميدانية' : 'Fieldwork'}</li>
+                    <li>{locale === 'ar' ? 'إعداد التقارير' : 'Reporting'}</li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </aside>
         </div>
       </div>
 

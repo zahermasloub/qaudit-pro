@@ -139,7 +139,7 @@ export default function ProcessStepper({
   return (
     <>
       {/* Desktop Sidebar - Hidden on mobile */}
-      <div className="hidden lg:block w-full flex-shrink-0">
+      <div className="w-full">
         <div className="bg-white rounded-xl shadow-sm border border-gray-200 sticky top-[88px] overflow-hidden">
           {/* Header */}
           <div className="bg-gradient-to-br from-slate-800 to-slate-900 text-white px-3 py-3">
@@ -160,7 +160,7 @@ export default function ProcessStepper({
                 onKeyDown={e => handleKeyDown(e, step, index)}
                 role="button"
                 tabIndex={step.status === 'locked' ? -1 : 0}
-                aria-current={step.status === 'active' ? 'step' : undefined}
+                aria-current={step.id === activeStepId ? 'step' : undefined}
                 aria-disabled={step.status === 'locked'}
                 aria-label={getAriaLabel(step)}
                 title={step.status === 'locked' ? step.lockReason : step.label}
@@ -172,7 +172,7 @@ export default function ProcessStepper({
                 <div className="flex-1 min-w-0">
                   <p
                     className={`text-xs font-semibold truncate ${
-                      step.status === 'active'
+                      step.id === activeStepId
                         ? 'text-blue-900'
                         : step.status === 'completed'
                           ? 'text-green-900'
@@ -211,78 +211,6 @@ export default function ProcessStepper({
               />
             </div>
           </div>
-        </div>
-      </div>
-
-      {/* Mobile Horizontal Stepper - Visible only on mobile */}
-      <div className="lg:hidden mb-6">
-        <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
-          {/* Mobile Header (Collapsible) */}
-          <button
-            onClick={() => setIsMobileExpanded(!isMobileExpanded)}
-            className="w-full flex items-center justify-between px-4 py-3 bg-gradient-to-br from-slate-800 to-slate-900 text-white"
-          >
-            <div className="flex items-center gap-3">
-              <h3 className="text-sm font-semibold">مراحل العملية</h3>
-              <span className="px-2 py-0.5 bg-white/20 rounded text-xs">
-                {completedCount}/{totalSteps}
-              </span>
-            </div>
-            {isMobileExpanded ? (
-              <ChevronUp className="w-5 h-5" />
-            ) : (
-              <ChevronDown className="w-5 h-5" />
-            )}
-          </button>
-
-          {/* Mobile Steps - Accordion Style */}
-          {isMobileExpanded && (
-            <div className="p-3 space-y-2 max-h-[400px] overflow-y-auto">
-              {steps.map((step, index) => (
-                <div
-                  key={step.id}
-                  data-step-id={step.id}
-                  className={getStepClasses(step)}
-                  onClick={() => handleStepClick(step)}
-                  onKeyDown={e => handleKeyDown(e, step, index)}
-                  role="button"
-                  tabIndex={step.status === 'locked' ? -1 : 0}
-                  aria-current={step.status === 'active' ? 'step' : undefined}
-                  aria-disabled={step.status === 'locked'}
-                  aria-label={getAriaLabel(step)}
-                  title={step.status === 'locked' ? step.lockReason : step.label}
-                >
-                  <div className={getNumberClasses(step)}>{step.id}</div>
-                  <div className="flex-1 min-w-0">
-                    <p
-                      className={`text-sm font-semibold truncate ${
-                        step.status === 'active'
-                          ? 'text-blue-900'
-                          : step.status === 'completed'
-                            ? 'text-green-900'
-                            : 'text-gray-800'
-                      }`}
-                    >
-                      {step.label}
-                    </p>
-                  </div>
-                  {getStatusIcon(step.status)}
-                </div>
-              ))}
-            </div>
-          )}
-
-          {/* Mobile Progress Bar (Always Visible) */}
-          {!isMobileExpanded && (
-            <div className="px-4 pb-3">
-              <div className="w-full bg-gray-200 rounded-full h-2">
-                <div
-                  className="bg-gradient-to-r from-blue-500 to-green-500 h-2 rounded-full transition-all duration-500"
-                  style={{ width: `${(completedCount / totalSteps) * 100}%` }}
-                />
-              </div>
-            </div>
-          )}
         </div>
       </div>
 
