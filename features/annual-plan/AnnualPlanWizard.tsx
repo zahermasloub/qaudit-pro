@@ -14,6 +14,39 @@ import { toast } from 'sonner';
 import { useI18n, type Locale } from '@/lib/i18n';
 import { planDataSchema, taskSchema, type PlanDataFormValues, type TaskFormValues } from './wizard.schema';
 
+// DRY Mappings - Centralized option lists
+const TASK_TYPE_OPTIONS = [
+  { value: 'compliance', labelAr: 'الالتزام', labelEn: 'Compliance' },
+  { value: 'financial', labelAr: 'مالي', labelEn: 'Financial' },
+  { value: 'operational', labelAr: 'تشغيلي', labelEn: 'Operational' },
+  { value: 'it_systems', labelAr: 'نظم معلومات', labelEn: 'IT Systems' },
+] as const;
+
+const RISK_LEVEL_OPTIONS = [
+  { value: 'low', labelAr: 'منخفض', labelEn: 'Low' },
+  { value: 'medium', labelAr: 'متوسط', labelEn: 'Medium' },
+  { value: 'high', labelAr: 'عالي', labelEn: 'High' },
+  { value: 'very_high', labelAr: 'عالي جداً', labelEn: 'Very High' },
+] as const;
+
+const PRIORITY_OPTIONS = [
+  { value: 'low', labelAr: 'منخفضة', labelEn: 'Low' },
+  { value: 'medium', labelAr: 'متوسطة', labelEn: 'Medium' },
+  { value: 'high', labelAr: 'عالية', labelEn: 'High' },
+] as const;
+
+const QUARTER_OPTIONS = ['Q1', 'Q2', 'Q3', 'Q4'] as const;
+
+const getRiskLevelBadgeClass = (level: string) => {
+  const classes: Record<string, string> = {
+    very_high: 'bg-red-100 text-red-800',
+    high: 'bg-orange-100 text-orange-800',
+    medium: 'bg-yellow-100 text-yellow-800',
+    low: 'bg-green-100 text-green-800',
+  };
+  return classes[level] || 'bg-gray-100 text-gray-800';
+};
+
 interface AnnualPlanWizardProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
@@ -251,6 +284,7 @@ export function AnnualPlanWizard({
             type="button"
             onClick={() => onOpenChange(false)}
             className="rounded-full p-2 text-gray-500 hover:bg-gray-100 transition-colors"
+            aria-label={locale === 'ar' ? 'إغلاق' : 'Close'}
           >
             ✕
           </button>
@@ -258,14 +292,20 @@ export function AnnualPlanWizard({
 
         {/* Progress Indicator */}
         <div className="flex items-center justify-center px-6 py-4 bg-gray-50 border-b">
-          <div className="flex items-center gap-2">
-            <div className={`flex items-center justify-center w-8 h-8 rounded-full ${step === 1 ? 'bg-blue-600 text-white' : 'bg-green-600 text-white'}`}>
+          <div className="flex items-center gap-2" role="progressbar" aria-valuenow={step} aria-valuemin={1} aria-valuemax={2}>
+            <div 
+              className={`flex items-center justify-center w-8 h-8 rounded-full ${step === 1 ? 'bg-blue-600 text-white' : 'bg-green-600 text-white'}`}
+              aria-label={locale === 'ar' ? 'الخطوة 1' : 'Step 1'}
+            >
               {step === 1 ? '1' : '✓'}
             </div>
             <div className="w-16 h-1 bg-gray-300">
               <div className={`h-full bg-blue-600 transition-all ${step === 2 ? 'w-full' : 'w-0'}`} />
             </div>
-            <div className={`flex items-center justify-center w-8 h-8 rounded-full ${step === 2 ? 'bg-blue-600 text-white' : 'bg-gray-300 text-gray-600'}`}>
+            <div 
+              className={`flex items-center justify-center w-8 h-8 rounded-full ${step === 2 ? 'bg-blue-600 text-white' : 'bg-gray-300 text-gray-600'}`}
+              aria-label={locale === 'ar' ? 'الخطوة 2' : 'Step 2'}
+            >
               2
             </div>
           </div>
@@ -363,10 +403,11 @@ function StepPlanData({
     <div className="space-y-4">
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">
+          <label htmlFor="planRef" className="block text-sm font-medium text-gray-700 mb-1">
             {t.forms.wizard.planRef} <span className="text-red-500">*</span>
           </label>
           <input
+            id="planRef"
             {...form.register('planRef')}
             className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
             placeholder="PLAN-2025-001"
@@ -377,10 +418,11 @@ function StepPlanData({
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">
+          <label htmlFor="fiscalYear" className="block text-sm font-medium text-gray-700 mb-1">
             {t.forms.annualPlan.fiscalYear} <span className="text-red-500">*</span>
           </label>
           <input
+            id="fiscalYear"
             type="number"
             {...form.register('fiscalYear', { valueAsNumber: true })}
             className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
@@ -391,10 +433,11 @@ function StepPlanData({
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">
+          <label htmlFor="preparedDate" className="block text-sm font-medium text-gray-700 mb-1">
             {t.forms.wizard.preparedDate} <span className="text-red-500">*</span>
           </label>
           <input
+            id="preparedDate"
             type="date"
             {...form.register('preparedDate')}
             className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
@@ -405,10 +448,11 @@ function StepPlanData({
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">
+          <label htmlFor="approvedBy" className="block text-sm font-medium text-gray-700 mb-1">
             {t.forms.wizard.approvedBy}
           </label>
           <input
+            id="approvedBy"
             {...form.register('approvedBy')}
             className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
             placeholder={locale === 'ar' ? 'اسم المعتمد' : 'Approver name'}
@@ -416,10 +460,11 @@ function StepPlanData({
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">
+          <label htmlFor="preparedByName" className="block text-sm font-medium text-gray-700 mb-1">
             {t.forms.wizard.preparedBy}
           </label>
           <input
+            id="preparedByName"
             {...form.register('preparedByName')}
             className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
             placeholder={locale === 'ar' ? 'اسم المُعِد' : 'Preparer name'}
@@ -428,10 +473,11 @@ function StepPlanData({
       </div>
 
       <div>
-        <label className="block text-sm font-medium text-gray-700 mb-1">
+        <label htmlFor="standards" className="block text-sm font-medium text-gray-700 mb-1">
           {t.forms.wizard.standards}
         </label>
         <textarea
+          id="standards"
           {...form.register('standards')}
           rows={2}
           className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
@@ -440,10 +486,11 @@ function StepPlanData({
       </div>
 
       <div>
-        <label className="block text-sm font-medium text-gray-700 mb-1">
+        <label htmlFor="methodology" className="block text-sm font-medium text-gray-700 mb-1">
           {t.forms.wizard.methodology}
         </label>
         <textarea
+          id="methodology"
           {...form.register('methodology')}
           rows={2}
           className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
@@ -452,10 +499,11 @@ function StepPlanData({
       </div>
 
       <div>
-        <label className="block text-sm font-medium text-gray-700 mb-1">
+        <label htmlFor="objectives" className="block text-sm font-medium text-gray-700 mb-1">
           {t.forms.wizard.objectives}
         </label>
         <textarea
+          id="objectives"
           {...form.register('objectives')}
           rows={3}
           className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
@@ -464,11 +512,12 @@ function StepPlanData({
       </div>
 
       <div>
-        <label className="block text-sm font-medium text-gray-700 mb-1">
+        <label htmlFor="newRiskSource" className="block text-sm font-medium text-gray-700 mb-1">
           {t.forms.wizard.riskSources}
         </label>
         <div className="flex gap-2 mb-2">
           <input
+            id="newRiskSource"
             type="text"
             value={newRiskSource}
             onChange={(e) => setNewRiskSource(e.target.value)}
@@ -480,6 +529,7 @@ function StepPlanData({
             type="button"
             onClick={addRiskSource}
             className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+            aria-label={locale === 'ar' ? 'إضافة مصدر خطر' : 'Add risk source'}
           >
             {t.forms.wizard.addRiskSource}
           </button>
@@ -495,6 +545,7 @@ function StepPlanData({
                 type="button"
                 onClick={() => removeRiskSource(index)}
                 className="text-blue-600 hover:text-blue-800"
+                aria-label={locale === 'ar' ? `حذف ${source}` : `Remove ${source}`}
               >
                 ×
               </button>
@@ -546,10 +597,11 @@ function StepPlanTasks({ tasks, taskForm, editingTask, setEditingTask, onSaveTas
         <form onSubmit={handleSubmit} className="p-4 border border-gray-300 rounded-lg bg-gray-50 space-y-4">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label htmlFor="task-seqNo" className="block text-sm font-medium text-gray-700 mb-1">
                 {t.forms.wizard.seqNo} <span className="text-red-500">*</span>
               </label>
               <input
+                id="task-seqNo"
                 type="number"
                 {...taskForm.register('seqNo', { valueAsNumber: true })}
                 className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
@@ -557,10 +609,11 @@ function StepPlanTasks({ tasks, taskForm, editingTask, setEditingTask, onSaveTas
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label htmlFor="task-taskRef" className="block text-sm font-medium text-gray-700 mb-1">
                 {t.forms.wizard.taskRef} <span className="text-red-500">*</span>
               </label>
               <input
+                id="task-taskRef"
                 {...taskForm.register('taskRef')}
                 className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
                 placeholder="TSK-001"
@@ -568,10 +621,11 @@ function StepPlanTasks({ tasks, taskForm, editingTask, setEditingTask, onSaveTas
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label htmlFor="task-durationDays" className="block text-sm font-medium text-gray-700 mb-1">
                 {t.forms.wizard.durationDays} <span className="text-red-500">*</span>
               </label>
               <input
+                id="task-durationDays"
                 type="number"
                 {...taskForm.register('durationDays', { valueAsNumber: true })}
                 className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
@@ -580,10 +634,11 @@ function StepPlanTasks({ tasks, taskForm, editingTask, setEditingTask, onSaveTas
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
+            <label htmlFor="task-title" className="block text-sm font-medium text-gray-700 mb-1">
               {t.forms.wizard.taskTitle} <span className="text-red-500">*</span>
             </label>
             <input
+              id="task-title"
               {...taskForm.register('title')}
               className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
               placeholder={locale === 'ar' ? 'عنوان المهمة' : 'Task title'}
@@ -592,70 +647,78 @@ function StepPlanTasks({ tasks, taskForm, editingTask, setEditingTask, onSaveTas
 
           <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label htmlFor="task-taskType" className="block text-sm font-medium text-gray-700 mb-1">
                 {t.forms.wizard.taskType}
               </label>
               <select
+                id="task-taskType"
                 {...taskForm.register('taskType')}
                 className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
               >
-                <option value="compliance">{locale === 'ar' ? 'الالتزام' : 'Compliance'}</option>
-                <option value="financial">{locale === 'ar' ? 'مالي' : 'Financial'}</option>
-                <option value="operational">{locale === 'ar' ? 'تشغيلي' : 'Operational'}</option>
-                <option value="it_systems">{locale === 'ar' ? 'نظم معلومات' : 'IT Systems'}</option>
+                {TASK_TYPE_OPTIONS.map(opt => (
+                  <option key={opt.value} value={opt.value}>
+                    {locale === 'ar' ? opt.labelAr : opt.labelEn}
+                  </option>
+                ))}
               </select>
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label htmlFor="task-riskLevel" className="block text-sm font-medium text-gray-700 mb-1">
                 {t.forms.wizard.riskLevel}
               </label>
               <select
+                id="task-riskLevel"
                 {...taskForm.register('riskLevel')}
                 className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
               >
-                <option value="low">{locale === 'ar' ? 'منخفض' : 'Low'}</option>
-                <option value="medium">{locale === 'ar' ? 'متوسط' : 'Medium'}</option>
-                <option value="high">{locale === 'ar' ? 'عالي' : 'High'}</option>
-                <option value="very_high">{locale === 'ar' ? 'عالي جداً' : 'Very High'}</option>
+                {RISK_LEVEL_OPTIONS.map(opt => (
+                  <option key={opt.value} value={opt.value}>
+                    {locale === 'ar' ? opt.labelAr : opt.labelEn}
+                  </option>
+                ))}
               </select>
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label htmlFor="task-priority" className="block text-sm font-medium text-gray-700 mb-1">
                 {t.forms.wizard.priority}
               </label>
               <select
+                id="task-priority"
                 {...taskForm.register('priority')}
                 className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
               >
-                <option value="low">{locale === 'ar' ? 'منخفضة' : 'Low'}</option>
-                <option value="medium">{locale === 'ar' ? 'متوسطة' : 'Medium'}</option>
-                <option value="high">{locale === 'ar' ? 'عالية' : 'High'}</option>
+                {PRIORITY_OPTIONS.map(opt => (
+                  <option key={opt.value} value={opt.value}>
+                    {locale === 'ar' ? opt.labelAr : opt.labelEn}
+                  </option>
+                ))}
               </select>
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label htmlFor="task-scheduledQuarter" className="block text-sm font-medium text-gray-700 mb-1">
                 {t.forms.wizard.scheduledQuarter}
               </label>
               <select
+                id="task-scheduledQuarter"
                 {...taskForm.register('scheduledQuarter')}
                 className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
               >
-                <option value="Q1">Q1</option>
-                <option value="Q2">Q2</option>
-                <option value="Q3">Q3</option>
-                <option value="Q4">Q4</option>
+                {QUARTER_OPTIONS.map(q => (
+                  <option key={q} value={q}>{q}</option>
+                ))}
               </select>
             </div>
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
+            <label htmlFor="task-notes" className="block text-sm font-medium text-gray-700 mb-1">
               {t.forms.wizard.notes}
             </label>
             <textarea
+              id="task-notes"
               {...taskForm.register('notes')}
               rows={2}
               className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
@@ -694,12 +757,7 @@ function StepPlanTasks({ tasks, taskForm, editingTask, setEditingTask, onSaveTas
                   <div className="flex items-center gap-2 mb-2">
                     <span className="text-sm font-medium text-gray-600">#{task.seqNo}</span>
                     <span className="text-sm font-mono text-blue-600">{task.taskRef}</span>
-                    <span className={`text-xs px-2 py-1 rounded ${
-                      task.riskLevel === 'very_high' ? 'bg-red-100 text-red-800' :
-                      task.riskLevel === 'high' ? 'bg-orange-100 text-orange-800' :
-                      task.riskLevel === 'medium' ? 'bg-yellow-100 text-yellow-800' :
-                      'bg-green-100 text-green-800'
-                    }`}>
+                    <span className={`text-xs px-2 py-1 rounded ${getRiskLevelBadgeClass(task.riskLevel)}`}>
                       {task.riskLevel}
                     </span>
                   </div>
@@ -717,6 +775,7 @@ function StepPlanTasks({ tasks, taskForm, editingTask, setEditingTask, onSaveTas
                     type="button"
                     onClick={() => handleEdit(task)}
                     className="text-blue-600 hover:text-blue-700 text-sm font-medium"
+                    aria-label={locale === 'ar' ? `تعديل ${task.title}` : `Edit ${task.title}`}
                   >
                     {t.forms.common.edit}
                   </button>
@@ -724,6 +783,7 @@ function StepPlanTasks({ tasks, taskForm, editingTask, setEditingTask, onSaveTas
                     type="button"
                     onClick={() => onDeleteTask(task.id)}
                     className="text-red-600 hover:text-red-700 text-sm font-medium"
+                    aria-label={locale === 'ar' ? `حذف ${task.title}` : `Delete ${task.title}`}
                   >
                     {t.forms.common.delete}
                   </button>
