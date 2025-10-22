@@ -2,7 +2,11 @@ import animate from 'tailwindcss-animate';
 import rtl from 'tailwindcss-rtl';
 
 export default {
-  content: ['./app/**/*.{ts,tsx}', './components/**/*.{ts,tsx}', './lib/**/*.{ts,tsx}'],
+  content: [
+    './app/**/*.{ts,tsx}',
+    './components/**/*.{ts,tsx}',
+    './lib/**/*.{ts,tsx}',
+  ],
   darkMode: 'class',
   theme: {
     container: {
@@ -18,13 +22,19 @@ export default {
     },
     extend: {
       fontFamily: {
-        arabic: ['Tajawal', 'Cairo', 'Noto Sans Arabic', 'sans-serif'],
+        arabic: [
+          'Tajawal',
+          'Cairo',
+          'Noto Sans Arabic',
+          'sans-serif',
+        ],
       },
       colors: {
+        // Core
         background: 'var(--background)',
         foreground: 'var(--foreground)',
 
-        // Design Tokens - Background (Light + Dark)
+        // Convenience alias used widely across the codebase
         bg: 'var(--bg)',
         'bg-base': 'var(--color-bg-base)',
         'bg-subtle': 'var(--color-bg-subtle)',
@@ -32,7 +42,7 @@ export default {
         'bg-elevated': 'var(--color-bg-elevated)',
         'bg-overlay': 'var(--color-bg-overlay)',
 
-        // Design Tokens - Text (Light + Dark)
+        // Text tokens
         text: 'var(--text)',
         'text-2': 'var(--text-2)',
         'text-primary': 'var(--color-text-primary)',
@@ -41,17 +51,24 @@ export default {
         'text-disabled': 'var(--color-text-disabled)',
         'text-inverse': 'var(--color-text-inverse)',
 
-        // Design Tokens - Border (Light + Dark)
-        border: 'var(--border)',
+        // Border tokens (provide both object and shortcuts for Tailwind)
+        border: {
+          DEFAULT: 'var(--border)',
+          base: 'var(--color-border-base)',
+          strong: 'var(--color-border-strong)',
+          focus: 'var(--color-border-focus)',
+        },
         'border-base': 'var(--color-border-base)',
         'border-strong': 'var(--color-border-strong)',
         'border-focus': 'var(--color-border-focus)',
 
-        // Semantic Aliases for Light Theme
+        // Semantic aliases
         surface: 'var(--surface)',
         'surface-hover': 'var(--surface-hover)',
         'border-ui': 'var(--border)',
         muted: 'var(--muted)',
+
+        // Primary token (keeps bg-primary-600 etc working)
         primary: {
           DEFAULT: 'var(--primary)',
           50: 'var(--primary-50)',
@@ -64,6 +81,7 @@ export default {
         },
         'primary-hover': 'var(--primary-hover)',
 
+        // Semantic palettes (fallback explicit colors)
         brand: {
           50: '#eef7ff',
           100: '#d6ebff',
@@ -77,52 +95,45 @@ export default {
           900: '#0a2c63',
         },
         success: {
-          DEFAULT: 'var(--success)',
-          50: 'var(--color-success-50)',
-          100: 'var(--color-success-100)',
-          500: 'var(--color-success-500)',
-          600: 'var(--color-success-600)',
-          700: 'var(--color-success-700)',
+          50: '#ecfdf5',
+          100: '#d1fae5',
+          500: '#10b981',
+          600: '#059669',
+          700: '#047857',
           950: '#052011',
         },
         warning: {
-          DEFAULT: 'var(--warning)',
-          50: 'var(--color-warning-50)',
-          100: 'var(--color-warning-100)',
-          500: 'var(--color-warning-500)',
-          600: 'var(--color-warning-600)',
-          700: 'var(--color-warning-700)',
+          50: '#fffbeb',
+          100: '#fef3c7',
+          500: '#f59e0b',
+          600: '#d97706',
+          700: '#b45309',
           950: '#331a00',
         },
         danger: {
-          DEFAULT: 'var(--danger)',
-          50: 'var(--color-danger-50)',
-          100: 'var(--color-danger-100)',
-          500: 'var(--color-danger-500)',
-          600: 'var(--color-danger-600)',
-          700: 'var(--color-danger-700)',
+          50: '#fef2f2',
+          100: '#fee2e2',
+          500: '#ef4444',
+          600: '#dc2626',
+          700: '#b91c1c',
           950: '#330505',
         },
         error: {
-          DEFAULT: 'var(--danger)',
-          50: 'var(--color-danger-50)',
-          100: 'var(--color-danger-100)',
-          500: 'var(--color-danger-500)',
-          600: 'var(--color-danger-600)',
-          700: 'var(--color-danger-700)',
+          50: '#fef2f2',
+          100: '#fee2e2',
+          500: '#ef4444',
+          600: '#dc2626',
+          700: '#b91c1c',
           950: '#330505',
         },
         info: {
-          DEFAULT: 'var(--info)',
-          50: 'var(--color-info-50)',
-          100: 'var(--color-info-100)',
-          500: 'var(--color-info-500)',
-          600: 'var(--color-info-600)',
-          700: 'var(--color-info-700)',
+          50: '#ecfeff',
+          100: '#cffafe',
+          500: '#06b6d4',
+          600: '#0891b2',
+          700: '#0e7490',
           950: '#052030',
         },
-        'row-hover': 'var(--row-hover)',
-        'row-selected': 'var(--row-selected)',
         neutral: {
           50: '#f8fafc',
           100: '#f1f5f9',
@@ -135,47 +146,48 @@ export default {
           800: '#1e293b',
           900: '#0f172a',
         },
+
+        // Table / UI helpers
+        'row-hover': 'var(--row-hover)',
+        'row-selected': 'var(--row-selected)',
       },
       spacing: {
-        xs: '0.25rem',
-        sm: '0.5rem',
-        md: '1rem',
-        lg: '1.5rem',
-        xl: '2rem',
+        'xs': '0.25rem',
+        'sm': '0.5rem',
+        'md': '1rem',
+        'lg': '1.5rem',
+        'xl': '2rem',
         '2xl': '3rem',
       },
       fontSize: {
-        xs: ['0.75rem', { lineHeight: '1rem' }],
-        sm: ['0.875rem', { lineHeight: '1.25rem' }],
-        base: ['1rem', { lineHeight: '1.5rem' }],
-        lg: ['1.125rem', { lineHeight: '1.75rem' }],
-        xl: ['1.25rem', { lineHeight: '1.75rem' }],
+        'xs': ['0.75rem', { lineHeight: '1rem' }],
+        'sm': ['0.875rem', { lineHeight: '1.25rem' }],
+        'base': ['1rem', { lineHeight: '1.5rem' }],
+        'lg': ['1.125rem', { lineHeight: '1.75rem' }],
+        'xl': ['1.25rem', { lineHeight: '1.75rem' }],
         '2xl': ['1.5rem', { lineHeight: '2rem' }],
         '3xl': ['1.875rem', { lineHeight: '2.25rem' }],
         '4xl': ['2.25rem', { lineHeight: '2.5rem' }],
         '5xl': ['3rem', { lineHeight: '1' }],
       },
       borderRadius: {
-        sm: '0.25rem',
-        md: '0.375rem',
-        lg: '0.5rem',
-        xl: '0.75rem',
+        'sm': '0.25rem',
+        'md': '0.375rem',
+        'lg': '0.5rem',
+        'xl': '0.75rem',
         '2xl': '1rem',
         '3xl': '1.5rem',
-        full: '9999px',
-        card: 'var(--radius-card)',
-        btn: 'var(--radius-btn)',
+        'full': '9999px',
       },
       boxShadow: {
         soft: '0 1px 2px 0 rgb(0 0 0 / 0.05), 0 8px 24px -20px rgb(0 0 0 / 0.25)',
-        card: 'var(--shadow-card)',
       },
       screens: {
-        xs: '360px',
-        sm: '414px',
-        md: '768px',
-        lg: '1024px',
-        xl: '1280px',
+        'xs': '360px',
+        'sm': '414px',
+        'md': '768px',
+        'lg': '1024px',
+        'xl': '1280px',
         '2xl': '1440px',
         '3xl': '1920px',
       },
