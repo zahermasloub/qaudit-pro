@@ -30,6 +30,18 @@ export default function RbiaPlanView() {
   const [activeStepId, setActiveStepId] = useState(1);
   const [showCreatePlanModal, setShowCreatePlanModal] = useState(false);
 
+  // Prevent body scroll when modal is open
+  useEffect(() => {
+    if (showCreatePlanModal) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = 'unset';
+    }
+    return () => {
+      document.body.style.overflow = 'unset';
+    };
+  }, [showCreatePlanModal]);
+
   const handleCreateNewPlan = () => {
     // يمكن فتح modal أو التوجيه إلى صفحة إنشاء الخطة
     setShowCreatePlanModal(true);
@@ -389,8 +401,9 @@ export default function RbiaPlanView() {
       {/* Create Plan Wizard Modal */}
       {showCreatePlanModal && (
         <div
-          className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4"
+          className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 overflow-hidden"
           onClick={() => setShowCreatePlanModal(false)}
+          onWheel={(e) => e.stopPropagation()}
         >
           <div
             className="bg-white rounded-2xl shadow-2xl w-full max-w-4xl max-h-[85vh] overflow-hidden flex flex-col"

@@ -393,40 +393,62 @@ canvas {
 /* =============================== */
 /* Custom Scrollbar for Wizard */
 /* =============================== */
+.custom-scrollbar {
+  /* Force scrollbar to always be visible */
+  overflow-y: scroll !important;
+  scrollbar-gutter: stable;
+}
+
 .custom-scrollbar::-webkit-scrollbar {
-  width: 12px;
-  height: 12px;
+  width: 14px;
+  height: 14px;
 }
 
 .custom-scrollbar::-webkit-scrollbar-track {
-  background: #f1f5f9;
-  border-radius: 10px;
-  margin: 4px 0;
-  box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.1);
+  background: #e5e7eb;
+  border-radius: 8px;
+  margin: 8px 0;
+  border: 1px solid #d1d5db;
 }
 
 .custom-scrollbar::-webkit-scrollbar-thumb {
   background: linear-gradient(180deg, #3b82f6, #6366f1);
-  border-radius: 10px;
-  border: 2px solid #f1f5f9;
-  box-shadow: 0 2px 6px rgba(59, 130, 246, 0.3);
+  border-radius: 8px;
+  border: 2px solid #e5e7eb;
+  box-shadow: 0 2px 8px rgba(59, 130, 246, 0.4);
   transition: all 0.3s ease;
+  min-height: 40px;
 }
 
 .custom-scrollbar::-webkit-scrollbar-thumb:hover {
   background: linear-gradient(180deg, #2563eb, #4f46e5);
-  border-color: #e2e8f0;
-  box-shadow: 0 4px 12px rgba(37, 99, 235, 0.5);
+  border-color: #d1d5db;
+  box-shadow: 0 4px 16px rgba(37, 99, 235, 0.6);
+  transform: scaleX(1.1);
 }
 
 .custom-scrollbar::-webkit-scrollbar-thumb:active {
   background: linear-gradient(180deg, #1d4ed8, #4338ca);
+  box-shadow: 0 2px 8px rgba(29, 78, 216, 0.8);
+}
+
+/* Scrollbar corner */
+.custom-scrollbar::-webkit-scrollbar-corner {
+  background: #e5e7eb;
 }
 
 /* For Firefox */
 .custom-scrollbar {
-  scrollbar-width: thin;
-  scrollbar-color: #3b82f6 #f1f5f9;
+  scrollbar-width: auto;
+  scrollbar-color: #3b82f6 #e5e7eb;
+}
+
+/* Additional styling for scroll container */
+.scroll-fade-container {
+  position: relative;
+  height: 100%;
+  min-height: 200px;
+  max-height: calc(85vh - 180px); /* Subtract header and footer height */
 }
 
 /* =============================== */
