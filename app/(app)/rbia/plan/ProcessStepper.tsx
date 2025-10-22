@@ -31,11 +31,11 @@ export default function ProcessStepper({
   const getStatusIcon = (status: ProcessStep['status']) => {
     switch (status) {
       case 'completed':
-        return <CheckCircle className="w-4 h-4 text-green-600" aria-hidden="true" />;
+        return <CheckCircle className="w-3.5 h-3.5 text-green-600" aria-hidden="true" />;
       case 'active':
-        return <Clock className="w-4 h-4 text-blue-600" aria-hidden="true" />;
+        return <Clock className="w-3.5 h-3.5 text-blue-600" aria-hidden="true" />;
       case 'locked':
-        return <Lock className="w-4 h-4 text-gray-400" aria-hidden="true" />;
+        return <Lock className="w-3.5 h-3.5 text-gray-400" aria-hidden="true" />;
       default:
         return null;
     }
@@ -52,7 +52,7 @@ export default function ProcessStepper({
   };
 
   const getStepClasses = (step: ProcessStep) => {
-    const baseClasses = 'group flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2';
+    const baseClasses = 'group flex items-center gap-2.5 px-2.5 py-2 rounded-lg transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2';
 
     switch (step.status) {
       case 'active':
@@ -72,7 +72,7 @@ export default function ProcessStepper({
 
   const getNumberClasses = (step: ProcessStep) => {
     const baseClasses =
-      'flex-shrink-0 w-7 h-7 rounded-full flex items-center justify-center text-sm font-semibold transition-colors duration-200';
+      'flex-shrink-0 w-6 h-6 rounded-full flex items-center justify-center text-xs font-semibold transition-colors duration-200';
 
     switch (step.status) {
       case 'active':
@@ -139,18 +139,18 @@ export default function ProcessStepper({
   return (
     <>
       {/* Desktop Sidebar - Hidden on mobile */}
-      <div className="hidden lg:block w-[300px] xl:w-[300px] flex-shrink-0">
+      <div className="hidden lg:block w-full flex-shrink-0">
         <div className="bg-white rounded-xl shadow-sm border border-gray-200 sticky top-[88px] overflow-hidden">
           {/* Header */}
-          <div className="bg-gradient-to-br from-slate-800 to-slate-900 text-white px-4 py-4">
-            <h3 className="text-base font-semibold mb-1">مراحل العملية</h3>
+          <div className="bg-gradient-to-br from-slate-800 to-slate-900 text-white px-3 py-3">
+            <h3 className="text-sm font-semibold mb-1">مراحل العملية</h3>
             <p className="text-xs text-slate-300">
               {completedCount} من {totalSteps} مكتملة
             </p>
           </div>
 
           {/* Steps List */}
-          <div className="p-3 space-y-2 max-h-[calc(100vh-200px)] overflow-y-auto custom-scrollbar">
+          <div className="p-2 space-y-1.5 max-h-[calc(100vh-200px)] overflow-y-auto custom-scrollbar">
             {steps.map((step, index) => (
               <div
                 key={step.id}
@@ -171,7 +171,7 @@ export default function ProcessStepper({
                 {/* Label */}
                 <div className="flex-1 min-w-0">
                   <p
-                    className={`text-sm font-semibold truncate ${
+                    className={`text-xs font-semibold truncate ${
                       step.status === 'active'
                         ? 'text-blue-900'
                         : step.status === 'completed'
@@ -184,7 +184,7 @@ export default function ProcessStepper({
                     {step.label}
                   </p>
                   {step.isOverdue && (
-                    <span className="inline-block mt-1 px-2 py-0.5 text-xs font-medium bg-red-100 text-red-800 rounded">
+                    <span className="inline-block mt-0.5 px-1.5 py-0.5 text-[10px] font-medium bg-red-100 text-red-800 rounded">
                       متأخر
                     </span>
                   )}
@@ -197,7 +197,7 @@ export default function ProcessStepper({
           </div>
 
           {/* Progress Footer */}
-          <div className="border-t border-gray-200 p-4 bg-gray-50">
+          <div className="border-t border-gray-200 p-3 bg-gray-50">
             <div className="flex items-center justify-between mb-2 text-xs text-gray-600">
               <span>التقدم الكلي</span>
               <span className="font-semibold">

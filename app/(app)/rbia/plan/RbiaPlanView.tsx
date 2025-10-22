@@ -545,15 +545,15 @@ export default function RbiaPlanView({ mode = 'plan' }: RbiaPlanViewProps) {
           <table className="w-full table-auto">
               <thead className="bg-gradient-to-r from-slate-700 to-slate-800 text-white">
                 <tr>
-                  <th className="px-3 py-4 text-right text-xs font-semibold uppercase tracking-wider">الرمز</th>
-                  <th className="px-3 py-4 text-right text-xs font-semibold uppercase tracking-wider">العنوان</th>
-                  <th className="px-3 py-4 text-right text-xs font-semibold uppercase tracking-wider">الإدارة</th>
-                  <th className="px-3 py-4 text-right text-xs font-semibold uppercase tracking-wider">المخاطر</th>
-                  <th className="px-3 py-4 text-right text-xs font-semibold uppercase tracking-wider">النوع</th>
-                  <th className="px-3 py-4 text-right text-xs font-semibold uppercase tracking-wider">الربع</th>
-                  <th className="px-3 py-4 text-right text-xs font-semibold uppercase tracking-wider">الساعات</th>
-                  <th className="px-3 py-4 text-right text-xs font-semibold uppercase tracking-wider">الحالة</th>
-                  <th className="px-3 py-4 text-center text-xs font-semibold uppercase tracking-wider">الإجراءات</th>
+                  <th className="px-4 py-4 text-right text-xs font-semibold uppercase tracking-wider whitespace-nowrap">الرمز</th>
+                  <th className="px-4 py-4 text-right text-xs font-semibold uppercase tracking-wider whitespace-nowrap">العنوان</th>
+                  <th className="px-4 py-4 text-right text-xs font-semibold uppercase tracking-wider whitespace-nowrap">الإدارة</th>
+                  <th className="px-4 py-4 text-right text-xs font-semibold uppercase tracking-wider whitespace-nowrap">المخاطر</th>
+                  <th className="px-4 py-4 text-right text-xs font-semibold uppercase tracking-wider whitespace-nowrap">النوع</th>
+                  <th className="px-4 py-4 text-right text-xs font-semibold uppercase tracking-wider whitespace-nowrap">الربع</th>
+                  <th className="px-4 py-4 text-right text-xs font-semibold uppercase tracking-wider whitespace-nowrap">الساعات</th>
+                  <th className="px-4 py-4 text-right text-xs font-semibold uppercase tracking-wider whitespace-nowrap">الحالة</th>
+                  <th className="px-4 py-4 text-center text-xs font-semibold uppercase tracking-wider whitespace-nowrap">الإجراءات</th>
                 </tr>
               </thead>
               <tbody className="bg-white divide-y divide-slate-200">
@@ -569,39 +569,39 @@ export default function RbiaPlanView({ mode = 'plan' }: RbiaPlanViewProps) {
                       key={item.id}
                       className={`hover:bg-slate-50 transition-colors ${index % 2 === 0 ? 'bg-white' : 'bg-slate-50/30'}`}
                     >
-                      <td className="px-3 py-4 text-sm font-mono text-slate-700 truncate" title={item.code}>
+                      <td className="px-4 py-4 text-sm font-mono text-slate-700 whitespace-nowrap" title={item.code}>
                         {item.code}
                       </td>
-                      <td className="px-3 py-4 text-sm text-slate-800 font-medium whitespace-normal leading-6">
+                      <td className="px-4 py-4 text-sm text-slate-800 font-medium" style={{maxWidth: '400px'}}>
                         {item.title}
                       </td>
-                      <td className="px-3 py-4 text-sm text-slate-600 truncate" title={item.department}>
+                      <td className="px-4 py-4 text-sm text-slate-600 whitespace-nowrap" title={item.department}>
                         {item.department}
                       </td>
-                      <td className="px-3 py-4">
+                      <td className="px-4 py-4 whitespace-nowrap">
                         <span className={`inline-flex items-center px-2.5 py-1 rounded-full text-xs font-semibold border ${getRiskBadgeColor(item.risk_level)}`}>
                           {getRiskLabel(item.risk_level)}
                         </span>
                       </td>
-                      <td className="px-3 py-4 text-sm text-slate-600 truncate" title={item.type}>
+                      <td className="px-4 py-4 text-sm text-slate-600 whitespace-nowrap" title={item.type}>
                         {item.type}
                       </td>
-                      <td className="px-3 py-4 text-sm text-slate-600 text-center font-medium">
+                      <td className="px-4 py-4 text-sm text-slate-600 text-center font-medium whitespace-nowrap">
                         {item.quarter}
                       </td>
-                      <td className="px-3 py-4 text-sm text-slate-600 text-center font-medium">
+                      <td className="px-4 py-4 text-sm text-slate-600 text-center font-medium whitespace-nowrap">
                         {item.hours}
                       </td>
-                      <td className="px-3 py-4">
+                      <td className="px-4 py-4 whitespace-nowrap">
                         <span className={`inline-flex items-center px-2.5 py-1 rounded-full text-xs font-semibold border ${getStatusBadgeColor(item.status)}`}>
                           {getStatusLabel(item.status)}
                         </span>
                       </td>
-                      <td className="px-3 py-4">
+                      <td className="px-4 py-4 whitespace-nowrap">
                         <div className="flex items-center justify-center gap-2">
                           <button
                             onClick={() => handleEdit(item)}
-                            className="px-4 py-2 bg-blue-50 text-blue-700 hover:bg-blue-100 hover:text-blue-800 rounded-lg transition-all hover:shadow-md border-2 border-blue-300 hover:border-blue-400 font-semibold text-sm"
+                            className="px-3 py-1.5 bg-blue-50 text-blue-700 hover:bg-blue-100 hover:text-blue-800 rounded-lg transition-all hover:shadow-md border-2 border-blue-300 hover:border-blue-400 font-bold text-sm"
                             title="تعديل المهمة"
                             aria-label={`تعديل ${item.title}`}
                           >
@@ -609,7 +609,7 @@ export default function RbiaPlanView({ mode = 'plan' }: RbiaPlanViewProps) {
                           </button>
                           <button
                             onClick={() => handleDelete(item)}
-                            className="px-4 py-2 bg-red-50 text-red-700 hover:bg-red-100 hover:text-red-800 rounded-lg transition-all hover:shadow-md border-2 border-red-300 hover:border-red-400 font-semibold text-sm"
+                            className="px-3 py-1.5 bg-red-50 text-red-700 hover:bg-red-100 hover:text-red-800 rounded-lg transition-all hover:shadow-md border-2 border-red-300 hover:border-red-400 font-bold text-sm"
                             title="حذف المهمة"
                             aria-label={`حذف ${item.title}`}
                           >
@@ -636,7 +636,7 @@ export default function RbiaPlanView({ mode = 'plan' }: RbiaPlanViewProps) {
                 <div className="flex gap-2 mr-2">
                   <button
                     onClick={() => handleEdit(item)}
-                    className="px-3 py-1.5 bg-blue-50 text-blue-700 hover:bg-blue-100 rounded-lg transition-all border border-blue-200 font-semibold text-xs"
+                    className="px-3 py-1.5 bg-blue-50 text-blue-700 hover:bg-blue-100 rounded-lg transition-all border border-blue-300 font-bold text-xs"
                     title="تعديل المهمة"
                     aria-label={`تعديل ${item.title}`}
                   >
@@ -644,7 +644,7 @@ export default function RbiaPlanView({ mode = 'plan' }: RbiaPlanViewProps) {
                   </button>
                   <button
                     onClick={() => handleDelete(item)}
-                    className="px-3 py-1.5 bg-red-50 text-red-700 hover:bg-red-100 rounded-lg transition-all border border-red-200 font-semibold text-xs"
+                    className="px-3 py-1.5 bg-red-50 text-red-700 hover:bg-red-100 rounded-lg transition-all border border-red-300 font-bold text-xs"
                     title="حذف المهمة"
                     aria-label={`حذف ${item.title}`}
                   >
@@ -755,24 +755,26 @@ export default function RbiaPlanView({ mode = 'plan' }: RbiaPlanViewProps) {
   };
 
   return (
-    <div className="w-full px-2 sm:px-3 lg:px-4 max-w-[1920px] mx-auto" dir="rtl">
-      {/* KPI Cards - Show once at top */}
-      <KpiCards planId={currentPlanId || undefined} />
+    <div className="w-full overflow-x-auto" dir="rtl">
+      <div className="px-2 sm:px-3 lg:px-4 min-w-fit">
+        {/* KPI Cards - Show once at top */}
+        <KpiCards planId={currentPlanId || undefined} />
 
-      {/* Main Grid with Content and Sidebar */}
-      <div className="grid gap-4 lg:gap-6 lg:grid-cols-[1fr_300px]">
-        {/* Dynamic Content Area */}
-        <div className="min-w-0 overflow-hidden">{renderContent()}
-        </div>
+        {/* Main Grid with Content and Sidebar */}
+        <div className="flex flex-col lg:flex-row gap-4 lg:gap-6 items-start">
+          {/* Dynamic Content Area */}
+          <div className="flex-1 w-full lg:w-auto">{renderContent()}
+          </div>
 
-        {/* Sidebar Process Stepper */}
-        <div>
-          <ProcessStepper
-            steps={processSteps}
-            activeStepId={activeStepId || 0}
-            onStepClick={handleStepClick}
-            completedCount={completedSteps.length}
-          />
+          {/* Sidebar Process Stepper */}
+          <div className="w-full lg:w-[280px] flex-shrink-0">
+            <ProcessStepper
+              steps={processSteps}
+              activeStepId={activeStepId || 0}
+              onStepClick={handleStepClick}
+              completedCount={completedSteps.length}
+            />
+          </div>
         </div>
       </div>
 
