@@ -87,9 +87,11 @@ export default function RbiaPlanView({ mode = 'plan' }: RbiaPlanViewProps) {
     }
   };
 
-  const fetchPlanData = async () => {
-    if (!currentPlanId) {
-      toast.error('لا يوجد خطة محددة');
+  const fetchPlanData = async (planIdToFetch?: string) => {
+    const targetPlanId = planIdToFetch || currentPlanId;
+
+    if (!targetPlanId) {
+      console.log('No plan ID available to fetch data');
       return;
     }
 
@@ -97,31 +99,52 @@ export default function RbiaPlanView({ mode = 'plan' }: RbiaPlanViewProps) {
       setLoading(true);
 
       // Fetch plan details
-      const planResponse = await fetch(`/api/plan/${currentPlanId}`);
+      const planResponse = await fetch(`/api/plan/${targetPlanId}`);
       if (planResponse.ok) {
         const planData = await planResponse.json();
         setSelectedPlan(planData);
       }
 
       // Fetch tasks for this plan
-      const tasksResponse = await fetch(`/api/plan/${currentPlanId}/tasks`);
+      const tasksResponse = await fetch(`/api/plan/${targetPlanId}/tasks`);
       if (tasksResponse.ok) {
         const tasksData = await tasksResponse.json();
 
+        // API returns { tasks: [...] } not array directly
+        const tasksList = tasksData.tasks || tasksData || [];
+
         // Transform tasks to PlanItem format
-        const items: PlanItem[] = tasksData.map((task: any) => ({
-          id: task.id,
-          code: task.task_ref || task.code || '',
-          title: task.title,
-          department: task.dept_id || task.department || 'عام',
-          risk_level: task.riskLevel || 'medium',
-          type: task.task_type || task.auditType || 'امتثال',
-          quarter: task.scheduled_quarter || task.plannedQuarter || 'Q1',
-          hours: task.duration_days || task.estimatedHours || 0,
-          status: task.status || 'planned',
-          assignee: task.assignee || '',
-          notes: task.notes || '',
-        }));
+        const items: PlanItem[] = tasksList.map((task: any) => {
+          // Handle risk level conversion (enum to lowercase string)
+          let riskLevel: PlanItem['risk_level'] = 'medium';
+          const taskRisk = (task.riskLevel || '').toLowerCase();
+          if (taskRisk === 'very_high' || taskRisk === 'critical') riskLevel = 'critical';
+          else if (taskRisk === 'high') riskLevel = 'high';
+          else if (taskRisk === 'low' || taskRisk === 'very_low') riskLevel = 'low';
+          else riskLevel = 'medium';
+
+          // Handle status conversion
+          let status: PlanItem['status'] = 'planned';
+          const taskStatus = (task.status || '').toLowerCase();
+          if (taskStatus === 'in_progress') status = 'in-progress';
+          else if (taskStatus === 'completed') status = 'completed';
+          else if (taskStatus === 'not_started') status = 'planned';
+          else status = 'planned';
+
+          return {
+            id: task.id,
+            code: task.taskRef || task.code || '',
+            title: task.title || '',
+            department: task.deptId || task.department || 'عام',
+            risk_level: riskLevel,
+            type: task.taskType || task.auditType || 'امتثال',
+            quarter: task.scheduledQuarter || task.plannedQuarter || 'Q1',
+            hours: task.durationDays || task.estimatedHours || 0,
+            status: status,
+            assignee: task.assignee || task.leadAuditor || '',
+            notes: task.notes || task.objectiveAndScope || '',
+          };
+        });
 
         setPlanItems(items);
 
@@ -129,6 +152,8 @@ export default function RbiaPlanView({ mode = 'plan' }: RbiaPlanViewProps) {
         if (!completedSteps.includes(1)) {
           setCompletedSteps([...completedSteps, 1]);
         }
+
+        toast.success(`تم تحميل ${items.length} مهمة بنجاح`);
       }
     } catch (error) {
       console.error('Error fetching plan data:', error);
@@ -142,18 +167,35 @@ export default function RbiaPlanView({ mode = 'plan' }: RbiaPlanViewProps) {
     setShowCreatePlanModal(true);
   };
 
-  const handlePlanCreated = (planId: string) => {
-    setCurrentPlanId(planId);
+  const handlePlanCreated = async () => {
+    // Close modal first
     setShowCreatePlanModal(false);
-    toast.success('تم إنشاء الخطة بنجاح');
-    // Automatically switch to annual plan view
-    handleStepClick(1);
+
+    // Fetch the latest plan (the one just created)
+    try {
+      const planResponse = await fetch('/api/plan/latest');
+      if (planResponse.ok) {
+        const planData = await planResponse.json();
+        if (planData?.id) {
+          // Update state with new plan
+          setCurrentPlanId(planData.id);
+          setSelectedPlan(planData);
+
+          // Switch to annual plan view
+          setActiveStepId(1);
+          setContentView('annualPlan');
+
+          // Load tasks for this plan
+          await fetchPlanData(planData.id);
+        }
+      }
+    } catch (error) {
+      console.error('Error loading plan after creation:', error);
+      toast.error('تم إنشاء الخطة ولكن حدث خطأ في التحميل. يرجى تحديث الصفحة.');
+    }
   };
 
   const handleStepClick = (stepId: number) => {
-    // Scroll to top smoothly
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-
     // Check if plan exists for most steps
     if (stepId > 1 && !currentPlanId) {
       toast.error('يرجى إنشاء خطة أولاً');
@@ -429,7 +471,7 @@ export default function RbiaPlanView({ mode = 'plan' }: RbiaPlanViewProps) {
             className="px-6 py-3 bg-blue-600 text-white rounded-xl hover:bg-blue-700 font-semibold shadow-lg hover:shadow-xl transition-all duration-200 flex items-center gap-2"
           >
             <Plus className="w-5 h-5" />
-            إضافة مهام
+            إضافة خطة جديدة
           </button>
         </div>
       );
@@ -759,7 +801,7 @@ export default function RbiaPlanView({ mode = 'plan' }: RbiaPlanViewProps) {
           >
             <CreatePlanWizard
               onClose={() => setShowCreatePlanModal(false)}
-              onSuccess={fetchPlanData}
+              onSuccess={handlePlanCreated}
             />
           </div>
         </div>
