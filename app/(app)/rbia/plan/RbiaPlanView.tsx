@@ -42,11 +42,101 @@ export default function RbiaPlanView() {
     };
   }, [showCreatePlanModal]);
 
+  // Load plan data and tasks
+  useEffect(() => {
+    fetchPlanData();
+  }, []);
+
+  const fetchPlanData = async () => {
+    try {
+      setLoading(true);
+
+      // Fetch latest plan
+      const planResponse = await fetch('/api/plan/latest');
+      if (planResponse.ok) {
+        const planData = await planResponse.json();
+        setSelectedPlan(planData);
+
+        // Fetch tasks for this plan
+        if (planData?.id) {
+          const tasksResponse = await fetch(`/api/plan/${planData.id}/tasks`);
+          if (tasksResponse.ok) {
+            const tasksData = await tasksResponse.json();
+
+            // Transform tasks to PlanItem format
+            const items: PlanItem[] = tasksData.map((task: any) => ({
+              id: task.id,
+              code: task.task_ref || task.code || '',
+              title: task.title,
+              department: task.dept_id || task.department || 'عام',
+              risk_level: task.riskLevel === 'high' ? 'high' : task.riskLevel === 'low' ? 'low' : 'medium',
+              type: task.task_type || task.auditType || 'امتثال',
+              quarter: task.scheduled_quarter || task.plannedQuarter || 'Q1',
+              hours: task.duration_days || task.estimatedHours || 0,
+              status: task.status || 'planned',
+            }));
+
+            setPlanItems(items);
+          }
+        }
+      }
+    } catch (error) {
+      console.error('Error fetching plan data:', error);
+      toast.error('حدث خطأ في تحميل بيانات الخطة');
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const handleCreateNewPlan = () => {
     // يمكن فتح modal أو التوجيه إلى صفحة إنشاء الخطة
     setShowCreatePlanModal(true);
     toast.success('فتح معالج إنشاء الخطة السنوية الجديدة');
     // أو استخدام: window.location.href = '/rbia/plan/create';
+  };
+
+  const handleStepClick = (stepId: number) => {
+    if (!selectedPlan?.id) {
+      toast.error('يرجى إنشاء خطة أولاً');
+      return;
+    }
+
+    // Update active step
+    setActiveStepId(stepId);
+
+    // Navigate based on step
+    switch (stepId) {
+      case 1:
+        // Stay on current page (annual plan view)
+        toast.info('أنت حالياً في صفحة الخطة السنوية');
+        break;
+      case 2:
+        // Navigate to priorities page
+        window.location.href = `/rbia/plan/${selectedPlan.id}/priorities`;
+        break;
+      case 3:
+        // Navigate to resource allocation page
+        window.location.href = `/rbia/plan/${selectedPlan.id}/resources`;
+        break;
+      case 4:
+        // Navigate to timeline page
+        if (activeStepId >= 3) {
+          window.location.href = `/rbia/plan/${selectedPlan.id}/timeline`;
+        } else {
+          toast.warning('يجب إكمال تخصيص الموارد أولاً');
+        }
+        break;
+      case 5:
+        // Navigate to approval page
+        if (activeStepId >= 4) {
+          window.location.href = `/rbia/plan/${selectedPlan.id}/approval`;
+        } else {
+          toast.warning('يجب إكمال الجدول الزمني أولاً');
+        }
+        break;
+      default:
+        toast.info(`المرحلة ${stepId} قيد التطوير`);
+    }
   };
 
   const filteredItems = useMemo(() => {
@@ -392,7 +482,7 @@ export default function RbiaPlanView() {
           <ProcessStepper
             steps={processSteps}
             activeStepId={activeStepId}
-            onStepClick={setActiveStepId}
+            onStepClick={handleStepClick}
             completedCount={0}
           />
         </div>
@@ -409,7 +499,10 @@ export default function RbiaPlanView() {
             className="bg-white rounded-2xl shadow-2xl w-full max-w-4xl max-h-[85vh] overflow-hidden flex flex-col"
             onClick={(e) => e.stopPropagation()}
           >
-            <CreatePlanWizard onClose={() => setShowCreatePlanModal(false)} />
+            <CreatePlanWizard
+              onClose={() => setShowCreatePlanModal(false)}
+              onSuccess={fetchPlanData}
+            />
           </div>
         </div>
       )}

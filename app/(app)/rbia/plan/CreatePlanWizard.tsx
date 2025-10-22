@@ -5,6 +5,7 @@ import { toast } from 'sonner';
 
 interface CreatePlanWizardProps {
   onClose?: () => void;
+  onSuccess?: () => void; // Callback to refresh data after creating plan
 }
 
 interface PlanTask {
@@ -22,7 +23,7 @@ interface PlanTask {
   notes: string; // تعليقات إضافية
 }
 
-export default function CreatePlanWizard({ onClose }: CreatePlanWizardProps) {
+export default function CreatePlanWizard({ onClose, onSuccess }: CreatePlanWizardProps) {
   const router = useRouter();
   const [step, setStep] = useState(1);
   const [loading, setLoading] = useState(false);
@@ -181,17 +182,21 @@ export default function CreatePlanWizard({ onClose }: CreatePlanWizardProps) {
 
       toast.success(`✅ تم إنشاء الخطة وحفظ ${validItems.length} مهمة بنجاح`);
 
-      // Close wizard and stay in dashboard to view updated KPIs
+      // Close wizard and refresh data
       if (onClose) {
-        // Close the dialog
         onClose();
-        // Refresh to reload KPI cards with new data
+      }
+
+      // Call onSuccess callback to refresh data
+      if (onSuccess) {
+        setTimeout(() => {
+          onSuccess();
+        }, 300);
+      } else {
+        // If no callback, reload the page
         setTimeout(() => {
           window.location.reload();
         }, 500);
-      } else {
-        // If standalone page, redirect to dashboard
-        router.push('/shell');
       }
     } catch (error: any) {
       toast.error(error.message);
