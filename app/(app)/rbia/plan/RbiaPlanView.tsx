@@ -461,10 +461,363 @@ export default function RbiaPlanView({ mode = 'plan' }: RbiaPlanViewProps) {
 
   const handleStepChange = (stepId: number) => {
     setActiveStepId(stepId);
-    toast.success(`تم الانتقال إلى: ${processSteps.find(s => s.id === stepId)?.label}`);
+    const stepLabel = processSteps.find(s => s.id === stepId)?.label;
+    toast.success(`تم الانتقال إلى: ${stepLabel}`);
+    // Scroll to top of content area smoothly
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
   const activeStep = processSteps.find(s => s.id === activeStepId);
+
+  // Render different content based on active step
+  const renderStepContent = () => {
+    switch (activeStepId) {
+      case 1: // الخطة السنوية
+        return renderPlanOverview();
+      case 2: // تحديد الأولويات
+        return renderPrioritization();
+      case 3: // تخصيص الموارد
+        return renderResourceAllocation();
+      default:
+        // For steps 4-11, show coming soon message
+        return renderComingSoon();
+    }
+  };
+
+  const renderPlanOverview = () => (
+    <>
+      {/* Summary Cards */}
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
+        <div className="bg-white rounded-xl shadow-sm p-5 border border-gray-100">
+          <div className="flex items-center justify-between mb-3">
+            <div className="p-2 bg-blue-100 rounded-lg">
+              <TrendingUp className="w-5 h-5 text-blue-600" />
+            </div>
+            <span className="text-3xl font-bold text-blue-600">{stats.completionRate}%</span>
+          </div>
+          <p className="text-sm text-gray-600">نسبة الإنجاز</p>
+          <div className="mt-2 w-full bg-gray-200 rounded-full h-2">
+            <div
+              className="bg-blue-600 h-2 rounded-full transition-all"
+              style={{ width: `${stats.completionRate}%` }}
+            ></div>
+          </div>
+        </div>
+
+        <div className="bg-white rounded-xl shadow-sm p-5 border border-gray-100">
+          <div className="flex items-center justify-between mb-3">
+            <div className="p-2 bg-green-100 rounded-lg">
+              <Clock className="w-5 h-5 text-green-600" />
+            </div>
+            <span className="text-3xl font-bold text-green-600">{stats.totalHours}</span>
+          </div>
+          <p className="text-sm text-gray-600">إجمالي الساعات</p>
+        </div>
+
+        <div className="bg-white rounded-xl shadow-sm p-5 border border-gray-100">
+          <div className="flex items-center justify-between mb-3">
+            <div className="p-2 bg-purple-100 rounded-lg">
+              <CheckCircle2 className="w-5 h-5 text-purple-600" />
+            </div>
+            <span className="text-3xl font-bold text-purple-600">{stats.totalTasks}</span>
+          </div>
+          <p className="text-sm text-gray-600">المهام المخططة</p>
+        </div>
+
+        <div className="bg-white rounded-xl shadow-sm p-5 border border-gray-100">
+          <div className="flex items-center justify-between mb-3">
+            <div className="p-2 bg-emerald-100 rounded-lg">
+              <AlertCircle className="w-5 h-5 text-emerald-600" />
+            </div>
+            <span className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-green-100 text-green-800 border border-green-200">
+              {stats.status}
+            </span>
+          </div>
+          <p className="text-sm text-gray-600">حالة الخطة</p>
+        </div>
+      </div>
+
+      {/* Filters */}
+      <div className="bg-white rounded-xl shadow-sm p-4 mb-6 border border-gray-100">
+        <div className="flex flex-wrap gap-3">
+          <div className="flex-1 min-w-[200px]">
+            <div className="relative">
+              <Search className="absolute right-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" />
+              <input
+                type="text"
+                placeholder="بحث..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="w-full pr-10 pl-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              />
+            </div>
+          </div>
+
+          <select
+            value={filterDepartment}
+            onChange={(e) => setFilterDepartment(e.target.value)}
+            className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+          >
+            <option value="all">كل الإدارات</option>
+            {departments.filter((d) => d !== 'all').map((dept) => (
+              <option key={dept} value={dept}>
+                {dept}
+              </option>
+            ))}
+          </select>
+
+          <select
+            value={filterRisk}
+            onChange={(e) => setFilterRisk(e.target.value)}
+            className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+          >
+            <option value="all">كل المخاطر</option>
+            <option value="high">عالية</option>
+            <option value="medium">متوسطة</option>
+            <option value="low">منخفضة</option>
+          </select>
+
+          <select
+            value={filterStatus}
+            onChange={(e) => setFilterStatus(e.target.value)}
+            className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+          >
+            <option value="all">كل الحالات</option>
+            <option value="planned">مخطط</option>
+            <option value="in-progress">قيد التنفيذ</option>
+            <option value="completed">مكتمل</option>
+            <option value="delayed">متأخر</option>
+          </select>
+
+          <input
+            ref={fileInputRef}
+            type="file"
+            accept=".csv"
+            onChange={handleImportCSV}
+            className="hidden"
+          />
+
+          <Button
+            onClick={() => fileInputRef.current?.click()}
+            size="sm"
+            variant="outline"
+            className="gap-2"
+          >
+            <Upload className="w-4 h-4" />
+            استيراد
+          </Button>
+
+          <Button onClick={handleExportCSV} size="sm" className="gap-2">
+            <Download className="w-4 h-4" />
+            تصدير CSV
+          </Button>
+        </div>
+      </div>
+
+      {/* Table */}
+      <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+        <div className="overflow-x-auto">
+          <table className="w-full">
+            <thead className="bg-gray-50 border-b border-gray-200">
+              <tr>
+                <th className="px-4 py-3 text-right text-xs font-medium text-gray-700 uppercase tracking-wider">
+                  الرمز
+                </th>
+                <th className="px-4 py-3 text-right text-xs font-medium text-gray-700 uppercase tracking-wider">
+                  العنوان
+                </th>
+                <th className="px-4 py-3 text-right text-xs font-medium text-gray-700 uppercase tracking-wider">
+                  الإدارة
+                </th>
+                <th className="px-4 py-3 text-right text-xs font-medium text-gray-700 uppercase tracking-wider">
+                  المخاطر
+                </th>
+                <th className="px-4 py-3 text-right text-xs font-medium text-gray-700 uppercase tracking-wider">
+                  النوع
+                </th>
+                <th className="px-4 py-3 text-right text-xs font-medium text-gray-700 uppercase tracking-wider">
+                  الربع
+                </th>
+                <th className="px-4 py-3 text-right text-xs font-medium text-gray-700 uppercase tracking-wider">
+                  الساعات
+                </th>
+                <th className="px-4 py-3 text-right text-xs font-medium text-gray-700 uppercase tracking-wider">
+                  الحالة
+                </th>
+                <th className="px-4 py-3 text-right text-xs font-medium text-gray-700 uppercase tracking-wider">
+                  الإجراءات
+                </th>
+              </tr>
+            </thead>
+            <tbody className="bg-white divide-y divide-gray-200">
+              {filteredItems.length === 0 ? (
+                <tr>
+                  <td colSpan={9} className="px-4 py-8 text-center text-gray-500">
+                    لا توجد بيانات
+                  </td>
+                </tr>
+              ) : (
+                filteredItems.map((item) => (
+                  <tr key={item.id} className="hover:bg-gray-50 transition-colors">
+                    <td className="px-4 py-3 text-sm font-mono text-gray-900">{item.code}</td>
+                    <td className="px-4 py-3 text-sm text-gray-900 font-medium">{item.title}</td>
+                    <td className="px-4 py-3 text-sm text-gray-600">{item.department}</td>
+                    <td className="px-4 py-3">
+                      <span
+                        className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium border ${getRiskBadgeColor(item.risk_level)}`}
+                      >
+                        {item.risk_level === 'high'
+                          ? 'عالية'
+                          : item.risk_level === 'medium'
+                            ? 'متوسطة'
+                            : 'منخفضة'}
+                      </span>
+                    </td>
+                    <td className="px-4 py-3 text-sm text-gray-600">{item.type}</td>
+                    <td className="px-4 py-3 text-sm text-gray-600">{item.quarter}</td>
+                    <td className="px-4 py-3 text-sm text-gray-900 font-medium">{item.hours}</td>
+                    <td className="px-4 py-3">
+                      <span
+                        className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium border ${getStatusBadgeColor(item.status)}`}
+                      >
+                        {getStatusLabel(item.status)}
+                      </span>
+                    </td>
+                    <td className="px-4 py-3">
+                      <div className="flex items-center gap-2">
+                        <button
+                          onClick={() => handleView(item)}
+                          className="flex items-center gap-1.5 px-3 py-2 hover:bg-blue-50 rounded-lg transition-colors border border-blue-200 text-sm font-medium"
+                          aria-label="عرض التفاصيل"
+                          title="عرض التفاصيل"
+                        >
+                          <Eye className="w-4 h-4 text-blue-600" />
+                          <span className="text-blue-600">عرض</span>
+                        </button>
+
+                        <button
+                          onClick={() => handleEdit(item)}
+                          className="flex items-center gap-1.5 px-3 py-2 hover:bg-green-50 rounded-lg transition-colors border border-green-200 text-sm font-medium"
+                          aria-label="تعديل"
+                          title="تعديل المهمة"
+                        >
+                          <Edit2 className="w-4 h-4 text-green-600" />
+                          <span className="text-green-600">تعديل</span>
+                        </button>
+
+                        <button
+                          onClick={() => handleDelete(item)}
+                          className="flex items-center gap-1.5 px-3 py-2 hover:bg-red-50 rounded-lg transition-colors border border-red-200 text-sm font-medium"
+                          aria-label="حذف"
+                          title="حذف المهمة"
+                        >
+                          <Trash2 className="w-4 h-4 text-red-600" />
+                          <span className="text-red-600">حذف</span>
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                ))
+              )}
+            </tbody>
+          </table>
+        </div>
+
+        <div className="px-4 py-3 bg-gray-50 border-t border-gray-200">
+          <p className="text-sm text-gray-600">
+            عرض {filteredItems.length} من {planItems.length} بند
+          </p>
+        </div>
+      </div>
+    </>
+  );
+
+  const renderPrioritization = () => (
+    <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-8">
+      <div className="text-center">
+        <div className="inline-flex items-center justify-center w-16 h-16 bg-blue-100 rounded-full mb-4">
+          <TrendingUp className="w-8 h-8 text-blue-600" />
+        </div>
+        <h3 className="text-xl font-bold text-gray-900 mb-2">تحديد الأولويات</h3>
+        <p className="text-gray-600 mb-6">
+          في هذه المرحلة، يتم تحديد أولويات المهام بناءً على تقييم المخاطر والأهمية الاستراتيجية.
+        </p>
+        <div className="bg-blue-50 rounded-lg p-6 text-right space-y-3">
+          <h4 className="font-semibold text-blue-900 mb-3">الخطوات الرئيسية:</h4>
+          <ul className="space-y-2 text-sm text-blue-800">
+            <li className="flex items-start gap-2">
+              <CheckCircle2 className="w-5 h-5 flex-shrink-0 mt-0.5" />
+              <span>تحليل مستوى المخاطر لكل مهمة</span>
+            </li>
+            <li className="flex items-start gap-2">
+              <CheckCircle2 className="w-5 h-5 flex-shrink-0 mt-0.5" />
+              <span>تقييم الأثر المتوقع على المنظمة</span>
+            </li>
+            <li className="flex items-start gap-2">
+              <CheckCircle2 className="w-5 h-5 flex-shrink-0 mt-0.5" />
+              <span>ترتيب المهام حسب الأولوية</span>
+            </li>
+            <li className="flex items-start gap-2">
+              <CheckCircle2 className="w-5 h-5 flex-shrink-0 mt-0.5" />
+              <span>مراجعة واعتماد الأولويات من الإدارة</span>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  );
+
+  const renderResourceAllocation = () => (
+    <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-8">
+      <div className="text-center">
+        <div className="inline-flex items-center justify-center w-16 h-16 bg-purple-100 rounded-full mb-4">
+          <Clock className="w-8 h-8 text-purple-600" />
+        </div>
+        <h3 className="text-xl font-bold text-gray-900 mb-2">تخصيص الموارد</h3>
+        <p className="text-gray-600 mb-6">
+          تخصيص الموارد البشرية والمادية المطلوبة لتنفيذ كل مهمة بكفاءة.
+        </p>
+        <div className="bg-purple-50 rounded-lg p-6 text-right space-y-3">
+          <h4 className="font-semibold text-purple-900 mb-3">الخطوات الرئيسية:</h4>
+          <ul className="space-y-2 text-sm text-purple-800">
+            <li className="flex items-start gap-2">
+              <CheckCircle2 className="w-5 h-5 flex-shrink-0 mt-0.5" />
+              <span>تحديد الكفاءات المطلوبة لكل مهمة</span>
+            </li>
+            <li className="flex items-start gap-2">
+              <CheckCircle2 className="w-5 h-5 flex-shrink-0 mt-0.5" />
+              <span>تخصيص المدققين المناسبين</span>
+            </li>
+            <li className="flex items-start gap-2">
+              <CheckCircle2 className="w-5 h-5 flex-shrink-0 mt-0.5" />
+              <span>توزيع ساعات العمل والميزانية</span>
+            </li>
+            <li className="flex items-start gap-2">
+              <CheckCircle2 className="w-5 h-5 flex-shrink-0 mt-0.5" />
+              <span>التأكد من توازن العبء بين الفريق</span>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  );
+
+  const renderComingSoon = () => (
+    <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-12">
+      <div className="text-center">
+        <div className="inline-flex items-center justify-center w-20 h-20 bg-gray-100 rounded-full mb-4">
+          <AlertCircle className="w-10 h-10 text-gray-400" />
+        </div>
+        <h3 className="text-2xl font-bold text-gray-900 mb-2">قريبًا</h3>
+        <p className="text-gray-600 text-lg">
+          محتوى هذه المرحلة قيد التطوير
+        </p>
+        <p className="text-sm text-gray-500 mt-2">
+          يمكنك التنقل إلى المراحل المتاحة الأخرى
+        </p>
+      </div>
+    </div>
+  );
 
   if (loading) {
     return (
@@ -518,6 +871,7 @@ export default function RbiaPlanView({ mode = 'plan' }: RbiaPlanViewProps) {
                 </div>
               </div>
             )}
+
 
             {/* Summary Cards */}
             <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
@@ -766,8 +1120,11 @@ export default function RbiaPlanView({ mode = 'plan' }: RbiaPlanViewProps) {
                 </p>
               </div>
             </div>
-          </div>
 
+            {/* Dynamic Content Based on Active Step */}
+            {renderStepContent()}
+
+          </
           {/* Process Stepper Sidebar */}
           <ProcessStepper
             steps={processSteps}
@@ -775,8 +1132,8 @@ export default function RbiaPlanView({ mode = 'plan' }: RbiaPlanViewProps) {
             onStepClick={handleStepChange}
             completedCount={completedSteps}
           />
-        </div>
-      </div>
+        </
+      </
 
       {/* View/Edit Sheet (Simple Modal) */}
       {viewMode && selectedItem && (
@@ -908,6 +1265,6 @@ export default function RbiaPlanView({ mode = 'plan' }: RbiaPlanViewProps) {
           </div>
         </div>
       )}
-    </div>
-  );
-}
+    </
+ 
+

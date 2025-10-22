@@ -31,29 +31,47 @@ export default function ProcessStepper({
   const getStatusIcon = (status: ProcessStep['status']) => {
     switch (status) {
       case 'completed':
-        return <CheckCircle className="w-4 h-4 text-green-600" aria-label="مكتملة" />;
+        return <CheckCircle className="w-4 h-4 text-green-600" aria-hidden="true" />;
       case 'active':
-        return <Clock className="w-4 h-4 text-blue-600" aria-label="جارية" />;
+        return <Clock className="w-4 h-4 text-blue-600" aria-hidden="true" />;
       case 'locked':
-        return <Lock className="w-4 h-4 text-gray-400" aria-label="مقفلة" />;
+        return <Lock className="w-4 h-4 text-gray-400" aria-hidden="true" />;
       default:
         return null;
     }
   };
 
+  const getAriaLabel = (step: ProcessStep) => {
+    const statusLabels = {
+      completed: 'مكتملة',
+      active: 'جارية',
+      locked: 'مقفلة',
+      available: 'متاحة',
+    };
+    return `${step.label}، ${statusLabels[step.status]}`;
+  };
+
   const getStepClasses = (step: ProcessStep) => {
+
     const baseClasses =
       'group flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all duration-200';
 
+    const baseClasses = 'group flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2';
+
+
     switch (step.status) {
       case 'active':
-        return `${baseClasses} bg-blue-50 border-2 border-blue-500 cursor-pointer`;
+        // Active: primary/10% background, primary-300 border
+        return `${baseClasses} bg-blue-50 border-2 border-blue-300 cursor-pointer focus:ring-blue-500 shadow-sm`;
       case 'completed':
-        return `${baseClasses} bg-green-50/50 border border-green-200 hover:bg-green-50 cursor-pointer`;
+        // Done: success text/border, very light background
+        return `${baseClasses} bg-green-50/30 border border-green-300 hover:bg-green-50 cursor-pointer focus:ring-green-500 hover:shadow-sm`;
       case 'locked':
-        return `${baseClasses} bg-gray-50 border border-gray-200 opacity-60 cursor-not-allowed`;
+        // Locked: muted gray, not clickable
+        return `${baseClasses} bg-gray-100 border border-gray-200 opacity-60 cursor-not-allowed`;
       default:
-        return `${baseClasses} bg-white border border-gray-200 hover:bg-gray-50 hover:border-gray-300 cursor-pointer`;
+        // Default: normal surface, hover with light shadow
+        return `${baseClasses} bg-white border border-gray-200 hover:bg-gray-50 hover:border-gray-300 hover:shadow-md cursor-pointer focus:ring-blue-500`;
     }
   };
 
@@ -63,13 +81,17 @@ export default function ProcessStepper({
 
     switch (step.status) {
       case 'active':
+        // Active: primary-600 with white text for AA contrast
         return `${baseClasses} bg-blue-600 text-white`;
       case 'completed':
-        return `${baseClasses} bg-green-100 text-green-700 border-2 border-green-500`;
+        // Done: success colors with proper contrast
+        return `${baseClasses} bg-green-100 text-green-800 border-2 border-green-600`;
       case 'locked':
-        return `${baseClasses} bg-gray-200 text-gray-500`;
+        // Locked: muted gray
+        return `${baseClasses} bg-gray-300 text-gray-600`;
       default:
-        return `${baseClasses} bg-gray-100 text-gray-600 group-hover:bg-gray-200`;
+        // Default: subtle gray with hover
+        return `${baseClasses} bg-gray-100 text-gray-700 group-hover:bg-gray-200`;
     }
   };
 
@@ -145,6 +167,7 @@ export default function ProcessStepper({
                 tabIndex={step.status === 'locked' ? -1 : 0}
                 aria-current={step.status === 'active' ? 'step' : undefined}
                 aria-disabled={step.status === 'locked'}
+                aria-label={getAriaLabel(step)}
                 title={step.status === 'locked' ? step.lockReason : step.label}
               >
                 {/* Number Badge */}
@@ -157,16 +180,16 @@ export default function ProcessStepper({
                       step.status === 'active'
                         ? 'text-blue-900'
                         : step.status === 'completed'
-                          ? 'text-green-800'
+                          ? 'text-green-900'
                           : step.status === 'locked'
-                            ? 'text-gray-500'
-                            : 'text-gray-700'
+                            ? 'text-gray-600'
+                            : 'text-gray-800'
                     }`}
                   >
                     {step.label}
                   </p>
                   {step.isOverdue && (
-                    <span className="inline-block mt-1 px-2 py-0.5 text-xs font-medium bg-red-100 text-red-700 rounded">
+                    <span className="inline-block mt-1 px-2 py-0.5 text-xs font-medium bg-red-100 text-red-800 rounded">
                       متأخر
                     </span>
                   )}
@@ -231,6 +254,7 @@ export default function ProcessStepper({
                   tabIndex={step.status === 'locked' ? -1 : 0}
                   aria-current={step.status === 'active' ? 'step' : undefined}
                   aria-disabled={step.status === 'locked'}
+                  aria-label={getAriaLabel(step)}
                   title={step.status === 'locked' ? step.lockReason : step.label}
                 >
                   <div className={getNumberClasses(step)}>{step.id}</div>
@@ -240,8 +264,8 @@ export default function ProcessStepper({
                         step.status === 'active'
                           ? 'text-blue-900'
                           : step.status === 'completed'
-                            ? 'text-green-800'
-                            : 'text-gray-700'
+                            ? 'text-green-900'
+                            : 'text-gray-800'
                       }`}
                     >
                       {step.label}
