@@ -541,20 +541,19 @@ export default function RbiaPlanView({ mode = 'plan' }: RbiaPlanViewProps) {
         </div>
 
         {/* Table - Desktop */}
-        <div className="hidden md:block bg-white rounded-xl shadow-sm border border-slate-200 overflow-x-hidden">
-          <div className="overflow-x-auto">
-            <table className="w-full table-fixed">
-              <colgroup>
-                <col style={{ width: '8%' }} />  {/* الرمز */}
-                <col style={{ width: '28%' }} /> {/* العنوان */}
-                <col style={{ width: '12%' }} /> {/* الإدارة */}
-                <col style={{ width: '10%' }} /> {/* المخاطر */}
-                <col style={{ width: '10%' }} /> {/* النوع */}
-                <col style={{ width: '8%' }} />  {/* الربع */}
-                <col style={{ width: '8%' }} />  {/* الساعات */}
-                <col style={{ width: '10%' }} /> {/* الحالة */}
-                <col style={{ width: '6%' }} />  {/* الإجراءات */}
-              </colgroup>
+        <div className="hidden md:block bg-white rounded-xl shadow-sm border border-slate-200">
+          <table className="w-full table-auto">
+            <colgroup>
+              <col className="w-[7%]" />  {/* الرمز */}
+              <col className="w-[23%]" /> {/* العنوان */}
+              <col className="w-[12%]" /> {/* الإدارة */}
+              <col className="w-[11%]" /> {/* المخاطر */}
+              <col className="w-[11%]" /> {/* النوع */}
+              <col className="w-[8%]" />  {/* الربع */}
+              <col className="w-[8%]" />  {/* الساعات */}
+              <col className="w-[11%]" /> {/* الحالة */}
+              <col className="w-[9%]" />  {/* الإجراءات */}
+            </colgroup>
               <thead className="bg-gradient-to-r from-slate-700 to-slate-800 text-white">
                 <tr>
                   <th className="px-3 py-4 text-right text-xs font-semibold uppercase tracking-wider">الرمز</th>
@@ -610,22 +609,22 @@ export default function RbiaPlanView({ mode = 'plan' }: RbiaPlanViewProps) {
                         </span>
                       </td>
                       <td className="px-3 py-4">
-                        <div className="flex items-center justify-center gap-1">
+                        <div className="flex items-center justify-center gap-2">
                           <button
                             onClick={() => handleEdit(item)}
-                            className="p-1.5 text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
-                            title="تعديل"
+                            className="p-2 bg-blue-50 text-blue-700 hover:bg-blue-100 hover:text-blue-800 rounded-lg transition-all hover:shadow-md border border-blue-200 hover:border-blue-300"
+                            title="تعديل المهمة"
                             aria-label={`تعديل ${item.title}`}
                           >
-                            <Edit2 className="w-4 h-4" />
+                            <Edit2 className="w-4.5 h-4.5" strokeWidth={2.5} />
                           </button>
                           <button
                             onClick={() => handleDelete(item)}
-                            className="p-1.5 text-red-600 hover:bg-red-50 rounded-lg transition-colors"
-                            title="حذف"
+                            className="p-2 bg-red-50 text-red-700 hover:bg-red-100 hover:text-red-800 rounded-lg transition-all hover:shadow-md border border-red-200 hover:border-red-300"
+                            title="حذف المهمة"
                             aria-label={`حذف ${item.title}`}
                           >
-                            <Trash2 className="w-4 h-4" />
+                            <Trash2 className="w-4.5 h-4.5" strokeWidth={2.5} />
                           </button>
                         </div>
                       </td>
@@ -635,7 +634,6 @@ export default function RbiaPlanView({ mode = 'plan' }: RbiaPlanViewProps) {
               </tbody>
             </table>
           </div>
-        </div>
 
         {/* Cards - Mobile */}
         <div className="md:hidden grid gap-4">
@@ -646,20 +644,22 @@ export default function RbiaPlanView({ mode = 'plan' }: RbiaPlanViewProps) {
                   <div className="text-xs font-mono text-slate-500 mb-1">{item.code}</div>
                   <h3 className="text-sm font-semibold text-slate-800 leading-6">{item.title}</h3>
                 </div>
-                <div className="flex gap-1 mr-2">
+                <div className="flex gap-2 mr-2">
                   <button
                     onClick={() => handleEdit(item)}
-                    className="p-1.5 text-blue-600 hover:bg-blue-50 rounded-lg"
+                    className="p-2 bg-blue-50 text-blue-700 hover:bg-blue-100 rounded-lg transition-all border border-blue-200"
+                    title="تعديل المهمة"
                     aria-label={`تعديل ${item.title}`}
                   >
-                    <Edit2 className="w-4 h-4" />
+                    <Edit2 className="w-4.5 h-4.5" strokeWidth={2.5} />
                   </button>
                   <button
                     onClick={() => handleDelete(item)}
-                    className="p-1.5 text-red-600 hover:bg-red-50 rounded-lg"
+                    className="p-2 bg-red-50 text-red-700 hover:bg-red-100 rounded-lg transition-all border border-red-200"
+                    title="حذف المهمة"
                     aria-label={`حذف ${item.title}`}
                   >
-                    <Trash2 className="w-4 h-4" />
+                    <Trash2 className="w-4.5 h-4.5" strokeWidth={2.5} />
                   </button>
                 </div>
               </div>
@@ -766,15 +766,14 @@ export default function RbiaPlanView({ mode = 'plan' }: RbiaPlanViewProps) {
   };
 
   return (
-    <div className="container mx-auto px-3 sm:px-4 lg:px-6 max-w-[1440px]" dir="rtl">
+    <div className="w-full px-2 sm:px-3 lg:px-4 max-w-[1920px] mx-auto" dir="rtl">
       {/* KPI Cards - Show once at top */}
       <KpiCards planId={currentPlanId || undefined} />
 
       {/* Main Grid with Content and Sidebar */}
-      <div className="grid gap-6 lg:grid-cols-[1fr_320px]">
+      <div className="grid gap-4 lg:gap-6 lg:grid-cols-[1fr_300px]">
         {/* Dynamic Content Area */}
-        <div className="min-w-0">
-          {renderContent()}
+        <div className="min-w-0 overflow-hidden">{renderContent()}
         </div>
 
         {/* Sidebar Process Stepper */}
