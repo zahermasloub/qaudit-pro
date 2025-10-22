@@ -30,38 +30,58 @@ export default {
         ],
       },
       colors: {
+        // Core
         background: 'var(--background)',
         foreground: 'var(--foreground)',
 
-        // Design Tokens - Background (Light + Dark)
+        // Convenience alias used widely across the codebase
+        bg: 'var(--bg)',
         'bg-base': 'var(--color-bg-base)',
         'bg-subtle': 'var(--color-bg-subtle)',
         'bg-muted': 'var(--color-bg-muted)',
         'bg-elevated': 'var(--color-bg-elevated)',
         'bg-overlay': 'var(--color-bg-overlay)',
 
-        // Design Tokens - Text (Light + Dark)
+        // Text tokens
+        text: 'var(--text)',
+        'text-2': 'var(--text-2)',
         'text-primary': 'var(--color-text-primary)',
         'text-secondary': 'var(--color-text-secondary)',
         'text-tertiary': 'var(--color-text-tertiary)',
         'text-disabled': 'var(--color-text-disabled)',
         'text-inverse': 'var(--color-text-inverse)',
 
-        // Design Tokens - Border (Light + Dark)
+        // Border tokens (provide both object and shortcuts for Tailwind)
+        border: {
+          DEFAULT: 'var(--border)',
+          base: 'var(--color-border-base)',
+          strong: 'var(--color-border-strong)',
+          focus: 'var(--color-border-focus)',
+        },
         'border-base': 'var(--color-border-base)',
         'border-strong': 'var(--color-border-strong)',
         'border-focus': 'var(--color-border-focus)',
 
-        // Semantic Aliases for Light Theme
-        'surface': 'var(--surface)',
+        // Semantic aliases
+        surface: 'var(--surface)',
         'surface-hover': 'var(--surface-hover)',
         'border-ui': 'var(--border)',
-        'text': 'var(--text)',
-        'text-2': 'var(--text-2)',
-        'muted': 'var(--muted)',
-        'primary': 'var(--primary)',
+        muted: 'var(--muted)',
+
+        // Primary token (keeps bg-primary-600 etc working)
+        primary: {
+          DEFAULT: 'var(--primary)',
+          50: 'var(--primary-50)',
+          100: 'var(--primary-100)',
+          200: 'var(--primary-200)',
+          300: 'var(--primary-300)',
+          500: 'var(--primary-500)',
+          600: 'var(--primary-600)',
+          700: 'var(--primary-700)',
+        },
         'primary-hover': 'var(--primary-hover)',
 
+        // Semantic palettes (fallback explicit colors)
         brand: {
           50: '#eef7ff',
           100: '#d6ebff',
@@ -126,6 +146,10 @@ export default {
           800: '#1e293b',
           900: '#0f172a',
         },
+
+        // Table / UI helpers
+        'row-hover': 'var(--row-hover)',
+        'row-selected': 'var(--row-selected)',
       },
       spacing: {
         'xs': '0.25rem',
