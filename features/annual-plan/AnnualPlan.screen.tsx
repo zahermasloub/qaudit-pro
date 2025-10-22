@@ -8,8 +8,11 @@
 import React, { useEffect, useState } from 'react';
 import dynamic from 'next/dynamic';
 
-// Dynamically import the AnnualPlanForm to avoid SSR issues
-const AnnualPlanForm = dynamic(() => import('./annual-plan.form'), { ssr: false });
+// Dynamically import the AnnualPlanWizard to avoid SSR issues
+const AnnualPlanWizard = dynamic(
+  () => import('./AnnualPlanWizard').then(m => ({ default: m.AnnualPlanWizard })),
+  { ssr: false }
+);
 
 import type { Locale } from '@/lib/i18n';
 
@@ -550,8 +553,8 @@ export function AnnualPlanScreen({ locale }: { locale: Locale }) {
           </div>
         )}
       </div>
-      {/* Annual Plan Form Modal */}
-      <AnnualPlanForm open={openAnnualPlan} onOpenChange={setOpenAnnualPlan} />
+      {/* Annual Plan Wizard Modal */}
+      <AnnualPlanWizard open={openAnnualPlan} onOpenChange={setOpenAnnualPlan} locale={locale} />
     </div>
   );
 }
