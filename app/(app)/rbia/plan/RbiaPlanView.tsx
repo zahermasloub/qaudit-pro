@@ -2,8 +2,9 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import KpiCards from '../../../(components)/KpiCards';
 import ProcessStepper, { ProcessStep } from './ProcessStepper';
+import CreatePlanWizard from './CreatePlanWizard';
 import { toast } from 'sonner';
-import { Search, Download, Eye, Edit2, Trash2 } from 'lucide-react';
+import { Search, Download, Eye, Edit2, Trash2, Plus } from 'lucide-react';
 
 interface PlanItem {
   id: string;
@@ -27,6 +28,14 @@ export default function RbiaPlanView() {
   const [filterRisk, setFilterRisk] = useState('all');
   const [filterStatus, setFilterStatus] = useState('all');
   const [activeStepId, setActiveStepId] = useState(1);
+  const [showCreatePlanModal, setShowCreatePlanModal] = useState(false);
+
+  const handleCreateNewPlan = () => {
+    // يمكن فتح modal أو التوجيه إلى صفحة إنشاء الخطة
+    setShowCreatePlanModal(true);
+    toast.success('فتح معالج إنشاء الخطة السنوية الجديدة');
+    // أو استخدام: window.location.href = '/rbia/plan/create';
+  };
 
   const filteredItems = useMemo(() => {
     return planItems.filter((item) => {
@@ -151,6 +160,14 @@ export default function RbiaPlanView() {
               >
                 <Download className="w-4 h-4" />
                 تصدير CSV
+              </button>
+
+              <button
+                onClick={handleCreateNewPlan}
+                className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 flex items-center gap-2 font-medium shadow-sm hover:shadow-md transition-all"
+              >
+                <Plus className="w-4 h-4" />
+                إنشاء خطة جديدة
               </button>
             </div>
           </div>
@@ -368,6 +385,21 @@ export default function RbiaPlanView() {
           />
         </div>
       </div>
+
+      {/* Create Plan Wizard Modal */}
+      {showCreatePlanModal && (
+        <div
+          className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4"
+          onClick={() => setShowCreatePlanModal(false)}
+        >
+          <div
+            className="bg-white rounded-2xl shadow-2xl w-full max-w-4xl max-h-[85vh] overflow-hidden flex flex-col"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <CreatePlanWizard onClose={() => setShowCreatePlanModal(false)} />
+          </div>
+        </div>
+      )}
     </div>
   );
 }

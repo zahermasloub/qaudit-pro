@@ -26,6 +26,8 @@ export default function CreatePlanWizard({ onClose }: CreatePlanWizardProps) {
   const router = useRouter();
   const [step, setStep] = useState(1);
   const [loading, setLoading] = useState(false);
+  const [showScrollTop, setShowScrollTop] = useState(false);
+  const [showScrollBottom, setShowScrollBottom] = useState(true);
 
   // Step 1 State - بيانات الخطة الأساسية
   const [planRef, setPlanRef] = useState(''); // الرقم المرجعي للخطة
@@ -234,46 +236,141 @@ export default function CreatePlanWizard({ onClose }: CreatePlanWizardProps) {
     setItems(newItems);
   };
 
+  // Handle scroll indicators
+  const handleScroll = (e: React.UIEvent<HTMLDivElement>) => {
+    const element = e.currentTarget;
+    const { scrollTop, scrollHeight, clientHeight } = element;
+
+    setShowScrollTop(scrollTop > 50);
+    setShowScrollBottom(scrollTop < scrollHeight - clientHeight - 50);
+  };
+
+  // Scroll to top/bottom
+  const scrollToTop = (ref: HTMLDivElement | null) => {
+    if (ref) {
+      ref.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+  };
+
+  const scrollToBottom = (ref: HTMLDivElement | null) => {
+    if (ref) {
+      ref.scrollTo({ top: ref.scrollHeight, behavior: 'smooth' });
+    }
+  };
+
   return (
-    <div className="w-full max-w-4xl mx-auto" dir="rtl">
-      {/* Progress Indicator */}
-      <div className="mb-8">
-        <div className="flex items-center justify-center gap-4">
-          <div className="flex items-center gap-2">
+    <div className="w-full h-full flex flex-col" dir="rtl">
+      {/* Header with Close Button */}
+      <div className="bg-gradient-to-r from-blue-50 to-indigo-50 px-8 py-4 rounded-t-2xl border-b-2 border-blue-100 flex items-center justify-between flex-shrink-0">
+        <div className="flex items-center justify-center gap-6 flex-1">
+          <div className="flex items-center gap-3">
             <div
-              className={`w-10 h-10 rounded-full flex items-center justify-center text-sm font-bold ${
-                step === 1 ? 'bg-blue-600 text-white' : 'bg-green-500 text-white'
+              className={`w-12 h-12 rounded-full flex items-center justify-center text-base font-bold shadow-lg transition-all duration-300 ${
+                step === 1
+                  ? 'bg-blue-600 text-white ring-4 ring-blue-200 scale-110'
+                  : 'bg-green-500 text-white ring-2 ring-green-200'
               }`}
             >
               {step > 1 ? '✓' : '1'}
             </div>
-            <span className="text-sm font-medium">بيانات الخطة</span>
+            <span className={`text-base font-semibold ${step === 1 ? 'text-blue-700' : 'text-green-600'}`}>
+              بيانات الخطة
+            </span>
           </div>
-          <div className="w-20 h-1 bg-gray-300 rounded"></div>
-          <div className="flex items-center gap-2">
+          <div className="w-24 h-1.5 bg-gradient-to-r from-blue-300 to-indigo-300 rounded-full shadow-sm"></div>
+          <div className="flex items-center gap-3">
             <div
-              className={`w-10 h-10 rounded-full flex items-center justify-center text-sm font-bold ${
-                step === 2 ? 'bg-blue-600 text-white' : 'bg-gray-300 text-gray-600'
+              className={`w-12 h-12 rounded-full flex items-center justify-center text-base font-bold shadow-lg transition-all duration-300 ${
+                step === 2
+                  ? 'bg-blue-600 text-white ring-4 ring-blue-200 scale-110'
+                  : 'bg-gray-300 text-gray-600'
               }`}
             >
               2
             </div>
-            <span className="text-sm font-medium">تفاصيل مهام التدقيق</span>
+            <span className={`text-base font-semibold ${step === 2 ? 'text-blue-700' : 'text-gray-500'}`}>
+              تفاصيل مهام التدقيق
+            </span>
           </div>
         </div>
+
+        {/* Close Button */}
+        <button
+          onClick={onClose}
+          className="mr-4 w-10 h-10 flex items-center justify-center rounded-full bg-red-500 hover:bg-red-600 text-white shadow-lg hover:shadow-xl transition-all duration-200 flex-shrink-0"
+          title="إغلاق"
+        >
+          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+          </svg>
+        </button>
       </div>
 
       {/* Step 1: Plan Data */}
       {step === 1 && (
-        <div className="bg-white rounded-lg border p-6 space-y-6">
-          <h2 className="text-xl font-bold text-gray-900 mb-4">إنشاء خطة تدقيق سنوية جديدة</h2>
+        <>
+          <div
+            className="flex-1 overflow-y-auto px-8 py-6 space-y-6 custom-scrollbar relative scroll-fade-container"
+            onScroll={handleScroll}
+            ref={(el) => {
+              if (el && showScrollTop !== undefined) {
+                // Initialize scroll indicators on mount
+                const { scrollTop, scrollHeight, clientHeight } = el;
+                if (scrollTop === 0 && scrollHeight > clientHeight) {
+                  setShowScrollBottom(true);
+                  setShowScrollTop(false);
+                }
+              }
+            }}
+          >
+            {/* Scroll to Top Button */}
+            {showScrollTop && (
+              <button
+                onClick={(e) => {
+                  const container = (e.target as HTMLElement).closest('.scroll-fade-container') as HTMLDivElement;
+                  scrollToTop(container);
+                }}
+                className="scroll-indicator scroll-up"
+                title="التمرير للأعلى"
+              >
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 15l7-7 7 7" />
+                </svg>
+              </button>
+            )}
+
+            {/* Scroll to Bottom Button */}
+            {showScrollBottom && (
+              <button
+                onClick={(e) => {
+                  const container = (e.target as HTMLElement).closest('.scroll-fade-container') as HTMLDivElement;
+                  scrollToBottom(container);
+                }}
+                className="scroll-indicator scroll-down"
+                title="التمرير للأسفل"
+              >
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                </svg>
+              </button>
+            )}
+
+          <div className="flex items-center gap-3 mb-6">
+            <div className="w-1 h-8 bg-gradient-to-b from-blue-500 to-indigo-600 rounded-full"></div>
+            <h2 className="text-2xl font-bold text-gray-800">إنشاء خطة تدقيق سنوية جديدة</h2>
+          </div>
 
           <div className="space-y-6">
             {/* القسم 1: البيانات الأساسية */}
-            <div className="border-b pb-6">
-              <h3 className="text-lg font-semibold text-gray-800 mb-4">
-                البيانات الأساسية <span className="text-red-500">*</span>
-              </h3>
+            <div className="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-xl p-6 border border-blue-100 shadow-sm">
+              <div className="flex items-center gap-2 mb-4">
+                <div className="w-8 h-8 bg-blue-500 rounded-lg flex items-center justify-center">
+                  <span className="text-white font-bold text-sm">1</span>
+                </div>
+                <h3 className="text-lg font-semibold text-gray-800">
+                  البيانات الأساسية <span className="text-red-500">*</span>
+                </h3>
+              </div>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 {/* الرقم المرجعي للخطة */}
@@ -360,8 +457,13 @@ export default function CreatePlanWizard({ onClose }: CreatePlanWizardProps) {
             </div>
 
             {/* القسم 2: معلومات تكميلية */}
-            <div className="border-b pb-6">
-              <h3 className="text-lg font-semibold text-gray-800 mb-4">معلومات تكميلية</h3>
+            <div className="bg-gradient-to-br from-indigo-50 to-purple-50 rounded-xl p-6 border border-indigo-100 shadow-sm">
+              <div className="flex items-center gap-2 mb-4">
+                <div className="w-8 h-8 bg-indigo-500 rounded-lg flex items-center justify-center">
+                  <span className="text-white font-bold text-sm">2</span>
+                </div>
+                <h3 className="text-lg font-semibold text-gray-800">معلومات تكميلية</h3>
+              </div>
 
               <div className="space-y-4">
                 {/* معايير إعداد الخطة */}
@@ -409,12 +511,17 @@ export default function CreatePlanWizard({ onClose }: CreatePlanWizardProps) {
             </div>
 
             {/* القسم 3: مصادر تقييم المخاطر */}
-            <div>
-              <h3 className="text-lg font-semibold text-gray-800 mb-4">
-                مصادر تقييم المخاطر المعتمدة
-              </h3>
+            <div className="bg-gradient-to-br from-purple-50 to-pink-50 rounded-xl p-6 border border-purple-100 shadow-sm">
+              <div className="flex items-center gap-2 mb-4">
+                <div className="w-8 h-8 bg-purple-500 rounded-lg flex items-center justify-center">
+                  <span className="text-white font-bold text-sm">3</span>
+                </div>
+                <h3 className="text-lg font-semibold text-gray-800">
+                  مصادر تقييم المخاطر المعتمدة
+                </h3>
+              </div>
 
-              <div className="bg-gray-50 rounded-lg p-4 border border-gray-200">
+              <div className="bg-white rounded-lg p-4 border border-purple-200">
                 <p className="text-sm text-gray-600 mb-3">
                   اختر المصادر التي تم الاعتماد عليها في تقييم المخاطر:
                 </p>
@@ -438,7 +545,13 @@ export default function CreatePlanWizard({ onClose }: CreatePlanWizardProps) {
             </div>
 
             {/* معلومات إضافية (اختيارية) */}
-            <div className="bg-blue-50 rounded-lg p-4 border border-blue-200">
+            <div className="bg-gradient-to-br from-amber-50 to-orange-50 rounded-xl p-6 border border-amber-200 shadow-sm">
+              <div className="flex items-center gap-2 mb-4">
+                <div className="w-8 h-8 bg-amber-500 rounded-lg flex items-center justify-center">
+                  <span className="text-white font-bold text-sm">⚙</span>
+                </div>
+                <h3 className="text-lg font-semibold text-gray-800">معلومات إضافية (اختيارية)</h3>
+              </div>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">رقم النسخة</label>
@@ -467,43 +580,105 @@ export default function CreatePlanWizard({ onClose }: CreatePlanWizardProps) {
               </div>
             </div>
           </div>
-
-          <div className="flex justify-between items-center pt-4 border-t">
-            <button
-              onClick={onClose}
-              className="px-6 py-2 text-gray-700 hover:text-gray-900 font-medium transition-colors"
-            >
-              إلغاء
-            </button>
-            <button
-              onClick={handleCreatePlan}
-              disabled={loading}
-              className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed font-medium"
-            >
-              {loading ? 'جاري الإنشاء...' : 'إنشاء الخطة →'}
-            </button>
-          </div>
         </div>
+
+        {/* Footer Buttons - Fixed at Bottom */}
+        <div className="flex justify-between items-center px-8 py-4 border-t-2 border-gray-200 bg-gray-50 rounded-b-2xl flex-shrink-0">
+          <button
+            onClick={onClose}
+            className="px-8 py-3 text-gray-700 hover:text-gray-900 hover:bg-gray-100 rounded-xl font-semibold transition-all duration-200 border-2 border-gray-300"
+          >
+            إلغاء
+          </button>
+          <button
+            onClick={handleCreatePlan}
+            disabled={loading}
+            className="px-8 py-3 bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-xl hover:from-blue-700 hover:to-indigo-700 disabled:opacity-50 disabled:cursor-not-allowed font-semibold shadow-lg hover:shadow-xl transition-all duration-200 flex items-center gap-2"
+          >
+            {loading ? (
+              <>
+                <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                جاري الإنشاء...
+              </>
+            ) : (
+              <>
+                إنشاء الخطة
+                <span className="text-xl">←</span>
+              </>
+            )}
+          </button>
+        </div>
+        </>
       )}
 
       {/* Step 2: Task Details */}
       {step === 2 && (
-        <div className="bg-white rounded-lg border p-6 space-y-6">
-          <div className="flex justify-between items-center">
-            <h2 className="text-xl font-bold text-gray-900">إضافة تفاصيل المهام</h2>
-            <button
-              onClick={addItem}
-              className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 text-sm font-medium"
-            >
-              + إضافة مهمة
-            </button>
+        <>
+          <div className="flex-shrink-0 px-8 py-4 border-b border-gray-200">
+            <div className="flex justify-between items-center">
+              <div className="flex items-center gap-3">
+                <div className="w-1 h-8 bg-gradient-to-b from-blue-500 to-indigo-600 rounded-full"></div>
+                <h2 className="text-2xl font-bold text-gray-800">إضافة تفاصيل المهام</h2>
+              </div>
+              <button
+                onClick={addItem}
+                className="px-6 py-3 bg-gradient-to-r from-green-600 to-emerald-600 text-white rounded-xl hover:from-green-700 hover:to-emerald-700 font-semibold shadow-lg hover:shadow-xl transition-all duration-200 flex items-center gap-2"
+              >
+                <span className="text-xl">+</span>
+                إضافة مهمة
+              </button>
+            </div>
           </div>
 
-          <div className="space-y-4 max-h-[600px] overflow-y-auto">
+          <div
+            className="flex-1 overflow-y-auto px-8 py-6 space-y-4 custom-scrollbar relative scroll-fade-container"
+            onScroll={handleScroll}
+            ref={(el) => {
+              if (el && showScrollTop !== undefined) {
+                const { scrollTop, scrollHeight, clientHeight } = el;
+                if (scrollTop === 0 && scrollHeight > clientHeight) {
+                  setShowScrollBottom(true);
+                  setShowScrollTop(false);
+                }
+              }
+            }}
+          >
+            {/* Scroll to Top Button */}
+            {showScrollTop && (
+              <button
+                onClick={(e) => {
+                  const container = (e.target as HTMLElement).closest('.scroll-fade-container') as HTMLDivElement;
+                  scrollToTop(container);
+                }}
+                className="scroll-indicator scroll-up"
+                title="التمرير للأعلى"
+              >
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 15l7-7 7 7" />
+                </svg>
+              </button>
+            )}
+
+            {/* Scroll to Bottom Button */}
+            {showScrollBottom && (
+              <button
+                onClick={(e) => {
+                  const container = (e.target as HTMLElement).closest('.scroll-fade-container') as HTMLDivElement;
+                  scrollToBottom(container);
+                }}
+                className="scroll-indicator scroll-down"
+                title="التمرير للأسفل"
+              >
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                </svg>
+              </button>
+            )}
+
             {items.map((item, index) => (
               <div
                 key={index}
-                className="p-4 border border-gray-200 rounded-lg bg-gray-50 space-y-4"
+                className="p-5 border-2 border-gray-200 rounded-xl bg-gradient-to-br from-white to-gray-50 space-y-4 hover:border-blue-300 hover:shadow-md transition-all duration-200"
               >
                 {/* الصف الأول */}
                 <div className="grid grid-cols-12 gap-3">
@@ -726,22 +901,34 @@ export default function CreatePlanWizard({ onClose }: CreatePlanWizardProps) {
             ))}
           </div>
 
-          <div className="flex justify-between items-center pt-4 border-t">
+          {/* Footer Buttons - Fixed at Bottom */}
+          <div className="flex justify-between items-center px-8 py-4 border-t-2 border-gray-200 bg-gray-50 rounded-b-2xl flex-shrink-0">
             <button
               onClick={() => setStep(1)}
-              className="px-6 py-2 text-gray-700 hover:text-gray-900 font-medium"
+              className="px-8 py-3 text-gray-700 hover:text-gray-900 hover:bg-gray-100 rounded-xl font-semibold transition-all duration-200 border-2 border-gray-300 flex items-center gap-2"
             >
-              ← رجوع
+              <span className="text-xl">→</span>
+              رجوع
             </button>
             <button
               onClick={handleSaveItems}
               disabled={loading}
-              className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed font-medium"
+              className="px-8 py-3 bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-xl hover:from-blue-700 hover:to-indigo-700 disabled:opacity-50 disabled:cursor-not-allowed font-semibold shadow-lg hover:shadow-xl transition-all duration-200 flex items-center gap-2"
             >
-              {loading ? 'جاري الحفظ...' : 'حفظ المهام والانتقال →'}
+              {loading ? (
+                <>
+                  <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                  جاري الحفظ...
+                </>
+              ) : (
+                <>
+                  حفظ المهام والانتقال
+                  <span className="text-xl">←</span>
+                </>
+              )}
             </button>
           </div>
-        </div>
+        </>
       )}
     </div>
   );

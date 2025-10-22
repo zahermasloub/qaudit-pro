@@ -389,3 +389,126 @@ canvas {
   max-width: 100%;
   height: auto;
 }
+
+/* =============================== */
+/* Custom Scrollbar for Wizard */
+/* =============================== */
+.custom-scrollbar::-webkit-scrollbar {
+  width: 12px;
+  height: 12px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: #f1f5f9;
+  border-radius: 10px;
+  margin: 4px 0;
+  box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.1);
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, #3b82f6, #6366f1);
+  border-radius: 10px;
+  border: 2px solid #f1f5f9;
+  box-shadow: 0 2px 6px rgba(59, 130, 246, 0.3);
+  transition: all 0.3s ease;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(180deg, #2563eb, #4f46e5);
+  border-color: #e2e8f0;
+  box-shadow: 0 4px 12px rgba(37, 99, 235, 0.5);
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb:active {
+  background: linear-gradient(180deg, #1d4ed8, #4338ca);
+}
+
+/* For Firefox */
+.custom-scrollbar {
+  scrollbar-width: thin;
+  scrollbar-color: #3b82f6 #f1f5f9;
+}
+
+/* =============================== */
+/* Scroll Fade Indicators */
+/* =============================== */
+.scroll-fade-container::before,
+.scroll-fade-container::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 40px;
+  pointer-events: none;
+  z-index: 10;
+  transition: opacity 0.3s ease;
+}
+
+.scroll-fade-container::before {
+  top: 0;
+  background: linear-gradient(to bottom, rgba(255, 255, 255, 0.95), transparent);
+}
+
+.scroll-fade-container::after {
+  bottom: 0;
+  background: linear-gradient(to top, rgba(255, 255, 255, 0.95), transparent);
+}
+
+/* Hide top fade when scrolled to top */
+.scroll-fade-container[data-scroll-top="true"]::before {
+  opacity: 0;
+}
+
+/* Hide bottom fade when scrolled to bottom */
+.scroll-fade-container[data-scroll-bottom="true"]::after {
+  opacity: 0;
+}
+
+/* =============================== */
+/* Scroll Arrows/Indicators */
+/* =============================== */
+.scroll-indicator {
+  position: absolute;
+  right: 24px;
+  background: rgba(59, 130, 246, 0.9);
+  color: white;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.4);
+  transition: all 0.3s ease;
+  z-index: 20;
+  animation: pulse-scroll 2s infinite;
+}
+
+.scroll-indicator:hover {
+  background: rgba(37, 99, 235, 1);
+  box-shadow: 0 6px 16px rgba(37, 99, 235, 0.6);
+  transform: scale(1.1);
+}
+
+.scroll-indicator.scroll-up {
+  top: 12px;
+}
+
+.scroll-indicator.scroll-down {
+  bottom: 12px;
+}
+
+.scroll-indicator.hidden {
+  opacity: 0;
+  pointer-events: none;
+}
+
+@keyframes pulse-scroll {
+  0%, 100% {
+    box-shadow: 0 4px 12px rgba(59, 130, 246, 0.4);
+  }
+  50% {
+    box-shadow: 0 4px 20px rgba(59, 130, 246, 0.7);
+  }
+}
