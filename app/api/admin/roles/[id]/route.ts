@@ -38,19 +38,13 @@ export async function GET(request: NextRequest, context: RouteContext) {
     });
 
     if (!role) {
-      return NextResponse.json(
-        { ok: false, error: 'Role not found' },
-        { status: 404 }
-      );
+      return NextResponse.json({ ok: false, error: 'Role not found' }, { status: 404 });
     }
 
     return NextResponse.json({ ok: true, role });
   } catch (error) {
     console.error('Error fetching role:', error);
-    return NextResponse.json(
-      { ok: false, error: 'Failed to fetch role' },
-      { status: 500 }
-    );
+    return NextResponse.json({ ok: false, error: 'Failed to fetch role' }, { status: 500 });
   }
 }
 
@@ -70,10 +64,7 @@ export async function PATCH(request: NextRequest, context: RouteContext) {
     });
 
     if (!existingRole) {
-      return NextResponse.json(
-        { ok: false, error: 'Role not found' },
-        { status: 404 }
-      );
+      return NextResponse.json({ ok: false, error: 'Role not found' }, { status: 404 });
     }
 
     // تحديث الدور
@@ -89,7 +80,7 @@ export async function PATCH(request: NextRequest, context: RouteContext) {
     if (validatedData.permissionKeys !== undefined) {
       // فصل جميع الصلاحيات الحالية
       updateData.permissions = {
-        disconnect: existingRole.permissions.map((p) => ({ id: p.id })),
+        disconnect: existingRole.permissions.map(p => ({ id: p.id })),
       };
 
       // ربط الصلاحيات الجديدة
@@ -98,7 +89,7 @@ export async function PATCH(request: NextRequest, context: RouteContext) {
           where: { key: { in: validatedData.permissionKeys } },
         });
 
-        updateData.permissions.connect = newPermissions.map((p) => ({
+        updateData.permissions.connect = newPermissions.map(p => ({
           id: p.id,
         }));
       }
@@ -125,15 +116,12 @@ export async function PATCH(request: NextRequest, context: RouteContext) {
     if (error instanceof z.ZodError) {
       return NextResponse.json(
         { ok: false, error: 'Invalid input', details: error.errors },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
     console.error('Error updating role:', error);
-    return NextResponse.json(
-      { ok: false, error: 'Failed to update role' },
-      { status: 500 }
-    );
+    return NextResponse.json({ ok: false, error: 'Failed to update role' }, { status: 500 });
   }
 }
 
@@ -151,10 +139,7 @@ export async function DELETE(request: NextRequest, context: RouteContext) {
     });
 
     if (!role) {
-      return NextResponse.json(
-        { ok: false, error: 'Role not found' },
-        { status: 404 }
-      );
+      return NextResponse.json({ ok: false, error: 'Role not found' }, { status: 404 });
     }
 
     // منع حذف الدور إذا كان له مستخدمين
@@ -164,7 +149,7 @@ export async function DELETE(request: NextRequest, context: RouteContext) {
           ok: false,
           error: `Cannot delete role with ${role.users.length} assigned users`,
         },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
@@ -186,9 +171,6 @@ export async function DELETE(request: NextRequest, context: RouteContext) {
     return NextResponse.json({ ok: true, message: 'Role deleted successfully' });
   } catch (error) {
     console.error('Error deleting role:', error);
-    return NextResponse.json(
-      { ok: false, error: 'Failed to delete role' },
-      { status: 500 }
-    );
+    return NextResponse.json({ ok: false, error: 'Failed to delete role' }, { status: 500 });
   }
 }

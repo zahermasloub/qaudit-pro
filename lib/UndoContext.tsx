@@ -64,7 +64,7 @@ export function UndoProvider({ children, undoTimeout = 5000 }: UndoProviderProps
         timestamp: Date.now(),
       };
 
-      setActionHistory((prev) => [...prev, undoAction]);
+      setActionHistory(prev => [...prev, undoAction]);
 
       // عرض toast مع زر التراجع
       const toastId = toast.success(action.description, {
@@ -81,13 +81,13 @@ export function UndoProvider({ children, undoTimeout = 5000 }: UndoProviderProps
 
       // إزالة الإجراء من التاريخ بعد انتهاء المهلة
       setTimeout(() => {
-        setActionHistory((prev) => prev.filter((a) => a.id !== undoAction.id));
+        setActionHistory(prev => prev.filter(a => a.id !== undoAction.id));
         if (activeToastId === toastId) {
           setActiveToastId(null);
         }
       }, undoTimeout);
     },
-    [undoTimeout, activeToastId]
+    [undoTimeout, activeToastId],
   );
 
   const undo = useCallback(async () => {
@@ -112,7 +112,7 @@ export function UndoProvider({ children, undoTimeout = 5000 }: UndoProviderProps
       }
 
       // إزالة الإجراء من التاريخ
-      setActionHistory((prev) => prev.filter((a) => a.id !== lastAction.id));
+      setActionHistory(prev => prev.filter(a => a.id !== lastAction.id));
 
       // إغلاق الـ toast النشط
       if (activeToastId) {

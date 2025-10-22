@@ -42,7 +42,7 @@ export function useCommandPalette() {
 
   const openPalette = () => setIsOpen(true);
   const closePalette = () => setIsOpen(false);
-  const togglePalette = () => setIsOpen((prev) => !prev);
+  const togglePalette = () => setIsOpen(prev => !prev);
 
   return {
     isOpen,

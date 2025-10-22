@@ -154,11 +154,21 @@ export default function PBCTable({ engagementId, onRefresh: _onRefresh }: PBCTab
         <table className="w-full text-sm">
           <thead>
             <tr>
-              <th className="text-right px-4 py-2 text-xs font-medium uppercase tracking-wide text-slate-700 bg-slate-50">الرمز</th>
-              <th className="text-right px-4 py-2 text-xs font-medium uppercase tracking-wide text-slate-700 bg-slate-50">الوصف</th>
-              <th className="text-right px-4 py-2 text-xs font-medium uppercase tracking-wide text-slate-700 bg-slate-50">المالك</th>
-              <th className="text-right px-4 py-2 text-xs font-medium uppercase tracking-wide text-slate-700 bg-slate-50">تاريخ الاستحقاق</th>
-              <th className="text-right px-4 py-2 text-xs font-medium uppercase tracking-wide text-slate-700 bg-slate-50">الحالة</th>
+              <th className="text-right px-4 py-2 text-xs font-medium uppercase tracking-wide text-slate-700 bg-slate-50">
+                الرمز
+              </th>
+              <th className="text-right px-4 py-2 text-xs font-medium uppercase tracking-wide text-slate-700 bg-slate-50">
+                الوصف
+              </th>
+              <th className="text-right px-4 py-2 text-xs font-medium uppercase tracking-wide text-slate-700 bg-slate-50">
+                المالك
+              </th>
+              <th className="text-right px-4 py-2 text-xs font-medium uppercase tracking-wide text-slate-700 bg-slate-50">
+                تاريخ الاستحقاق
+              </th>
+              <th className="text-right px-4 py-2 text-xs font-medium uppercase tracking-wide text-slate-700 bg-slate-50">
+                الحالة
+              </th>
             </tr>
           </thead>
           <tbody className="bg-white divide-y divide-neutral-200">
@@ -170,7 +180,7 @@ export default function PBCTable({ engagementId, onRefresh: _onRefresh }: PBCTab
                     : 'لا توجد بيانات للعرض.'}
                 </td>
               </tr>
-            ) :
+            ) : (
               filteredPbcs.map(pbc => (
                 <tr
                   key={pbc.id}
@@ -182,12 +192,8 @@ export default function PBCTable({ engagementId, onRefresh: _onRefresh }: PBCTab
                   <td className="px-4 py-2 whitespace-nowrap text-slate-900 font-medium">
                     {pbc.code}
                   </td>
-                  <td className="px-4 py-2 text-slate-900">
-                    {pbc.description}
-                  </td>
-                  <td className="px-4 py-2 whitespace-nowrap text-slate-600">
-                    {pbc.ownerId}
-                  </td>
+                  <td className="px-4 py-2 text-slate-900">{pbc.description}</td>
+                  <td className="px-4 py-2 whitespace-nowrap text-slate-600">{pbc.ownerId}</td>
                   <td className="px-4 py-2 whitespace-nowrap">
                     <div className="text-slate-900 text-sm">
                       {pbc.dueDate}
@@ -205,7 +211,8 @@ export default function PBCTable({ engagementId, onRefresh: _onRefresh }: PBCTab
                   </td>
                   <td className="px-4 py-2 whitespace-nowrap">{pbc.status}</td>
                 </tr>
-              ))}
+              ))
+            )}
           </tbody>
         </table>
       </div>

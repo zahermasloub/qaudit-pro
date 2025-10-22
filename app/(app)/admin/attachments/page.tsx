@@ -70,10 +70,12 @@ export default function AdminAttachmentsPage() {
   }, [fetchFiles]);
 
   // رفع ملف
-  async function handleUpload(uploadedFiles: { file: File; name: string; size: number; type: string }[]) {
+  async function handleUpload(
+    uploadedFiles: { file: File; name: string; size: number; type: string }[],
+  ) {
     try {
       const formData = new FormData();
-      uploadedFiles.forEach((item) => {
+      uploadedFiles.forEach(item => {
         formData.append('files', item.file);
       });
 
@@ -159,7 +161,7 @@ export default function AdminAttachmentsPage() {
 
   // تحديد/إلغاء تحديد ملف
   function toggleSelect(path: string) {
-    setSelectedFiles((prev) => {
+    setSelectedFiles(prev => {
       const newSet = new Set(prev);
       if (newSet.has(path)) {
         newSet.delete(path);
@@ -175,7 +177,7 @@ export default function AdminAttachmentsPage() {
     if (selectedFiles.size === filteredFiles.length) {
       setSelectedFiles(new Set());
     } else {
-      setSelectedFiles(new Set(filteredFiles.map((f) => f.path)));
+      setSelectedFiles(new Set(filteredFiles.map(f => f.path)));
     }
   }
 
@@ -200,9 +202,7 @@ export default function AdminAttachmentsPage() {
       header: () => (
         <input
           type="checkbox"
-          checked={
-            filteredFiles.length > 0 && selectedFiles.size === filteredFiles.length
-          }
+          checked={filteredFiles.length > 0 && selectedFiles.size === filteredFiles.length}
           onChange={toggleSelectAll}
           className="w-4 h-4 rounded border-border-base"
         />
@@ -225,9 +225,7 @@ export default function AdminAttachmentsPage() {
           <div className="flex items-center gap-2">
             <Icon size={18} className="text-brand-600" />
             <div className="min-w-0">
-              <div className="font-medium text-text-primary truncate">
-                {row.original.name}
-              </div>
+              <div className="font-medium text-text-primary truncate">{row.original.name}</div>
               <div className="text-xs text-text-tertiary">{row.original.type}</div>
             </div>
           </div>
@@ -238,9 +236,7 @@ export default function AdminAttachmentsPage() {
       accessorKey: 'size',
       header: 'الحجم',
       cell: ({ row }) => (
-        <span className="text-text-secondary text-sm">
-          {formatSize(row.original.size)}
-        </span>
+        <span className="text-text-secondary text-sm">{formatSize(row.original.size)}</span>
       ),
     },
     {
@@ -289,8 +285,8 @@ export default function AdminAttachmentsPage() {
   ];
 
   // فلترة الملفات بالبحث
-  const filteredFiles = files.filter((file) =>
-    file.name.toLowerCase().includes(searchQuery.toLowerCase())
+  const filteredFiles = files.filter(file =>
+    file.name.toLowerCase().includes(searchQuery.toLowerCase()),
   );
 
   return (
@@ -302,9 +298,7 @@ export default function AdminAttachmentsPage() {
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-2xl font-bold text-text-primary">إدارة المرفقات</h1>
-          <p className="text-sm text-text-tertiary mt-1">
-            إدارة الملفات والمرفقات في النظام
-          </p>
+          <p className="text-sm text-text-tertiary mt-1">إدارة الملفات والمرفقات في النظام</p>
         </div>
         <div className="flex items-center gap-2">
           <button
@@ -375,7 +369,7 @@ export default function AdminAttachmentsPage() {
           <input
             type="text"
             value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
+            onChange={e => setSearchQuery(e.target.value)}
             placeholder="بحث في الملفات..."
             className="
               w-full pr-10 pl-4 py-2 rounded-lg
@@ -408,11 +402,7 @@ export default function AdminAttachmentsPage() {
       ) : filteredFiles.length === 0 ? (
         <EmptyState
           title="لا توجد ملفات"
-          message={
-            searchQuery
-              ? 'لم يتم العثور على ملفات مطابقة للبحث'
-              : 'ابدأ برفع ملفات جديدة'
-          }
+          message={searchQuery ? 'لم يتم العثور على ملفات مطابقة للبحث' : 'ابدأ برفع ملفات جديدة'}
         />
       ) : (
         <DataTable columns={columns} data={filteredFiles} pagination pageSize={20} />
@@ -426,7 +416,7 @@ export default function AdminAttachmentsPage() {
         >
           <div
             className="bg-bg-elevated rounded-xl border border-border-base max-w-2xl w-full p-6"
-            onClick={(e) => e.stopPropagation()}
+            onClick={e => e.stopPropagation()}
           >
             <div className="flex items-center justify-between mb-4">
               <h2 className="text-xl font-bold text-text-primary">رفع ملفات</h2>
@@ -453,7 +443,7 @@ export default function AdminAttachmentsPage() {
           className="fixed inset-0 bg-black/80 z-50 flex items-center justify-center p-4"
           onClick={() => setPreviewFile(null)}
         >
-          <div className="max-w-4xl w-full" onClick={(e) => e.stopPropagation()}>
+          <div className="max-w-4xl w-full" onClick={e => e.stopPropagation()}>
             <div className="flex items-center justify-between mb-4">
               <h2 className="text-xl font-bold text-white">{previewFile.name}</h2>
               <button

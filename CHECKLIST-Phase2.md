@@ -1,4 +1,5 @@
 # CHECKLIST-Phase2.md
+
 **قائمة تحقق بعد مرحلة Hardening & TLS & Password Rotation**
 
 - [ ] تغيير كلمات المرور الافتراضية (postgres و app_user) وتخزينها بأمان.

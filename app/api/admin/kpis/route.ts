@@ -32,12 +32,7 @@ export async function GET(request: NextRequest) {
     }
 
     // جلب إحصائيات عامة
-    const [
-      usersCount,
-      rolesCount,
-      settingsCount,
-      recentLogsCount,
-    ] = await Promise.all([
+    const [usersCount, rolesCount, settingsCount, recentLogsCount] = await Promise.all([
       // إجمالي المستخدمين
       prisma.user.count(),
 
@@ -58,34 +53,31 @@ export async function GET(request: NextRequest) {
     ]);
 
     // جلب بيانات من mv_org_kpis
-    const orgKpis = await prisma.$queryRaw<Array<{
-      org_id: number;
-      engagements_total: bigint;
-      findings_total: bigint;
-      recs_total: bigint;
-      actions_total: bigint;
-      recs_open: bigint;
-      recs_wip: bigint;
-      recs_closed: bigint;
-    }>>`
+    const orgKpis = await prisma.$queryRaw<
+      Array<{
+        org_id: number;
+        engagements_total: bigint;
+        findings_total: bigint;
+        recs_total: bigint;
+        actions_total: bigint;
+        recs_open: bigint;
+        recs_wip: bigint;
+        recs_closed: bigint;
+      }>
+    >`
       SELECT * FROM core.mv_org_kpis
       ORDER BY org_id
       LIMIT 1
     `;
 
     // حساب إجمالي التوصيات
-    const totalRecs = orgKpis.length > 0
-      ? Number(orgKpis[0].recs_total)
-      : 0;
+    const totalRecs = orgKpis.length > 0 ? Number(orgKpis[0].recs_total) : 0;
 
-    const openRecs = orgKpis.length > 0
-      ? Number(orgKpis[0].recs_open)
-      : 0;
+    const openRecs = orgKpis.length > 0 ? Number(orgKpis[0].recs_open) : 0;
 
     // حساب نسبة الإنجاز
-    const completionRate = totalRecs > 0
-      ? Math.round(((totalRecs - openRecs) / totalRecs) * 100)
-      : 0;
+    const completionRate =
+      totalRecs > 0 ? Math.round(((totalRecs - openRecs) / totalRecs) * 100) : 0;
 
     // جلب آخر السجلات
     const recentLogs = await prisma.auditLog.findMany({
@@ -94,17 +86,22 @@ export async function GET(request: NextRequest) {
     });
 
     console.log('🔍 Recent Logs Count:', recentLogs.length);
-    console.log('🔍 Recent Logs Data:', recentLogs.map(l => ({ id: l.id, action: l.action })));
+    console.log(
+      '🔍 Recent Logs Data:',
+      recentLogs.map(l => ({ id: l.id, action: l.action })),
+    );
 
     // جلب اتجاهات الشهر الحالي (للرسم البياني)
     const currentMonth = new Date();
     currentMonth.setDate(currentMonth.getDate() - 30); // آخر 30 يوماً بدلاً من الشهر الحالي
     currentMonth.setHours(0, 0, 0, 0);
 
-    const monthlyLogs = await prisma.$queryRaw<Array<{
-      day: Date;
-      count: bigint;
-    }>>`
+    const monthlyLogs = await prisma.$queryRaw<
+      Array<{
+        day: Date;
+        count: bigint;
+      }>
+    >`
       SELECT
         DATE_TRUNC('day', "createdAt") as day,
         COUNT(*) as count
@@ -144,17 +141,20 @@ export async function GET(request: NextRequest) {
           trend: 'neutral' as const,
         },
       },
-      orgKpis: orgKpis.length > 0 ? {
-        engagements: Number(orgKpis[0].engagements_total),
-        findings: Number(orgKpis[0].findings_total),
-        recommendations: {
-          total: Number(orgKpis[0].recs_total),
-          open: Number(orgKpis[0].recs_open),
-          inProgress: Number(orgKpis[0].recs_wip),
-          closed: Number(orgKpis[0].recs_closed),
-        },
-        actions: Number(orgKpis[0].actions_total),
-      } : null,
+      orgKpis:
+        orgKpis.length > 0
+          ? {
+              engagements: Number(orgKpis[0].engagements_total),
+              findings: Number(orgKpis[0].findings_total),
+              recommendations: {
+                total: Number(orgKpis[0].recs_total),
+                open: Number(orgKpis[0].recs_open),
+                inProgress: Number(orgKpis[0].recs_wip),
+                closed: Number(orgKpis[0].recs_closed),
+              },
+              actions: Number(orgKpis[0].actions_total),
+            }
+          : null,
       recentLogs: recentLogs.map((log: any) => ({
         id: log.id,
         action: log.action,
@@ -166,7 +166,7 @@ export async function GET(request: NextRequest) {
         dailyActivity: monthlyLogs.map(item => ({
           label: new Date(item.day).toLocaleDateString('ar-EG', {
             day: 'numeric',
-            month: 'short'
+            month: 'short',
           }),
           value: Number(item.count),
         })),
@@ -183,9 +183,6 @@ export async function GET(request: NextRequest) {
     return NextResponse.json(responseData);
   } catch (error) {
     console.error('Error fetching KPIs:', error);
-    return NextResponse.json(
-      { error: 'Internal Server Error' },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
   }
 }

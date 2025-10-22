@@ -17,6 +17,7 @@ Arabic text appears as "?????" due to a break in UTF-8 encoding/decoding at one 
 ## Findings by Layer
 
 ### 1. Frontend / Next.js
+
 - **Meta charset:**
   - `app/layout.tsx` includes `<meta charSet="UTF-8" />` (see snippet below).
 - **i18n config:**
@@ -33,12 +34,14 @@ Arabic text appears as "?????" due to a break in UTF-8 encoding/decoding at one 
   - `/encoding-check` renders Arabic samples, table, input, and runtime checks.
 
 ### 2. API / Headers
+
 - **API route:**
   - `/api/encoding-check` returns Arabic JSON with `Content-Type: application/json; charset=utf-8`.
 - **Middleware:**
   - No custom middleware found that strips charset.
 
 ### 3. Database (PostgreSQL)
+
 - **Server encoding:**
   - `SHOW SERVER_ENCODING;` output: (see `diagnostics/db_encoding.txt`)
 - **DB encoding:**
@@ -51,11 +54,13 @@ Arabic text appears as "?????" due to a break in UTF-8 encoding/decoding at one 
   - (Manual test recommended; see Fix Plan)
 
 ### 4. Build/Runtime
+
 - **File encodings:**
   - All inspected files are UTF-8 (see `diagnostics/file_encodings.json`).
 - **No legacy build steps** found that re-encode assets.
 
 ### 5. Browser / OS
+
 - **OS locale:**
   - See `diagnostics/os_locale.txt` and `os_culture.txt`.
 - **Browser env:**
@@ -68,6 +73,7 @@ Arabic text appears as "?????" due to a break in UTF-8 encoding/decoding at one 
 ## Evidence Snippets
 
 ### app/layout.tsx (lines 1–20)
+
 ```tsx
 // ...existing code...
 // <meta charSet="UTF-8" />
@@ -75,6 +81,7 @@ Arabic text appears as "?????" due to a break in UTF-8 encoding/decoding at one 
 ```
 
 ### next.config.ts (lines 1–20)
+
 ```ts
 // ...existing code...
 // i18n: { locales: ["ar", "en"], defaultLocale: "ar", localeDetection: true }
@@ -82,6 +89,7 @@ Arabic text appears as "?????" due to a break in UTF-8 encoding/decoding at one 
 ```
 
 ### app/globals.css (lines 1–20)
+
 ```css
 /* ...existing code... */
 /* No global direction: rtl; forced. */
@@ -91,6 +99,7 @@ Arabic text appears as "?????" due to a break in UTF-8 encoding/decoding at one 
 ---
 
 ## Repro Steps
+
 1. Visit `/encoding-check` page. Confirm Arabic text renders correctly.
 2. Check runtime info (charset, dir, lang, font, etc.).
 3. Fetch `/api/encoding-check` and verify Arabic JSON.
@@ -101,6 +110,7 @@ Arabic text appears as "?????" due to a break in UTF-8 encoding/decoding at one 
 ---
 
 ## Fix Plan (Quick Wins First)
+
 1. **Fonts:**
    - Add Arabic-capable font (e.g., `@fontsource/tajawal`) in `globals.css` and apply to `html, body`.
 2. **Meta charset:**
@@ -121,20 +131,22 @@ Arabic text appears as "?????" due to a break in UTF-8 encoding/decoding at one 
 ---
 
 ## Verification Checklist
-| Check | Pass/Fail |
-|---|---|
-| `/encoding-check` page renders Arabic | [ ] |
-| API `/api/encoding-check` returns Arabic JSON | [ ] |
-| `document.characterSet` is UTF-8 | [ ] |
-| Font-family supports Arabic | [ ] |
-| DB/server encoding is UTF-8 | [ ] |
-| No non-UTF-8 files | [ ] |
-| OS/browser locale correct | [ ] |
-| No forced global `direction: rtl;` | [ ] |
+
+| Check                                         | Pass/Fail |
+| --------------------------------------------- | --------- |
+| `/encoding-check` page renders Arabic         | [ ]       |
+| API `/api/encoding-check` returns Arabic JSON | [ ]       |
+| `document.characterSet` is UTF-8              | [ ]       |
+| Font-family supports Arabic                   | [ ]       |
+| DB/server encoding is UTF-8                   | [ ]       |
+| No non-UTF-8 files                            | [ ]       |
+| OS/browser locale correct                     | [ ]       |
+| No forced global `direction: rtl;`            | [ ]       |
 
 ---
 
 ## Attachments
+
 - `diagnostics/file_encodings.json`
 - `diagnostics/db_encoding.txt`
 - `diagnostics/os_locale.txt`, `os_culture.txt`

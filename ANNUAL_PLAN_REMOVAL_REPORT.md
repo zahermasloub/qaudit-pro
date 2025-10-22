@@ -17,18 +17,21 @@
 ### **1. من `app/(app)/shell/AppShell.tsx`:**
 
 #### **أ. Type Route:**
+
 ```typescript
 // ❌ تم الحذف
 | 'annualPlan'
 ```
 
 #### **ب. RBAC Permissions:**
+
 ```typescript
 // ❌ تم الحذف
 annualPlan: ['IA_Manager', 'IA_Lead', 'IA_Auditor'],
 ```
 
 #### **ج. TOOLBARS Actions:**
+
 ```typescript
 // ❌ تم الحذف
 annualPlan: [
@@ -40,12 +43,14 @@ annualPlan: [
 ```
 
 #### **د. MENU_SPEC Item:**
+
 ```typescript
 // ❌ تم الحذف
 { key: 'annualPlan', icon: ClipboardList },
 ```
 
 #### **هـ. Imports:**
+
 ```typescript
 // ❌ تم الحذف
 import AnnualPlanForm from '@/features/annual-plan/annual-plan.form';
@@ -53,12 +58,14 @@ import { AnnualPlanScreen, ... } from './ScreenComponents';
 ```
 
 #### **و. Rendering Case:**
+
 ```typescript
 // ❌ تم الحذف
 {route === 'annualPlan' && <AnnualPlanScreen locale={locale} />}
 ```
 
 #### **ز. State & Handlers:**
+
 ```typescript
 // ❌ تم الحذف
 const [openAnnualPlan, setOpenAnnualPlan] = useState(false);
@@ -69,6 +76,7 @@ case 'createAnnualPlan':
 ```
 
 #### **ح. Modal Component:**
+
 ```typescript
 // ❌ تم الحذف (40+ سطر)
 <AnnualPlanForm
@@ -87,18 +95,18 @@ case 'createAnnualPlan':
 
 ## 📊 **إحصائيات الحذف**
 
-| العنصر | العدد المحذوف |
-|--------|---------------|
-| Type entries | 1 |
-| RBAC entries | 1 |
-| TOOLBARS entries | 1 (4 actions) |
-| MENU_SPEC items | 1 |
-| Import statements | 2 |
-| Rendering cases | 1 |
-| State variables | 1 |
-| Handler cases | 1 |
-| Modal components | 1 (~40 lines) |
-| **إجمالي الأسطر المحذوفة** | **~60 سطر** |
+| العنصر                     | العدد المحذوف |
+| -------------------------- | ------------- |
+| Type entries               | 1             |
+| RBAC entries               | 1             |
+| TOOLBARS entries           | 1 (4 actions) |
+| MENU_SPEC items            | 1             |
+| Import statements          | 2             |
+| Rendering cases            | 1             |
+| State variables            | 1             |
+| Handler cases              | 1             |
+| Modal components           | 1 (~40 lines) |
+| **إجمالي الأسطر المحذوفة** | **~60 سطر**   |
 
 ---
 
@@ -115,6 +123,7 @@ d:\THE-AUDIT-APP-2\features\annual-plan\
 ```
 
 **السبب:** لم يتم حذف الملفات الفعلية من مجلد `features/annual-plan/` لأنها قد تحتوي على:
+
 - Logic قد يكون مفيداً للرجوع إليه
 - Schemas قد تُستخدم في Migration
 - Forms قد تُعاد استخدامها في المستقبل
@@ -149,19 +158,19 @@ d:\THE-AUDIT-APP-2\features\annual-plan\
 
 ## 🎯 **مقارنة: القديمة vs الجديدة**
 
-| الميزة | Annualplan (القديمة) ❌ | rbiaplan (الجديدة) ✅ |
-|--------|--------------------------|------------------------|
-| **الجدول** | بسيط | متقدم مع فلاتر وبحث |
-| **البطاقات** | لا يوجد | 4 بطاقات ملخصة |
-| **CSV** | Import/Export أساسي | Import/Export متقدم |
-| **RTL** | غير متسق | كامل ومتسق |
-| **i18n** | جزئي | كامل (AR/EN) |
-| **Stepper** | لا يوجد | 11 خطوة جانبية |
-| **LocalStorage** | لا يوجد | حفظ الفلاتر تلقائياً |
-| **Performance** | عادي | useMemo optimization |
-| **ARIA** | لا يوجد | Full accessibility |
-| **API Integration** | محدود | 8 endpoints كاملة |
-| **Database Schema** | annual_plans | 8 جداول RBIA متكاملة |
+| الميزة              | Annualplan (القديمة) ❌ | rbiaplan (الجديدة) ✅ |
+| ------------------- | ----------------------- | --------------------- |
+| **الجدول**          | بسيط                    | متقدم مع فلاتر وبحث   |
+| **البطاقات**        | لا يوجد                 | 4 بطاقات ملخصة        |
+| **CSV**             | Import/Export أساسي     | Import/Export متقدم   |
+| **RTL**             | غير متسق                | كامل ومتسق            |
+| **i18n**            | جزئي                    | كامل (AR/EN)          |
+| **Stepper**         | لا يوجد                 | 11 خطوة جانبية        |
+| **LocalStorage**    | لا يوجد                 | حفظ الفلاتر تلقائياً  |
+| **Performance**     | عادي                    | useMemo optimization  |
+| **ARIA**            | لا يوجد                 | Full accessibility    |
+| **API Integration** | محدود                   | 8 endpoints كاملة     |
+| **Database Schema** | annual_plans            | 8 جداول RBIA متكاملة  |
 
 ---
 
@@ -217,6 +226,7 @@ pnpm dev
 ```
 
 **النتيجة:**
+
 ```
 ✓ Ready in 2.8s
 - Local: http://localhost:3001
@@ -246,13 +256,13 @@ pnpm dev
 
 ### **3. فحص Navigation:**
 
-| المسار | الحالة | النتيجة |
-|--------|--------|---------|
-| `/` | ✅ يعمل | Redirect إلى /shell |
-| `/shell` | ✅ يعمل | AppShell مع Dashboard |
-| `/shell → rbiaplan` | ✅ يعمل | RbiaPlanView تظهر |
-| `/rbia/plan` | ✅ يعمل | Standalone page |
-| `/shell → annualPlan` | ❌ محذوف | لا يظهر في القائمة |
+| المسار                | الحالة   | النتيجة               |
+| --------------------- | -------- | --------------------- |
+| `/`                   | ✅ يعمل  | Redirect إلى /shell   |
+| `/shell`              | ✅ يعمل  | AppShell مع Dashboard |
+| `/shell → rbiaplan`   | ✅ يعمل  | RbiaPlanView تظهر     |
+| `/rbia/plan`          | ✅ يعمل  | Standalone page       |
+| `/shell → annualPlan` | ❌ محذوف | لا يظهر في القائمة    |
 
 ---
 
@@ -279,9 +289,9 @@ pnpm dev
 
 ## 📂 **الملفات المُعدلة**
 
-| الملف | التعديل | الأسطر المحذوفة |
-|------|---------|-----------------|
-| `app/(app)/shell/AppShell.tsx` | حذف جميع مراجع annualPlan | ~60 سطر |
+| الملف                          | التعديل                   | الأسطر المحذوفة |
+| ------------------------------ | ------------------------- | --------------- |
+| `app/(app)/shell/AppShell.tsx` | حذف جميع مراجع annualPlan | ~60 سطر         |
 
 **إجمالي التعديلات:** 1 ملف  
 **إجمالي الحذف:** ~60 سطر
@@ -303,6 +313,7 @@ Move-Item -Path "features\annual-plan" -Destination "archive\annual-plan-old"
 ### **2. تنظيف i18n (اختياري):**
 
 حذف الترجمات غير المستخدمة من `lib/i18n.ts`:
+
 - `menu.annualPlan`
 - `sections.annualPlan`
 - `actions.createAnnualPlan`
@@ -312,6 +323,7 @@ Move-Item -Path "features\annual-plan" -Destination "archive\annual-plan-old"
 ### **3. تنظيف Database (اختياري):**
 
 إذا كان لديك بيانات قديمة في جدول `annual_plans`:
+
 ```sql
 -- فحص البيانات القديمة
 SELECT COUNT(*) FROM public.annual_plans;

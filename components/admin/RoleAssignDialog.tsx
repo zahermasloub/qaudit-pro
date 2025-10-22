@@ -112,7 +112,7 @@ export function RoleAssignDialog({
           w-full max-w-md mx-4
           animate-in zoom-in-95 duration-200
         "
-        onClick={(e) => e.stopPropagation()}
+        onClick={e => e.stopPropagation()}
       >
         {/* Header */}
         <div className="flex items-center justify-between p-6 border-b border-border-base">
@@ -124,9 +124,7 @@ export function RoleAssignDialog({
               <h2 id="role-assign-title" className="text-lg font-bold text-text-primary">
                 تعيين دور جماعي
               </h2>
-              <p className="text-sm text-text-secondary">
-                اختر دور لتعيينه لـ {userCount} مستخدم
-              </p>
+              <p className="text-sm text-text-secondary">اختر دور لتعيينه لـ {userCount} مستخدم</p>
             </div>
           </div>
           <button
@@ -159,10 +157,8 @@ export function RoleAssignDialog({
             </div>
           ) : (
             <div className="space-y-2">
-              <label className="block text-sm font-medium text-text-primary mb-2">
-                اختر الدور
-              </label>
-              {roles.map((role) => (
+              <label className="block text-sm font-medium text-text-primary mb-2">اختر الدور</label>
+              {roles.map(role => (
                 <label
                   key={role.id}
                   className={`
@@ -180,7 +176,7 @@ export function RoleAssignDialog({
                     name="role"
                     value={role.id}
                     checked={selectedRoleId === role.id}
-                    onChange={(e) => setSelectedRoleId(e.target.value)}
+                    onChange={e => setSelectedRoleId(e.target.value)}
                     className="
                       mt-0.5 w-4 h-4
                       text-brand-600
@@ -191,9 +187,7 @@ export function RoleAssignDialog({
                   <div className="flex-1">
                     <div className="font-medium text-text-primary">{role.name}</div>
                     {role.description && (
-                      <div className="text-sm text-text-secondary mt-1">
-                        {role.description}
-                      </div>
+                      <div className="text-sm text-text-secondary mt-1">{role.description}</div>
                     )}
                   </div>
                 </label>

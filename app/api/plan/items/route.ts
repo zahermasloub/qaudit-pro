@@ -82,10 +82,7 @@ export async function GET(req: Request) {
     const plan_id = searchParams.get('plan_id');
 
     if (!plan_id) {
-      return NextResponse.json(
-        { ok: false, error: 'معرّف الخطة مطلوب' },
-        { status: 400 }
-      );
+      return NextResponse.json({ ok: false, error: 'معرّف الخطة مطلوب' }, { status: 400 });
     }
 
     const query = `
@@ -106,13 +103,13 @@ export async function GET(req: Request) {
     return NextResponse.json({
       ok: true,
       data: items,
-      count: Array.isArray(items) ? items.length : 0
+      count: Array.isArray(items) ? items.length : 0,
     });
   } catch (error: any) {
     console.error('GET /api/plan/items error:', error);
     return NextResponse.json(
       { ok: false, error: error.message || 'فشل في جلب بنود الخطة' },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }
@@ -122,26 +119,20 @@ export async function POST(req: Request) {
     const body: PlanItem[] = await req.json();
 
     if (!Array.isArray(body) || body.length === 0) {
-      return NextResponse.json(
-        { ok: false, error: 'يجب إرسال مصفوفة من البنود' },
-        { status: 400 }
-      );
+      return NextResponse.json({ ok: false, error: 'يجب إرسال مصفوفة من البنود' }, { status: 400 });
     }
 
     // Check if plan is baselined (frozen)
     const firstItem = body[0];
     const planCheck: any = await prisma.$queryRawUnsafe(
       'SELECT status FROM audit."AnnualPlans" WHERE id = $1',
-      firstItem.plan_id
+      firstItem.plan_id,
     );
 
     if (planCheck && planCheck.length > 0) {
       const status = planCheck[0].status;
       if (status === 'baselined') {
-        return NextResponse.json(
-          { ok: false, error: 'لا يمكن تعديل خطة مجمّدة' },
-          { status: 403 }
-        );
+        return NextResponse.json({ ok: false, error: 'لا يمكن تعديل خطة مجمّدة' }, { status: 403 });
       }
     }
 
@@ -186,7 +177,7 @@ export async function POST(req: Request) {
           item.period_start || null,
           item.period_end || null,
           item.deliverable_type || null,
-          item.risk_score || null
+          item.risk_score || null,
         );
 
         const insertedItem = Array.isArray(result) ? result[0] : result;
@@ -202,15 +193,15 @@ export async function POST(req: Request) {
         ok: true,
         data: created,
         count: created.length,
-        message: `تم حفظ ${created.length} من ${body.length} بند`
+        message: `تم حفظ ${created.length} من ${body.length} بند`,
       },
-      { status: 201 }
+      { status: 201 },
     );
   } catch (error: any) {
     console.error('POST /api/plan/items error:', error);
     return NextResponse.json(
       { ok: false, error: error.message || 'فشل في حفظ بنود الخطة' },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

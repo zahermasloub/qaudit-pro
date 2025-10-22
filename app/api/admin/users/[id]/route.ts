@@ -15,10 +15,7 @@ const userUpdateSchema = z.object({
 });
 
 // GET /api/admin/users/[id] - جلب مستخدم واحد
-export async function GET(
-  request: NextRequest,
-  { params }: { params: { id: string } }
-) {
+export async function GET(request: NextRequest, { params }: { params: { id: string } }) {
   try {
     const user = await prisma.user.findUnique({
       where: { id: params.id },
@@ -40,10 +37,7 @@ export async function GET(
 }
 
 // PATCH /api/admin/users/[id] - تحديث مستخدم
-export async function PATCH(
-  request: NextRequest,
-  { params }: { params: { id: string } }
-) {
+export async function PATCH(request: NextRequest, { params }: { params: { id: string } }) {
   try {
     const body = await request.json();
     const v = userUpdateSchema.parse(body);
@@ -83,7 +77,7 @@ export async function PATCH(
       // إضافة الأدوار الجديدة
       if (v.roleIds.length > 0) {
         await prisma.userRole.createMany({
-          data: v.roleIds.map((rid) => ({ userId: params.id, roleId: rid })),
+          data: v.roleIds.map(rid => ({ userId: params.id, roleId: rid })),
         });
       }
     }
@@ -104,7 +98,7 @@ export async function PATCH(
     if (error instanceof z.ZodError) {
       return NextResponse.json(
         { ok: false, error: 'Validation error', details: error.errors },
-        { status: 400 }
+        { status: 400 },
       );
     }
     return NextResponse.json({ ok: false, error: 'Failed to update user' }, { status: 500 });
@@ -112,10 +106,7 @@ export async function PATCH(
 }
 
 // DELETE /api/admin/users/[id] - حذف مستخدم
-export async function DELETE(
-  request: NextRequest,
-  { params }: { params: { id: string } }
-) {
+export async function DELETE(request: NextRequest, { params }: { params: { id: string } }) {
   try {
     // تحقق من وجود المستخدم
     const existingUser = await prisma.user.findUnique({

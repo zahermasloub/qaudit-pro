@@ -82,7 +82,9 @@ export async function GET(req: Request) {
     }
 
     if (category) {
-      whereClause += whereClause ? ' AND category = $' + (params.length + 1) : 'WHERE category = $1';
+      whereClause += whereClause
+        ? ' AND category = $' + (params.length + 1)
+        : 'WHERE category = $1';
       params.push(category);
     }
 
@@ -100,13 +102,13 @@ export async function GET(req: Request) {
     return NextResponse.json({
       ok: true,
       data: items,
-      count: Array.isArray(items) ? items.length : 0
+      count: Array.isArray(items) ? items.length : 0,
     });
   } catch (error: any) {
     console.error('GET /api/audit-universe error:', error);
     return NextResponse.json(
       { ok: false, error: error.message || 'فشل في جلب عناصر الكون' },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }
@@ -117,10 +119,7 @@ export async function POST(req: Request) {
 
     // Validation
     if (!body.name || body.name.trim().length === 0) {
-      return NextResponse.json(
-        { ok: false, error: 'الاسم مطلوب' },
-        { status: 400 }
-      );
+      return NextResponse.json({ ok: false, error: 'الاسم مطلوب' }, { status: 400 });
     }
 
     if (body.strategy_importance !== undefined) {
@@ -128,7 +127,7 @@ export async function POST(req: Request) {
       if (isNaN(importance) || importance < 1 || importance > 5) {
         return NextResponse.json(
           { ok: false, error: 'الأهمية الاستراتيجية يجب أن تكون بين 1 و 5' },
-          { status: 400 }
+          { status: 400 },
         );
       }
     }
@@ -149,15 +148,12 @@ export async function POST(req: Request) {
       body.strategy_importance || null,
       body.system_refs || null,
       body.last_audit_date || null,
-      body.notes || null
+      body.notes || null,
     );
 
     const created = Array.isArray(result) ? result[0] : result;
 
-    return NextResponse.json(
-      { ok: true, data: created },
-      { status: 201 }
-    );
+    return NextResponse.json({ ok: true, data: created }, { status: 201 });
   } catch (error: any) {
     console.error('POST /api/audit-universe error:', error);
 
@@ -165,13 +161,13 @@ export async function POST(req: Request) {
     if (error.code === '23505') {
       return NextResponse.json(
         { ok: false, error: 'عنصر بنفس الاسم موجود مسبقاً' },
-        { status: 409 }
+        { status: 409 },
       );
     }
 
     return NextResponse.json(
       { ok: false, error: error.message || 'فشل في إنشاء عنصر الكون' },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

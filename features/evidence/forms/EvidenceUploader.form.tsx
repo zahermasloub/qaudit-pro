@@ -134,9 +134,7 @@ const EvidenceUploaderForm: React.FC<EvidenceUploaderFormProps> = ({
 
     if (!response.ok || !result.ok) {
       console.error('❌ فشل رفع الملف:', result.error);
-      throw new Error(
-        result.error || `تعذر رفع ${file.name} (رمز الحالة: ${response.status}).`,
-      );
+      throw new Error(result.error || `تعذر رفع ${file.name} (رمز الحالة: ${response.status}).`);
     }
 
     return result.evidence.id;
@@ -260,9 +258,7 @@ const EvidenceUploaderForm: React.FC<EvidenceUploaderFormProps> = ({
             <div className="flex-1 space-y-4 overflow-y-auto overflow-x-hidden px-2 sm:px-4 md:px-6 py-3 sm:py-4">
               <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
                 <div>
-                  <label className="mb-2 block text-sm font-medium text-gray-700">
-                    فئة الدليل
-                  </label>
+                  <label className="mb-2 block text-sm font-medium text-gray-700">فئة الدليل</label>
                   <select
                     {...register('category')}
                     className="w-full rounded-md border border-gray-300 px-3 py-2 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500"
@@ -327,7 +323,9 @@ const EvidenceUploaderForm: React.FC<EvidenceUploaderFormProps> = ({
               <div
                 {...getRootProps()}
                 className={`border-2 border-dashed rounded-lg p-8 text-center transition-colors ${
-                  isDragActive ? 'border-blue-400 bg-blue-50' : 'border-gray-300 hover:border-gray-400'
+                  isDragActive
+                    ? 'border-blue-400 bg-blue-50'
+                    : 'border-gray-300 hover:border-gray-400'
                 } ${isUploading ? 'pointer-events-none opacity-50' : 'cursor-pointer'}`}
               >
                 <input {...getInputProps()} />
@@ -363,7 +361,9 @@ const EvidenceUploaderForm: React.FC<EvidenceUploaderFormProps> = ({
                             />
                           )}
                           <div className="min-w-0 flex-1">
-                            <p className="truncate text-sm font-medium text-gray-900">{file.name}</p>
+                            <p className="truncate text-sm font-medium text-gray-900">
+                              {file.name}
+                            </p>
                             <p className="text-xs text-gray-500">{formatFileSize(file.size)}</p>
                             {file.uploadStatus === 'uploading' && (
                               <div className="mt-1">

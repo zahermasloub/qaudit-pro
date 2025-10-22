@@ -108,9 +108,7 @@ export function CreateUserDialog({ open, onClose, onSuccess }: CreateUserDialogP
               placeholder="أدخل اسم المستخدم"
               disabled={loading}
             />
-            {errors.name && (
-              <p className="mt-1 text-sm text-error-600">{errors.name.message}</p>
-            )}
+            {errors.name && <p className="mt-1 text-sm text-error-600">{errors.name.message}</p>}
           </div>
 
           {/* Email Field */}
@@ -132,9 +130,7 @@ export function CreateUserDialog({ open, onClose, onSuccess }: CreateUserDialogP
               placeholder="example@domain.com"
               disabled={loading}
             />
-            {errors.email && (
-              <p className="mt-1 text-sm text-error-600">{errors.email.message}</p>
-            )}
+            {errors.email && <p className="mt-1 text-sm text-error-600">{errors.email.message}</p>}
           </div>
 
           {/* Password Field */}
@@ -184,9 +180,7 @@ export function CreateUserDialog({ open, onClose, onSuccess }: CreateUserDialogP
               <option value="IA_Auditor">مدقق (IA Auditor)</option>
               <option value="User">مستخدم (User)</option>
             </select>
-            {errors.role && (
-              <p className="mt-1 text-sm text-error-600">{errors.role.message}</p>
-            )}
+            {errors.role && <p className="mt-1 text-sm text-error-600">{errors.role.message}</p>}
           </div>
 
           {/* Locale Field */}

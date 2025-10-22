@@ -8,18 +8,18 @@ interface CreatePlanWizardProps {
 }
 
 interface PlanTask {
-  seqNo: number;              // الرقم التسلسلي للمهمة
-  taskRef: string;            // الرقم المرجعي للمهمة
-  deptId: string;             // الإدارة / القسم المستهدف
-  title: string;              // اسم المهمة
-  taskType: string;           // نوع المهمة
-  riskLevel: string;          // درجة الخطورة
-  impactLevel: string;        // تقييم الأثر
-  priority: string;           // أولوية التنفيذ
-  scheduledQuarter: string;   // توقيت التنفيذ المقترح
-  durationDays: number;       // المدة التقديرية للتنفيذ (أيام)
-  assignee: string;           // المدقق المسؤول
-  notes: string;              // تعليقات إضافية
+  seqNo: number; // الرقم التسلسلي للمهمة
+  taskRef: string; // الرقم المرجعي للمهمة
+  deptId: string; // الإدارة / القسم المستهدف
+  title: string; // اسم المهمة
+  taskType: string; // نوع المهمة
+  riskLevel: string; // درجة الخطورة
+  impactLevel: string; // تقييم الأثر
+  priority: string; // أولوية التنفيذ
+  scheduledQuarter: string; // توقيت التنفيذ المقترح
+  durationDays: number; // المدة التقديرية للتنفيذ (أيام)
+  assignee: string; // المدقق المسؤول
+  notes: string; // تعليقات إضافية
 }
 
 export default function CreatePlanWizard({ onClose }: CreatePlanWizardProps) {
@@ -87,7 +87,7 @@ export default function CreatePlanWizard({ onClose }: CreatePlanWizardProps) {
   // Toggle risk source checkbox
   const toggleRiskSource = (value: string) => {
     setRiskSources(prev =>
-      prev.includes(value) ? prev.filter(s => s !== value) : [...prev, value]
+      prev.includes(value) ? prev.filter(s => s !== value) : [...prev, value],
     );
   };
 
@@ -153,8 +153,8 @@ export default function CreatePlanWizard({ onClose }: CreatePlanWizardProps) {
     setLoading(true);
     try {
       // Filter out empty items (must have title and taskRef)
-      const validItems = items.filter(item =>
-        item.title.trim() !== '' && item.taskRef.trim() !== ''
+      const validItems = items.filter(
+        item => item.title.trim() !== '' && item.taskRef.trim() !== '',
       );
 
       if (validItems.length === 0) {
@@ -242,9 +242,7 @@ export default function CreatePlanWizard({ onClose }: CreatePlanWizardProps) {
           <div className="flex items-center gap-2">
             <div
               className={`w-10 h-10 rounded-full flex items-center justify-center text-sm font-bold ${
-                step === 1
-                  ? 'bg-blue-600 text-white'
-                  : 'bg-green-500 text-white'
+                step === 1 ? 'bg-blue-600 text-white' : 'bg-green-500 text-white'
               }`}
             >
               {step > 1 ? '✓' : '1'}
@@ -255,9 +253,7 @@ export default function CreatePlanWizard({ onClose }: CreatePlanWizardProps) {
           <div className="flex items-center gap-2">
             <div
               className={`w-10 h-10 rounded-full flex items-center justify-center text-sm font-bold ${
-                step === 2
-                  ? 'bg-blue-600 text-white'
-                  : 'bg-gray-300 text-gray-600'
+                step === 2 ? 'bg-blue-600 text-white' : 'bg-gray-300 text-gray-600'
               }`}
             >
               2
@@ -270,9 +266,7 @@ export default function CreatePlanWizard({ onClose }: CreatePlanWizardProps) {
       {/* Step 1: Plan Data */}
       {step === 1 && (
         <div className="bg-white rounded-lg border p-6 space-y-6">
-          <h2 className="text-xl font-bold text-gray-900 mb-4">
-            إنشاء خطة تدقيق سنوية جديدة
-          </h2>
+          <h2 className="text-xl font-bold text-gray-900 mb-4">إنشاء خطة تدقيق سنوية جديدة</h2>
 
           <div className="space-y-6">
             {/* القسم 1: البيانات الأساسية */}
@@ -295,9 +289,7 @@ export default function CreatePlanWizard({ onClose }: CreatePlanWizardProps) {
                     className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-right"
                     dir="ltr"
                   />
-                  <p className="text-xs text-gray-500 mt-1">
-                    مثال: ADP-2025، AUDIT-2026
-                  </p>
+                  <p className="text-xs text-gray-500 mt-1">مثال: ADP-2025، AUDIT-2026</p>
                 </div>
 
                 {/* السنة المالية */}
@@ -369,9 +361,7 @@ export default function CreatePlanWizard({ onClose }: CreatePlanWizardProps) {
 
             {/* القسم 2: معلومات تكميلية */}
             <div className="border-b pb-6">
-              <h3 className="text-lg font-semibold text-gray-800 mb-4">
-                معلومات تكميلية
-              </h3>
+              <h3 className="text-lg font-semibold text-gray-800 mb-4">معلومات تكميلية</h3>
 
               <div className="space-y-4">
                 {/* معايير إعداد الخطة */}
@@ -440,9 +430,7 @@ export default function CreatePlanWizard({ onClose }: CreatePlanWizardProps) {
                         onChange={() => toggleRiskSource(option.value)}
                         className="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-2 focus:ring-blue-500"
                       />
-                      <span className="text-sm font-medium text-gray-700">
-                        {option.label}
-                      </span>
+                      <span className="text-sm font-medium text-gray-700">{option.label}</span>
                     </label>
                   ))}
                 </div>
@@ -453,9 +441,7 @@ export default function CreatePlanWizard({ onClose }: CreatePlanWizardProps) {
             <div className="bg-blue-50 rounded-lg p-4 border border-blue-200">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    رقم النسخة
-                  </label>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">رقم النسخة</label>
                   <input
                     type="text"
                     value={version}
@@ -463,9 +449,7 @@ export default function CreatePlanWizard({ onClose }: CreatePlanWizardProps) {
                     placeholder="v1"
                     className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white"
                   />
-                  <p className="text-xs text-gray-500 mt-1">
-                    افتراضي: v1
-                  </p>
+                  <p className="text-xs text-gray-500 mt-1">افتراضي: v1</p>
                 </div>
 
                 <div>
@@ -506,9 +490,7 @@ export default function CreatePlanWizard({ onClose }: CreatePlanWizardProps) {
       {step === 2 && (
         <div className="bg-white rounded-lg border p-6 space-y-6">
           <div className="flex justify-between items-center">
-            <h2 className="text-xl font-bold text-gray-900">
-              إضافة تفاصيل المهام
-            </h2>
+            <h2 className="text-xl font-bold text-gray-900">إضافة تفاصيل المهام</h2>
             <button
               onClick={addItem}
               className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 text-sm font-medium"

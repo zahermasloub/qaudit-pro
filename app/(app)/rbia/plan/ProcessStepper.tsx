@@ -52,7 +52,12 @@ export default function ProcessStepper({
   };
 
   const getStepClasses = (step: ProcessStep) => {
+
+    const baseClasses =
+      'group flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all duration-200';
+
     const baseClasses = 'group flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2';
+
 
     switch (step.status) {
       case 'active':
@@ -71,7 +76,8 @@ export default function ProcessStepper({
   };
 
   const getNumberClasses = (step: ProcessStep) => {
-    const baseClasses = 'flex-shrink-0 w-7 h-7 rounded-full flex items-center justify-center text-sm font-semibold transition-colors duration-200';
+    const baseClasses =
+      'flex-shrink-0 w-7 h-7 rounded-full flex items-center justify-center text-sm font-semibold transition-colors duration-200';
 
     switch (step.status) {
       case 'active':
@@ -115,7 +121,7 @@ export default function ProcessStepper({
         // Focus on next available step (skip locked ones)
         if (nextStep.status !== 'locked') {
           const stepElement = document.querySelector(
-            `[data-step-id="${nextStep.id}"]`
+            `[data-step-id="${nextStep.id}"]`,
           ) as HTMLElement;
           stepElement?.focus();
         } else {
@@ -125,7 +131,7 @@ export default function ProcessStepper({
             const furtherStep = steps[furtherIndex];
             if (furtherStep.status !== 'locked') {
               const stepElement = document.querySelector(
-                `[data-step-id="${furtherStep.id}"]`
+                `[data-step-id="${furtherStep.id}"]`,
               ) as HTMLElement;
               stepElement?.focus();
             }
@@ -156,7 +162,7 @@ export default function ProcessStepper({
                 data-step-id={step.id}
                 className={getStepClasses(step)}
                 onClick={() => handleStepClick(step)}
-                onKeyDown={(e) => handleKeyDown(e, step, index)}
+                onKeyDown={e => handleKeyDown(e, step, index)}
                 role="button"
                 tabIndex={step.status === 'locked' ? -1 : 0}
                 aria-current={step.status === 'active' ? 'step' : undefined}
@@ -165,9 +171,7 @@ export default function ProcessStepper({
                 title={step.status === 'locked' ? step.lockReason : step.label}
               >
                 {/* Number Badge */}
-                <div className={getNumberClasses(step)}>
-                  {step.id}
-                </div>
+                <div className={getNumberClasses(step)}>{step.id}</div>
 
                 {/* Label */}
                 <div className="flex-1 min-w-0">
@@ -192,9 +196,7 @@ export default function ProcessStepper({
                 </div>
 
                 {/* Status Icon */}
-                <div className="flex-shrink-0">
-                  {getStatusIcon(step.status)}
-                </div>
+                <div className="flex-shrink-0">{getStatusIcon(step.status)}</div>
               </div>
             ))}
           </div>
@@ -247,7 +249,7 @@ export default function ProcessStepper({
                   data-step-id={step.id}
                   className={getStepClasses(step)}
                   onClick={() => handleStepClick(step)}
-                  onKeyDown={(e) => handleKeyDown(e, step, index)}
+                  onKeyDown={e => handleKeyDown(e, step, index)}
                   role="button"
                   tabIndex={step.status === 'locked' ? -1 : 0}
                   aria-current={step.status === 'active' ? 'step' : undefined}

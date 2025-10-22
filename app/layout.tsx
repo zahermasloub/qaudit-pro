@@ -1,5 +1,5 @@
-import "@fontsource/tajawal/400.css";
-import "@fontsource/tajawal/700.css";
+import '@fontsource/tajawal/400.css';
+import '@fontsource/tajawal/700.css';
 import type { Metadata } from 'next';
 import AuthProvider from '@/lib/AuthProvider';
 import { ThemeProvider } from '@/lib/ThemeProvider';

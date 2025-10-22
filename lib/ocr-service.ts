@@ -342,7 +342,6 @@ class OCRService {
     }
 
     try {
-
       // In production, you would save this to your storage system
       const ocrFileName = `ocr-${evidenceId}-${Date.now()}.json`;
 

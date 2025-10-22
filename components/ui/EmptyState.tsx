@@ -62,9 +62,7 @@ export function EmptyState({
   variant = 'default',
   className = '',
 }: EmptyStateProps) {
-  const iconColorClass = variant === 'error'
-    ? 'text-danger-500'
-    : 'text-text-tertiary';
+  const iconColorClass = variant === 'error' ? 'text-danger-500' : 'text-text-tertiary';
 
   return (
     <div
@@ -78,15 +76,9 @@ export function EmptyState({
         </div>
       )}
 
-      <h3 className="text-lg font-semibold text-text-primary mb-2">
-        {title}
-      </h3>
+      <h3 className="text-lg font-semibold text-text-primary mb-2">{title}</h3>
 
-      {message && (
-        <p className="text-sm text-text-secondary max-w-md mb-6">
-          {message}
-        </p>
-      )}
+      {message && <p className="text-sm text-text-secondary max-w-md mb-6">{message}</p>}
 
       {action && (
         <button

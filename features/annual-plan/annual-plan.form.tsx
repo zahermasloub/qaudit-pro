@@ -118,26 +118,37 @@ export default function AnnualPlanForm({
               موازنة الساعات
             </button>
           </div>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="flex flex-1 flex-col overflow-hidden">
+          <form
+            onSubmit={form.handleSubmit(onSubmit)}
+            className="flex flex-1 flex-col overflow-hidden"
+          >
             <div className="flex-1 overflow-y-auto overflow-x-hidden px-2 sm:px-4 md:px-6 py-3 sm:py-4">
               {tab === 'meta' && (
                 <section className="space-y-3">
-                  <h4 className="border-b pb-2 text-lg font-semibold text-gray-900">البيانات التعريفية</h4>
+                  <h4 className="border-b pb-2 text-lg font-semibold text-gray-900">
+                    البيانات التعريفية
+                  </h4>
                   <div className="grid grid-cols-1 gap-3 md:grid-cols-2">
                     <div>
-                      <label className="mb-1 block text-sm font-medium text-gray-700">عنوان الخطة</label>
+                      <label className="mb-1 block text-sm font-medium text-gray-700">
+                        عنوان الخطة
+                      </label>
                       <input
                         {...form.register('title')}
                         placeholder="الخطة السنوية للإدارة العامة لعام 2026"
                         className="w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500"
                       />
                       {form.formState.errors.title && (
-                        <p className="mt-1 text-sm text-red-600">{form.formState.errors.title.message}</p>
+                        <p className="mt-1 text-sm text-red-600">
+                          {form.formState.errors.title.message}
+                        </p>
                       )}
                     </div>
                     <div className="grid grid-cols-2 gap-2">
                       <div>
-                        <label className="mb-1 block text-sm font-medium text-gray-700">السنة المالية</label>
+                        <label className="mb-1 block text-sm font-medium text-gray-700">
+                          السنة المالية
+                        </label>
                         <input
                           type="number"
                           {...form.register('fiscalYear', { valueAsNumber: true })}
@@ -145,7 +156,9 @@ export default function AnnualPlanForm({
                         />
                       </div>
                       <div>
-                        <label className="mb-1 block text-sm font-medium text-gray-700">الإصدار</label>
+                        <label className="mb-1 block text-sm font-medium text-gray-700">
+                          الإصدار
+                        </label>
                         <input
                           {...form.register('version')}
                           placeholder="1.0"
@@ -154,7 +167,9 @@ export default function AnnualPlanForm({
                       </div>
                     </div>
                     <div>
-                      <label className="mb-1 block text-sm font-medium text-gray-700">حالة الخطة</label>
+                      <label className="mb-1 block text-sm font-medium text-gray-700">
+                        حالة الخطة
+                      </label>
                       <select
                         {...form.register('status')}
                         className="w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500"
@@ -168,7 +183,9 @@ export default function AnnualPlanForm({
                     </div>
                     <div className="grid grid-cols-2 gap-2">
                       <div>
-                        <label className="mb-1 block text-sm font-medium text-gray-700">المنشأة</label>
+                        <label className="mb-1 block text-sm font-medium text-gray-700">
+                          المنشأة
+                        </label>
                         <select
                           {...form.register('orgUnitId')}
                           className="w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500"
@@ -182,7 +199,9 @@ export default function AnnualPlanForm({
                         </select>
                       </div>
                       <div>
-                        <label className="mb-1 block text-sm font-medium text-gray-700">القسم</label>
+                        <label className="mb-1 block text-sm font-medium text-gray-700">
+                          القسم
+                        </label>
                         <select
                           {...form.register('departmentId')}
                           disabled={!selectedOrg}
@@ -199,7 +218,9 @@ export default function AnnualPlanForm({
                     </div>
                   </div>
                   <div>
-                    <label className="mb-1 block text-sm font-medium text-gray-700">ملخص / مقدمة الخطة</label>
+                    <label className="mb-1 block text-sm font-medium text-gray-700">
+                      ملخص / مقدمة الخطة
+                    </label>
                     <textarea
                       rows={4}
                       {...form.register('introduction')}
@@ -211,10 +232,14 @@ export default function AnnualPlanForm({
               )}
               {tab === 'hours' && (
                 <section className="space-y-3">
-                  <h4 className="border-b pb-2 text-lg font-semibold text-gray-900">موازنة الساعات والخطط</h4>
+                  <h4 className="border-b pb-2 text-lg font-semibold text-gray-900">
+                    موازنة الساعات والخطط
+                  </h4>
                   <div className="grid grid-cols-1 gap-3 md:grid-cols-3">
                     <div>
-                      <label className="mb-1 block text-sm font-medium text-gray-700">إجمالي الساعات المتاحة</label>
+                      <label className="mb-1 block text-sm font-medium text-gray-700">
+                        إجمالي الساعات المتاحة
+                      </label>
                       <input
                         type="number"
                         {...form.register('totalAvailableHours', { valueAsNumber: true })}
@@ -232,13 +257,17 @@ export default function AnnualPlanForm({
                           : 'border-emerald-200 bg-emerald-50 text-emerald-700'
                       }`}
                     >
-                      <div className="text-xs">{remaining < 0 ? 'عجز في الساعات' : 'ساعات متبقية'}</div>
+                      <div className="text-xs">
+                        {remaining < 0 ? 'عجز في الساعات' : 'ساعات متبقية'}
+                      </div>
                       <div className="text-lg font-semibold">{remaining}</div>
                     </div>
                   </div>
                   <div className="grid grid-cols-1 gap-3 md:grid-cols-3">
                     <div>
-                      <label className="mb-1 block text-sm font-medium text-gray-700">ساعات المهام المخططة</label>
+                      <label className="mb-1 block text-sm font-medium text-gray-700">
+                        ساعات المهام المخططة
+                      </label>
                       <input
                         type="number"
                         {...form.register('plannedTaskHours', { valueAsNumber: true })}
@@ -246,7 +275,9 @@ export default function AnnualPlanForm({
                       />
                     </div>
                     <div>
-                      <label className="mb-1 block text-sm font-medium text-gray-700">ساعات الاستشارات</label>
+                      <label className="mb-1 block text-sm font-medium text-gray-700">
+                        ساعات الاستشارات
+                      </label>
                       <input
                         type="number"
                         {...form.register('advisoryHours', { valueAsNumber: true })}
@@ -254,7 +285,9 @@ export default function AnnualPlanForm({
                       />
                     </div>
                     <div>
-                      <label className="mb-1 block text-sm font-medium text-gray-700">ساعات طوارئ / احتياط</label>
+                      <label className="mb-1 block text-sm font-medium text-gray-700">
+                        ساعات طوارئ / احتياط
+                      </label>
                       <input
                         type="number"
                         {...form.register('emergencyHours', { valueAsNumber: true })}
@@ -262,7 +295,9 @@ export default function AnnualPlanForm({
                       />
                     </div>
                     <div>
-                      <label className="mb-1 block text-sm font-medium text-gray-700">ساعات المتابعة اللاحقة</label>
+                      <label className="mb-1 block text-sm font-medium text-gray-700">
+                        ساعات المتابعة اللاحقة
+                      </label>
                       <input
                         type="number"
                         {...form.register('followUpHours', { valueAsNumber: true })}
@@ -270,7 +305,9 @@ export default function AnnualPlanForm({
                       />
                     </div>
                     <div>
-                      <label className="mb-1 block text-sm font-medium text-gray-700">ساعات التدريب</label>
+                      <label className="mb-1 block text-sm font-medium text-gray-700">
+                        ساعات التدريب
+                      </label>
                       <input
                         type="number"
                         {...form.register('trainingHours', { valueAsNumber: true })}
@@ -278,7 +315,9 @@ export default function AnnualPlanForm({
                       />
                     </div>
                     <div>
-                      <label className="mb-1 block text-sm font-medium text-gray-700">ساعات الأعمال الإدارية</label>
+                      <label className="mb-1 block text-sm font-medium text-gray-700">
+                        ساعات الأعمال الإدارية
+                      </label>
                       <input
                         type="number"
                         {...form.register('administrativeHours', { valueAsNumber: true })}

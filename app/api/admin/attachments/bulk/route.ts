@@ -11,7 +11,7 @@ export async function DELETE(request: Request) {
     if (!Array.isArray(paths) || paths.length === 0) {
       return NextResponse.json(
         { ok: false, error: 'File paths array is required' },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
@@ -50,9 +50,6 @@ export async function DELETE(request: Request) {
     });
   } catch (error) {
     console.error('Error bulk deleting files:', error);
-    return NextResponse.json(
-      { ok: false, error: 'Failed to delete files' },
-      { status: 500 }
-    );
+    return NextResponse.json({ ok: false, error: 'Failed to delete files' }, { status: 500 });
   }
 }

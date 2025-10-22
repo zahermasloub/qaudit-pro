@@ -93,7 +93,7 @@ export default function AdminLogsPage() {
     try {
       // إنشاء محتوى CSV
       const headers = ['ID', 'الإجراء', 'المستخدم', 'الهدف', 'التاريخ'];
-      const rows = logs.map((log) => [
+      const rows = logs.map(log => [
         log.id,
         log.action,
         log.actorEmail || '-',
@@ -103,7 +103,7 @@ export default function AdminLogsPage() {
 
       const csvContent = [
         headers.join(','),
-        ...rows.map((row) => row.map((cell) => `"${cell}"`).join(',')),
+        ...rows.map(row => row.map(cell => `"${cell}"`).join(',')),
       ].join('\n');
 
       // إنشاء Blob وتنزيل
@@ -169,7 +169,7 @@ export default function AdminLogsPage() {
   ];
 
   // تطبيق الفلاتر المحلية (للبريد الإلكتروني)
-  const filteredLogs = logs.filter((log) => {
+  const filteredLogs = logs.filter(log => {
     if (filterValues.actorEmail) {
       const query = filterValues.actorEmail.toLowerCase();
       if (!log.actorEmail?.toLowerCase().includes(query)) {
@@ -188,9 +188,7 @@ export default function AdminLogsPage() {
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-2xl font-bold text-text-primary">سجلات النظام</h1>
-          <p className="text-sm text-text-tertiary mt-1">
-            عرض جميع الأحداث والإجراءات في النظام
-          </p>
+          <p className="text-sm text-text-tertiary mt-1">عرض جميع الأحداث والإجراءات في النظام</p>
         </div>
         <div className="flex items-center gap-2">
           <button
@@ -236,9 +234,7 @@ export default function AdminLogsPage() {
         searchPlaceholder="بحث في الإجراءات..."
         filters={filters}
         filterValues={filterValues}
-        onFilterChange={(id, value) =>
-          setFilterValues((prev) => ({ ...prev, [id]: value }))
-        }
+        onFilterChange={(id, value) => setFilterValues(prev => ({ ...prev, [id]: value }))}
         onClearFilters={() => {
           setSearchQuery('');
           setFilterValues({});
@@ -260,12 +256,7 @@ export default function AdminLogsPage() {
           }
         />
       ) : (
-        <DataTable
-          columns={columns}
-          data={filteredLogs}
-          pagination
-          pageSize={20}
-        />
+        <DataTable columns={columns} data={filteredLogs} pagination pageSize={20} />
       )}
     </div>
   );

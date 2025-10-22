@@ -11,7 +11,9 @@
 ### 1️⃣ ملفات جديدة:
 
 #### `styles/theme-light.css` (462 سطر)
+
 نظام ثيم فاتح شامل يحتوي على:
+
 - **لوحة ألوان كاملة**: 40+ متغير CSS
 - **مكونات جاهزة**: Buttons، Cards، Tables
 - **Scrollbar styling**: WebKit + Firefox
@@ -20,20 +22,18 @@
 - **Reduced Motion**: استجابة لتفضيلات المستخدم
 
 **المتغيرات الرئيسية**:
+
 ```css
---bg: #F7F8FA              /* خلفية الصفحة */
---surface: #FFFFFF         /* البطاقات */
---border: #E5E7EB          /* الحدود */
---text: #1F2937            /* نص رئيسي (12.63:1) */
---text-2: #475569          /* نص ثانوي (7.31:1) */
---primary: #2563EB         /* اللون الأساسي */
---success: #16A34A         /* نجاح */
---warning: #D97706         /* تحذير */
---danger: #DC2626          /* خطر */
+--bg: #f7f8fa /* خلفية الصفحة */ --surface: #ffffff /* البطاقات */ --border: #e5e7eb /* الحدود */
+  --text: #1f2937 /* نص رئيسي (12.63:1) */ --text-2: #475569 /* نص ثانوي (7.31:1) */
+  --primary: #2563eb /* اللون الأساسي */ --success: #16a34a /* نجاح */ --warning: #d97706
+  /* تحذير */ --danger: #dc2626 /* خطر */;
 ```
 
 #### `LIGHT_THEME_A11Y_AUDIT.md`
+
 تقرير فحص إمكانية الوصول الشامل:
+
 - ✅ **42/42** اختبار نجح (100%)
 - ✅ جميع التباينات ≥ 4.5:1
 - ✅ Focus visible على جميع العناصر
@@ -44,7 +44,9 @@
 - ✅ High contrast mode
 
 #### `LIGHT_THEME_SETUP_GUIDE.md`
+
 دليل تشغيل كامل مع:
+
 - خطوات التفعيل
 - أمثلة الاستخدام
 - استكشاف الأخطاء
@@ -55,7 +57,9 @@
 ### 2️⃣ ملفات محدّثة:
 
 #### `components/ui/ThemeToggle.tsx`
+
 **التحسينات**:
+
 - ✅ اختصار `Shift+L` للتبديل السريع
 - ✅ Skeleton loading لمنع flash
 - ✅ ARIA labels كاملة
@@ -65,7 +69,9 @@
 - ✅ Hint للاختصار في القائمة
 
 #### `components/ui/KPICard.tsx`
+
 **التعديلات**:
+
 - ✅ ألوان Light Theme
 - ✅ Shadow effects
 - ✅ Hover states محسّنة
@@ -73,7 +79,9 @@
 - ✅ تباين محسّن للأرقام (#111827)
 
 #### `app/(app)/admin/dashboard/page.tsx`
+
 **التطبيق**:
+
 - ✅ خلفية الصفحة `var(--bg)`
 - ✅ البطاقات `var(--surface)`
 - ✅ الحدود `var(--border)`
@@ -81,15 +89,20 @@
 - ✅ Recent logs مع hover effects
 
 #### `lib/ThemeProvider.tsx`
+
 **التغيير**:
+
 ```tsx
 // قبل: const [theme, setThemeState] = useState<Theme>('system');
 // بعد: const [theme, setThemeState] = useState<Theme>('light');
 ```
+
 - ✅ الوضع الافتراضي الآن: **Light**
 
 #### `tailwind.config.ts`
+
 **الإضافة**:
+
 ```ts
 colors: {
   // Light Theme aliases
@@ -102,11 +115,13 @@ colors: {
 ```
 
 #### `app/globals.css`
+
 ```css
-@import '../styles/theme-light.css';  /* ✅ إضافة جديدة */
+@import '../styles/theme-light.css'; /* ✅ إضافة جديدة */
 ```
 
 #### `styles/design-tokens.css`
+
 - ✅ تحديث comments
 - ✅ توضيح أن Light هو الافتراضي
 
@@ -115,15 +130,17 @@ colors: {
 ## 🎯 الميزات المُنفذة
 
 ### 1. نظام ألوان متكامل
-| الفئة | العدد | الوصف |
-|------|-------|-------|
-| Background | 4 | bg, surface, surface-hover, subtle |
-| Text | 5 | primary, secondary, tertiary, disabled, inverse |
-| Border | 3 | base, strong, focus |
-| Semantic | 4 | info, success, warning, danger |
-| Interactive | 8 | progress, skeleton, table rows, scrollbar |
+
+| الفئة       | العدد | الوصف                                           |
+| ----------- | ----- | ----------------------------------------------- |
+| Background  | 4     | bg, surface, surface-hover, subtle              |
+| Text        | 5     | primary, secondary, tertiary, disabled, inverse |
+| Border      | 3     | base, strong, focus                             |
+| Semantic    | 4     | info, success, warning, danger                  |
+| Interactive | 8     | progress, skeleton, table rows, scrollbar       |
 
 ### 2. مكون ThemeToggle محسّن
+
 - 🎨 **3 أوضاع**: Light / Dark / System
 - ⌨️ **Shortcuts**: `Shift+L` للتبديل، `Escape` للإغلاق
 - 🔊 **A11y**: ARIA labels، focus visible، keyboard nav
@@ -131,6 +148,7 @@ colors: {
 - ⚡ **Performance**: Skeleton loading، no hydration mismatch
 
 ### 3. تطبيق على المكونات
+
 - ✅ **KPICard**: ألوان، shadows، hover effects
 - ✅ **Dashboard**: خلفية، بطاقات، سجلات
 - ✅ **Buttons**: Primary، Secondary، Ghost (مجهّز)
@@ -138,16 +156,18 @@ colors: {
 - ✅ **Forms**: Inputs، selects (يرث المتغيرات)
 
 ### 4. إمكانية الوصول (A11y)
-| المعيار | الحالة | النسبة |
-|---------|--------|--------|
-| Color Contrast | ✅ PASS | 100% |
-| Focus Visible | ✅ PASS | 100% |
-| Keyboard Nav | ✅ PASS | 100% |
-| ARIA Labels | ✅ PASS | 100% |
-| RTL Support | ✅ PASS | 100% |
-| Reduced Motion | ✅ PASS | 100% |
+
+| المعيار        | الحالة  | النسبة |
+| -------------- | ------- | ------ |
+| Color Contrast | ✅ PASS | 100%   |
+| Focus Visible  | ✅ PASS | 100%   |
+| Keyboard Nav   | ✅ PASS | 100%   |
+| ARIA Labels    | ✅ PASS | 100%   |
+| RTL Support    | ✅ PASS | 100%   |
+| Reduced Motion | ✅ PASS | 100%   |
 
 ### 5. RTL Support
+
 - ✅ Logical properties (margin-inline، padding-inline)
 - ✅ Tailwind RTL plugin (يحول classes تلقائيًا)
 - ✅ `dir="rtl"` في HTML
@@ -158,6 +178,7 @@ colors: {
 ## 📝 Diff Summary (التغييرات)
 
 ### Added (إضافة):
+
 ```
 + styles/theme-light.css                   462 lines
 + LIGHT_THEME_A11Y_AUDIT.md              300 lines
@@ -166,6 +187,7 @@ colors: {
 ```
 
 ### Modified (تعديل):
+
 ```
 M components/ui/KPICard.tsx               +28 lines, -12 lines
 M app/(app)/admin/dashboard/page.tsx      +15 lines, -8 lines
@@ -176,6 +198,7 @@ M styles/design-tokens.css                +5 lines, -3 lines
 ```
 
 ### Total:
+
 ```
 📄 Files changed: 9
 ➕ Lines added: ~1,200
@@ -187,22 +210,25 @@ M styles/design-tokens.css                +5 lines, -3 lines
 ## 🚀 التشغيل السريع
 
 ### الخطوة 1: Build
+
 ```bash
 cd D:\qaudit-pro
 pnpm run build
 ```
 
 ### الخطوة 2: إضافة ThemeToggle
+
 ```tsx
 // في Header أو Navbar:
 import { ThemeToggle } from '@/components/ui/ThemeToggle';
 
 <header>
   <ThemeToggle />
-</header>
+</header>;
 ```
 
 ### الخطوة 3: Run
+
 ```bash
 pnpm run dev
 # افتح: http://localhost:3001
@@ -213,6 +239,7 @@ pnpm run dev
 ## 🎨 استخدام الألوان
 
 ### مثال 1: بطاقة بسيطة
+
 ```tsx
 <div
   style={{
@@ -228,6 +255,7 @@ pnpm run dev
 ```
 
 ### مثال 2: زر Primary
+
 ```tsx
 <button
   className="btn-primary"
@@ -241,6 +269,7 @@ pnpm run dev
 ```
 
 ### مثال 3: شارة حالة
+
 ```tsx
 <span
   className="badge-success"
@@ -258,6 +287,7 @@ pnpm run dev
 ## ✅ A11y Compliance Summary
 
 ### تباين الألوان (9/9 ✅):
+
 ```
 Text Primary      : 12.63:1 ✅ (> 4.5:1)
 Text Secondary    : 7.31:1  ✅
@@ -271,6 +301,7 @@ Table Header      : 8.24:1  ✅
 ```
 
 ### Focus Indicators (6/6 ✅):
+
 ```
 ✅ Buttons (all variants)
 ✅ Links
@@ -281,6 +312,7 @@ Table Header      : 8.24:1  ✅
 ```
 
 ### Keyboard Navigation (5/5 ✅):
+
 ```
 ✅ Shift+L - تبديل الثيم
 ✅ Escape - إغلاق القوائم
@@ -290,6 +322,7 @@ Table Header      : 8.24:1  ✅
 ```
 
 ### ARIA Labels (8/8 ✅):
+
 ```
 ✅ ThemeToggle aria-label
 ✅ Icons aria-hidden
@@ -306,12 +339,14 @@ Table Header      : 8.24:1  ✅
 ## 📊 Performance Impact
 
 ### CSS Bundle Size:
+
 ```
 + theme-light.css: ~18 KB (uncompressed)
 + gzipped: ~4 KB
 ```
 
 ### Runtime:
+
 ```
 ✅ No JavaScript overhead (CSS-only)
 ✅ Instant theme switching (<16ms)
@@ -319,6 +354,7 @@ Table Header      : 8.24:1  ✅
 ```
 
 ### Accessibility:
+
 ```
 ✅ Lighthouse Score: ≥90% expected
 ✅ No CLS (Cumulative Layout Shift)
@@ -330,6 +366,7 @@ Table Header      : 8.24:1  ✅
 ## 🧪 اختبارات مطلوبة
 
 ### ✅ Manual Testing:
+
 - [x] انقر ThemeToggle → القائمة تفتح
 - [x] اختر "فاتح" → الصفحة تتحول
 - [x] Shift+L → الثيم يتبدل
@@ -337,6 +374,7 @@ Table Header      : 8.24:1  ✅
 - [x] RTL → المحاذاة صحيحة
 
 ### ✅ Automated (recommended):
+
 ```bash
 # Lighthouse
 pnpm dlx lighthouse http://localhost:3001/admin/dashboard --view
@@ -359,12 +397,14 @@ pnpm test:a11y
 ## 🎯 ما التالي؟
 
 ### للمطورين:
+
 1. ✅ أضف ThemeToggle في الـ Header
 2. ✅ اختبر على متصفحات مختلفة
 3. ✅ راجع Lighthouse A11y score
 4. ✅ Deploy to staging
 
 ### للمستخدمين:
+
 1. 🎨 استمتع بالثيم الفاتح الجديد
 2. ⌨️ جرب `Shift+L` للتبديل السريع
 3. 💾 الإعداد يُحفظ تلقائيًا

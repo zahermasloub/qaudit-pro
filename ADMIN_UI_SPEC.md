@@ -122,42 +122,42 @@
 :root {
   /* ===== Spacing Scale ===== */
   --space-0: 0;
-  --space-1: 0.25rem;   /* 4px */
-  --space-2: 0.5rem;    /* 8px */
-  --space-3: 0.75rem;   /* 12px */
-  --space-4: 1rem;      /* 16px */
-  --space-5: 1.5rem;    /* 24px */
-  --space-6: 2rem;      /* 32px */
-  --space-8: 3rem;      /* 48px */
-  --space-10: 4rem;     /* 64px */
+  --space-1: 0.25rem; /* 4px */
+  --space-2: 0.5rem; /* 8px */
+  --space-3: 0.75rem; /* 12px */
+  --space-4: 1rem; /* 16px */
+  --space-5: 1.5rem; /* 24px */
+  --space-6: 2rem; /* 32px */
+  --space-8: 3rem; /* 48px */
+  --space-10: 4rem; /* 64px */
 
   /* ===== Colors — Light Mode ===== */
   --color-bg-base: #ffffff;
-  --color-bg-subtle: #f8fafc;      /* slate-50 */
-  --color-bg-muted: #f1f5f9;       /* slate-100 */
+  --color-bg-subtle: #f8fafc; /* slate-50 */
+  --color-bg-muted: #f1f5f9; /* slate-100 */
   --color-bg-elevated: #ffffff;
-  
-  --color-text-primary: #0f172a;   /* slate-900 */
+
+  --color-text-primary: #0f172a; /* slate-900 */
   --color-text-secondary: #475569; /* slate-600 */
-  --color-text-tertiary: #94a3b8;  /* slate-400 */
+  --color-text-tertiary: #94a3b8; /* slate-400 */
   --color-text-inverse: #ffffff;
-  
-  --color-border-base: #e2e8f0;    /* slate-200 */
-  --color-border-strong: #cbd5e1;  /* slate-300 */
-  
+
+  --color-border-base: #e2e8f0; /* slate-200 */
+  --color-border-strong: #cbd5e1; /* slate-300 */
+
   --color-brand-50: #eef7ff;
   --color-brand-500: #1f7fff;
   --color-brand-600: #1765d6;
   --color-brand-700: #124fac;
-  
+
   --color-success-50: #ecfdf5;
   --color-success-500: #10b981;
   --color-success-600: #059669;
-  
+
   --color-warning-50: #fffbeb;
   --color-warning-500: #f59e0b;
   --color-warning-600: #d97706;
-  
+
   --color-danger-50: #fef2f2;
   --color-danger-500: #ef4444;
   --color-danger-600: #dc2626;
@@ -169,24 +169,24 @@
   --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
 
   /* ===== Border Radius ===== */
-  --radius-sm: 0.375rem;   /* 6px */
-  --radius-md: 0.5rem;     /* 8px */
-  --radius-lg: 0.75rem;    /* 12px */
-  --radius-xl: 1rem;       /* 16px */
-  --radius-2xl: 1.5rem;    /* 24px */
+  --radius-sm: 0.375rem; /* 6px */
+  --radius-md: 0.5rem; /* 8px */
+  --radius-lg: 0.75rem; /* 12px */
+  --radius-xl: 1rem; /* 16px */
+  --radius-2xl: 1.5rem; /* 24px */
   --radius-full: 9999px;
 
   /* ===== Typography ===== */
   --font-arabic: 'Tajawal', 'Cairo', 'Noto Sans Arabic', system-ui, sans-serif;
   --font-mono: 'Consolas', 'Monaco', 'Courier New', monospace;
-  
-  --text-xs: 0.75rem;      /* 12px */
-  --text-sm: 0.875rem;     /* 14px */
-  --text-base: 1rem;       /* 16px */
-  --text-lg: 1.125rem;     /* 18px */
-  --text-xl: 1.25rem;      /* 20px */
-  --text-2xl: 1.5rem;      /* 24px */
-  --text-3xl: 1.875rem;    /* 30px */
+
+  --text-xs: 0.75rem; /* 12px */
+  --text-sm: 0.875rem; /* 14px */
+  --text-base: 1rem; /* 16px */
+  --text-lg: 1.125rem; /* 18px */
+  --text-xl: 1.25rem; /* 20px */
+  --text-2xl: 1.5rem; /* 24px */
+  --text-3xl: 1.875rem; /* 30px */
 
   /* ===== Z-Index ===== */
   --z-base: 0;
@@ -210,22 +210,22 @@
 /* ===== Dark Mode ===== */
 [data-theme='dark'] {
   --color-bg-base: #0a0a0a;
-  --color-bg-subtle: #171717;      /* neutral-900 */
-  --color-bg-muted: #262626;       /* neutral-800 */
+  --color-bg-subtle: #171717; /* neutral-900 */
+  --color-bg-muted: #262626; /* neutral-800 */
   --color-bg-elevated: #1c1c1c;
-  
-  --color-text-primary: #f5f5f5;   /* neutral-100 */
+
+  --color-text-primary: #f5f5f5; /* neutral-100 */
   --color-text-secondary: #a3a3a3; /* neutral-400 */
-  --color-text-tertiary: #737373;  /* neutral-500 */
+  --color-text-tertiary: #737373; /* neutral-500 */
   --color-text-inverse: #0a0a0a;
-  
-  --color-border-base: #404040;    /* neutral-700 */
-  --color-border-strong: #525252;  /* neutral-600 */
-  
+
+  --color-border-base: #404040; /* neutral-700 */
+  --color-border-strong: #525252; /* neutral-600 */
+
   /* Brand colors stay the same but slightly adjusted for dark */
-  --color-brand-500: #3b82f6;      /* blue-500 */
+  --color-brand-500: #3b82f6; /* blue-500 */
   --color-brand-600: #2563eb;
-  
+
   --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.3);
   --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.4), 0 2px 4px -2px rgb(0 0 0 / 0.3);
   --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.5), 0 4px 6px -4px rgb(0 0 0 / 0.4);
@@ -244,7 +244,7 @@
     --color-text-primary: #000000;
     --focus-ring-width: 3px;
   }
-  
+
   [data-theme='dark'] {
     --color-border-base: #ffffff;
     --color-text-primary: #ffffff;
@@ -445,23 +445,23 @@ export default {
 
 ## 🧩 خريطة المكونات (Component Map)
 
-| المكوّن | الغرض | الحالات | Props الرئيسية | مصدر البيانات | الأحداث |
-|---------|-------|---------|----------------|----------------|---------|
-| **AdminLayout** | Layout رئيسي لصفحات الأدمن | default | `children` | — | — |
-| **Breadcrumbs** | مسار التنقل | empty, 1-level, multi-level | `items: {label, href}[]` | URL params | `onNavigate` |
-| **ThemeToggle** | تبديل Dark/Light | light, dark, auto | `initialTheme?` | localStorage | `onChange` |
-| **KPICard** | بطاقة مؤشر أداء | loading, success, error | `label, value, icon, trend, href` | API | `onClick` |
-| **DataTable** | جدول بيانات متقدم | loading, empty, error, success | `columns, data, onSort, onFilter, virtualizer?` | API | `onRowClick, onSelect` |
-| **FiltersBar** | شريط فلاتر موحد | collapsed, expanded | `filters: FilterDef[], values, onChange` | Local state | `onApply, onReset` |
-| **CreateUserDialog** | حوار إنشاء مستخدم | open, closed, submitting | `open, onClose, onSubmit` | Form state | `onSuccess, onError` |
-| **EditUserDrawer** | درج تعديل مستخدم | open, closed, loading, saving | `userId, open, onClose` | `/api/admin/users/:id` | `onSave` |
-| **ConfirmDialog** | حوار تأكيد | open, closed | `title, message, type, onConfirm, onCancel` | — | `onConfirm, onCancel` |
-| **Toast** | إشعار مؤقت | info, success, warning, error | `message, type, duration, action?` | Toast Context | `onClose, onAction` |
-| **Skeleton** | عنصر تحميل | shimmer, pulse | `variant: text\|rect\|circle, width, height` | — | — |
-| **EmptyState** | حالة فارغة | default, error | `icon, title, message, action?` | — | `onAction` |
-| **FileUploader** | رافع ملفات | idle, dragging, uploading, success, error | `accept, maxSize, onUpload` | FileReader API | `onProgress, onComplete` |
-| **AttachmentCard** | بطاقة مرفق | default, selected | `id, name, type, size, thumbnail?` | `/api/admin/attachments` | `onClick, onDownload` |
-| **ChartWidget** | مكوّن مخطط | loading, success, error | `type: line\|bar, data, config` | API | — |
+| المكوّن              | الغرض                      | الحالات                                   | Props الرئيسية                                  | مصدر البيانات            | الأحداث                  |
+| -------------------- | -------------------------- | ----------------------------------------- | ----------------------------------------------- | ------------------------ | ------------------------ |
+| **AdminLayout**      | Layout رئيسي لصفحات الأدمن | default                                   | `children`                                      | —                        | —                        |
+| **Breadcrumbs**      | مسار التنقل                | empty, 1-level, multi-level               | `items: {label, href}[]`                        | URL params               | `onNavigate`             |
+| **ThemeToggle**      | تبديل Dark/Light           | light, dark, auto                         | `initialTheme?`                                 | localStorage             | `onChange`               |
+| **KPICard**          | بطاقة مؤشر أداء            | loading, success, error                   | `label, value, icon, trend, href`               | API                      | `onClick`                |
+| **DataTable**        | جدول بيانات متقدم          | loading, empty, error, success            | `columns, data, onSort, onFilter, virtualizer?` | API                      | `onRowClick, onSelect`   |
+| **FiltersBar**       | شريط فلاتر موحد            | collapsed, expanded                       | `filters: FilterDef[], values, onChange`        | Local state              | `onApply, onReset`       |
+| **CreateUserDialog** | حوار إنشاء مستخدم          | open, closed, submitting                  | `open, onClose, onSubmit`                       | Form state               | `onSuccess, onError`     |
+| **EditUserDrawer**   | درج تعديل مستخدم           | open, closed, loading, saving             | `userId, open, onClose`                         | `/api/admin/users/:id`   | `onSave`                 |
+| **ConfirmDialog**    | حوار تأكيد                 | open, closed                              | `title, message, type, onConfirm, onCancel`     | —                        | `onConfirm, onCancel`    |
+| **Toast**            | إشعار مؤقت                 | info, success, warning, error             | `message, type, duration, action?`              | Toast Context            | `onClose, onAction`      |
+| **Skeleton**         | عنصر تحميل                 | shimmer, pulse                            | `variant: text\|rect\|circle, width, height`    | —                        | —                        |
+| **EmptyState**       | حالة فارغة                 | default, error                            | `icon, title, message, action?`                 | —                        | `onAction`               |
+| **FileUploader**     | رافع ملفات                 | idle, dragging, uploading, success, error | `accept, maxSize, onUpload`                     | FileReader API           | `onProgress, onComplete` |
+| **AttachmentCard**   | بطاقة مرفق                 | default, selected                         | `id, name, type, size, thumbnail?`              | `/api/admin/attachments` | `onClick, onDownload`    |
+| **ChartWidget**      | مكوّن مخطط                 | loading, success, error                   | `type: line\|bar, data, config`                 | API                      | —                        |
 
 ---
 
@@ -471,11 +471,11 @@ export default {
 
 ```typescript
 const breakpoints = {
-  xs: '360px',   // Mobile S
-  sm: '414px',   // Mobile M
-  md: '768px',   // Tablet
-  lg: '1024px',  // Laptop
-  xl: '1280px',  // Desktop
+  xs: '360px', // Mobile S
+  sm: '414px', // Mobile M
+  md: '768px', // Tablet
+  lg: '1024px', // Laptop
+  xl: '1280px', // Desktop
   '2xl': '1440px', // Desktop L
   '3xl': '1920px', // Ultra-wide
 };
@@ -483,19 +483,19 @@ const breakpoints = {
 
 ### Admin Dashboard — Responsive Behavior
 
-| العنصر | xs-sm (≤414px) | md (768px) | lg (1024px) | xl+ (1280px+) |
-|--------|----------------|------------|-------------|---------------|
-| KPI Cards | Stack (1 col) | Grid 2×3 | Grid 3×2 | Grid 6×1 |
-| Chart | Full width, height 200px | Full, 250px | Full, 300px | Full, 350px |
-| Activity/Actions | Stack | Side-by-side 50/50 | Side-by-side 60/40 | Side-by-side 70/30 |
+| العنصر           | xs-sm (≤414px)           | md (768px)         | lg (1024px)        | xl+ (1280px+)      |
+| ---------------- | ------------------------ | ------------------ | ------------------ | ------------------ |
+| KPI Cards        | Stack (1 col)            | Grid 2×3           | Grid 3×2           | Grid 6×1           |
+| Chart            | Full width, height 200px | Full, 250px        | Full, 300px        | Full, 350px        |
+| Activity/Actions | Stack                    | Side-by-side 50/50 | Side-by-side 60/40 | Side-by-side 70/30 |
 
 ### DataTable — Responsive Behavior
 
-| Viewport | السلوك |
-|----------|--------|
-| xs-sm | جدول أفقي قابل للتمرير + أعمدة ثابتة (name, actions) |
-| md | جميع الأعمدة مرئية + font أصغر |
-| lg+ | جدول كامل + spacing مريح |
+| Viewport | السلوك                                               |
+| -------- | ---------------------------------------------------- |
+| xs-sm    | جدول أفقي قابل للتمرير + أعمدة ثابتة (name, actions) |
+| md       | جميع الأعمدة مرئية + font أصغر                       |
+| lg+      | جدول كامل + spacing مريح                             |
 
 **Sticky Columns**: عمود الإجراءات دائماً ثابت على يسار/يمين الجدول (حسب RTL/LTR).
 
@@ -553,34 +553,34 @@ graph TD
 
 ### DataTable States
 
-| الحالة | العرض | الشروط |
-|--------|-------|--------|
-| **Loading** | Skeleton Rows (5-10) | `isLoading === true` |
-| **Empty** | EmptyState مع أيقونة + CTA | `data.length === 0 && !isLoading` |
-| **Error** | EmptyState مع رسالة خطأ + Retry | `error !== null` |
-| **Success** | صفوف البيانات | `data.length > 0 && !isLoading` |
-| **Filtering** | Overlay شفاف + Spinner | `isFiltering === true` |
+| الحالة        | العرض                           | الشروط                            |
+| ------------- | ------------------------------- | --------------------------------- |
+| **Loading**   | Skeleton Rows (5-10)            | `isLoading === true`              |
+| **Empty**     | EmptyState مع أيقونة + CTA      | `data.length === 0 && !isLoading` |
+| **Error**     | EmptyState مع رسالة خطأ + Retry | `error !== null`                  |
+| **Success**   | صفوف البيانات                   | `data.length > 0 && !isLoading`   |
+| **Filtering** | Overlay شفاف + Spinner          | `isFiltering === true`            |
 
 ### Form States
 
-| الحالة | العرض | الشروط |
-|--------|-------|--------|
-| **Idle** | نموذج فارغ | Initial state |
-| **Validating** | Inline errors تظهر تدريجياً | `onBlur` أو `onChange` |
-| **Submitting** | زر معطل + Spinner | `isSubmitting === true` |
-| **Success** | Toast + Close dialog | Response 200 |
-| **Error** | Error banner + ممكن إعادة الإرسال | Response 4xx/5xx |
+| الحالة         | العرض                             | الشروط                  |
+| -------------- | --------------------------------- | ----------------------- |
+| **Idle**       | نموذج فارغ                        | Initial state           |
+| **Validating** | Inline errors تظهر تدريجياً       | `onBlur` أو `onChange`  |
+| **Submitting** | زر معطل + Spinner                 | `isSubmitting === true` |
+| **Success**    | Toast + Close dialog              | Response 200            |
+| **Error**      | Error banner + ممكن إعادة الإرسال | Response 4xx/5xx        |
 
 ### Attachment Upload States
 
-| الحالة | العرض |
-|--------|-------|
-| **Idle** | منطقة رفع عادية |
-| **Dragging** | منطقة مضيئة + حد متقطع |
+| الحالة        | العرض                     |
+| ------------- | ------------------------- |
+| **Idle**      | منطقة رفع عادية           |
+| **Dragging**  | منطقة مضيئة + حد متقطع    |
 | **Uploading** | Progress bar + نسبة مئوية |
-| **Scanning** | "جارٍ فحص الفيروسات..." |
-| **Complete** | ✅ رمز + "تم الرفع بنجاح" |
-| **Error** | ❌ رسالة خطأ + زر إعادة |
+| **Scanning**  | "جارٍ فحص الفيروسات..."   |
+| **Complete**  | ✅ رمز + "تم الرفع بنجاح" |
+| **Error**     | ❌ رسالة خطأ + زر إعادة   |
 
 ---
 
@@ -618,16 +618,16 @@ graph TD
 
 ### Keyboard Navigation
 
-| المفتاح | الإجراء |
-|---------|---------|
-| `Tab` | التنقل بين العناصر التفاعلية |
-| `Shift+Tab` | التنقل العكسي |
-| `Enter` | تفعيل زر/رابط |
-| `Space` | تبديل checkbox/toggle |
-| `Esc` | إغلاق Dialog/Drawer/Dropdown |
-| `Cmd/Ctrl+K` | فتح Command Palette |
-| `↑ ↓` | التنقل في القوائم/Dropdown |
-| `Home/End` | الانتقال لأول/آخر عنصر |
+| المفتاح      | الإجراء                      |
+| ------------ | ---------------------------- |
+| `Tab`        | التنقل بين العناصر التفاعلية |
+| `Shift+Tab`  | التنقل العكسي                |
+| `Enter`      | تفعيل زر/رابط                |
+| `Space`      | تبديل checkbox/toggle        |
+| `Esc`        | إغلاق Dialog/Drawer/Dropdown |
+| `Cmd/Ctrl+K` | فتح Command Palette          |
+| `↑ ↓`        | التنقل في القوائم/Dropdown   |
+| `Home/End`   | الانتقال لأول/آخر عنصر       |
 
 ### Focus Management
 
@@ -662,27 +662,27 @@ import { FocusTrap } from '@radix-ui/react-focus-scope';
 
 ### API Endpoints
 
-| الصفحة | Endpoint | الطريقة | الباراميترات | الاستجابة |
-|--------|----------|---------|---------------|-----------|
-| Dashboard | `/api/admin/kpis` | GET | `org_id?` | `{engagements_total, findings_total, recs_total, recs_overdue, ...}` |
-| Users | `/api/admin/users` | GET | `q?, role?, status?, page?, limit?` | `{users: User[], total, page}` |
-| Users | `/api/admin/users` | POST | `{name, email, password, roles[]}` | `{user: User}` |
-| Users | `/api/admin/users/:id` | PATCH | `{name?, roles?}` | `{user: User}` |
-| Users | `/api/admin/users/:id` | DELETE | — | `{success: true}` |
-| Roles | `/api/admin/roles` | GET | — | `{roles: Role[]}` |
-| Roles | `/api/admin/roles` | POST | `{name, description, permissions[]}` | `{role: Role}` |
-| Settings | `/api/admin/settings` | GET | — | `{settings: Setting[]}` |
-| Settings | `/api/admin/settings` | POST | `{key, value, type}` | `{setting: Setting}` |
-| Logs | `/api/admin/logs` | GET | `q?, action?, from?, to?, take?` | `{items: AuditLog[]}` |
-| Attachments | `/api/admin/attachments` | GET | `q?, type?, engagement_id?` | `{items: Attachment[]}` |
-| Attachments | `/api/admin/attachments` | POST | `FormData: file, engagement_id?` | `{attachment: Attachment}` |
-| Attachments | `/api/admin/attachments/:id` | DELETE | — | `{success: true}` |
+| الصفحة      | Endpoint                     | الطريقة | الباراميترات                         | الاستجابة                                                            |
+| ----------- | ---------------------------- | ------- | ------------------------------------ | -------------------------------------------------------------------- |
+| Dashboard   | `/api/admin/kpis`            | GET     | `org_id?`                            | `{engagements_total, findings_total, recs_total, recs_overdue, ...}` |
+| Users       | `/api/admin/users`           | GET     | `q?, role?, status?, page?, limit?`  | `{users: User[], total, page}`                                       |
+| Users       | `/api/admin/users`           | POST    | `{name, email, password, roles[]}`   | `{user: User}`                                                       |
+| Users       | `/api/admin/users/:id`       | PATCH   | `{name?, roles?}`                    | `{user: User}`                                                       |
+| Users       | `/api/admin/users/:id`       | DELETE  | —                                    | `{success: true}`                                                    |
+| Roles       | `/api/admin/roles`           | GET     | —                                    | `{roles: Role[]}`                                                    |
+| Roles       | `/api/admin/roles`           | POST    | `{name, description, permissions[]}` | `{role: Role}`                                                       |
+| Settings    | `/api/admin/settings`        | GET     | —                                    | `{settings: Setting[]}`                                              |
+| Settings    | `/api/admin/settings`        | POST    | `{key, value, type}`                 | `{setting: Setting}`                                                 |
+| Logs        | `/api/admin/logs`            | GET     | `q?, action?, from?, to?, take?`     | `{items: AuditLog[]}`                                                |
+| Attachments | `/api/admin/attachments`     | GET     | `q?, type?, engagement_id?`          | `{items: Attachment[]}`                                              |
+| Attachments | `/api/admin/attachments`     | POST    | `FormData: file, engagement_id?`     | `{attachment: Attachment}`                                           |
+| Attachments | `/api/admin/attachments/:id` | DELETE  | —                                    | `{success: true}`                                                    |
 
 ### Database Queries (Example)
 
 ```sql
 -- KPIs من mv_org_kpis
-SELECT 
+SELECT
   SUM(engagements_total) AS engagements_total,
   SUM(findings_total) AS findings_total,
   SUM(recs_total) AS recs_total,
@@ -715,12 +715,14 @@ LIMIT $3 OFFSET $4;
 ## 📋 قائمة تحقق التنفيذ
 
 ### المرحلة 1: التأسيس
+
 - [ ] إنشاء `styles/design-tokens.css`
 - [ ] تحديث `tailwind.config.ts`
 - [ ] إضافة ThemeProvider (Dark Mode)
 - [ ] إعداد Toast Context (sonner أو radix)
 
 ### المرحلة 2: المكونات المشتركة
+
 - [ ] `DataTable` (TanStack Table + virtualization)
 - [ ] `FiltersBar`
 - [ ] `ConfirmDialog`
@@ -729,6 +731,7 @@ LIMIT $3 OFFSET $4;
 - [ ] `Skeleton`
 
 ### المرحلة 3: صفحات الأدمن
+
 - [ ] `/admin/dashboard` مع KPIs حقيقية
 - [ ] `/admin/users` مع CRUD كامل
 - [ ] `/admin/roles` مع permission checkboxes
@@ -737,6 +740,7 @@ LIMIT $3 OFFSET $4;
 - [ ] `/admin/attachments` (جديد)
 
 ### المرحلة 4: التحسينات
+
 - [ ] Breadcrumbs
 - [ ] Command Palette (Cmd+K)
 - [ ] Bulk Actions
@@ -746,6 +750,7 @@ LIMIT $3 OFFSET $4;
 - [ ] Undo للإجراءات الحساسة
 
 ### المرحلة 5: الاختبارات
+
 - [ ] اختبارات قابلية الاستخدام (7 سيناريوهات)
 - [ ] فحص WCAG مع axe DevTools
 - [ ] اختبار لوحة المفاتيح

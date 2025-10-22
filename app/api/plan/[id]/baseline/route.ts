@@ -37,10 +37,7 @@ import { NextResponse } from 'next/server';
 import { createHash } from 'crypto';
 import prisma from '@/lib/prisma';
 
-export async function POST(
-  req: Request,
-  { params }: { params: { id: string } }
-) {
+export async function POST(req: Request, { params }: { params: { id: string } }) {
   try {
     const { id } = params;
     const body = await req.json();
@@ -49,30 +46,24 @@ export async function POST(
     // Check if plan exists and is approved
     const planCheck: any = await prisma.$queryRawUnsafe(
       'SELECT id, year, status FROM audit."AnnualPlans" WHERE id = $1',
-      id
+      id,
     );
 
     if (!planCheck || planCheck.length === 0) {
-      return NextResponse.json(
-        { ok: false, error: 'الخطة غير موجودة' },
-        { status: 404 }
-      );
+      return NextResponse.json({ ok: false, error: 'الخطة غير موجودة' }, { status: 404 });
     }
 
     const plan = planCheck[0];
     const currentStatus = plan.status;
 
     if (currentStatus === 'baselined') {
-      return NextResponse.json(
-        { ok: false, error: 'الخطة مجمّدة مسبقاً' },
-        { status: 403 }
-      );
+      return NextResponse.json({ ok: false, error: 'الخطة مجمّدة مسبقاً' }, { status: 403 });
     }
 
     if (currentStatus !== 'approved') {
       return NextResponse.json(
         { ok: false, error: 'يجب اعتماد الخطة أولاً قبل التجميد' },
-        { status: 403 }
+        { status: 403 },
       );
     }
 
@@ -81,13 +72,13 @@ export async function POST(
       `SELECT id FROM audit."AnnualPlans"
        WHERE year = $1 AND status = 'baselined' AND id != $2`,
       plan.year,
-      id
+      id,
     );
 
     if (existingBaseline && existingBaseline.length > 0) {
       return NextResponse.json(
         { ok: false, error: `يوجد خطة مجمّدة أخرى لنفس السنة (${plan.year})` },
-        { status: 409 }
+        { status: 409 },
       );
     }
 
@@ -103,7 +94,7 @@ export async function POST(
        LEFT JOIN audit."AuditUniverse" au ON api.au_id = au.id
        WHERE api.plan_id = $1
        ORDER BY api.risk_score DESC NULLS LAST`,
-      id
+      id,
     );
 
     // Create snapshot
@@ -112,7 +103,7 @@ export async function POST(
       year: plan.year,
       items: items || [],
       created_at: new Date().toISOString(),
-      item_count: Array.isArray(items) ? items.length : 0
+      item_count: Array.isArray(items) ? items.length : 0,
     };
 
     // Generate SHA256 hash
@@ -127,7 +118,7 @@ export async function POST(
       id,
       snapshotString,
       hash,
-      created_by || null
+      created_by || null,
     );
 
     // Update plan status to baselined
@@ -142,7 +133,7 @@ export async function POST(
        WHERE id = $1`,
       id,
       hash,
-      created_by || null
+      created_by || null,
     );
 
     // Log baseline action
@@ -154,7 +145,7 @@ export async function POST(
       created_by || null,
       'admin',
       'baseline',
-      `تم تجميد الخطة - Hash: ${hash.substring(0, 8)}...`
+      `تم تجميد الخطة - Hash: ${hash.substring(0, 8)}...`,
     );
 
     return NextResponse.json({
@@ -163,13 +154,13 @@ export async function POST(
       status: 'baselined',
       hash,
       item_count: snapshot.item_count,
-      baseline_date: new Date().toISOString()
+      baseline_date: new Date().toISOString(),
     });
   } catch (error: any) {
     console.error('POST /api/plan/[id]/baseline error:', error);
     return NextResponse.json(
       { ok: false, error: error.message || 'فشل في تجميد الخطة' },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

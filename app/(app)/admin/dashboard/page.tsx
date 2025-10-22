@@ -15,7 +15,12 @@ interface KPIData {
   summary: {
     users: { value: number; label: string; change: number; trend: 'up' | 'down' | 'neutral' };
     roles: { value: number; label: string; change: number; trend: 'up' | 'down' | 'neutral' };
-    completionRate: { value: number; label: string; change: number; trend: 'up' | 'down' | 'neutral' };
+    completionRate: {
+      value: number;
+      label: string;
+      change: number;
+      trend: 'up' | 'down' | 'neutral';
+    };
     recentLogs: { value: number; label: string; change: number; trend: 'up' | 'down' | 'neutral' };
   };
   recentLogs: Array<{
@@ -39,9 +44,7 @@ export default function AdminDashboardPage() {
   const [searchQuery, setSearchQuery] = useState('');
   const [filterValues, setFilterValues] = useState<Record<string, string>>({});
 
-  const breadcrumbItems: BreadcrumbItem[] = [
-    { label: 'لوحة التحكم', current: true },
-  ];
+  const breadcrumbItems: BreadcrumbItem[] = [{ label: 'لوحة التحكم', current: true }];
 
   // تعريف خيارات الفلاتر للشريط
   const filters: FilterOption[] = [
@@ -115,8 +118,8 @@ export default function AdminDashboardPage() {
           title="فشل في تحميل البيانات"
           message={error}
           action={{
-            label: "إعادة المحاولة",
-            onClick: handleRefresh
+            label: 'إعادة المحاولة',
+            onClick: handleRefresh,
           }}
         />
       </div>
@@ -160,9 +163,7 @@ export default function AdminDashboardPage() {
           searchPlaceholder="بحث في لوحة التحكم..."
           filters={filters}
           filterValues={filterValues}
-          onFilterChange={(id, value) =>
-            setFilterValues((prev) => ({ ...prev, [id]: value }))
-          }
+          onFilterChange={(id, value) => setFilterValues(prev => ({ ...prev, [id]: value }))}
           onClearFilters={() => {
             setSearchQuery('');
             setFilterValues({});
@@ -241,26 +242,33 @@ export default function AdminDashboardPage() {
             color="var(--primary)"
           />
         ) : (
-          <div className="p-6 rounded-xl border shadow-card" style={{
-            borderColor: 'var(--border)',
-            backgroundColor: 'var(--surface)',
-            borderRadius: 'var(--radius)'
-          }}>
-            <h3 className="text-sm font-semibold mb-4" style={{ color: 'var(--text)' }}>النشاط اليومي</h3>
-            <EmptyState
-              title="لا توجد بيانات"
-              message="لم يتم تسجيل نشاط هذا الشهر"
-            />
+          <div
+            className="p-6 rounded-xl border shadow-card"
+            style={{
+              borderColor: 'var(--border)',
+              backgroundColor: 'var(--surface)',
+              borderRadius: 'var(--radius)',
+            }}
+          >
+            <h3 className="text-sm font-semibold mb-4" style={{ color: 'var(--text)' }}>
+              النشاط اليومي
+            </h3>
+            <EmptyState title="لا توجد بيانات" message="لم يتم تسجيل نشاط هذا الشهر" />
           </div>
         )}
 
         {/* Recent Logs */}
-        <div className="p-6 rounded-xl border shadow-card" style={{
-          borderColor: 'var(--border)',
-          backgroundColor: 'var(--surface)',
-          borderRadius: 'var(--radius)'
-        }}>
-          <h3 className="text-sm font-semibold mb-4" style={{ color: 'var(--text)' }}>أحدث السجلات</h3>
+        <div
+          className="p-6 rounded-xl border shadow-card"
+          style={{
+            borderColor: 'var(--border)',
+            backgroundColor: 'var(--surface)',
+            borderRadius: 'var(--radius)',
+          }}
+        >
+          <h3 className="text-sm font-semibold mb-4" style={{ color: 'var(--text)' }}>
+            أحدث السجلات
+          </h3>
           {loading ? (
             <div className="space-y-3">
               <Skeleton variant="text" />
@@ -270,26 +278,28 @@ export default function AdminDashboardPage() {
             </div>
           ) : data?.recentLogs && data.recentLogs.length > 0 ? (
             <div className="space-y-3">
-              {data.recentLogs.map((log) => (
+              {data.recentLogs.map(log => (
                 <div
                   key={log.id}
                   className="flex items-start justify-between p-3 rounded-lg transition-fast"
                   style={{
                     backgroundColor: 'var(--surface-hover)',
                     border: '1px solid var(--border)',
-                    borderRadius: '8px'
+                    borderRadius: '8px',
                   }}
-                  onMouseEnter={(e) => {
+                  onMouseEnter={e => {
                     e.currentTarget.style.backgroundColor = 'var(--row-hover)';
                     e.currentTarget.style.borderColor = 'var(--color-border-strong)';
                   }}
-                  onMouseLeave={(e) => {
+                  onMouseLeave={e => {
                     e.currentTarget.style.backgroundColor = 'var(--surface-hover)';
                     e.currentTarget.style.borderColor = 'var(--border)';
                   }}
                 >
                   <div className="flex-1">
-                    <p className="text-sm font-medium" style={{ color: 'var(--text)' }}>{log.action}</p>
+                    <p className="text-sm font-medium" style={{ color: 'var(--text)' }}>
+                      {log.action}
+                    </p>
                     <p className="text-xs mt-1" style={{ color: 'var(--text-2)' }}>
                       بواسطة {log.actorEmail}
                       {log.target && ` • ${log.target}`}
@@ -307,10 +317,7 @@ export default function AdminDashboardPage() {
               ))}
             </div>
           ) : (
-            <EmptyState
-              title="لا توجد سجلات"
-              message="لم يتم تسجيل أي نشاط مؤخراً"
-            />
+            <EmptyState title="لا توجد سجلات" message="لم يتم تسجيل أي نشاط مؤخراً" />
           )}
         </div>
       </div>

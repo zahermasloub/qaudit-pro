@@ -9,10 +9,7 @@ export async function POST(request: Request) {
     const files = formData.getAll('files') as File[];
 
     if (files.length === 0) {
-      return NextResponse.json(
-        { ok: false, error: 'No files provided' },
-        { status: 400 }
-      );
+      return NextResponse.json({ ok: false, error: 'No files provided' }, { status: 400 });
     }
 
     const uploadsDir = path.join(process.cwd(), 'uploads');
@@ -47,9 +44,6 @@ export async function POST(request: Request) {
     });
   } catch (error) {
     console.error('Error uploading files:', error);
-    return NextResponse.json(
-      { ok: false, error: 'Failed to upload files' },
-      { status: 500 }
-    );
+    return NextResponse.json({ ok: false, error: 'Failed to upload files' }, { status: 500 });
   }
 }

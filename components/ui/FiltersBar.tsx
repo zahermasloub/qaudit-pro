@@ -114,11 +114,11 @@ export function FiltersBar({
   const [isFiltersOpen, setIsFiltersOpen] = React.useState(false);
 
   const hasActiveFilters = React.useMemo(() => {
-    return Object.values(filterValues).some((value) => value !== '');
+    return Object.values(filterValues).some(value => value !== '');
   }, [filterValues]);
 
   const activeFiltersCount = React.useMemo(() => {
-    return Object.values(filterValues).filter((value) => value !== '').length;
+    return Object.values(filterValues).filter(value => value !== '').length;
   }, [filterValues]);
 
   return (
@@ -135,7 +135,7 @@ export function FiltersBar({
             <input
               type="search"
               value={searchQuery}
-              onChange={(e) => onSearchChange(e.target.value)}
+              onChange={e => onSearchChange(e.target.value)}
               placeholder={searchPlaceholder}
               className="
                 w-full h-10 pr-10 pl-4 rounded-lg
@@ -174,7 +174,7 @@ export function FiltersBar({
               isFiltersOpen || hasActiveFilters
                 ? 'border-brand-500 bg-brand-50 text-brand-700 dark:bg-brand-950 dark:text-brand-300'
                 : 'border-border-base bg-bg-elevated text-text-secondary hover:bg-bg-muted',
-              'focus-ring'
+              'focus-ring',
             )}
             aria-expanded={isFiltersOpen}
             aria-label="عرض الفلاتر"
@@ -218,9 +218,12 @@ export function FiltersBar({
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-            {filters.map((filter) => (
+            {filters.map(filter => (
               <div key={filter.id} className="space-y-2">
-                <label htmlFor={filter.id} className="block text-sm font-medium text-text-secondary">
+                <label
+                  htmlFor={filter.id}
+                  className="block text-sm font-medium text-text-secondary"
+                >
                   {filter.label}
                 </label>
 
@@ -228,7 +231,7 @@ export function FiltersBar({
                   <select
                     id={filter.id}
                     value={filterValues[filter.id] || ''}
-                    onChange={(e) => onFilterChange?.(filter.id, e.target.value)}
+                    onChange={e => onFilterChange?.(filter.id, e.target.value)}
                     className="
                       w-full h-10 px-3 rounded-lg
                       border border-border-base bg-bg-base
@@ -238,7 +241,7 @@ export function FiltersBar({
                     "
                   >
                     <option value="">الكل</option>
-                    {filter.options.map((option) => (
+                    {filter.options.map(option => (
                       <option key={option.value} value={option.value}>
                         {option.label}
                       </option>
@@ -251,7 +254,7 @@ export function FiltersBar({
                     type="date"
                     id={filter.id}
                     value={filterValues[filter.id] || ''}
-                    onChange={(e) => onFilterChange?.(filter.id, e.target.value)}
+                    onChange={e => onFilterChange?.(filter.id, e.target.value)}
                     className="
                       w-full h-10 px-3 rounded-lg
                       border border-border-base bg-bg-base
@@ -267,7 +270,7 @@ export function FiltersBar({
                     type="text"
                     id={filter.id}
                     value={filterValues[filter.id] || ''}
-                    onChange={(e) => onFilterChange?.(filter.id, e.target.value)}
+                    onChange={e => onFilterChange?.(filter.id, e.target.value)}
                     placeholder={filter.label}
                     className="
                       w-full h-10 px-3 rounded-lg

@@ -42,8 +42,8 @@ export async function POST(req: NextRequest) {
     // Get metadata from form
     const engagementId = formData.get('engagementId') as string;
     const testId = formData.get('testId') as string;
-  const _evidenceCategory = (formData.get('evidenceCategory') as string) || 'document';
-  const _description = (formData.get('description') as string) || '';
+    const _evidenceCategory = (formData.get('evidenceCategory') as string) || 'document';
+    const _description = (formData.get('description') as string) || '';
 
     if (!engagementId) {
       return NextResponse.json({ error: 'Engagement ID is required' }, { status: 400 });

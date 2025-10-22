@@ -83,15 +83,12 @@ export function KPICard({
   if (loading) {
     return (
       <div
-        className={cn(
-          'p-6 rounded-xl border',
-          className
-        )}
+        className={cn('p-6 rounded-xl border', className)}
         style={{
           borderColor: 'var(--border)',
           backgroundColor: 'var(--surface)',
           borderRadius: 'var(--radius)',
-          boxShadow: 'var(--shadow-card)'
+          boxShadow: 'var(--shadow-card)',
         }}
       >
         <div className="space-y-3">
@@ -110,21 +107,21 @@ export function KPICard({
       className={cn(
         'p-6 rounded-xl border transition-fast',
         isClickable && 'cursor-pointer',
-        className
+        className,
       )}
       style={{
         borderColor: 'var(--border)',
         backgroundColor: 'var(--surface)',
         borderRadius: 'var(--radius)',
-        boxShadow: 'var(--shadow-card)'
+        boxShadow: 'var(--shadow-card)',
       }}
-      onMouseEnter={(e) => {
+      onMouseEnter={e => {
         if (isClickable) {
           e.currentTarget.style.boxShadow = 'var(--shadow-md)';
           e.currentTarget.style.borderColor = 'var(--primary)';
         }
       }}
-      onMouseLeave={(e) => {
+      onMouseLeave={e => {
         if (isClickable) {
           e.currentTarget.style.boxShadow = 'var(--shadow-card)';
           e.currentTarget.style.borderColor = 'var(--border)';
@@ -135,7 +132,7 @@ export function KPICard({
       tabIndex={isClickable ? 0 : undefined}
       onKeyDown={
         isClickable
-          ? (e) => {
+          ? e => {
               if (e.key === 'Enter' || e.key === ' ') {
                 e.preventDefault();
                 onClick?.();
@@ -147,14 +144,16 @@ export function KPICard({
       {/* Header */}
       <div className="flex items-start justify-between gap-3 mb-4">
         <div className="flex-1">
-          <h3 className="text-sm font-medium" style={{ color: 'var(--text-2)' }}>{title}</h3>
+          <h3 className="text-sm font-medium" style={{ color: 'var(--text-2)' }}>
+            {title}
+          </h3>
         </div>
         {Icon && (
           <div
             className="p-2.5 rounded-lg"
             style={{
               backgroundColor: 'var(--color-brand-50)',
-              color: 'var(--color-brand-600)'
+              color: 'var(--color-brand-600)',
             }}
             aria-hidden="true"
           >
@@ -165,7 +164,9 @@ export function KPICard({
 
       {/* Value */}
       <div className="mb-3">
-        <p className="text-3xl font-bold" style={{ color: '#111827' }}>{value.toLocaleString('ar-EG')}</p>
+        <p className="text-3xl font-bold" style={{ color: '#111827' }}>
+          {value.toLocaleString('ar-EG')}
+        </p>
       </div>
 
       {/* Change & Description */}
@@ -174,16 +175,18 @@ export function KPICard({
           <div
             className="flex items-center gap-1 px-2 py-1 rounded-full text-xs font-semibold"
             style={{
-              backgroundColor: trend === 'up'
-                ? 'var(--color-success-50)'
-                : trend === 'down'
-                ? 'var(--color-danger-50)'
-                : 'var(--skeleton-base)',
-              color: trend === 'up'
-                ? 'var(--color-success-700)'
-                : trend === 'down'
-                ? 'var(--color-danger-700)'
-                : 'var(--muted)'
+              backgroundColor:
+                trend === 'up'
+                  ? 'var(--color-success-50)'
+                  : trend === 'down'
+                    ? 'var(--color-danger-50)'
+                    : 'var(--skeleton-base)',
+              color:
+                trend === 'up'
+                  ? 'var(--color-success-700)'
+                  : trend === 'down'
+                    ? 'var(--color-danger-700)'
+                    : 'var(--muted)',
             }}
             aria-label={`تغيير ${trend === 'up' ? 'إيجابي' : trend === 'down' ? 'سلبي' : 'محايد'} بنسبة ${Math.abs(change)}%`}
           >
@@ -194,7 +197,9 @@ export function KPICard({
         )}
 
         {description && (
-          <p className="text-xs flex-1 text-left" style={{ color: 'var(--text-2)' }}>{description}</p>
+          <p className="text-xs flex-1 text-left" style={{ color: 'var(--text-2)' }}>
+            {description}
+          </p>
         )}
       </div>
     </div>
@@ -219,12 +224,7 @@ interface KPICardGridProps {
 
 export function KPICardGrid({ children, className }: KPICardGridProps) {
   return (
-    <div
-      className={cn(
-        'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6',
-        className
-      )}
-    >
+    <div className={cn('grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6', className)}>
       {children}
     </div>
   );

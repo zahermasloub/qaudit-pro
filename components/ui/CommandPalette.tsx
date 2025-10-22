@@ -1,6 +1,16 @@
 'use client';
 
-import { Search, X, ArrowRight, Zap, Users, Shield, Settings as SettingsIcon, FileText, Database } from 'lucide-react';
+import {
+  Search,
+  X,
+  ArrowRight,
+  Zap,
+  Users,
+  Shield,
+  Settings as SettingsIcon,
+  FileText,
+  Database,
+} from 'lucide-react';
 import React, { useEffect, useState, useCallback } from 'react';
 
 interface CommandAction {
@@ -61,12 +71,12 @@ export function CommandPalette({ actions, open, onClose }: CommandPaletteProps) 
   const [selectedIndex, setSelectedIndex] = useState(0);
 
   // تصفية الأوامر حسب البحث
-  const filteredActions = actions.filter((action) => {
+  const filteredActions = actions.filter(action => {
     const searchLower = search.toLowerCase();
     return (
       action.title.toLowerCase().includes(searchLower) ||
       action.description?.toLowerCase().includes(searchLower) ||
-      action.keywords.some((keyword) => keyword.toLowerCase().includes(searchLower))
+      action.keywords.some(keyword => keyword.toLowerCase().includes(searchLower))
     );
   });
 
@@ -88,12 +98,10 @@ export function CommandPalette({ actions, open, onClose }: CommandPaletteProps) 
     (e: React.KeyboardEvent) => {
       if (e.key === 'ArrowDown') {
         e.preventDefault();
-        setSelectedIndex((prev) => (prev + 1) % filteredActions.length);
+        setSelectedIndex(prev => (prev + 1) % filteredActions.length);
       } else if (e.key === 'ArrowUp') {
         e.preventDefault();
-        setSelectedIndex((prev) =>
-          prev === 0 ? filteredActions.length - 1 : prev - 1
-        );
+        setSelectedIndex(prev => (prev === 0 ? filteredActions.length - 1 : prev - 1));
       } else if (e.key === 'Enter' && filteredActions[selectedIndex]) {
         e.preventDefault();
         handleSelect(filteredActions[selectedIndex]);
@@ -102,7 +110,7 @@ export function CommandPalette({ actions, open, onClose }: CommandPaletteProps) 
         onClose();
       }
     },
-    [filteredActions, selectedIndex, onClose]
+    [filteredActions, selectedIndex, onClose],
   );
 
   // تنفيذ الأمر
@@ -113,9 +121,9 @@ export function CommandPalette({ actions, open, onClose }: CommandPaletteProps) 
 
   // تجميع الأوامر حسب الفئة
   const categorizedActions = {
-    navigation: filteredActions.filter((a) => a.category === 'navigation'),
-    actions: filteredActions.filter((a) => a.category === 'actions'),
-    admin: filteredActions.filter((a) => a.category === 'admin'),
+    navigation: filteredActions.filter(a => a.category === 'navigation'),
+    actions: filteredActions.filter(a => a.category === 'actions'),
+    admin: filteredActions.filter(a => a.category === 'admin'),
   };
 
   if (!open) return null;
@@ -150,7 +158,7 @@ export function CommandPalette({ actions, open, onClose }: CommandPaletteProps) 
             <input
               type="text"
               value={search}
-              onChange={(e) => setSearch(e.target.value)}
+              onChange={e => setSearch(e.target.value)}
               onKeyDown={handleKeyDown}
               placeholder="ابحث عن صفحة أو إجراء..."
               autoFocus
@@ -178,9 +186,7 @@ export function CommandPalette({ actions, open, onClose }: CommandPaletteProps) 
           <div className="max-h-[60vh] overflow-y-auto p-2">
             {filteredActions.length === 0 ? (
               <div className="py-12 text-center">
-                <p className="text-text-tertiary text-sm">
-                  لم يتم العثور على نتائج
-                </p>
+                <p className="text-text-tertiary text-sm">لم يتم العثور على نتائج</p>
               </div>
             ) : (
               <>
@@ -192,26 +198,19 @@ export function CommandPalette({ actions, open, onClose }: CommandPaletteProps) 
                     </div>
                     {categorizedActions.navigation.map((action, index) => {
                       const Icon = action.icon || ArrowRight;
-                      const isSelected =
-                        filteredActions.indexOf(action) === selectedIndex;
+                      const isSelected = filteredActions.indexOf(action) === selectedIndex;
 
                       return (
                         <button
                           key={action.id}
                           type="button"
                           onClick={() => handleSelect(action)}
-                          onMouseEnter={() =>
-                            setSelectedIndex(filteredActions.indexOf(action))
-                          }
+                          onMouseEnter={() => setSelectedIndex(filteredActions.indexOf(action))}
                           className={`
                             w-full px-3 py-2.5 rounded-lg
                             flex items-center gap-3
                             text-right transition-fast
-                            ${
-                              isSelected
-                                ? 'bg-brand-50 dark:bg-brand-900/20'
-                                : 'hover:bg-bg-muted'
-                            }
+                            ${isSelected ? 'bg-brand-50 dark:bg-brand-900/20' : 'hover:bg-bg-muted'}
                           `}
                         >
                           <Icon
@@ -250,28 +249,21 @@ export function CommandPalette({ actions, open, onClose }: CommandPaletteProps) 
                     <div className="px-3 py-2 text-xs font-semibold text-text-tertiary uppercase">
                       إجراءات
                     </div>
-                    {categorizedActions.actions.map((action) => {
+                    {categorizedActions.actions.map(action => {
                       const Icon = action.icon || Zap;
-                      const isSelected =
-                        filteredActions.indexOf(action) === selectedIndex;
+                      const isSelected = filteredActions.indexOf(action) === selectedIndex;
 
                       return (
                         <button
                           key={action.id}
                           type="button"
                           onClick={() => handleSelect(action)}
-                          onMouseEnter={() =>
-                            setSelectedIndex(filteredActions.indexOf(action))
-                          }
+                          onMouseEnter={() => setSelectedIndex(filteredActions.indexOf(action))}
                           className={`
                             w-full px-3 py-2.5 rounded-lg
                             flex items-center gap-3
                             text-right transition-fast
-                            ${
-                              isSelected
-                                ? 'bg-brand-50 dark:bg-brand-900/20'
-                                : 'hover:bg-bg-muted'
-                            }
+                            ${isSelected ? 'bg-brand-50 dark:bg-brand-900/20' : 'hover:bg-bg-muted'}
                           `}
                         >
                           <Icon
@@ -310,28 +302,21 @@ export function CommandPalette({ actions, open, onClose }: CommandPaletteProps) 
                     <div className="px-3 py-2 text-xs font-semibold text-text-tertiary uppercase">
                       إدارة
                     </div>
-                    {categorizedActions.admin.map((action) => {
+                    {categorizedActions.admin.map(action => {
                       const Icon = action.icon || SettingsIcon;
-                      const isSelected =
-                        filteredActions.indexOf(action) === selectedIndex;
+                      const isSelected = filteredActions.indexOf(action) === selectedIndex;
 
                       return (
                         <button
                           key={action.id}
                           type="button"
                           onClick={() => handleSelect(action)}
-                          onMouseEnter={() =>
-                            setSelectedIndex(filteredActions.indexOf(action))
-                          }
+                          onMouseEnter={() => setSelectedIndex(filteredActions.indexOf(action))}
                           className={`
                             w-full px-3 py-2.5 rounded-lg
                             flex items-center gap-3
                             text-right transition-fast
-                            ${
-                              isSelected
-                                ? 'bg-brand-50 dark:bg-brand-900/20'
-                                : 'hover:bg-bg-muted'
-                            }
+                            ${isSelected ? 'bg-brand-50 dark:bg-brand-900/20' : 'hover:bg-bg-muted'}
                           `}
                         >
                           <Icon

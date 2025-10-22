@@ -9,6 +9,7 @@
 ### مكونات أساسية
 
 #### 1. Toaster
+
 ```tsx
 import { toast } from 'sonner';
 
@@ -19,6 +20,7 @@ toast.info('معلومة');
 ```
 
 #### 2. EmptyState
+
 ```tsx
 import { EmptyState } from '@/components/ui/EmptyState';
 
@@ -27,10 +29,11 @@ import { EmptyState } from '@/components/ui/EmptyState';
   message="ابدأ بإضافة أول عنصر"
   actionLabel="إضافة"
   onAction={() => handleAdd()}
-/>
+/>;
 ```
 
 #### 3. Skeleton
+
 ```tsx
 import { Skeleton, SkeletonTable, SkeletonCard } from '@/components/ui/Skeleton';
 
@@ -40,6 +43,7 @@ import { Skeleton, SkeletonTable, SkeletonCard } from '@/components/ui/Skeleton'
 ```
 
 #### 4. ConfirmDialog
+
 ```tsx
 import { ConfirmDialog } from '@/components/ui/ConfirmDialog';
 
@@ -51,7 +55,7 @@ import { ConfirmDialog } from '@/components/ui/ConfirmDialog';
   title="حذف المستخدم"
   message="هل أنت متأكد؟"
   confirmLabel="حذف"
-/>
+/>;
 ```
 
 ---
@@ -59,6 +63,7 @@ import { ConfirmDialog } from '@/components/ui/ConfirmDialog';
 ### مكونات متقدمة
 
 #### 5. DataTable
+
 ```tsx
 import { DataTable } from '@/components/ui/DataTable';
 import { ColumnDef } from '@tanstack/react-table';
@@ -77,11 +82,12 @@ const columns: ColumnDef<User>[] = [
   selectable
   pagination
   pageSize={10}
-  onSelectionChange={(rows) => setSelectedUsers(rows)}
-/>
+  onSelectionChange={rows => setSelectedUsers(rows)}
+/>;
 ```
 
 #### 6. FiltersBar
+
 ```tsx
 import { FiltersBar, FilterOption } from '@/components/ui/FiltersBar';
 
@@ -109,10 +115,11 @@ const filters: FilterOption[] = [
   filterValues={filterValues}
   onFilterChange={(id, value) => setFilterValues({ ...filterValues, [id]: value })}
   onClearFilters={() => setFilterValues({})}
-/>
+/>;
 ```
 
 #### 7. KPICard
+
 ```tsx
 import { KPICard, KPICardGrid } from '@/components/ui/KPICard';
 import { Users } from 'lucide-react';
@@ -127,10 +134,11 @@ import { Users } from 'lucide-react';
     icon={Users}
     onClick={() => router.push('/admin/users')}
   />
-</KPICardGrid>
+</KPICardGrid>;
 ```
 
 #### 8. ChartWidget
+
 ```tsx
 import { ChartWidget, ChartDataPoint } from '@/components/ui/ChartWidget';
 
@@ -140,33 +148,29 @@ const data: ChartDataPoint[] = [
   { label: 'مارس', value: 60 },
 ];
 
-<ChartWidget
-  title="المستخدمين الجدد"
-  type="line"
-  data={data}
-  color="#3b82f6"
-  showLegend
-/>
+<ChartWidget title="المستخدمين الجدد" type="line" data={data} color="#3b82f6" showLegend />;
 ```
 
 #### 9. FileUploader
+
 ```tsx
 import { FileUploader, UploadedFile } from '@/components/ui/FileUploader';
 
 const [files, setFiles] = useState<UploadedFile[]>([]);
 
 <FileUploader
-  onUpload={(newFiles) => setFiles([...files, ...newFiles])}
-  onRemove={(index) => setFiles(files.filter((_, i) => i !== index))}
+  onUpload={newFiles => setFiles([...files, ...newFiles])}
+  onRemove={index => setFiles(files.filter((_, i) => i !== index))}
   files={files}
   accept="image/*,.pdf"
   maxSize={5}
   maxFiles={10}
   multiple
-/>
+/>;
 ```
 
 #### 10. Breadcrumbs
+
 ```tsx
 import { Breadcrumbs, BreadcrumbItem } from '@/components/ui/Breadcrumbs';
 
@@ -176,7 +180,7 @@ const items: BreadcrumbItem[] = [
   { label: 'تعديل مستخدم', current: true },
 ];
 
-<Breadcrumbs items={items} showHome homeHref="/admin/dashboard" />
+<Breadcrumbs items={items} showHome homeHref="/admin/dashboard" />;
 ```
 
 ---
@@ -186,6 +190,7 @@ const items: BreadcrumbItem[] = [
 جميع المكونات تستخدم متغيرات CSS من `styles/design-tokens.css`:
 
 ### الألوان
+
 ```css
 --color-bg-base          /* خلفية رئيسية */
 --color-bg-elevated      /* خلفية مرتفعة */
@@ -198,6 +203,7 @@ const items: BreadcrumbItem[] = [
 ```
 
 ### المسافات
+
 ```css
 --space-1  /* 4px */
 --space-2  /* 8px */
@@ -207,6 +213,7 @@ const items: BreadcrumbItem[] = [
 ```
 
 ### الظلال
+
 ```css
 --shadow-sm   /* ظل صغير */
 --shadow-base /* ظل متوسط */
@@ -218,6 +225,7 @@ const items: BreadcrumbItem[] = [
 ## ♿ إمكانية الوصول (A11y)
 
 جميع المكونات تدعم:
+
 - ✅ ARIA attributes
 - ✅ Keyboard navigation (Tab, Enter, Space, Escape)
 - ✅ Focus rings
@@ -230,6 +238,7 @@ const items: BreadcrumbItem[] = [
 ## 🌓 Dark Mode
 
 تفعيل Dark Mode:
+
 ```tsx
 // في app/layout.tsx
 <html dir="rtl" className="dark">
@@ -282,6 +291,7 @@ pnpm build
 ## 🤝 المساهمة
 
 عند إضافة مكون جديد:
+
 1. استخدم `'use client'` إذا كان تفاعلي
 2. أضف TypeScript types كاملة
 3. استخدم Design Tokens من `design-tokens.css`

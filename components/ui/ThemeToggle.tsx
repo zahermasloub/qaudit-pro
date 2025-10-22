@@ -90,7 +90,7 @@ export function ThemeToggle() {
     { value: 'system', label: 'النظام', icon: Monitor },
   ];
 
-  const currentOption = options.find((opt) => opt.value === theme) || options[0];
+  const currentOption = options.find(opt => opt.value === theme) || options[0];
   const CurrentIcon = currentOption.icon;
 
   const themeLabels: Record<ThemeOption, string> = {
@@ -116,11 +116,11 @@ export function ThemeToggle() {
           borderColor: 'var(--color-border-base)',
           color: 'var(--color-text-secondary)',
         }}
-        onMouseEnter={(e) => {
+        onMouseEnter={e => {
           e.currentTarget.style.backgroundColor = 'var(--color-bg-muted)';
           e.currentTarget.style.color = 'var(--color-text-primary)';
         }}
-        onMouseLeave={(e) => {
+        onMouseLeave={e => {
           e.currentTarget.style.backgroundColor = 'var(--color-bg-elevated)';
           e.currentTarget.style.color = 'var(--color-text-secondary)';
         }}
@@ -137,11 +137,7 @@ export function ThemeToggle() {
       {isOpen && (
         <>
           {/* Backdrop للإغلاق عند الضغط خارج القائمة */}
-          <div
-            className="fixed inset-0 z-40"
-            onClick={() => setIsOpen(false)}
-            aria-hidden="true"
-          />
+          <div className="fixed inset-0 z-40" onClick={() => setIsOpen(false)} aria-hidden="true" />
 
           {/* Menu */}
           <div
@@ -162,68 +158,62 @@ export function ThemeToggle() {
             aria-labelledby="theme-menu-button"
           >
             <div className="py-1">
-            {options.map((option) => {
-              const Icon = option.icon;
-              const isActive = theme === option.value;
+              {options.map(option => {
+                const Icon = option.icon;
+                const isActive = theme === option.value;
 
-              return (
-                <button
-                  key={option.value}
-                  type="button"
-                  onClick={() => {
-                    setTheme(option.value);
-                    setIsOpen(false);
-                  }}
-                  className="
+                return (
+                  <button
+                    key={option.value}
+                    type="button"
+                    onClick={() => {
+                      setTheme(option.value);
+                      setIsOpen(false);
+                    }}
+                    className="
                     w-full flex items-center gap-3 px-4 py-2.5
                     text-sm transition-all
                     focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset
                   "
-                  style={{
-                    backgroundColor: isActive
-                      ? 'var(--color-bg-muted)'
-                      : 'transparent',
-                    color: isActive
-                      ? 'var(--color-text-primary)'
-                      : 'var(--color-text-secondary)',
-                  }}
-                  onMouseEnter={(e) => {
-                    if (!isActive) {
-                      e.currentTarget.style.backgroundColor = 'var(--color-bg-subtle)';
-                      e.currentTarget.style.color = 'var(--color-text-primary)';
-                    }
-                  }}
-                  onMouseLeave={(e) => {
-                    if (!isActive) {
-                      e.currentTarget.style.backgroundColor = 'transparent';
-                      e.currentTarget.style.color = 'var(--color-text-secondary)';
-                    }
-                  }}
-                  role="menuitem"
-                  aria-current={isActive ? 'true' : undefined}
-                >
-                  <Icon
-                    size={18}
-                    aria-hidden="true"
                     style={{
-                      color: isActive
-                        ? 'var(--color-brand-600)'
-                        : 'currentColor',
+                      backgroundColor: isActive ? 'var(--color-bg-muted)' : 'transparent',
+                      color: isActive ? 'var(--color-text-primary)' : 'var(--color-text-secondary)',
                     }}
-                  />
-                  <span className="flex-1 text-right">{option.label}</span>
-                  {isActive && (
-                    <span
-                      className="text-sm font-semibold"
-                      style={{ color: 'var(--color-brand-600)' }}
+                    onMouseEnter={e => {
+                      if (!isActive) {
+                        e.currentTarget.style.backgroundColor = 'var(--color-bg-subtle)';
+                        e.currentTarget.style.color = 'var(--color-text-primary)';
+                      }
+                    }}
+                    onMouseLeave={e => {
+                      if (!isActive) {
+                        e.currentTarget.style.backgroundColor = 'transparent';
+                        e.currentTarget.style.color = 'var(--color-text-secondary)';
+                      }
+                    }}
+                    role="menuitem"
+                    aria-current={isActive ? 'true' : undefined}
+                  >
+                    <Icon
+                      size={18}
                       aria-hidden="true"
-                    >
-                      ✓
-                    </span>
-                  )}
-                </button>
-              );
-            })}
+                      style={{
+                        color: isActive ? 'var(--color-brand-600)' : 'currentColor',
+                      }}
+                    />
+                    <span className="flex-1 text-right">{option.label}</span>
+                    {isActive && (
+                      <span
+                        className="text-sm font-semibold"
+                        style={{ color: 'var(--color-brand-600)' }}
+                        aria-hidden="true"
+                      >
+                        ✓
+                      </span>
+                    )}
+                  </button>
+                );
+              })}
             </div>
 
             {/* Keyboard Shortcut Hint */}
