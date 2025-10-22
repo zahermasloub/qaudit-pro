@@ -4,22 +4,42 @@ import KpiCards from '../../../(components)/KpiCards';
 import ProcessStepper, { ProcessStep } from './ProcessStepper';
 import CreatePlanWizard from './CreatePlanWizard';
 import { toast } from 'sonner';
-import { Search, Download, Eye, Edit2, Trash2, Plus } from 'lucide-react';
+import { Search, Download, Eye, Edit2, Trash2, Plus, FileText } from 'lucide-react';
 
 interface PlanItem {
   id: string;
   code: string;
   title: string;
   department: string;
-  risk_level: 'high' | 'medium' | 'low';
+  risk_level: 'critical' | 'high' | 'medium' | 'low';
   type: string;
   quarter: string;
   hours: number;
   status: 'planned' | 'in-progress' | 'completed' | 'delayed';
+  assignee?: string;
+  notes?: string;
 }
 
-export default function RbiaPlanView() {
-  const [locale, setLocale] = useState('ar');
+type ContentView =
+  | 'empty'
+  | 'annualPlan'
+  | 'planning'
+  | 'understanding'
+  | 'workProgram'
+  | 'fieldwork'
+  | 'drafts'
+  | 'results'
+  | 'finalReport'
+  | 'followup'
+  | 'closure'
+  | 'qa';
+
+interface RbiaPlanViewProps {
+  mode?: 'plan' | 'execution';
+}
+
+export default function RbiaPlanView({ mode = 'plan' }: RbiaPlanViewProps) {
+  // State management
   const [selectedPlan, setSelectedPlan] = useState<any>(null);
   const [planItems, setPlanItems] = useState<PlanItem[]>([]);
   const [loading, setLoading] = useState(false);
@@ -27,8 +47,13 @@ export default function RbiaPlanView() {
   const [filterDepartment, setFilterDepartment] = useState('all');
   const [filterRisk, setFilterRisk] = useState('all');
   const [filterStatus, setFilterStatus] = useState('all');
-  const [activeStepId, setActiveStepId] = useState(1);
+
+  // New state for dynamic content
+  const [activeStepId, setActiveStepId] = useState<number | null>(null);
+  const [contentView, setContentView] = useState<ContentView>('empty');
+  const [currentPlanId, setCurrentPlanId] = useState<string | null>(null);
   const [showCreatePlanModal, setShowCreatePlanModal] = useState(false);
+  const [completedSteps, setCompletedSteps] = useState<number[]>([]);
 
   // Prevent body scroll when modal is open
   useEffect(() => {
@@ -42,42 +67,67 @@ export default function RbiaPlanView() {
     };
   }, [showCreatePlanModal]);
 
-  // Load plan data and tasks
+  // Check for existing plan on mount
   useEffect(() => {
-    fetchPlanData();
+    checkForExistingPlan();
   }, []);
 
-  const fetchPlanData = async () => {
+  const checkForExistingPlan = async () => {
     try {
-      setLoading(true);
-
-      // Fetch latest plan
       const planResponse = await fetch('/api/plan/latest');
       if (planResponse.ok) {
         const planData = await planResponse.json();
-        setSelectedPlan(planData);
-
-        // Fetch tasks for this plan
         if (planData?.id) {
-          const tasksResponse = await fetch(`/api/plan/${planData.id}/tasks`);
-          if (tasksResponse.ok) {
-            const tasksData = await tasksResponse.json();
+          setCurrentPlanId(planData.id);
+          setSelectedPlan(planData);
+        }
+      }
+    } catch (error) {
+      console.error('Error checking for plan:', error);
+    }
+  };
 
-            // Transform tasks to PlanItem format
-            const items: PlanItem[] = tasksData.map((task: any) => ({
-              id: task.id,
-              code: task.task_ref || task.code || '',
-              title: task.title,
-              department: task.dept_id || task.department || 'عام',
-              risk_level: task.riskLevel === 'high' ? 'high' : task.riskLevel === 'low' ? 'low' : 'medium',
-              type: task.task_type || task.auditType || 'امتثال',
-              quarter: task.scheduled_quarter || task.plannedQuarter || 'Q1',
-              hours: task.duration_days || task.estimatedHours || 0,
-              status: task.status || 'planned',
-            }));
+  const fetchPlanData = async () => {
+    if (!currentPlanId) {
+      toast.error('لا يوجد خطة محددة');
+      return;
+    }
 
-            setPlanItems(items);
-          }
+    try {
+      setLoading(true);
+
+      // Fetch plan details
+      const planResponse = await fetch(`/api/plan/${currentPlanId}`);
+      if (planResponse.ok) {
+        const planData = await planResponse.json();
+        setSelectedPlan(planData);
+      }
+
+      // Fetch tasks for this plan
+      const tasksResponse = await fetch(`/api/plan/${currentPlanId}/tasks`);
+      if (tasksResponse.ok) {
+        const tasksData = await tasksResponse.json();
+
+        // Transform tasks to PlanItem format
+        const items: PlanItem[] = tasksData.map((task: any) => ({
+          id: task.id,
+          code: task.task_ref || task.code || '',
+          title: task.title,
+          department: task.dept_id || task.department || 'عام',
+          risk_level: task.riskLevel || 'medium',
+          type: task.task_type || task.auditType || 'امتثال',
+          quarter: task.scheduled_quarter || task.plannedQuarter || 'Q1',
+          hours: task.duration_days || task.estimatedHours || 0,
+          status: task.status || 'planned',
+          assignee: task.assignee || '',
+          notes: task.notes || '',
+        }));
+
+        setPlanItems(items);
+
+        // Mark step 1 as completed after successful load
+        if (!completedSteps.includes(1)) {
+          setCompletedSteps([...completedSteps, 1]);
         }
       }
     } catch (error) {
@@ -89,59 +139,76 @@ export default function RbiaPlanView() {
   };
 
   const handleCreateNewPlan = () => {
-    // يمكن فتح modal أو التوجيه إلى صفحة إنشاء الخطة
     setShowCreatePlanModal(true);
-    toast.success('فتح معالج إنشاء الخطة السنوية الجديدة');
-    // أو استخدام: window.location.href = '/rbia/plan/create';
+  };
+
+  const handlePlanCreated = (planId: string) => {
+    setCurrentPlanId(planId);
+    setShowCreatePlanModal(false);
+    toast.success('تم إنشاء الخطة بنجاح');
+    // Automatically switch to annual plan view
+    handleStepClick(1);
   };
 
   const handleStepClick = (stepId: number) => {
-    if (!selectedPlan?.id) {
+    // Scroll to top smoothly
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+
+    // Check if plan exists for most steps
+    if (stepId > 1 && !currentPlanId) {
       toast.error('يرجى إنشاء خطة أولاً');
       return;
     }
 
-    // Update active step
     setActiveStepId(stepId);
 
-    // Navigate based on step
+    // Map step to content view
     switch (stepId) {
-      case 1:
-        // Stay on current page (annual plan view)
-        toast.info('أنت حالياً في صفحة الخطة السنوية');
-        break;
-      case 2:
-        // Navigate to priorities page
-        window.location.href = `/rbia/plan/${selectedPlan.id}/priorities`;
-        break;
-      case 3:
-        // Navigate to resource allocation page
-        window.location.href = `/rbia/plan/${selectedPlan.id}/resources`;
-        break;
-      case 4:
-        // Navigate to timeline page
-        if (activeStepId >= 3) {
-          window.location.href = `/rbia/plan/${selectedPlan.id}/timeline`;
-        } else {
-          toast.warning('يجب إكمال تخصيص الموارد أولاً');
+      case 1: // الخطة السنوية
+        setContentView('annualPlan');
+        if (currentPlanId && planItems.length === 0) {
+          fetchPlanData();
         }
         break;
-      case 5:
-        // Navigate to approval page
-        if (activeStepId >= 4) {
-          window.location.href = `/rbia/plan/${selectedPlan.id}/approval`;
-        } else {
-          toast.warning('يجب إكمال الجدول الزمني أولاً');
-        }
+      case 2: // التخطيط
+        setContentView('planning');
+        break;
+      case 3: // فهم العملية والمخاطر
+        setContentView('understanding');
+        break;
+      case 4: // برنامج العمل والعينات
+        setContentView('workProgram');
+        break;
+      case 5: // الأعمال الميدانية والأدلة
+        setContentView('fieldwork');
+        break;
+      case 6: // المسودات الأولية
+        setContentView('drafts');
+        break;
+      case 7: // النتائج والتوصيات
+        setContentView('results');
+        break;
+      case 8: // التقرير النهائي
+        setContentView('finalReport');
+        break;
+      case 9: // المتابعة
+        setContentView('followup');
+        break;
+      case 10: // الإقفال
+        setContentView('closure');
+        break;
+      case 11: // ضمان الجودة
+        setContentView('qa');
         break;
       default:
-        toast.info(`المرحلة ${stepId} قيد التطوير`);
+        setContentView('empty');
     }
   };
 
   const filteredItems = useMemo(() => {
     return planItems.filter((item) => {
-      const matchesSearch = item.title.toLowerCase().includes(searchTerm.toLowerCase());
+      const matchesSearch = item.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                           item.code.toLowerCase().includes(searchTerm.toLowerCase());
       const matchesDepartment = filterDepartment === 'all' || item.department === filterDepartment;
       const matchesRisk = filterRisk === 'all' || item.risk_level === filterRisk;
       const matchesStatus = filterStatus === 'all' || item.status === filterStatus;
@@ -149,29 +216,101 @@ export default function RbiaPlanView() {
     });
   }, [planItems, searchTerm, filterDepartment, filterRisk, filterStatus]);
 
+  // Complete RBIA process steps
   const processSteps: ProcessStep[] = [
-    { id: 1, label: 'الخطة السنوية', status: 'active' },
-    { id: 2, label: 'تحديد الأولويات', status: 'available' },
-    { id: 3, label: 'تخصيص الموارد', status: 'available' },
-    { id: 4, label: 'الجدول الزمني', status: 'locked', lockReason: 'أكمل المرحلة 3 أولاً' },
-    { id: 5, label: 'اعتماد الخطة', status: 'locked', lockReason: 'أكمل المرحلة 4 أولاً' },
+    {
+      id: 1,
+      label: 'الخطة السنوية',
+      status: completedSteps.includes(1) ? 'completed' : (activeStepId === 1 ? 'active' : 'available')
+    },
+    {
+      id: 2,
+      label: 'التخطيط',
+      status: completedSteps.includes(2) ? 'completed' : (activeStepId === 2 ? 'active' : (currentPlanId ? 'available' : 'locked')),
+      lockReason: currentPlanId ? undefined : 'قم بإنشاء خطة أولاً'
+    },
+    {
+      id: 3,
+      label: 'فهم العملية والمخاطر',
+      status: completedSteps.includes(3) ? 'completed' : (activeStepId === 3 ? 'active' : (currentPlanId ? 'available' : 'locked')),
+      lockReason: currentPlanId ? undefined : 'قم بإنشاء خطة أولاً'
+    },
+    {
+      id: 4,
+      label: 'برنامج العمل والعينات',
+      status: completedSteps.includes(4) ? 'completed' : (activeStepId === 4 ? 'active' : (currentPlanId ? 'available' : 'locked')),
+      lockReason: currentPlanId ? undefined : 'قم بإنشاء خطة أولاً'
+    },
+    {
+      id: 5,
+      label: 'الأعمال الميدانية والأدلة',
+      status: completedSteps.includes(5) ? 'completed' : (activeStepId === 5 ? 'active' : (currentPlanId ? 'available' : 'locked')),
+      lockReason: currentPlanId ? undefined : 'قم بإنشاء خطة أولاً'
+    },
+    {
+      id: 6,
+      label: 'المسودات الأولية',
+      status: completedSteps.includes(6) ? 'completed' : (activeStepId === 6 ? 'active' : (currentPlanId ? 'available' : 'locked')),
+      lockReason: currentPlanId ? undefined : 'قم بإنشاء خطة أولاً'
+    },
+    {
+      id: 7,
+      label: 'النتائج والتوصيات',
+      status: completedSteps.includes(7) ? 'completed' : (activeStepId === 7 ? 'active' : (currentPlanId ? 'available' : 'locked')),
+      lockReason: currentPlanId ? undefined : 'قم بإنشاء خطة أولاً'
+    },
+    {
+      id: 8,
+      label: 'التقرير النهائي',
+      status: completedSteps.includes(8) ? 'completed' : (activeStepId === 8 ? 'active' : (currentPlanId ? 'available' : 'locked')),
+      lockReason: currentPlanId ? undefined : 'قم بإنشاء خطة أولاً'
+    },
+    {
+      id: 9,
+      label: 'المتابعة',
+      status: completedSteps.includes(9) ? 'completed' : (activeStepId === 9 ? 'active' : (currentPlanId ? 'available' : 'locked')),
+      lockReason: currentPlanId ? undefined : 'قم بإنشاء خطة أولاً'
+    },
+    {
+      id: 10,
+      label: 'الإقفال',
+      status: completedSteps.includes(10) ? 'completed' : (activeStepId === 10 ? 'active' : (currentPlanId ? 'available' : 'locked')),
+      lockReason: currentPlanId ? undefined : 'قم بإنشاء خطة أولاً'
+    },
+    {
+      id: 11,
+      label: 'ضمان الجودة',
+      status: completedSteps.includes(11) ? 'completed' : (activeStepId === 11 ? 'active' : (currentPlanId ? 'available' : 'locked')),
+      lockReason: currentPlanId ? undefined : 'قم بإنشاء خطة أولاً'
+    },
   ];
 
   const getRiskBadgeColor = (level: PlanItem['risk_level']) => {
     const colors = {
-      high: 'bg-red-100 text-red-800 border-red-200',
-      medium: 'bg-yellow-100 text-yellow-800 border-yellow-200',
-      low: 'bg-green-100 text-green-800 border-green-200',
+      critical: 'bg-purple-100 text-purple-800 border-purple-300',
+      high: 'bg-red-100 text-red-800 border-red-300',
+      medium: 'bg-yellow-100 text-yellow-800 border-yellow-300',
+      low: 'bg-green-100 text-green-800 border-green-300',
     };
     return colors[level];
   };
 
+  const getRiskLabel = (level: PlanItem['risk_level']) => {
+    const labels = {
+      critical: 'حرج',
+      high: 'عالي',
+      medium: 'متوسط',
+      low: 'منخفض',
+    };
+    return labels[level];
+  };
+
   const getStatusBadgeColor = (status: PlanItem['status']) => {
     const colors = {
-      planned: 'bg-blue-100 text-blue-800 border-blue-200',
-      'in-progress': 'bg-purple-100 text-purple-800 border-purple-200',
-      completed: 'bg-green-100 text-green-800 border-green-200',
-      delayed: 'bg-red-100 text-red-800 border-red-200',
+      planned: 'bg-blue-100 text-blue-800 border-blue-300',
+      'in-progress': 'bg-purple-100 text-purple-800 border-purple-300',
+      completed: 'bg-green-100 text-green-800 border-green-300',
+      delayed: 'bg-red-100 text-red-800 border-red-300',
     };
     return colors[status];
   };
@@ -186,284 +325,263 @@ export default function RbiaPlanView() {
     return labels[status];
   };
 
-  const handleView = (item: PlanItem) => {
-    toast.info(`عرض: ${item.title}`);
-  };
-
-  const handleEdit = (item: PlanItem) => {
+  const handleEdit = async (item: PlanItem) => {
     toast.info(`تعديل: ${item.title}`);
+    // TODO: Open edit modal
   };
 
-  const handleDelete = (item: PlanItem) => {
-    if (confirm(`هل أنت متأكد من حذف "${item.title}"؟`)) {
-      setPlanItems(planItems.filter(i => i.id !== item.id));
-      toast.success('تم الحذف بنجاح');
+  const handleDelete = async (item: PlanItem) => {
+    if (!currentPlanId) return;
+
+    const confirmed = confirm(`هل أنت متأكد من حذف المهمة "${item.title}"؟`);
+    if (!confirmed) return;
+
+    try {
+      const response = await fetch(`/api/plan/${currentPlanId}/tasks/${item.id}`, {
+        method: 'DELETE',
+      });
+
+      if (response.ok) {
+        setPlanItems(planItems.filter(i => i.id !== item.id));
+        toast.success('تم حذف المهمة بنجاح');
+      } else {
+        throw new Error('فشل الحذف');
+      }
+    } catch (error) {
+      toast.error('حدث خطأ أثناء الحذف');
     }
   };
 
-  return (
-    <div className="container mx-auto px-3 sm:px-4 lg:px-6 max-w-[1200px]" dir="rtl">
-      {/* KPI Cards */}
-      <KpiCards planId={selectedPlan?.id} />
+  const handleExportCSV = () => {
+    if (filteredItems.length === 0) {
+      toast.warning('لا توجد بيانات للتصدير');
+      return;
+    }
 
-      {/* Main Grid with Filters, Table, and Sidebar */}
-      <div className="grid gap-6 lg:grid-cols-[1fr_320px]">
-        <div className="min-w-0 space-y-6">
-          {/* Filters */}
-          <div className="bg-white rounded-xl shadow-sm p-4 border border-gray-100">
-            <div className="flex flex-wrap gap-3">
-              <div className="relative flex-1 min-w-[200px]">
-                <Search className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
-                <input
-                  type="text"
-                  placeholder="بحث..."
-                  value={searchTerm}
-                  onChange={e => setSearchTerm(e.target.value)}
-                  className="w-full pr-10 pl-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                />
-              </div>
+    const headers = ['الرمز', 'العنوان', 'الإدارة', 'المخاطر', 'النوع', 'الربع', 'الساعات', 'الحالة'];
+    const rows = filteredItems.map(item => [
+      item.code,
+      item.title,
+      item.department,
+      getRiskLabel(item.risk_level),
+      item.type,
+      item.quarter,
+      item.hours.toString(),
+      getStatusLabel(item.status),
+    ]);
 
-              <select
-                value={filterDepartment}
-                onChange={e => setFilterDepartment(e.target.value)}
-                className="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
-              >
-                <option value="all">كل الإدارات</option>
-                <option value="المشتريات">المشتريات</option>
-                <option value="الموارد البشرية">الموارد البشرية</option>
-              </select>
+    const csv = [headers, ...rows].map(row => row.join(',')).join('\n');
+    const blob = new Blob(['\uFEFF' + csv], { type: 'text/csv;charset=utf-8;' });
+    const link = document.createElement('a');
+    link.href = URL.createObjectURL(blob);
+    link.download = `annual-plan-${new Date().toISOString().split('T')[0]}.csv`;
+    link.click();
+    toast.success('تم تصدير البيانات بنجاح');
+  };
 
-              <select
-                value={filterRisk}
-                onChange={e => setFilterRisk(e.target.value)}
-                className="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
-              >
-                <option value="all">كل المخاطر</option>
-                <option value="high">عالية</option>
-                <option value="medium">متوسطة</option>
-                <option value="low">منخفضة</option>
-              </select>
+  // Render empty state
+  const renderEmptyState = () => (
+    <div className="flex flex-col items-center justify-center py-20 px-4">
+      <div className="w-20 h-20 bg-slate-100 rounded-full flex items-center justify-center mb-6">
+        <FileText className="w-10 h-10 text-slate-400" />
+      </div>
+      <h3 className="text-xl font-semibold text-slate-800 mb-3">لم يتم اختيار أي مرحلة</h3>
+      <p className="text-slate-600 text-center max-w-md mb-8">
+        اختر مرحلة من قائمة مراحل العملية على اليسار لعرض المحتوى المتعلق بها
+      </p>
+      {!currentPlanId && (
+        <button
+          onClick={handleCreateNewPlan}
+          className="px-6 py-3 bg-blue-600 text-white rounded-xl hover:bg-blue-700 font-semibold shadow-lg hover:shadow-xl transition-all duration-200 flex items-center gap-2"
+        >
+          <Plus className="w-5 h-5" />
+          إنشاء خطة جديدة
+        </button>
+      )}
+    </div>
+  );
 
-              <select
-                value={filterStatus}
-                onChange={e => setFilterStatus(e.target.value)}
-                className="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
-              >
-                <option value="all">كل الحالات</option>
-                <option value="planned">مخطط</option>
-                <option value="in-progress">قيد التنفيذ</option>
-                <option value="completed">مكتمل</option>
-                <option value="delayed">متأخر</option>
-              </select>
+  // Render annual plan table
+  const renderAnnualPlanTable = () => {
+    if (loading) {
+      return (
+        <div className="flex items-center justify-center py-20">
+          <div className="text-center">
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
+            <p className="text-slate-600">جاري تحميل البيانات...</p>
+          </div>
+        </div>
+      );
+    }
 
-              <button
-                onClick={() => toast.success('تم تصدير البيانات')}
-                className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 flex items-center gap-2"
-              >
-                <Download className="w-4 h-4" />
-                تصدير CSV
-              </button>
+    if (planItems.length === 0) {
+      return (
+        <div className="flex flex-col items-center justify-center py-20">
+          <div className="w-20 h-20 bg-slate-100 rounded-full flex items-center justify-center mb-6">
+            <FileText className="w-10 h-10 text-slate-400" />
+          </div>
+          <h3 className="text-xl font-semibold text-slate-800 mb-3">لا توجد مهام في الخطة</h3>
+          <p className="text-slate-600 text-center max-w-md mb-8">
+            قم بإضافة مهام إلى الخطة السنوية للبدء
+          </p>
+          <button
+            onClick={handleCreateNewPlan}
+            className="px-6 py-3 bg-blue-600 text-white rounded-xl hover:bg-blue-700 font-semibold shadow-lg hover:shadow-xl transition-all duration-200 flex items-center gap-2"
+          >
+            <Plus className="w-5 h-5" />
+            إضافة مهام
+          </button>
+        </div>
+      );
+    }
 
-              <button
-                onClick={handleCreateNewPlan}
-                className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 flex items-center gap-2 font-medium shadow-sm hover:shadow-md transition-all"
-              >
-                <Plus className="w-4 h-4" />
-                إنشاء خطة جديدة
-              </button>
+    return (
+      <div className="space-y-6">
+        {/* Filters */}
+        <div className="bg-white rounded-xl shadow-sm p-4 border border-slate-200">
+          <div className="flex flex-wrap gap-3">
+            <div className="relative flex-1 min-w-[200px]">
+              <Search className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+              <input
+                type="text"
+                placeholder="بحث في المهام..."
+                value={searchTerm}
+                onChange={e => setSearchTerm(e.target.value)}
+                className="w-full pr-10 pl-3 py-2.5 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm"
+              />
             </div>
-          </div>
 
-          {/* Mobile Cards */}
-          <div className="grid gap-3 md:hidden">
-            {loading ? (
-              <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-8 text-center text-gray-500">
-                جارٍ التحميل...
-              </div>
-            ) : filteredItems.length === 0 ? (
-              <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-8 text-center text-gray-500">
-                {locale === 'ar' ? 'لا توجد مهام تدقيق' : 'No audit tasks found'}
-              </div>
-            ) : (
-              filteredItems.map((item: PlanItem) => (
-                <div key={item.id} className="bg-white border border-gray-200 rounded-xl p-4 shadow-sm">
-                  <div className="flex items-center justify-between mb-2">
-                    <span className="text-sm font-semibold text-gray-900">{item.code}</span>
-                    <span
-                      className={`inline-block px-2 py-1 text-xs font-medium rounded border ${getStatusBadgeColor(
-                        item.status,
-                      )}`}
-                    >
-                      {getStatusLabel(item.status)}
-                    </span>
-                  </div>
-                  <div className="text-sm text-gray-900 mb-3 whitespace-normal leading-6 font-medium">
-                    {item.title}
-                  </div>
-                  <div className="grid grid-cols-2 gap-2 text-xs text-gray-600 mb-3">
-                    <div>
-                      <span className="font-medium">{locale === 'ar' ? 'الإدارة' : 'Dept'}:</span>{' '}
-                      {item.department}
-                    </div>
-                    <div>
-                      <span className="font-medium">{locale === 'ar' ? 'المخاطر' : 'Risk'}:</span>{' '}
-                      <span
-                        className={`inline-block px-1.5 py-0.5 text-xs font-medium rounded ${getRiskBadgeColor(
-                          item.risk_level,
-                        )}`}
-                      >
-                        {item.risk_level === 'high'
-                          ? 'عالية'
-                          : item.risk_level === 'medium'
-                            ? 'متوسطة'
-                            : 'منخفضة'}
-                      </span>
-                    </div>
-                    <div>
-                      <span className="font-medium">{locale === 'ar' ? 'النوع' : 'Type'}:</span>{' '}
-                      {item.type}
-                    </div>
-                    <div>
-                      <span className="font-medium">{locale === 'ar' ? 'الربع' : 'Quarter'}:</span>{' '}
-                      {item.quarter}
-                    </div>
-                    <div>
-                      <span className="font-medium">{locale === 'ar' ? 'الساعات' : 'Hours'}:</span>{' '}
-                      {item.hours}
-                    </div>
-                  </div>
-                  <div className="flex gap-2 pt-2 border-t border-gray-100">
-                    <button
-                      onClick={() => handleView(item)}
-                      className="flex-1 px-3 py-2 text-sm text-blue-600 bg-blue-50 hover:bg-blue-100 rounded-lg flex items-center justify-center gap-1"
-                    >
-                      <Eye className="w-4 h-4" />
-                      <span>عرض</span>
-                    </button>
-                    <button
-                      onClick={() => handleEdit(item)}
-                      className="flex-1 px-3 py-2 text-sm text-yellow-600 bg-yellow-50 hover:bg-yellow-100 rounded-lg flex items-center justify-center gap-1"
-                    >
-                      <Edit2 className="w-4 h-4" />
-                      <span>تعديل</span>
-                    </button>
-                    <button
-                      onClick={() => handleDelete(item)}
-                      className="flex-1 px-3 py-2 text-sm text-red-600 bg-red-50 hover:bg-red-100 rounded-lg flex items-center justify-center gap-1"
-                    >
-                      <Trash2 className="w-4 h-4" />
-                      <span>حذف</span>
-                    </button>
-                  </div>
-                </div>
-              ))
-            )}
-          </div>
+            <select
+              value={filterDepartment}
+              onChange={e => setFilterDepartment(e.target.value)}
+              className="px-3 py-2.5 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 text-sm min-w-[140px]"
+            >
+              <option value="all">كل الإدارات</option>
+              <option value="المشتريات">المشتريات</option>
+              <option value="الموارد البشرية">الموارد البشرية</option>
+              <option value="المالية">المالية</option>
+              <option value="تقنية المعلومات">تقنية المعلومات</option>
+            </select>
 
-          {/* Desktop Table */}
-          <div className="hidden md:block bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
-            <table className="table-fixed w-full">
+            <select
+              value={filterRisk}
+              onChange={e => setFilterRisk(e.target.value)}
+              className="px-3 py-2.5 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 text-sm min-w-[140px]"
+            >
+              <option value="all">كل المخاطر</option>
+              <option value="critical">حرج</option>
+              <option value="high">عالي</option>
+              <option value="medium">متوسط</option>
+              <option value="low">منخفض</option>
+            </select>
+
+            <select
+              value={filterStatus}
+              onChange={e => setFilterStatus(e.target.value)}
+              className="px-3 py-2.5 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 text-sm min-w-[140px]"
+            >
+              <option value="all">كل الحالات</option>
+              <option value="planned">مخطط</option>
+              <option value="in-progress">قيد التنفيذ</option>
+              <option value="completed">مكتمل</option>
+              <option value="delayed">متأخر</option>
+            </select>
+
+            <button
+              onClick={handleExportCSV}
+              className="px-4 py-2.5 bg-teal-600 text-white rounded-lg hover:bg-teal-700 font-medium shadow-sm hover:shadow-md transition-all duration-200 flex items-center gap-2 text-sm"
+              title="تصدير CSV"
+            >
+              <Download className="w-4 h-4" />
+              تصدير
+            </button>
+          </div>
+        </div>
+
+        {/* Table - Desktop */}
+        <div className="hidden md:block bg-white rounded-xl shadow-sm border border-slate-200 overflow-x-hidden">
+          <div className="overflow-x-auto">
+            <table className="w-full table-fixed">
               <colgroup>
-                <col style={{ width: '10%' }} />
-                <col style={{ width: '25%' }} />
-                <col style={{ width: '15%' }} />
-                <col style={{ width: '10%' }} />
-                <col style={{ width: '10%' }} />
-                <col style={{ width: '8%' }} />
-                <col style={{ width: '8%' }} />
-                <col style={{ width: '10%' }} />
-                <col style={{ width: '4%' }} />
+                <col style={{ width: '8%' }} />  {/* الرمز */}
+                <col style={{ width: '28%' }} /> {/* العنوان */}
+                <col style={{ width: '12%' }} /> {/* الإدارة */}
+                <col style={{ width: '10%' }} /> {/* المخاطر */}
+                <col style={{ width: '10%' }} /> {/* النوع */}
+                <col style={{ width: '8%' }} />  {/* الربع */}
+                <col style={{ width: '8%' }} />  {/* الساعات */}
+                <col style={{ width: '10%' }} /> {/* الحالة */}
+                <col style={{ width: '6%' }} />  {/* الإجراءات */}
               </colgroup>
-              <thead className="bg-gray-50 border-b border-gray-200">
+              <thead className="bg-gradient-to-r from-slate-700 to-slate-800 text-white">
                 <tr>
-                  {[
-                    locale === 'ar' ? 'الرمز' : 'Code',
-                    locale === 'ar' ? 'عنوان المهمة' : 'Task Title',
-                    locale === 'ar' ? 'الإدارة' : 'Department',
-                    locale === 'ar' ? 'المخاطر' : 'Risk',
-                    locale === 'ar' ? 'النوع' : 'Type',
-                    locale === 'ar' ? 'الربع' : 'Quarter',
-                    locale === 'ar' ? 'الساعات' : 'Hours',
-                    locale === 'ar' ? 'الحالة' : 'Status',
-                    locale === 'ar' ? 'إجراءات' : 'Actions',
-                  ].map((h, i) => (
-                    <th
-                      key={i}
-                      className="px-3 py-3 text-start text-xs font-medium text-gray-600 leading-5 whitespace-normal"
-                    >
-                      {h}
-                    </th>
-                  ))}
+                  <th className="px-3 py-4 text-right text-xs font-semibold uppercase tracking-wider">الرمز</th>
+                  <th className="px-3 py-4 text-right text-xs font-semibold uppercase tracking-wider">العنوان</th>
+                  <th className="px-3 py-4 text-right text-xs font-semibold uppercase tracking-wider">الإدارة</th>
+                  <th className="px-3 py-4 text-right text-xs font-semibold uppercase tracking-wider">المخاطر</th>
+                  <th className="px-3 py-4 text-right text-xs font-semibold uppercase tracking-wider">النوع</th>
+                  <th className="px-3 py-4 text-right text-xs font-semibold uppercase tracking-wider">الربع</th>
+                  <th className="px-3 py-4 text-right text-xs font-semibold uppercase tracking-wider">الساعات</th>
+                  <th className="px-3 py-4 text-right text-xs font-semibold uppercase tracking-wider">الحالة</th>
+                  <th className="px-3 py-4 text-center text-xs font-semibold uppercase tracking-wider">الإجراءات</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-gray-200 bg-white">
-                {loading ? (
+              <tbody className="bg-white divide-y divide-slate-200">
+                {filteredItems.length === 0 ? (
                   <tr>
-                    <td colSpan={9} className="px-4 py-8 text-center text-gray-500">
-                      جارٍ التحميل...
-                    </td>
-                  </tr>
-                ) : filteredItems.length === 0 ? (
-                  <tr>
-                    <td colSpan={9} className="px-4 py-8 text-center text-gray-500">
-                      {locale === 'ar' ? 'لا توجد مهام تدقيق' : 'No audit tasks found'}
+                    <td colSpan={9} className="px-6 py-12 text-center text-slate-500">
+                      لا توجد نتائج تطابق معايير البحث
                     </td>
                   </tr>
                 ) : (
-                  filteredItems.map((item: PlanItem) => (
-                    <tr key={item.id} className="align-top hover:bg-gray-50">
-                      <td className="px-3 py-3 text-sm font-medium text-gray-900">{item.code}</td>
-                      <td className="px-3 py-3 text-sm text-gray-900 whitespace-normal leading-6">
+                  filteredItems.map((item, index) => (
+                    <tr
+                      key={item.id}
+                      className={`hover:bg-slate-50 transition-colors ${index % 2 === 0 ? 'bg-white' : 'bg-slate-50/30'}`}
+                    >
+                      <td className="px-3 py-4 text-sm font-mono text-slate-700 truncate" title={item.code}>
+                        {item.code}
+                      </td>
+                      <td className="px-3 py-4 text-sm text-slate-800 font-medium whitespace-normal leading-6">
                         {item.title}
                       </td>
-                      <td className="px-3 py-3 text-sm text-gray-600 truncate">
+                      <td className="px-3 py-4 text-sm text-slate-600 truncate" title={item.department}>
                         {item.department}
                       </td>
-                      <td className="px-3 py-3">
-                        <span
-                          className={`inline-block px-2 py-1 text-xs font-medium rounded border ${getRiskBadgeColor(
-                            item.risk_level,
-                          )}`}
-                        >
-                          {item.risk_level === 'high'
-                            ? 'عالية'
-                            : item.risk_level === 'medium'
-                              ? 'متوسطة'
-                              : 'منخفضة'}
+                      <td className="px-3 py-4">
+                        <span className={`inline-flex items-center px-2.5 py-1 rounded-full text-xs font-semibold border ${getRiskBadgeColor(item.risk_level)}`}>
+                          {getRiskLabel(item.risk_level)}
                         </span>
                       </td>
-                      <td className="px-3 py-3 text-sm text-gray-600 truncate">{item.type}</td>
-                      <td className="px-3 py-3 text-sm text-gray-600">{item.quarter}</td>
-                      <td className="px-3 py-3 text-sm text-gray-600">{item.hours}</td>
-                      <td className="px-3 py-3">
-                        <span
-                          className={`inline-block px-2 py-1 text-xs font-medium rounded border ${getStatusBadgeColor(
-                            item.status,
-                          )}`}
-                        >
+                      <td className="px-3 py-4 text-sm text-slate-600 truncate" title={item.type}>
+                        {item.type}
+                      </td>
+                      <td className="px-3 py-4 text-sm text-slate-600 text-center font-medium">
+                        {item.quarter}
+                      </td>
+                      <td className="px-3 py-4 text-sm text-slate-600 text-center font-medium">
+                        {item.hours}
+                      </td>
+                      <td className="px-3 py-4">
+                        <span className={`inline-flex items-center px-2.5 py-1 rounded-full text-xs font-semibold border ${getStatusBadgeColor(item.status)}`}>
                           {getStatusLabel(item.status)}
                         </span>
                       </td>
-                      <td className="px-3 py-3 sticky right-0 bg-white">
-                        <div className="flex gap-1">
-                          <button
-                            onClick={() => handleView(item)}
-                            className="p-1 text-blue-600 hover:bg-blue-50 rounded"
-                            title="عرض"
-                          >
-                            <Eye className="w-4 h-4" />
-                          </button>
+                      <td className="px-3 py-4">
+                        <div className="flex items-center justify-center gap-1">
                           <button
                             onClick={() => handleEdit(item)}
-                            className="p-1 text-yellow-600 hover:bg-yellow-50 rounded"
+                            className="p-1.5 text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
                             title="تعديل"
+                            aria-label={`تعديل ${item.title}`}
                           >
                             <Edit2 className="w-4 h-4" />
                           </button>
                           <button
                             onClick={() => handleDelete(item)}
-                            className="p-1 text-red-600 hover:bg-red-50 rounded"
+                            className="p-1.5 text-red-600 hover:bg-red-50 rounded-lg transition-colors"
                             title="حذف"
+                            aria-label={`حذف ${item.title}`}
                           >
                             <Trash2 className="w-4 h-4" />
                           </button>
@@ -477,13 +595,153 @@ export default function RbiaPlanView() {
           </div>
         </div>
 
+        {/* Cards - Mobile */}
+        <div className="md:hidden grid gap-4">
+          {filteredItems.map(item => (
+            <div key={item.id} className="bg-white rounded-xl shadow-sm border border-slate-200 p-4">
+              <div className="flex justify-between items-start mb-3">
+                <div className="flex-1">
+                  <div className="text-xs font-mono text-slate-500 mb-1">{item.code}</div>
+                  <h3 className="text-sm font-semibold text-slate-800 leading-6">{item.title}</h3>
+                </div>
+                <div className="flex gap-1 mr-2">
+                  <button
+                    onClick={() => handleEdit(item)}
+                    className="p-1.5 text-blue-600 hover:bg-blue-50 rounded-lg"
+                    aria-label={`تعديل ${item.title}`}
+                  >
+                    <Edit2 className="w-4 h-4" />
+                  </button>
+                  <button
+                    onClick={() => handleDelete(item)}
+                    className="p-1.5 text-red-600 hover:bg-red-50 rounded-lg"
+                    aria-label={`حذف ${item.title}`}
+                  >
+                    <Trash2 className="w-4 h-4" />
+                  </button>
+                </div>
+              </div>
+
+              <div className="grid grid-cols-2 gap-2 text-xs">
+                <div>
+                  <span className="text-slate-500">الإدارة:</span>
+                  <span className="text-slate-700 font-medium mr-1">{item.department}</span>
+                </div>
+                <div>
+                  <span className="text-slate-500">النوع:</span>
+                  <span className="text-slate-700 font-medium mr-1">{item.type}</span>
+                </div>
+                <div>
+                  <span className="text-slate-500">الربع:</span>
+                  <span className="text-slate-700 font-medium mr-1">{item.quarter}</span>
+                </div>
+                <div>
+                  <span className="text-slate-500">الساعات:</span>
+                  <span className="text-slate-700 font-medium mr-1">{item.hours}</span>
+                </div>
+              </div>
+
+              <div className="flex gap-2 mt-3 pt-3 border-t border-slate-100">
+                <span className={`inline-flex items-center px-2.5 py-1 rounded-full text-xs font-semibold border ${getRiskBadgeColor(item.risk_level)}`}>
+                  {getRiskLabel(item.risk_level)}
+                </span>
+                <span className={`inline-flex items-center px-2.5 py-1 rounded-full text-xs font-semibold border ${getStatusBadgeColor(item.status)}`}>
+                  {getStatusLabel(item.status)}
+                </span>
+              </div>
+            </div>
+          ))}
+        </div>
+
+        {/* Summary */}
+        <div className="bg-gradient-to-r from-slate-700 to-slate-800 text-white rounded-xl p-4 shadow-md">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-center">
+            <div>
+              <div className="text-2xl font-bold">{filteredItems.length}</div>
+              <div className="text-xs text-slate-300">إجمالي المهام</div>
+            </div>
+            <div>
+              <div className="text-2xl font-bold">{filteredItems.filter(i => i.status === 'completed').length}</div>
+              <div className="text-xs text-slate-300">مكتملة</div>
+            </div>
+            <div>
+              <div className="text-2xl font-bold">{filteredItems.filter(i => i.status === 'in-progress').length}</div>
+              <div className="text-xs text-slate-300">قيد التنفيذ</div>
+            </div>
+            <div>
+              <div className="text-2xl font-bold">{filteredItems.reduce((sum, item) => sum + item.hours, 0)}</div>
+              <div className="text-xs text-slate-300">إجمالي الساعات</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  };
+
+  // Render placeholder for other views
+  const renderPlaceholderView = (title: string, description: string) => (
+    <div className="flex flex-col items-center justify-center py-20 px-4">
+      <div className="w-20 h-20 bg-slate-100 rounded-full flex items-center justify-center mb-6">
+        <FileText className="w-10 h-10 text-slate-400" />
+      </div>
+      <h3 className="text-xl font-semibold text-slate-800 mb-3">{title}</h3>
+      <p className="text-slate-600 text-center max-w-md">
+        {description}
+      </p>
+    </div>
+  );
+
+  // Render content based on active view
+  const renderContent = () => {
+    switch (contentView) {
+      case 'empty':
+        return renderEmptyState();
+      case 'annualPlan':
+        return renderAnnualPlanTable();
+      case 'planning':
+        return renderPlaceholderView('التخطيط', 'محتوى مرحلة التخطيط قيد التطوير');
+      case 'understanding':
+        return renderPlaceholderView('فهم العملية والمخاطر', 'محتوى مرحلة فهم العملية والمخاطر قيد التطوير');
+      case 'workProgram':
+        return renderPlaceholderView('برنامج العمل والعينات', 'محتوى مرحلة برنامج العمل والعينات قيد التطوير');
+      case 'fieldwork':
+        return renderPlaceholderView('الأعمال الميدانية والأدلة', 'محتوى مرحلة الأعمال الميدانية والأدلة قيد التطوير');
+      case 'drafts':
+        return renderPlaceholderView('المسودات الأولية', 'محتوى مرحلة المسودات الأولية قيد التطوير');
+      case 'results':
+        return renderPlaceholderView('النتائج والتوصيات', 'محتوى مرحلة النتائج والتوصيات قيد التطوير');
+      case 'finalReport':
+        return renderPlaceholderView('التقرير النهائي', 'محتوى مرحلة التقرير النهائي قيد التطوير');
+      case 'followup':
+        return renderPlaceholderView('المتابعة', 'محتوى مرحلة المتابعة قيد التطوير');
+      case 'closure':
+        return renderPlaceholderView('الإقفال', 'محتوى مرحلة الإقفال قيد التطوير');
+      case 'qa':
+        return renderPlaceholderView('ضمان الجودة', 'محتوى مرحلة ضمان الجودة قيد التطوير');
+      default:
+        return renderEmptyState();
+    }
+  };
+
+  return (
+    <div className="container mx-auto px-3 sm:px-4 lg:px-6 max-w-[1440px]" dir="rtl">
+      {/* KPI Cards - Show once at top */}
+      <KpiCards planId={currentPlanId || undefined} />
+
+      {/* Main Grid with Content and Sidebar */}
+      <div className="grid gap-6 lg:grid-cols-[1fr_320px]">
+        {/* Dynamic Content Area */}
+        <div className="min-w-0">
+          {renderContent()}
+        </div>
+
         {/* Sidebar Process Stepper */}
         <div>
           <ProcessStepper
             steps={processSteps}
-            activeStepId={activeStepId}
+            activeStepId={activeStepId || 0}
             onStepClick={handleStepClick}
-            completedCount={0}
+            completedCount={completedSteps.length}
           />
         </div>
       </div>
