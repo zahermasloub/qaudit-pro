@@ -115,12 +115,7 @@ export function ChartWidget({
 }: ChartWidgetProps) {
   if (loading) {
     return (
-      <div
-        className={cn(
-          'p-6 rounded-xl border border-border-base bg-bg-elevated',
-          className
-        )}
-      >
+      <div className={cn('p-6 rounded-xl border border-border-base bg-bg-elevated', className)}>
         <Skeleton variant="text" className="w-1/3 mb-4" />
         <Skeleton variant="rect" className="w-full h-64" />
       </div>
@@ -129,12 +124,7 @@ export function ChartWidget({
 
   if (data.length === 0) {
     return (
-      <div
-        className={cn(
-          'p-6 rounded-xl border border-border-base bg-bg-elevated',
-          className
-        )}
-      >
+      <div className={cn('p-6 rounded-xl border border-border-base bg-bg-elevated', className)}>
         <h3 className="text-sm font-semibold text-text-primary mb-4">{title}</h3>
         <div className="flex flex-col items-center justify-center h-64 text-text-tertiary">
           {type === 'line' && <LineChart size={48} />}
@@ -147,12 +137,7 @@ export function ChartWidget({
   }
 
   return (
-    <div
-      className={cn(
-        'p-6 rounded-xl border border-border-base bg-bg-elevated',
-        className
-      )}
-    >
+    <div className={cn('p-6 rounded-xl border border-border-base bg-bg-elevated', className)}>
       <h3 className="text-sm font-semibold text-text-primary mb-4">{title}</h3>
 
       <ResponsiveContainer width="100%" height={300}>
@@ -164,10 +149,7 @@ export function ChartWidget({
               stroke="var(--color-text-tertiary)"
               style={{ fontSize: '12px' }}
             />
-            <YAxis
-              stroke="var(--color-text-tertiary)"
-              style={{ fontSize: '12px' }}
-            />
+            <YAxis stroke="var(--color-text-tertiary)" style={{ fontSize: '12px' }} />
             <Tooltip
               contentStyle={{
                 backgroundColor: 'var(--color-bg-elevated)',
@@ -197,10 +179,7 @@ export function ChartWidget({
               stroke="var(--color-text-tertiary)"
               style={{ fontSize: '12px' }}
             />
-            <YAxis
-              stroke="var(--color-text-tertiary)"
-              style={{ fontSize: '12px' }}
-            />
+            <YAxis stroke="var(--color-text-tertiary)" style={{ fontSize: '12px' }} />
             <Tooltip
               contentStyle={{
                 backgroundColor: 'var(--color-bg-elevated)',
@@ -224,14 +203,11 @@ export function ChartWidget({
               cx="50%"
               cy="50%"
               outerRadius={100}
-              label={(entry) => `${entry.label}: ${entry.value}`}
+              label={entry => `${entry.label}: ${entry.value}`}
               labelLine={{ stroke: 'var(--color-text-tertiary)' }}
             >
               {data.map((entry, index) => (
-                <Cell
-                  key={`cell-${index}`}
-                  fill={entry.color || COLORS[index % COLORS.length]}
-                />
+                <Cell key={`cell-${index}`} fill={entry.color || COLORS[index % COLORS.length]} />
               ))}
             </Pie>
             <Tooltip

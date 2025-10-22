@@ -189,7 +189,7 @@ export function FileUploader({
           isDragging
             ? 'border-brand-500 bg-brand-50 dark:bg-brand-950'
             : 'border-border-base bg-bg-elevated hover:border-brand-300',
-          loading && 'opacity-50 pointer-events-none'
+          loading && 'opacity-50 pointer-events-none',
         )}
         onDragOver={handleDragOver}
         onDragLeave={handleDragLeave}
@@ -259,12 +259,8 @@ export function FileUploader({
                 </div>
 
                 <div className="flex-1 min-w-0">
-                  <p className="text-sm font-medium text-text-primary truncate">
-                    {file.name}
-                  </p>
-                  <p className="text-xs text-text-tertiary">
-                    {formatFileSize(file.size)}
-                  </p>
+                  <p className="text-sm font-medium text-text-primary truncate">{file.name}</p>
+                  <p className="text-xs text-text-tertiary">{formatFileSize(file.size)}</p>
                 </div>
 
                 {onRemove && (

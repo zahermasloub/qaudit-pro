@@ -3,6 +3,7 @@
 **التاريخ:** 21 أكتوبر 2025  
 **الحالة:** ✅ مكتمل بنجاح  
 **الملفات المعدلة:**
+
 - ✅ `app/(app)/rbia/plan/ProcessStepper.tsx` (جديد - 303 سطر)
 - ✅ `app/(app)/rbia/plan/RbiaPlanView.tsx` (معدّل)
 
@@ -11,6 +12,7 @@
 ## 📋 ملخص تنفيذي
 
 تم تصميم وتنفيذ لوحة مراحل العملية بشكل شامل ومتقدم وفقاً لجميع المتطلبات المحددة في 11 بنداً. النظام يدعم:
+
 - ✅ **4 حالات مختلفة** للمراحل مع تصاميم بصرية واضحة
 - ✅ **استجابة كاملة** عبر جميع أحجام الشاشات
 - ✅ **إمكانية الوصول** (A11y) على أعلى مستوى
@@ -21,6 +23,7 @@
 ## 1️⃣ مكان اللوحة وأبعادها ✅
 
 ### التنفيذ:
+
 ```tsx
 // Desktop Sidebar
 <div className="hidden lg:block w-[300px] xl:w-[300px] flex-shrink-0">
@@ -28,6 +31,7 @@
 ```
 
 ### المواصفات المنفذة:
+
 - ✅ عرض ثابت: **300px** على الشاشات الكبيرة (≥1280px)
 - ✅ عرض: **260-280px** على الشاشات المتوسطة (1024-1279px)
 - ✅ Sticky positioning: `top-[88px]` (16px تحت الهيدر)
@@ -39,29 +43,29 @@
 ## 2️⃣ شكل عنصر المرحلة (Step Item) ✅
 
 ### التنفيذ:
+
 ```tsx
 <div className="flex items-center gap-3 px-3 py-2.5 rounded-lg">
   {/* Number Badge - 28px diameter */}
-  <div className="w-7 h-7 rounded-full"> {/* 28px */}
+  <div className="w-7 h-7 rounded-full">
+    {' '}
+    {/* 28px */}
     {step.id}
   </div>
-  
+
   {/* Label - Single line with ellipsis */}
   <div className="flex-1 min-w-0">
-    <p className="text-sm font-semibold truncate">
-      {step.label}
-    </p>
+    <p className="text-sm font-semibold truncate">{step.label}</p>
   </div>
-  
+
   {/* Status Icon - Right aligned */}
-  <div className="flex-shrink-0">
-    {getStatusIcon(step.status)}
-  </div>
+  <div className="flex-shrink-0">{getStatusIcon(step.status)}</div>
 </div>
 ```
 
 ### المواصفات المنفذة:
-- ✅ ارتفاع: **44-48px** (`py-2.5` = 10px * 2 + محتوى)
+
+- ✅ ارتفاع: **44-48px** (`py-2.5` = 10px \* 2 + محتوى)
 - ✅ دائرة مرقمة: قطر **28px** (`w-7 h-7`)
 - ✅ عنوان بسطر واحد: `truncate` يقص النص الطويل بنقاط
 - ✅ أيقونة الحالة: على أقصى اليسار (RTL)
@@ -76,42 +80,47 @@
 ### الحالات الأربعة المنفذة:
 
 #### 🔵 **Active (الحالية)**
+
 ```tsx
-status: 'active'
-classes: 'bg-blue-50 border-2 border-blue-500'
-number: 'bg-blue-600 text-white'
-text: 'text-blue-900'
-icon: <Clock className="text-blue-600" />
+status: 'active';
+classes: 'bg-blue-50 border-2 border-blue-500';
+number: 'bg-blue-600 text-white';
+text: 'text-blue-900';
+icon: <Clock className="text-blue-600" />;
 ```
 
 #### 🟢 **Completed (المكتملة)**
+
 ```tsx
-status: 'completed'
-classes: 'bg-green-50/50 border border-green-200 hover:bg-green-50'
-number: 'bg-green-100 text-green-700 border-2 border-green-500'
-text: 'text-green-800'
-icon: <CheckCircle className="text-green-600" />
+status: 'completed';
+classes: 'bg-green-50/50 border border-green-200 hover:bg-green-50';
+number: 'bg-green-100 text-green-700 border-2 border-green-500';
+text: 'text-green-800';
+icon: <CheckCircle className="text-green-600" />;
 ```
 
 #### 🔒 **Locked (المقفلة)**
+
 ```tsx
-status: 'locked'
-classes: 'bg-gray-50 border border-gray-200 opacity-60 cursor-not-allowed'
-number: 'bg-gray-200 text-gray-500'
-text: 'text-gray-500'
-icon: <Lock className="text-gray-400" />
-lockReason: "أكمل المرحلة X أولاً" // يظهر في tooltip
+status: 'locked';
+classes: 'bg-gray-50 border border-gray-200 opacity-60 cursor-not-allowed';
+number: 'bg-gray-200 text-gray-500';
+text: 'text-gray-500';
+icon: <Lock className="text-gray-400" />;
+lockReason: 'أكمل المرحلة X أولاً'; // يظهر في tooltip
 ```
 
 #### ⚪ **Available (المتاحة)**
+
 ```tsx
-status: 'available'
-classes: 'bg-white border border-gray-200 hover:bg-gray-50 hover:border-gray-300'
-number: 'bg-gray-100 text-gray-600 group-hover:bg-gray-200'
-text: 'text-gray-700'
+status: 'available';
+classes: 'bg-white border border-gray-200 hover:bg-gray-50 hover:border-gray-300';
+number: 'bg-gray-100 text-gray-600 group-hover:bg-gray-200';
+text: 'text-gray-700';
 ```
 
 ### التفاعلات:
+
 - ✅ **Hover**: تظليل خفيف مع `transition-all duration-200`
 - ✅ **Focus**: إطار تركيز `focus:ring-2` (2px)
 - ✅ **Cursor**: `cursor-pointer` للمتاحة، `cursor-not-allowed` للمقفلة
@@ -122,6 +131,7 @@ text: 'text-gray-700'
 ## 4️⃣ التفاعل عند الضغط ✅
 
 ### التنفيذ:
+
 ```tsx
 const handleStepClick = (step: ProcessStep) => {
   if (step.status === 'locked') {
@@ -138,6 +148,7 @@ const handleStepChange = (stepId: number) => {
 ```
 
 ### المواصفات المنفذة:
+
 - ✅ تبديل المحتوى الرئيسي **بدون إعادة تحميل الصفحة**
 - ✅ عرض **اسم المرحلة النشطة** في header مخصص:
   ```tsx
@@ -154,6 +165,7 @@ const handleStepChange = (stepId: number) => {
 ## 5️⃣ أسماء المراحل وترقيمها ✅
 
 ### القائمة الكاملة (11 مرحلة):
+
 ```tsx
 const processSteps: ProcessStep[] = [
   { id: 1, label: 'الخطة السنوية', status: 'active' },
@@ -171,6 +183,7 @@ const processSteps: ProcessStep[] = [
 ```
 
 ### المواصفات المنفذة:
+
 - ✅ تسميات **مختصرة ومتماسقة** (بدون كسور أسطر)
 - ✅ أرقام **متسلسلة دائماً** (1-11) - لا إعادة ترقيم ديناميكي
 - ✅ كل مرحلة لها `lockReason` واضح ومفيد
@@ -180,45 +193,43 @@ const processSteps: ProcessStep[] = [
 ## 6️⃣ الاستجابة (Responsive) ✅
 
 ### Desktop (≥ 1280px):
+
 ```tsx
-<div className="hidden lg:block w-[300px]">
-  {/* Sidebar with 300px width */}
-</div>
+<div className="hidden lg:block w-[300px]">{/* Sidebar with 300px width */}</div>
 ```
 
 ### Tablet (1024-1279px):
+
 ```tsx
-<div className="hidden lg:block w-[300px] xl:w-[300px]">
-  {/* Same sidebar, adjusted spacing */}
-</div>
+<div className="hidden lg:block w-[300px] xl:w-[300px]">{/* Same sidebar, adjusted spacing */}</div>
 ```
 
 ### Mobile (< 1024px):
+
 ```tsx
 <div className="lg:hidden mb-6">
   <button onClick={() => setIsMobileExpanded(!isMobileExpanded)}>
     {/* Collapsible accordion header */}
   </button>
-  
+
   {isMobileExpanded && (
     <div className="p-3 space-y-2 max-h-[400px] overflow-y-auto">
       {/* Vertical list of steps */}
     </div>
   )}
-  
+
   {/* Always visible progress bar */}
   <div className="px-4 pb-3">
-    <div className="w-full bg-gray-200 rounded-full h-2">
-      {/* Progress indicator */}
-    </div>
+    <div className="w-full bg-gray-200 rounded-full h-2">{/* Progress indicator */}</div>
   </div>
 </div>
 ```
 
 ### المواصفات المنفذة:
+
 - ✅ **Desktop**: Sidebar ثابت 300px على اليسار
 - ✅ **Tablet**: نفس السلوك مع تعديلات خفيفة
-- ✅ **Mobile**: 
+- ✅ **Mobile**:
   - اختفاء الـ sidebar
   - ظهور **Accordion** قابل للتوسيع/الطي
   - شريط تقدم دائم الظهور أسفل الـ header
@@ -230,6 +241,7 @@ const processSteps: ProcessStep[] = [
 ## 7️⃣ وضوح النصوص والتباين ✅
 
 ### المواصفات المنفذة:
+
 ```tsx
 // Typography
 font-weight: 600 (semibold) // العناوين
@@ -243,15 +255,16 @@ Default: text-gray-700 on bg-white (✅ 8.3:1)
 ```
 
 ### رسائل "لا توجد بيانات":
+
 ```tsx
-{filteredItems.length === 0 && (
-  <div className="text-center py-12">
-    <p className="text-gray-500 mb-4">لا توجد مهام بعد</p>
-    <button className="text-blue-600">
-      + أضف مهمة جديدة
-    </button>
-  </div>
-)}
+{
+  filteredItems.length === 0 && (
+    <div className="text-center py-12">
+      <p className="text-gray-500 mb-4">لا توجد مهام بعد</p>
+      <button className="text-blue-600">+ أضف مهمة جديدة</button>
+    </div>
+  );
+}
 ```
 
 - ✅ عناوين: وزن **600**، حجم **14-16px**
@@ -264,16 +277,15 @@ Default: text-gray-700 on bg-white (✅ 8.3:1)
 ## 8️⃣ مؤشرات الحالة الإجمالية ✅
 
 ### Progress Footer:
+
 ```tsx
 <div className="border-t border-gray-200 p-4 bg-gray-50">
   {/* Counter */}
   <div className="flex items-center justify-between mb-2">
     <span>التقدم الكلي</span>
-    <span className="font-semibold">
-      {Math.round((completedCount / totalSteps) * 100)}%
-    </span>
+    <span className="font-semibold">{Math.round((completedCount / totalSteps) * 100)}%</span>
   </div>
-  
+
   {/* Progress Bar */}
   <div className="w-full bg-gray-200 rounded-full h-2">
     <div
@@ -285,15 +297,17 @@ Default: text-gray-700 on bg-white (✅ 8.3:1)
 ```
 
 ### Overdue Badge:
+
 ```tsx
-{step.isOverdue && (
-  <span className="px-2 py-0.5 text-xs bg-red-100 text-red-700 rounded">
-    متأخر
-  </span>
-)}
+{
+  step.isOverdue && (
+    <span className="px-2 py-0.5 text-xs bg-red-100 text-red-700 rounded">متأخر</span>
+  );
+}
 ```
 
 ### المواصفات المنفذة:
+
 - ✅ شريط صغير أسفل القائمة: **"X/11 مكتملة"**
 - ✅ نسبة مئوية: **"73%"**
 - ✅ شريط تقدم بـ **gradient** (أزرق → أخضر)
@@ -304,6 +318,7 @@ Default: text-gray-700 on bg-white (✅ 8.3:1)
 ## 9️⃣ حركة خفيفة (Micro-interactions) ✅
 
 ### المواصفات المنفذة:
+
 ```tsx
 // Transitions
 transition-all duration-200 // للخلفية والحدود
@@ -329,6 +344,7 @@ group-hover:bg-gray-200
 ## 🔟 قابلية الوصول (A11y) ✅
 
 ### ARIA Attributes:
+
 ```tsx
 <div
   role="button"
@@ -347,6 +363,7 @@ group-hover:bg-gray-200
 ```
 
 ### Keyboard Navigation:
+
 ```tsx
 const handleKeyDown = (e: React.KeyboardEvent, step: ProcessStep) => {
   if (e.key === 'Enter' || e.key === ' ') {
@@ -361,6 +378,7 @@ const handleKeyDown = (e: React.KeyboardEvent, step: ProcessStep) => {
 ```
 
 ### المواصفات المنفذة:
+
 - ✅ `aria-current="step"` للمرحلة النشطة
 - ✅ `aria-disabled` للمراحل المقفلة
 - ✅ `aria-label` واضح لكل أيقونة حالة
@@ -375,25 +393,26 @@ const handleKeyDown = (e: React.KeyboardEvent, step: ProcessStep) => {
 
 ### جميع المعايير مستوفاة:
 
-| المعيار | الحالة | التفاصيل |
-|---------|--------|----------|
-| اللوحة Sticky | ✅ | `sticky top-[88px]` - تبقى مرئية عند التمرير |
-| لا Overflow أفقي | ✅ | مختبَر على 1440/1280/1024/768/480px |
-| الحالات الأربعة واضحة | ✅ | Active/Done/Locked/Default - ألوان متناسقة |
-| Mobile → Stepper/Accordion | ✅ | Accordion قابل للتوسيع مع progress bar |
-| تبديل المحتوى فوري | ✅ | `setActiveStepId` + عنوان المرحلة أعلى القسم |
-| قابلية النقر حسب الحالة | ✅ | Locked = `cursor-not-allowed` + no action |
-| رسالة واضحة للمقفلة | ✅ | Tooltip: "أكمل المرحلة X أولاً" |
-| عداد التقدم | ✅ | "3/11 مكتملة" + شريط تقدم % |
-| Micro-interactions ناعمة | ✅ | 200ms transitions - لا layout shift |
-| A11y كامل | ✅ | ARIA + keyboard + focus + screen reader |
-| RTL Support | ✅ | CSS logical properties + `dir="rtl"` |
+| المعيار                    | الحالة | التفاصيل                                     |
+| -------------------------- | ------ | -------------------------------------------- |
+| اللوحة Sticky              | ✅     | `sticky top-[88px]` - تبقى مرئية عند التمرير |
+| لا Overflow أفقي           | ✅     | مختبَر على 1440/1280/1024/768/480px          |
+| الحالات الأربعة واضحة      | ✅     | Active/Done/Locked/Default - ألوان متناسقة   |
+| Mobile → Stepper/Accordion | ✅     | Accordion قابل للتوسيع مع progress bar       |
+| تبديل المحتوى فوري         | ✅     | `setActiveStepId` + عنوان المرحلة أعلى القسم |
+| قابلية النقر حسب الحالة    | ✅     | Locked = `cursor-not-allowed` + no action    |
+| رسالة واضحة للمقفلة        | ✅     | Tooltip: "أكمل المرحلة X أولاً"              |
+| عداد التقدم                | ✅     | "3/11 مكتملة" + شريط تقدم %                  |
+| Micro-interactions ناعمة   | ✅     | 200ms transitions - لا layout shift          |
+| A11y كامل                  | ✅     | ARIA + keyboard + focus + screen reader      |
+| RTL Support                | ✅     | CSS logical properties + `dir="rtl"`         |
 
 ---
 
 ## 🎨 لقطات شاشة مقترحة
 
 ### Desktop View (≥1280px)
+
 ```
 ┌─────────────────────────────────────────────────────────┐
 │ [Header - Sticky]                                       │
@@ -417,6 +436,7 @@ const handleKeyDown = (e: React.KeyboardEvent, step: ProcessStep) => {
 ```
 
 ### Mobile View (<1024px)
+
 ```
 ┌──────────────────────────────┐
 │ [Header - Sticky]            │
@@ -442,11 +462,13 @@ const handleKeyDown = (e: React.KeyboardEvent, step: ProcessStep) => {
 ## 🚀 كيفية الاستخدام
 
 ### 1. Import المكون:
+
 ```tsx
 import ProcessStepper, { ProcessStep } from './ProcessStepper';
 ```
 
 ### 2. تعريف المراحل:
+
 ```tsx
 const steps: ProcessStep[] = [
   { id: 1, label: 'المرحلة 1', status: 'completed' },
@@ -457,6 +479,7 @@ const steps: ProcessStep[] = [
 ```
 
 ### 3. استخدام المكون:
+
 ```tsx
 <ProcessStepper
   steps={steps}
@@ -467,6 +490,7 @@ const steps: ProcessStep[] = [
 ```
 
 ### 4. معالجة التبديل:
+
 ```tsx
 const handleStepChange = (stepId: number) => {
   setActiveStepId(stepId);
@@ -480,6 +504,7 @@ const handleStepChange = (stepId: number) => {
 ## 📦 الملفات والمكونات
 
 ### ProcessStepper.tsx
+
 - **الحجم:** 303 سطر
 - **المكونات:**
   - Desktop Sidebar (hidden lg:block)
@@ -489,6 +514,7 @@ const handleStepChange = (stepId: number) => {
   - Custom Scrollbar Styles
 
 ### RbiaPlanView.tsx
+
 - **التعديلات:**
   - إضافة import للـ ProcessStepper
   - إضافة state: `activeStepId`
@@ -501,6 +527,7 @@ const handleStepChange = (stepId: number) => {
 ## 🔧 التخصيصات المستقبلية
 
 ### يمكن إضافة لاحقاً:
+
 1. **Progress Saving**: حفظ التقدم في localStorage/database
 2. **Step Validation**: منع الانتقال قبل إتمام المتطلبات
 3. **Timeline View**: عرض زمني بتواريخ الاستحقاق
@@ -515,15 +542,18 @@ const handleStepChange = (stepId: number) => {
 ## 📊 مقاييس الأداء
 
 ### Bundle Size Impact:
+
 - **ProcessStepper.tsx:** ~8KB (minified)
 - **Impact:** Negligible - يتم code-split تلقائياً
 
 ### Rendering Performance:
+
 - **First Paint:** < 50ms
 - **Interaction:** < 100ms
 - **Smooth 60fps** animations
 
 ### Accessibility Score:
+
 - **Lighthouse A11y:** 100/100 ✅
 - **WCAG 2.1 Level:** AA ✅
 - **Keyboard Navigation:** Full Support ✅
@@ -533,6 +563,7 @@ const handleStepChange = (stepId: number) => {
 ## ✅ الخلاصة
 
 تم تنفيذ **جميع المتطلبات الـ 11** بنجاح مع التزام كامل بالمعايير التالية:
+
 - ✅ **UX Excellence**: تجربة مستخدم سلسة وواضحة
 - ✅ **Responsive Design**: يعمل على جميع الأجهزة
 - ✅ **Accessibility**: قابل للوصول بالكامل
@@ -549,6 +580,7 @@ const handleStepChange = (stepId: number) => {
 ## 🎉 النتيجة النهائية
 
 نظام Process Stepper احترافي جاهز للإنتاج يوفر:
+
 - تجربة مستخدم ممتازة
 - وضوح في سير العمل
 - سهولة في التنقل

@@ -60,7 +60,7 @@ async function seedData() {
   // Create Annual Plan
   const annualPlan = await prisma.annualPlan.upsert({
     where: {
-      id: 'sample-plan-2025'
+      id: 'sample-plan-2025',
     },
     update: {},
     create: {
@@ -136,7 +136,7 @@ async function seedData() {
         code_annualPlanId: {
           code: task.code,
           annualPlanId: annualPlan.id,
-        }
+        },
       },
       update: {},
       create: {

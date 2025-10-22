@@ -41,18 +41,12 @@ import { getPlanKpis } from '@/lib/plan-metrics';
  *       500:
  *         description: خطأ في الخادم
  */
-export async function GET(
-  req: NextRequest,
-  { params }: { params: { id: string } }
-) {
+export async function GET(req: NextRequest, { params }: { params: { id: string } }) {
   try {
     const { id } = params;
 
     if (!id) {
-      return NextResponse.json(
-        { error: 'معرّف الخطة مطلوب' },
-        { status: 400 }
-      );
+      return NextResponse.json({ error: 'معرّف الخطة مطلوب' }, { status: 400 });
     }
 
     const kpis = await getPlanKpis(id);
@@ -60,9 +54,6 @@ export async function GET(
     return NextResponse.json(kpis, { status: 200 });
   } catch (error) {
     console.error('خطأ في GET /api/plan/[id]/kpis:', error);
-    return NextResponse.json(
-      { error: 'خطأ في جلب مؤشرات الأداء' },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: 'خطأ في جلب مؤشرات الأداء' }, { status: 500 });
   }
 }

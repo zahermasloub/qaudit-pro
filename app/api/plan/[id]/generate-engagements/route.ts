@@ -35,41 +35,41 @@ const DEFAULT_PBC_TEMPLATES: Record<string, string[]> = {
     'نسخ من عقود الموردين الرئيسيين',
     'سجلات الموافقات على طلبات الشراء',
     'تقارير تقييم الموردين',
-    'مستندات المناقصات والعروض'
+    'مستندات المناقصات والعروض',
   ],
   Payroll: [
     'كشوفات الرواتب للفترة المحددة',
     'سجلات الحضور والانصراف',
     'عقود الموظفين والملحقات',
     'مستندات الخصومات والبدلات',
-    'تقارير نهاية الخدمة'
+    'تقارير نهاية الخدمة',
   ],
   Privacy: [
     'سياسات حماية البيانات الشخصية',
     'سجل معالجة البيانات الشخصية',
     'اتفاقيات السرية مع الأطراف الثالثة',
     'سجل طلبات الوصول إلى البيانات',
-    'تقارير الحوادث الأمنية'
+    'تقارير الحوادث الأمنية',
   ],
   Financial: [
     'القوائم المالية للفترة',
     'دفاتر الأستاذ العام',
     'مطابقات البنك',
     'سجلات الأصول الثابتة',
-    'تقارير المراجعة الداخلية السابقة'
+    'تقارير المراجعة الداخلية السابقة',
   ],
   IT: [
     'سياسات أمن المعلومات',
     'سجلات الوصول إلى الأنظمة',
     'خطط النسخ الاحتياطي والاستعادة',
     'تقارير الحوادث الأمنية',
-    'مستندات إدارة التغيير'
+    'مستندات إدارة التغيير',
   ],
   default: [
     'المستندات الأساسية المتعلقة بالمهمة',
     'السياسات والإجراءات المعتمدة',
-    'التقارير الدورية للفترة المحددة'
-  ]
+    'التقارير الدورية للفترة المحددة',
+  ],
 };
 
 function getPBCTemplate(auditType: string): string[] {
@@ -77,24 +77,18 @@ function getPBCTemplate(auditType: string): string[] {
   return DEFAULT_PBC_TEMPLATES[normalizedType] || DEFAULT_PBC_TEMPLATES.default;
 }
 
-export async function POST(
-  req: Request,
-  { params }: { params: { id: string } }
-) {
+export async function POST(req: Request, { params }: { params: { id: string } }) {
   try {
     const { id } = params;
 
     // Check if plan exists and is baselined
     const planCheck: any = await prisma.$queryRawUnsafe(
       'SELECT id, year, status FROM audit."AnnualPlans" WHERE id = $1',
-      id
+      id,
     );
 
     if (!planCheck || planCheck.length === 0) {
-      return NextResponse.json(
-        { ok: false, error: 'الخطة غير موجودة' },
-        { status: 404 }
-      );
+      return NextResponse.json({ ok: false, error: 'الخطة غير موجودة' }, { status: 404 });
     }
 
     const plan = planCheck[0];
@@ -102,7 +96,7 @@ export async function POST(
     if (plan.status !== 'baselined') {
       return NextResponse.json(
         { ok: false, error: 'يجب تجميد الخطة أولاً قبل توليد المهام' },
-        { status: 403 }
+        { status: 403 },
       );
     }
 
@@ -116,14 +110,11 @@ export async function POST(
        LEFT JOIN audit."AuditUniverse" au ON api.au_id = au.id
        WHERE api.plan_id = $1
        ORDER BY api.risk_score DESC NULLS LAST`,
-      id
+      id,
     );
 
     if (!items || items.length === 0) {
-      return NextResponse.json(
-        { ok: false, error: 'لا توجد بنود في الخطة' },
-        { status: 400 }
-      );
+      return NextResponse.json({ ok: false, error: 'لا توجد بنود في الخطة' }, { status: 400 });
     }
 
     // Check if engagements already exist for this plan
@@ -131,15 +122,15 @@ export async function POST(
     const existingCount = await prisma.engagement.count({
       where: {
         title: {
-          contains: `السنة ${plan.year}`
-        }
-      }
+          contains: `السنة ${plan.year}`,
+        },
+      },
     });
 
     if (existingCount > 0) {
       return NextResponse.json(
         { ok: false, error: 'تم توليد المهام مسبقاً لهذه الخطة' },
-        { status: 409 }
+        { status: 409 },
       );
     }
 
@@ -160,28 +151,30 @@ export async function POST(
           scopeJson: {
             category: item.au_category || 'عام',
             auditType: item.type || 'compliance',
-            riskScore: item.risk_score || 0
+            riskScore: item.risk_score || 0,
           },
           criteriaJson: {
             standards: ['ISO 9001', 'معايير المراجعة الداخلية'],
-            regulations: []
+            regulations: [],
           },
           constraintsJson: {
             budgetHours: item.effort_days ? item.effort_days * 8 : 40,
-            priority: item.priority || 'medium'
+            priority: item.priority || 'medium',
           },
           auditeeUnitsJson: {
-            units: [item.au_name]
+            units: [item.au_name],
           },
           stakeholdersJson: {
-            stakeholders: []
+            stakeholders: [],
           },
           startDate: item.period_start ? new Date(item.period_start) : new Date(),
-          endDate: item.period_end ? new Date(item.period_end) : new Date(Date.now() + 90 * 24 * 60 * 60 * 1000),
+          endDate: item.period_end
+            ? new Date(item.period_end)
+            : new Date(Date.now() + 90 * 24 * 60 * 60 * 1000),
           budgetHours: item.effort_days ? Math.round(item.effort_days * 8) : 40,
           status: 'DRAFT',
-          createdBy: 'system'
-        }
+          createdBy: 'system',
+        },
       });
 
       createdEngagements.push(engagement.id);
@@ -199,11 +192,13 @@ export async function POST(
             code: pbcCode,
             description: pbcDescription,
             ownerId: 'system',
-            dueDate: item.period_end ? new Date(item.period_end) : new Date(Date.now() + 30 * 24 * 60 * 60 * 1000),
+            dueDate: item.period_end
+              ? new Date(item.period_end)
+              : new Date(Date.now() + 30 * 24 * 60 * 60 * 1000),
             status: 'open',
             attachmentsJson: {},
-            notes: `تم التوليد تلقائياً من الخطة السنوية ${plan.year}`
-          }
+            notes: `تم التوليد تلقائياً من الخطة السنوية ${plan.year}`,
+          },
         });
 
         totalPBCCreated++;
@@ -215,13 +210,13 @@ export async function POST(
       message: `تم توليد ${createdEngagements.length} مهمة مع ${totalPBCCreated} طلب PBC بنجاح`,
       created_count: createdEngagements.length,
       pbc_count: totalPBCCreated,
-      engagement_ids: createdEngagements
+      engagement_ids: createdEngagements,
     });
   } catch (error: any) {
     console.error('POST /api/plan/[id]/generate-engagements error:', error);
     return NextResponse.json(
       { ok: false, error: error.message || 'فشل في توليد المهام' },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

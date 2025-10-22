@@ -56,10 +56,7 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
       // تحديث meta theme-color
       const metaThemeColor = document.querySelector('meta[name="theme-color"]');
       if (metaThemeColor) {
-        metaThemeColor.setAttribute(
-          'content',
-          effectiveTheme === 'dark' ? '#1e293b' : '#ffffff'
-        );
+        metaThemeColor.setAttribute('content', effectiveTheme === 'dark' ? '#1e293b' : '#ffffff');
       } else {
         const meta = document.createElement('meta');
         meta.name = 'theme-color';

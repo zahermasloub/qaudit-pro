@@ -35,10 +35,7 @@ import prisma from '@/lib/prisma';
 export async function GET() {
   try {
     const latestPlan = await prisma.annualPlan.findFirst({
-      orderBy: [
-        { fiscalYear: 'desc' },
-        { createdAt: 'desc' },
-      ],
+      orderBy: [{ fiscalYear: 'desc' }, { createdAt: 'desc' }],
       select: {
         id: true,
         title: true,
@@ -50,18 +47,12 @@ export async function GET() {
     });
 
     if (!latestPlan) {
-      return NextResponse.json(
-        { error: 'لا توجد خطط سنوية' },
-        { status: 404 }
-      );
+      return NextResponse.json({ error: 'لا توجد خطط سنوية' }, { status: 404 });
     }
 
     return NextResponse.json(latestPlan, { status: 200 });
   } catch (error) {
     console.error('خطأ في GET /api/plan/latest:', error);
-    return NextResponse.json(
-      { error: 'خطأ في جلب أحدث خطة' },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: 'خطأ في جلب أحدث خطة' }, { status: 500 });
   }
 }

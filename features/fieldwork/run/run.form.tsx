@@ -86,7 +86,7 @@ export default function RunForm({
     <div className="fixed inset-0 z-50 flex items-center justify-center px-2 sm:px-4">
       <div className="absolute inset-0 bg-black/40" onClick={() => onOpenChange(false)} />
       <div className="relative w-full max-w-md sm:max-w-lg md:max-w-xl lg:max-w-2xl bg-white rounded-2xl shadow-xl border border-gray-200 min-h-[40vh] max-h-[90vh] overflow-y-auto p-4 sm:p-6">
-  <h2 className="text-lg font-semibold mb-4">تنفيذ خطوة اختبار</h2>
+        <h2 className="text-lg font-semibold mb-4">تنفيذ خطوة اختبار</h2>
 
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="grid grid-cols-2 gap-3">

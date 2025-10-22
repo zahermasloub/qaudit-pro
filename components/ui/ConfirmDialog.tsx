@@ -174,23 +174,19 @@ export function ConfirmDialog({
         "
       >
         {/* Icon */}
-        <div className={`w-12 h-12 rounded-full ${config.bgClass} flex items-center justify-center mb-4`}>
+        <div
+          className={`w-12 h-12 rounded-full ${config.bgClass} flex items-center justify-center mb-4`}
+        >
           <Icon className={config.iconClass} size={24} />
         </div>
 
         {/* Title */}
-        <h2
-          id="dialog-title"
-          className="text-xl font-semibold text-text-primary mb-2"
-        >
+        <h2 id="dialog-title" className="text-xl font-semibold text-text-primary mb-2">
           {title}
         </h2>
 
         {/* Message */}
-        <p
-          id="dialog-description"
-          className="text-sm text-text-secondary mb-6"
-        >
+        <p id="dialog-description" className="text-sm text-text-secondary mb-6">
           {message}
         </p>
 

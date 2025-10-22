@@ -68,15 +68,12 @@ export async function POST(req: NextRequest) {
       standards,
       methodology,
       objectives,
-      risk_sources = []
+      risk_sources = [],
     } = body;
 
     // Validation
     if (!year || typeof year !== 'number') {
-      return NextResponse.json(
-        { error: 'السنة مطلوبة ويجب أن تكون رقماً' },
-        { status: 400 }
-      );
+      return NextResponse.json({ error: 'السنة مطلوبة ويجب أن تكون رقماً' }, { status: 400 });
     }
 
     // Validate plan_ref if provided
@@ -87,7 +84,7 @@ export async function POST(req: NextRequest) {
       if (existingRef) {
         return NextResponse.json(
           { error: `الرقم المرجعي ${plan_ref} مستخدم بالفعل` },
-          { status: 400 }
+          { status: 400 },
         );
       }
     }
@@ -134,13 +131,10 @@ export async function POST(req: NextRequest) {
         created_at: plan.createdAt,
         updated_at: plan.updatedAt,
       },
-      { status: 201 }
+      { status: 201 },
     );
   } catch (error: any) {
     console.error('❌ Error creating plan:', error);
-    return NextResponse.json(
-      { error: 'فشل إنشاء الخطة', details: error.message },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: 'فشل إنشاء الخطة', details: error.message }, { status: 500 });
   }
 }

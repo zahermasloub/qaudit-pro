@@ -35,10 +35,7 @@
 import { NextResponse } from 'next/server';
 import prisma from '@/lib/prisma';
 
-export async function POST(
-  req: Request,
-  { params }: { params: { id: string } }
-) {
+export async function POST(req: Request, { params }: { params: { id: string } }) {
   try {
     const { id } = params;
     const body = await req.json();
@@ -47,23 +44,17 @@ export async function POST(
     // Check if plan exists
     const planCheck: any = await prisma.$queryRawUnsafe(
       'SELECT id, status FROM audit."AnnualPlans" WHERE id = $1',
-      id
+      id,
     );
 
     if (!planCheck || planCheck.length === 0) {
-      return NextResponse.json(
-        { ok: false, error: 'الخطة غير موجودة' },
-        { status: 404 }
-      );
+      return NextResponse.json({ ok: false, error: 'الخطة غير موجودة' }, { status: 404 });
     }
 
     const currentStatus = planCheck[0].status;
 
     if (currentStatus === 'baselined') {
-      return NextResponse.json(
-        { ok: false, error: 'لا يمكن تعديل خطة مجمّدة' },
-        { status: 403 }
-      );
+      return NextResponse.json({ ok: false, error: 'لا يمكن تعديل خطة مجمّدة' }, { status: 403 });
     }
 
     // Update plan status
@@ -71,7 +62,7 @@ export async function POST(
       `UPDATE audit."AnnualPlans"
        SET status = 'approved', updated_at = now()
        WHERE id = $1`,
-      id
+      id,
     );
 
     // Log approval action
@@ -83,19 +74,19 @@ export async function POST(
       actor || null,
       'approver',
       'approve',
-      comment || 'تم اعتماد الخطة'
+      comment || 'تم اعتماد الخطة',
     );
 
     return NextResponse.json({
       ok: true,
       message: 'تم اعتماد الخطة بنجاح',
-      status: 'approved'
+      status: 'approved',
     });
   } catch (error: any) {
     console.error('POST /api/plan/[id]/approve error:', error);
     return NextResponse.json(
       { ok: false, error: error.message || 'فشل في اعتماد الخطة' },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

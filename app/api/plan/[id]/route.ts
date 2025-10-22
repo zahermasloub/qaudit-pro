@@ -24,10 +24,7 @@ import prisma from '@/lib/prisma';
  *       500:
  *         description: خطأ في الخادم
  */
-export async function GET(
-  req: NextRequest,
-  { params }: { params: { id: string } }
-) {
+export async function GET(req: NextRequest, { params }: { params: { id: string } }) {
   try {
     const { id } = params;
 
@@ -36,10 +33,7 @@ export async function GET(
     });
 
     if (!plan) {
-      return NextResponse.json(
-        { error: 'الخطة غير موجودة' },
-        { status: 404 }
-      );
+      return NextResponse.json({ error: 'الخطة غير موجودة' }, { status: 404 });
     }
 
     // Return with API-friendly field names
@@ -55,10 +49,7 @@ export async function GET(
     });
   } catch (error: any) {
     console.error('❌ Error fetching plan:', error);
-    return NextResponse.json(
-      { error: 'فشل جلب الخطة', details: error.message },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: 'فشل جلب الخطة', details: error.message }, { status: 500 });
   }
 }
 
@@ -100,10 +91,7 @@ export async function GET(
  *       500:
  *         description: خطأ في الخادم
  */
-export async function PUT(
-  req: NextRequest,
-  { params }: { params: { id: string } }
-) {
+export async function PUT(req: NextRequest, { params }: { params: { id: string } }) {
   try {
     const { id } = params;
     const body = await req.json();
@@ -116,18 +104,12 @@ export async function PUT(
     });
 
     if (!existing) {
-      return NextResponse.json(
-        { error: 'الخطة غير موجودة' },
-        { status: 404 }
-      );
+      return NextResponse.json({ error: 'الخطة غير موجودة' }, { status: 404 });
     }
 
     // Check if baselined (status is approved or completed)
     if (existing.status === 'approved' || existing.status === 'completed') {
-      return NextResponse.json(
-        { error: 'لا يمكن تعديل خطة معتمدة أو مكتملة' },
-        { status: 403 }
-      );
+      return NextResponse.json({ error: 'لا يمكن تعديل خطة معتمدة أو مكتملة' }, { status: 403 });
     }
 
     // Build update data
@@ -142,10 +124,7 @@ export async function PUT(
     }
 
     if (Object.keys(updateData).length === 0) {
-      return NextResponse.json(
-        { error: 'لا توجد بيانات للتحديث' },
-        { status: 400 }
-      );
+      return NextResponse.json({ error: 'لا توجد بيانات للتحديث' }, { status: 400 });
     }
 
     // Update plan
@@ -167,9 +146,6 @@ export async function PUT(
     });
   } catch (error: any) {
     console.error('❌ Error updating plan:', error);
-    return NextResponse.json(
-      { error: 'فشل تحديث الخطة', details: error.message },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: 'فشل تحديث الخطة', details: error.message }, { status: 500 });
   }
 }

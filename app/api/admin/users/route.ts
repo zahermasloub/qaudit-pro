@@ -29,7 +29,7 @@ export async function POST(req: NextRequest) {
         email: v.email,
         password: hash,
         role: v.role,
-        locale: v.locale
+        locale: v.locale,
       },
     });
     if (v.roleIds?.length) {

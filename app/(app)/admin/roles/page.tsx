@@ -119,7 +119,7 @@ export default function AdminRolesPage() {
 
         return (
           <div className="flex flex-wrap gap-1">
-            {perms.slice(0, displayCount).map((p) => (
+            {perms.slice(0, displayCount).map(p => (
               <span
                 key={p.id}
                 className="px-2 py-0.5 rounded-full text-xs bg-emerald-50 text-emerald-700 dark:bg-emerald-900/20 dark:text-emerald-400"
@@ -212,9 +212,7 @@ export default function AdminRolesPage() {
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-2xl font-bold text-text-primary">الأدوار والصلاحيات</h1>
-          <p className="text-sm text-text-tertiary mt-1">
-            إدارة أدوار المستخدمين وصلاحيات النظام
-          </p>
+          <p className="text-sm text-text-tertiary mt-1">إدارة أدوار المستخدمين وصلاحيات النظام</p>
         </div>
         <button
           type="button"
@@ -240,7 +238,7 @@ export default function AdminRolesPage() {
             <span className="text-sm text-text-tertiary">({allPermissions.length})</span>
           </div>
           <div className="flex flex-wrap gap-2">
-            {allPermissions.map((perm) => (
+            {allPermissions.map(perm => (
               <span
                 key={perm.id}
                 className="px-3 py-1.5 rounded-lg text-sm bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-300"
@@ -258,10 +256,7 @@ export default function AdminRolesPage() {
           <EmptyState title="جارٍ التحميل..." message="يرجى الانتظار..." />
         </div>
       ) : roles.length === 0 ? (
-        <EmptyState
-          title="لا توجد أدوار"
-          message="ابدأ بإنشاء دور جديد لتنظيم الصلاحيات"
-        />
+        <EmptyState title="لا توجد أدوار" message="ابدأ بإنشاء دور جديد لتنظيم الصلاحيات" />
       ) : (
         <DataTable columns={columns} data={roles} pagination pageSize={10} />
       )}
@@ -288,7 +283,7 @@ export default function AdminRolesPage() {
         >
           <div
             className="bg-bg-elevated rounded-xl border border-border-base max-w-2xl w-full p-6"
-            onClick={(e) => e.stopPropagation()}
+            onClick={e => e.stopPropagation()}
           >
             <div className="flex items-center justify-between mb-4">
               <h2 className="text-xl font-bold text-text-primary">{selectedRole.name}</h2>
@@ -307,7 +302,7 @@ export default function AdminRolesPage() {
                 <h3 className="font-semibold text-text-primary mb-2">الصلاحيات:</h3>
                 <div className="flex flex-wrap gap-2">
                   {selectedRole.permissions.length > 0 ? (
-                    selectedRole.permissions.map((p) => (
+                    selectedRole.permissions.map(p => (
                       <span
                         key={p.id}
                         className="px-3 py-1.5 rounded-lg text-sm bg-emerald-50 text-emerald-700 dark:bg-emerald-900/20 dark:text-emerald-400"

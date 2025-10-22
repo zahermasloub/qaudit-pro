@@ -1,5 +1,5 @@
-"use client";
-import { useEffect, useState } from "react";
+'use client';
+import { useEffect, useState } from 'react';
 
 export default function Page() {
   const [info, setInfo] = useState<any>({});
@@ -12,7 +12,10 @@ export default function Page() {
       ua: navigator.userAgent,
       navLang: navigator.language,
     });
-    fetch("/api/encoding-check").then(r => r.json()).then(setApi).catch(e => setApi({ error: String(e) }));
+    fetch('/api/encoding-check')
+      .then(r => r.json())
+      .then(setApi)
+      .catch(e => setApi({ error: String(e) }));
   }, []);
   return (
     <main className="p-6 space-y-4">

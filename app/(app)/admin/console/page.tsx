@@ -1,26 +1,26 @@
-﻿import Link from "next/link";
+﻿import Link from 'next/link';
 
-import { ComplianceMappingPanel } from "@/components/admin/ComplianceMappingPanel";
-import { LogsPanel } from "@/components/admin/LogsPanel";
-import { ModulesFlagsPanel } from "@/components/admin/ModulesFlagsPanel";
-import { OverviewPanel } from "@/components/admin/OverviewPanel";
-import { RegulationsPanel } from "@/components/admin/RegulationsPanel";
-import { UsersRolesPanel } from "@/components/admin/UsersRolesPanel";
-import { Button } from "@/components/ui/button";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { requireRole } from "@/lib/auth/requireRole";
+import { ComplianceMappingPanel } from '@/components/admin/ComplianceMappingPanel';
+import { LogsPanel } from '@/components/admin/LogsPanel';
+import { ModulesFlagsPanel } from '@/components/admin/ModulesFlagsPanel';
+import { OverviewPanel } from '@/components/admin/OverviewPanel';
+import { RegulationsPanel } from '@/components/admin/RegulationsPanel';
+import { UsersRolesPanel } from '@/components/admin/UsersRolesPanel';
+import { Button } from '@/components/ui/button';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { requireRole } from '@/lib/auth/requireRole';
 
 const TAB_ITEMS = [
-  { key: "overview", label: "نظرة عامة", content: <OverviewPanel /> },
-  { key: "regulations", label: "اللوائح", content: <RegulationsPanel /> },
-  { key: "mapping", label: "المواءمة", content: <ComplianceMappingPanel /> },
-  { key: "modules", label: "الوحدات", content: <ModulesFlagsPanel /> },
-  { key: "users", label: "المستخدمون", content: <UsersRolesPanel /> },
-  { key: "logs", label: "السجلات", content: <LogsPanel /> },
+  { key: 'overview', label: 'نظرة عامة', content: <OverviewPanel /> },
+  { key: 'regulations', label: 'اللوائح', content: <RegulationsPanel /> },
+  { key: 'mapping', label: 'المواءمة', content: <ComplianceMappingPanel /> },
+  { key: 'modules', label: 'الوحدات', content: <ModulesFlagsPanel /> },
+  { key: 'users', label: 'المستخدمون', content: <UsersRolesPanel /> },
+  { key: 'logs', label: 'السجلات', content: <LogsPanel /> },
 ] as const;
 
 export default async function AdminConsolePage() {
-  await requireRole(["Admin", "Audit Manager"]);
+  await requireRole(['Admin', 'Audit Manager']);
 
   return (
     <div className="space-y-8">

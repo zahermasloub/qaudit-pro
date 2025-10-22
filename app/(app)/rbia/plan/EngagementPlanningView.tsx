@@ -118,7 +118,9 @@ export default function EngagementPlanningView() {
 
   const generateEngCode = () => {
     const year = new Date().getFullYear();
-    const random = Math.floor(Math.random() * 1000).toString().padStart(3, '0');
+    const random = Math.floor(Math.random() * 1000)
+      .toString()
+      .padStart(3, '0');
     return `ENG-${year}-${random}`;
   };
 
@@ -226,22 +228,25 @@ export default function EngagementPlanningView() {
       id: Date.now().toString(),
     };
 
-    setEngagements(engagements.map(eng => {
-      if (eng.id === engagementId) {
-        const updatedSubTasks = [...eng.subTasks, newSubTask];
-        const completedCount = updatedSubTasks.filter(st => st.status === 'completed').length;
-        const progress = updatedSubTasks.length > 0
-          ? Math.round((completedCount / updatedSubTasks.length) * 100)
-          : 0;
+    setEngagements(
+      engagements.map(eng => {
+        if (eng.id === engagementId) {
+          const updatedSubTasks = [...eng.subTasks, newSubTask];
+          const completedCount = updatedSubTasks.filter(st => st.status === 'completed').length;
+          const progress =
+            updatedSubTasks.length > 0
+              ? Math.round((completedCount / updatedSubTasks.length) * 100)
+              : 0;
 
-        return {
-          ...eng,
-          subTasks: updatedSubTasks,
-          progress,
-        };
-      }
-      return eng;
-    }));
+          return {
+            ...eng,
+            subTasks: updatedSubTasks,
+            progress,
+          };
+        }
+        return eng;
+      }),
+    );
 
     toast.success('تم إنشاء المهمة الجزئية بنجاح');
 
@@ -268,9 +273,9 @@ export default function EngagementPlanningView() {
       return;
     }
 
-    setEngagements(engagements.map(eng =>
-      eng.id === engagementId ? { ...eng, status: 'planned' } : eng
-    ));
+    setEngagements(
+      engagements.map(eng => (eng.id === engagementId ? { ...eng, status: 'planned' } : eng)),
+    );
     toast.success('تم نشر المهمة بنجاح');
   };
 
@@ -338,15 +343,17 @@ export default function EngagementPlanningView() {
             <AlertCircle className="w-5 h-5 text-blue-700 flex-shrink-0 mt-0.5" />
             <div className="text-sm text-blue-900">
               <p className="font-medium mb-1">ملاحظة هامة:</p>
-              <p>يتم إنشاء المهام التدقيقية بناءً على الخطة السنوية المعتمدة. تأكد من استكمال جميع الحقول الإلزامية (*) وتحديد المعايير المرجعية وفق الإطار الدولي للممارسة المهنية (IPPF) ومعايير COSO و ISO 31000.</p>
+              <p>
+                يتم إنشاء المهام التدقيقية بناءً على الخطة السنوية المعتمدة. تأكد من استكمال جميع
+                الحقول الإلزامية (*) وتحديد المعايير المرجعية وفق الإطار الدولي للممارسة المهنية
+                (IPPF) ومعايير COSO و ISO 31000.
+              </p>
             </div>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                رمز المهمة
-              </label>
+              <label className="block text-sm font-medium text-gray-700 mb-1">رمز المهمة</label>
               <input
                 type="text"
                 value={mainForm.code}
@@ -388,7 +395,9 @@ export default function EngagementPlanningView() {
               </label>
               <select
                 value={mainForm.riskLevel}
-                onChange={e => setMainForm({ ...mainForm, riskLevel: e.target.value, priority: e.target.value })}
+                onChange={e =>
+                  setMainForm({ ...mainForm, riskLevel: e.target.value, priority: e.target.value })
+                }
                 className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
               >
                 <option value="high">عالي</option>
@@ -452,7 +461,9 @@ export default function EngagementPlanningView() {
                 placeholder="حدد نطاق المهمة التدقيقية بوضوح: الأنشطة المشملة، الفترة الزمنية، المواقع..."
                 className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
               />
-              <p className="text-xs text-gray-500 mt-1">يجب تحديد النطاق بدقة لضمان فعالية التدقيق</p>
+              <p className="text-xs text-gray-500 mt-1">
+                يجب تحديد النطاق بدقة لضمان فعالية التدقيق
+              </p>
             </div>
 
             <div className="md:col-span-2">
@@ -466,7 +477,9 @@ export default function EngagementPlanningView() {
                 placeholder="أهداف المهمة التدقيقية: التحقق من كفاءة الضوابط الداخلية، تقييم الامتثال..."
                 className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
               />
-              <p className="text-xs text-gray-500 mt-1">يجب أن تكون الأهداف واضحة وقابلة للقياس (SMART)</p>
+              <p className="text-xs text-gray-500 mt-1">
+                يجب أن تكون الأهداف واضحة وقابلة للقياس (SMART)
+              </p>
             </div>
 
             <div className="md:col-span-2">
@@ -479,17 +492,26 @@ export default function EngagementPlanningView() {
                     { value: 'IPPF', label: 'IPPF 2024 - الإطار الدولي للممارسة المهنية' },
                     { value: 'COSO', label: 'COSO - إطار الضوابط الداخلية' },
                     { value: 'ISO 31000', label: 'ISO 31000 - إدارة المخاطر' },
-                    { value: 'لوائح قطر', label: 'اللوائح والقوانين القطرية' }
+                    { value: 'لوائح قطر', label: 'اللوائح والقوانين القطرية' },
                   ].map(standard => (
-                    <label key={standard.value} className="flex items-start gap-2 cursor-pointer hover:bg-gray-50 p-2 rounded">
+                    <label
+                      key={standard.value}
+                      className="flex items-start gap-2 cursor-pointer hover:bg-gray-50 p-2 rounded"
+                    >
                       <input
                         type="checkbox"
                         checked={mainForm.standards.includes(standard.value)}
                         onChange={e => {
                           if (e.target.checked) {
-                            setMainForm({ ...mainForm, standards: [...mainForm.standards, standard.value] });
+                            setMainForm({
+                              ...mainForm,
+                              standards: [...mainForm.standards, standard.value],
+                            });
                           } else {
-                            setMainForm({ ...mainForm, standards: mainForm.standards.filter(s => s !== standard.value) });
+                            setMainForm({
+                              ...mainForm,
+                              standards: mainForm.standards.filter(s => s !== standard.value),
+                            });
                           }
                         }}
                         className="rounded mt-1"
@@ -499,7 +521,9 @@ export default function EngagementPlanningView() {
                   ))}
                 </div>
               </div>
-              <p className="text-xs text-gray-500 mt-1">اختر معيار واحد على الأقل - يُنصح باختيار IPPF لجميع مهام التدقيق الداخلي</p>
+              <p className="text-xs text-gray-500 mt-1">
+                اختر معيار واحد على الأقل - يُنصح باختيار IPPF لجميع مهام التدقيق الداخلي
+              </p>
             </div>
           </div>
 
@@ -538,7 +562,11 @@ export default function EngagementPlanningView() {
               <div className="bg-white p-4">
                 <div className="flex items-start justify-between">
                   <button
-                    onClick={() => setExpandedEngagement(expandedEngagement === engagement.id ? null : (engagement.id || null))}
+                    onClick={() =>
+                      setExpandedEngagement(
+                        expandedEngagement === engagement.id ? null : engagement.id || null,
+                      )
+                    }
                     className="flex items-start gap-3 flex-1 text-right"
                   >
                     {expandedEngagement === engagement.id ? (
@@ -549,23 +577,34 @@ export default function EngagementPlanningView() {
                     <div className="flex-1">
                       <div className="flex items-center gap-2 mb-1">
                         <span className="text-sm font-mono text-gray-500">{engagement.code}</span>
-                        <span className={`text-xs px-2 py-0.5 rounded-full ${getRiskLevelBadge(engagement.riskLevel)}`}>
-                          {engagement.riskLevel === 'high' ? 'عالي' : engagement.riskLevel === 'medium' ? 'متوسط' : 'منخفض'}
+                        <span
+                          className={`text-xs px-2 py-0.5 rounded-full ${getRiskLevelBadge(engagement.riskLevel)}`}
+                        >
+                          {engagement.riskLevel === 'high'
+                            ? 'عالي'
+                            : engagement.riskLevel === 'medium'
+                              ? 'متوسط'
+                              : 'منخفض'}
                         </span>
-                        <span className={`text-xs px-2 py-0.5 rounded-full ${getStatusBadge(engagement.status).color}`}>
+                        <span
+                          className={`text-xs px-2 py-0.5 rounded-full ${getStatusBadge(engagement.status).color}`}
+                        >
                           {getStatusBadge(engagement.status).label}
                         </span>
                       </div>
                       <h3 className="font-bold text-gray-900">{engagement.title}</h3>
                       <p className="text-sm text-gray-600 mt-1">
-                        {engagement.department} • {engagement.quarter} • {engagement.estimatedHours} ساعة
+                        {engagement.department} • {engagement.quarter} • {engagement.estimatedHours}{' '}
+                        ساعة
                       </p>
                     </div>
                   </button>
 
                   <div className="flex items-center gap-2">
                     <div className="text-left">
-                      <div className="text-sm font-medium text-gray-700">التقدم: {engagement.progress}%</div>
+                      <div className="text-sm font-medium text-gray-700">
+                        التقدم: {engagement.progress}%
+                      </div>
                       <div className="w-24 bg-gray-200 rounded-full h-2 mt-1">
                         <div
                           className="bg-blue-600 h-2 rounded-full transition-all"
@@ -602,7 +641,9 @@ export default function EngagementPlanningView() {
                     <div>
                       <h4 className="text-sm font-bold text-gray-700 mb-1">المعايير المرجعية</h4>
                       <p className="text-sm text-gray-600">
-                        {engagement.standards.length > 0 ? engagement.standards.join(', ') : 'غير محدد'}
+                        {engagement.standards.length > 0
+                          ? engagement.standards.join(', ')
+                          : 'غير محدد'}
                       </p>
                     </div>
                     <div>
@@ -637,7 +678,9 @@ export default function EngagementPlanningView() {
                             <input
                               type="text"
                               value={subTaskForm.title}
-                              onChange={e => setSubTaskForm({ ...subTaskForm, title: e.target.value })}
+                              onChange={e =>
+                                setSubTaskForm({ ...subTaskForm, title: e.target.value })
+                              }
                               className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
                             />
                           </div>
@@ -648,7 +691,9 @@ export default function EngagementPlanningView() {
                             <input
                               type="text"
                               value={subTaskForm.assignee}
-                              onChange={e => setSubTaskForm({ ...subTaskForm, assignee: e.target.value })}
+                              onChange={e =>
+                                setSubTaskForm({ ...subTaskForm, assignee: e.target.value })
+                              }
                               className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
                             />
                           </div>
@@ -659,7 +704,9 @@ export default function EngagementPlanningView() {
                             <input
                               type="datetime-local"
                               value={subTaskForm.startDateTime}
-                              onChange={e => setSubTaskForm({ ...subTaskForm, startDateTime: e.target.value })}
+                              onChange={e =>
+                                setSubTaskForm({ ...subTaskForm, startDateTime: e.target.value })
+                              }
                               className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
                             />
                           </div>
@@ -670,7 +717,9 @@ export default function EngagementPlanningView() {
                             <input
                               type="datetime-local"
                               value={subTaskForm.endDateTime}
-                              onChange={e => setSubTaskForm({ ...subTaskForm, endDateTime: e.target.value })}
+                              onChange={e =>
+                                setSubTaskForm({ ...subTaskForm, endDateTime: e.target.value })
+                              }
                               className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
                             />
                           </div>
@@ -680,7 +729,9 @@ export default function EngagementPlanningView() {
                             </label>
                             <textarea
                               value={subTaskForm.scope}
-                              onChange={e => setSubTaskForm({ ...subTaskForm, scope: e.target.value })}
+                              onChange={e =>
+                                setSubTaskForm({ ...subTaskForm, scope: e.target.value })
+                              }
                               rows={2}
                               className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
                             />
@@ -692,7 +743,9 @@ export default function EngagementPlanningView() {
                             <input
                               type="text"
                               value={subTaskForm.wpRef}
-                              onChange={e => setSubTaskForm({ ...subTaskForm, wpRef: e.target.value })}
+                              onChange={e =>
+                                setSubTaskForm({ ...subTaskForm, wpRef: e.target.value })
+                              }
                               className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
                             />
                           </div>
@@ -703,7 +756,9 @@ export default function EngagementPlanningView() {
                             <input
                               type="text"
                               value={subTaskForm.expectedOutputs}
-                              onChange={e => setSubTaskForm({ ...subTaskForm, expectedOutputs: e.target.value })}
+                              onChange={e =>
+                                setSubTaskForm({ ...subTaskForm, expectedOutputs: e.target.value })
+                              }
                               className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
                             />
                           </div>
@@ -733,24 +788,41 @@ export default function EngagementPlanningView() {
                     ) : (
                       <div className="space-y-2">
                         {engagement.subTasks.map(subTask => (
-                          <div key={subTask.id} className="bg-white border border-gray-200 rounded-lg p-3">
+                          <div
+                            key={subTask.id}
+                            className="bg-white border border-gray-200 rounded-lg p-3"
+                          >
                             <div className="flex items-start justify-between">
                               <div className="flex-1">
-                                <h5 className="font-medium text-gray-900 text-sm">{subTask.title}</h5>
+                                <h5 className="font-medium text-gray-900 text-sm">
+                                  {subTask.title}
+                                </h5>
                                 <p className="text-xs text-gray-600 mt-1">{subTask.scope}</p>
                                 <div className="flex flex-wrap gap-3 mt-2 text-xs text-gray-500">
                                   <span>المسؤول: {subTask.assignee}</span>
-                                  <span>البداية: {new Date(subTask.startDateTime).toLocaleString('ar-SA')}</span>
-                                  <span>النهاية: {new Date(subTask.endDateTime).toLocaleString('ar-SA')}</span>
+                                  <span>
+                                    البداية:{' '}
+                                    {new Date(subTask.startDateTime).toLocaleString('ar-SA')}
+                                  </span>
+                                  <span>
+                                    النهاية: {new Date(subTask.endDateTime).toLocaleString('ar-SA')}
+                                  </span>
                                 </div>
                               </div>
-                              <span className={`text-xs px-2 py-1 rounded-full ${
-                                subTask.status === 'completed' ? 'bg-green-100 text-green-800' :
-                                subTask.status === 'in_progress' ? 'bg-blue-100 text-blue-800' :
-                                'bg-gray-100 text-gray-800'
-                              }`}>
-                                {subTask.status === 'completed' ? 'مكتمل' :
-                                 subTask.status === 'in_progress' ? 'جاري' : 'لم يبدأ'}
+                              <span
+                                className={`text-xs px-2 py-1 rounded-full ${
+                                  subTask.status === 'completed'
+                                    ? 'bg-green-100 text-green-800'
+                                    : subTask.status === 'in_progress'
+                                      ? 'bg-blue-100 text-blue-800'
+                                      : 'bg-gray-100 text-gray-800'
+                                }`}
+                              >
+                                {subTask.status === 'completed'
+                                  ? 'مكتمل'
+                                  : subTask.status === 'in_progress'
+                                    ? 'جاري'
+                                    : 'لم يبدأ'}
                               </span>
                             </div>
                           </div>

@@ -499,7 +499,6 @@ function canAccess(route: Route, role: Role): boolean {
   return RBAC[route]?.includes(role) || false;
 }
 
-
 function Topbar({
   locale,
   setLocale,
@@ -884,7 +883,6 @@ export default function AppShell() {
     router.push('/admin/dashboard');
   };
 
-
   const renderSidebar = (closeOnNavigate = false) => (
     <Sidebar
       locale={locale}
@@ -920,7 +918,6 @@ export default function AppShell() {
       </div>
     );
 
-
   return (
     <ToastProvider>
       <div className="min-h-screen w-full bg-slate-50 safe-area">
@@ -946,11 +943,13 @@ export default function AppShell() {
                 value={role}
                 onChange={e => setRole(e.target.value as Role)}
               >
-                {(['IA_Manager', 'IA_Lead', 'IA_Auditor', 'Process_Owner', 'Viewer'] as Role[]).map(r => (
-                  <option key={r} value={r}>
-                    {r}
-                  </option>
-                ))}
+                {(['IA_Manager', 'IA_Lead', 'IA_Auditor', 'Process_Owner', 'Viewer'] as Role[]).map(
+                  r => (
+                    <option key={r} value={r}>
+                      {r}
+                    </option>
+                  ),
+                )}
               </select>
               <span className="text-slate-700">Lang:</span>
               <select
@@ -965,9 +964,7 @@ export default function AppShell() {
           </div>
 
           <div className="mt-4 grid grid-cols-1 lg:grid-cols-[300px_1fr] gap-4 lg:gap-6">
-            <aside className="hidden lg:block min-w-[300px] w-[300px]">
-              {renderSidebar()}
-            </aside>
+            <aside className="hidden lg:block min-w-[300px] w-[300px]">{renderSidebar()}</aside>
 
             <main className="min-w-0">
               {!allowed && (
@@ -977,11 +974,15 @@ export default function AppShell() {
               )}
               {allowed && (
                 <>
-                  {route === 'dashboard' && <DashboardView locale={locale} engagementId={engagementId} />}
+                  {route === 'dashboard' && (
+                    <DashboardView locale={locale} engagementId={engagementId} />
+                  )}
                   {route === 'planning' && <PlanningScreen locale={locale} />}
                   {route === 'processRisk' && <ProcessRiskScreen locale={locale} />}
                   {route === 'program' && <ProgramScreen locale={locale} />}
-                  {route === 'fieldwork' && <FieldworkScreen locale={locale} engagementId={engagementId} />}
+                  {route === 'fieldwork' && (
+                    <FieldworkScreen locale={locale} engagementId={engagementId} />
+                  )}
                   {route === 'agile' && <PlaceholderScreen title={i18n.sections.agile} />}
                   {route === 'findings' && <PlaceholderScreen title={i18n.sections.findings} />}
                   {route === 'reporting' && <PlaceholderScreen title={i18n.sections.reporting} />}
@@ -995,10 +996,12 @@ export default function AppShell() {
           </div>
         </div>
 
-        <SidebarDrawer open={mobileOpen} onClose={() => setMobileOpen(false)} dir={isRTL ? 'rtl' : 'ltr'}>
-          <div className="p-4">
-            {renderSidebar(true)}
-          </div>
+        <SidebarDrawer
+          open={mobileOpen}
+          onClose={() => setMobileOpen(false)}
+          dir={isRTL ? 'rtl' : 'ltr'}
+        >
+          <div className="p-4">{renderSidebar(true)}</div>
         </SidebarDrawer>
 
         {/* Modals mounted at root for dashboard shortcuts */}
@@ -1094,5 +1097,3 @@ export default function AppShell() {
     </ToastProvider>
   );
 }
-
-

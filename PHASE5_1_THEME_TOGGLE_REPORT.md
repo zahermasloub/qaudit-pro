@@ -3,7 +3,7 @@
 **Feature:** Theme Toggle (Dark/Light/Auto)  
 **Date:** October 20, 2025  
 **Status:** ✅ COMPLETE  
-**Time Spent:** ~1 hour  
+**Time Spent:** ~1 hour
 
 ---
 
@@ -12,6 +12,7 @@
 ### 1. ThemeProvider Context (`lib/ThemeProvider.tsx`)
 
 **Features:**
+
 - ✅ Theme state management (light/dark/system)
 - ✅ localStorage persistence (`qaudit-theme` key)
 - ✅ System preference detection via `prefers-color-scheme`
@@ -21,6 +22,7 @@
 - ✅ System preference change listener
 
 **API:**
+
 ```tsx
 const { theme, setTheme, resolvedTheme } = useTheme();
 // theme: 'light' | 'dark' | 'system'
@@ -32,6 +34,7 @@ const { theme, setTheme, resolvedTheme } = useTheme();
 ### 2. ThemeToggle Component (`components/ui/ThemeToggle.tsx`)
 
 **Features:**
+
 - ✅ Dropdown menu with 3 options (Light/Dark/System)
 - ✅ Icons from lucide-react (Sun, Moon, Monitor)
 - ✅ Active state indicator (checkmark)
@@ -44,10 +47,11 @@ const { theme, setTheme, resolvedTheme } = useTheme();
 - ✅ Debug indicator in development mode
 
 **Usage:**
+
 ```tsx
 import { ThemeToggle } from '@/components/ui/ThemeToggle';
 
-<ThemeToggle />
+<ThemeToggle />;
 ```
 
 ---
@@ -55,12 +59,14 @@ import { ThemeToggle } from '@/components/ui/ThemeToggle';
 ### 3. CSS Updates (`app/globals.css`)
 
 **Added:**
+
 - ✅ `.dark` class selector for manual dark mode
 - ✅ `.light` class selector for manual light mode
 - ✅ CSS variables for both modes
 - ✅ Maintains existing `@media (prefers-color-scheme: dark)` for auto mode
 
 **CSS Variables Updated:**
+
 ```css
 /* Dark Mode */
 .dark {
@@ -86,17 +92,20 @@ import { ThemeToggle } from '@/components/ui/ThemeToggle';
 ### 4. Integration
 
 **RootLayout Updated (`app/layout.tsx`):**
+
 - ✅ Added `<ThemeProvider>` wrapper
 - ✅ Keeps `suppressHydrationWarning` on `<html>`
 - ✅ Wraps AuthProvider and Toaster
 
 **AppShell Updated (`app/(app)/shell/AppShell.tsx`):**
+
 - ✅ Imported ThemeToggle component
 - ✅ Added to Topbar after Admin link
 - ✅ Hidden on mobile (sm:block)
 - ✅ Positioned before Alerts button
 
 **Component Exports (`components/ui/index.ts`):**
+
 - ✅ Added `ThemeToggle` export
 
 ---
@@ -162,29 +171,35 @@ localStorage.setItem('qaudit-theme', newTheme)
 ### Button States
 
 **Default:**
+
 - Border: `border-border-base`
 - Background: `bg-bg-base`
 - Icon color: `text-text-secondary`
 
 **Hover:**
+
 - Background: `bg-bg-muted`
 - Icon color: `text-text-primary`
 
 **Focus:**
+
 - Ring: `focus-ring` utility (2px)
 
 ### Dropdown Menu
 
 **Layout:**
+
 - Width: 160px (w-40)
 - Position: Absolute, left-aligned
 - Z-index: 50 (above backdrop)
 
 **Options:**
+
 - Active: `bg-brand-50 text-brand-700` + checkmark
 - Inactive: `text-text-secondary hover:bg-bg-muted`
 
 **Animation:**
+
 - Fade in + slide from top (200ms)
 - Smooth transition-fast on hover
 
@@ -236,15 +251,7 @@ function MyComponent() {
 ```tsx
 const { resolvedTheme } = useTheme();
 
-return (
-  <div>
-    {resolvedTheme === 'dark' ? (
-      <MoonIcon />
-    ) : (
-      <SunIcon />
-    )}
-  </div>
-);
+return <div>{resolvedTheme === 'dark' ? <MoonIcon /> : <SunIcon />}</div>;
 ```
 
 ---
@@ -252,11 +259,13 @@ return (
 ## 🚀 Next Steps
 
 ### Immediate
+
 1. ✅ Complete Phase 5.1 documentation
 2. 🔄 Manual testing in browser
 3. 🔄 Screenshot dark/light modes for docs
 
 ### Future Enhancements
+
 1. Add theme transition animation
 2. Add more color schemes (e.g., blue, purple)
 3. Add high contrast mode
@@ -268,12 +277,14 @@ return (
 ## 📊 Bundle Impact
 
 **New Files:**
+
 - `lib/ThemeProvider.tsx` (~2.5 kB)
 - `components/ui/ThemeToggle.tsx` (~3.5 kB)
 
 **Total Impact:** ~6 kB (compressed: ~2 kB)
 
 **Performance:**
+
 - No impact on initial page load
 - localStorage read: <1ms
 - Theme application: <5ms

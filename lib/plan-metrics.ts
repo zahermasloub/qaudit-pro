@@ -34,10 +34,10 @@ export interface PlanItem {
  * KPI metrics for an annual plan
  */
 export interface PlanKpis {
-  completionPct: number;    // Percentage of completed items (0-100)
-  totalHours: number;       // Sum of effort_hours for all items
-  itemsCount: number;       // Total number of plan items
-  status: string;           // Overall plan status
+  completionPct: number; // Percentage of completed items (0-100)
+  totalHours: number; // Sum of effort_hours for all items
+  itemsCount: number; // Total number of plan items
+  status: string; // Overall plan status
 }
 
 /**
@@ -97,20 +97,15 @@ export function calcKpis(items: PlanItem[]): PlanKpis {
   const itemsCount = items.length;
 
   // Calculate total effort hours
-  const totalHours = items.reduce(
-    (sum, item) => sum + (item.estimatedHours || 0),
-    0
-  );
+  const totalHours = items.reduce((sum, item) => sum + (item.estimatedHours || 0), 0);
 
   // Count completed items (status = 'completed' or 'done')
   const completedCount = items.filter(
-    (item) => item.status === 'completed' || item.status === 'done'
+    item => item.status === 'completed' || item.status === 'done',
   ).length;
 
   // Calculate completion percentage
-  const completionPct = itemsCount > 0
-    ? Math.round((completedCount / itemsCount) * 100)
-    : 0;
+  const completionPct = itemsCount > 0 ? Math.round((completedCount / itemsCount) * 100) : 0;
 
   // Determine overall status based on completion
   let status = 'draft';

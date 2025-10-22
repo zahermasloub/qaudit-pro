@@ -1,16 +1,7 @@
 'use client';
 
 import { useCallback, useEffect, useState } from 'react';
-import {
-  Settings,
-  Save,
-  RefreshCw,
-  Database,
-  Flag,
-  Shield,
-  Bell,
-  Globe,
-} from 'lucide-react';
+import { Settings, Save, RefreshCw, Database, Flag, Shield, Bell, Globe } from 'lucide-react';
 import { toast } from 'sonner';
 
 import { Breadcrumbs, BreadcrumbItem } from '@/components/ui/Breadcrumbs';
@@ -113,13 +104,9 @@ export default function AdminSettingsPage() {
   }
 
   // فلترة الإعدادات حسب التاب
-  const filteredSettings = settings.filter((s) => {
+  const filteredSettings = settings.filter(s => {
     if (activeTab === 'general') {
-      return (
-        s.key.startsWith('org.') ||
-        s.key.startsWith('system.') ||
-        s.key.startsWith('app.')
-      );
+      return s.key.startsWith('org.') || s.key.startsWith('system.') || s.key.startsWith('app.');
     }
     if (activeTab === 'features') {
       return s.key.startsWith('feature.');
@@ -142,9 +129,7 @@ export default function AdminSettingsPage() {
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-2xl font-bold text-text-primary">إعدادات النظام</h1>
-          <p className="text-sm text-text-tertiary mt-1">
-            إدارة إعدادات التطبيق والنظام
-          </p>
+          <p className="text-sm text-text-tertiary mt-1">إدارة إعدادات التطبيق والنظام</p>
         </div>
         <button
           type="button"
@@ -167,7 +152,7 @@ export default function AdminSettingsPage() {
       {/* Tabs */}
       <div className="border-b border-border-base">
         <div className="flex gap-1 overflow-x-auto">
-          {tabs.map((tab) => {
+          {tabs.map(tab => {
             const Icon = tab.icon;
             const isActive = activeTab === tab.id;
             return (
@@ -202,13 +187,11 @@ export default function AdminSettingsPage() {
       ) : filteredSettings.length === 0 ? (
         <EmptyState
           title="لا توجد إعدادات"
-          message={`لا توجد إعدادات في قسم "${
-            tabs.find((t) => t.id === activeTab)?.label
-          }"`}
+          message={`لا توجد إعدادات في قسم "${tabs.find(t => t.id === activeTab)?.label}"`}
         />
       ) : (
         <div className="grid gap-4">
-          {filteredSettings.map((setting) => {
+          {filteredSettings.map(setting => {
             const isEditing = editingKey === setting.key;
 
             return (
@@ -232,7 +215,7 @@ export default function AdminSettingsPage() {
                         {setting.type === 'boolean' ? (
                           <select
                             value={editValue}
-                            onChange={(e) => setEditValue(e.target.value)}
+                            onChange={e => setEditValue(e.target.value)}
                             className="
                               px-3 py-2 rounded-lg
                               border border-border-base bg-bg-base
@@ -248,7 +231,7 @@ export default function AdminSettingsPage() {
                           <input
                             type="number"
                             value={editValue}
-                            onChange={(e) => setEditValue(e.target.value)}
+                            onChange={e => setEditValue(e.target.value)}
                             className="
                               flex-1 px-3 py-2 rounded-lg
                               border border-border-base bg-bg-base
@@ -261,7 +244,7 @@ export default function AdminSettingsPage() {
                           <input
                             type="text"
                             value={editValue}
-                            onChange={(e) => setEditValue(e.target.value)}
+                            onChange={e => setEditValue(e.target.value)}
                             className="
                               flex-1 px-3 py-2 rounded-lg
                               border border-border-base bg-bg-base
@@ -274,9 +257,7 @@ export default function AdminSettingsPage() {
 
                         <button
                           type="button"
-                          onClick={() =>
-                            handleSave(setting.key, editValue, setting.type)
-                          }
+                          onClick={() => handleSave(setting.key, editValue, setting.type)}
                           className="
                             px-3 py-2 rounded-lg
                             bg-brand-600 text-white
@@ -306,17 +287,14 @@ export default function AdminSettingsPage() {
                       <div className="mt-1">
                         <span className="text-text-secondary">
                           {setting.value || (
-                            <span className="text-text-tertiary italic">
-                              غير محدد
-                            </span>
+                            <span className="text-text-tertiary italic">غير محدد</span>
                           )}
                         </span>
                       </div>
                     )}
 
                     <div className="mt-2 text-xs text-text-tertiary">
-                      آخر تحديث:{' '}
-                      {new Date(setting.updatedAt).toLocaleString('ar-EG')}
+                      آخر تحديث: {new Date(setting.updatedAt).toLocaleString('ar-EG')}
                     </div>
                   </div>
 
@@ -347,12 +325,10 @@ export default function AdminSettingsPage() {
         <div className="flex items-start gap-3">
           <Shield size={20} className="text-blue-600 dark:text-blue-400 mt-0.5" />
           <div className="flex-1">
-            <h3 className="font-semibold text-blue-900 dark:text-blue-100 mb-1">
-              ملاحظة مهمة
-            </h3>
+            <h3 className="font-semibold text-blue-900 dark:text-blue-100 mb-1">ملاحظة مهمة</h3>
             <p className="text-sm text-blue-700 dark:text-blue-300">
-              التعديل على إعدادات النظام قد يؤثر على سلوك التطبيق. يرجى الحذر عند
-              إجراء التغييرات. جميع التعديلات يتم تسجيلها في سجل النظام.
+              التعديل على إعدادات النظام قد يؤثر على سلوك التطبيق. يرجى الحذر عند إجراء التغييرات.
+              جميع التعديلات يتم تسجيلها في سجل النظام.
             </p>
           </div>
         </div>

@@ -145,7 +145,10 @@ export function EngagementForm({ open, onOpenChange, onSuccess }: EngagementForm
             خيارات إضافية
           </button>
         </div>
-        <form onSubmit={form.handleSubmit(onSubmit)} className="flex-1 flex flex-col overflow-hidden">
+        <form
+          onSubmit={form.handleSubmit(onSubmit)}
+          className="flex-1 flex flex-col overflow-hidden"
+        >
           <div className="flex-1 overflow-y-auto px-2 sm:px-6 py-4 space-y-6">
             {tab === 'basic' && (
               <>
@@ -154,14 +157,18 @@ export function EngagementForm({ open, onOpenChange, onSuccess }: EngagementForm
                     <label className="block text-sm font-medium mb-1">كود المهمة</label>
                     <Input {...form.register('code')} placeholder="ENG-2024-001" />
                     {form.formState.errors.code && (
-                      <p className="text-red-600 text-sm mt-1">{form.formState.errors.code.message}</p>
+                      <p className="text-red-600 text-sm mt-1">
+                        {form.formState.errors.code.message}
+                      </p>
                     )}
                   </div>
                   <div>
                     <label className="block text-sm font-medium mb-1">عنوان المهمة</label>
                     <Input {...form.register('title')} placeholder="تدقيق العمليات المالية" />
                     {form.formState.errors.title && (
-                      <p className="text-red-600 text-sm mt-1">{form.formState.errors.title.message}</p>
+                      <p className="text-red-600 text-sm mt-1">
+                        {form.formState.errors.title.message}
+                      </p>
                     )}
                   </div>
                 </div>
@@ -174,7 +181,9 @@ export function EngagementForm({ open, onOpenChange, onSuccess }: EngagementForm
                     placeholder="تقييم فعالية الضوابط الداخلية للعمليات المالية..."
                   />
                   {form.formState.errors.objective && (
-                    <p className="text-red-600 text-sm mt-1">{form.formState.errors.objective.message}</p>
+                    <p className="text-red-600 text-sm mt-1">
+                      {form.formState.errors.objective.message}
+                    </p>
                   )}
                 </div>
               </>
@@ -185,8 +194,16 @@ export function EngagementForm({ open, onOpenChange, onSuccess }: EngagementForm
                   { key: 'scope', label: 'النطاق', placeholder: 'إضافة نطاق جديد' },
                   { key: 'criteria', label: 'المعايير', placeholder: 'إضافة معيار جديد' },
                   { key: 'constraints', label: 'القيود', placeholder: 'إضافة قيد جديد' },
-                  { key: 'auditeeUnits', label: 'الوحدات المُدققة', placeholder: 'إضافة وحدة جديدة' },
-                  { key: 'stakeholders', label: 'أصحاب المصلحة', placeholder: 'إضافة صاحب مصلحة جديد' },
+                  {
+                    key: 'auditeeUnits',
+                    label: 'الوحدات المُدققة',
+                    placeholder: 'إضافة وحدة جديدة',
+                  },
+                  {
+                    key: 'stakeholders',
+                    label: 'أصحاب المصلحة',
+                    placeholder: 'إضافة صاحب مصلحة جديد',
+                  },
                 ].map(({ key, label, placeholder }) => (
                   <div key={key}>
                     <label className="block text-sm font-medium mb-1">{label}</label>
@@ -253,7 +270,9 @@ export function EngagementForm({ open, onOpenChange, onSuccess }: EngagementForm
                   <label className="block text-sm font-medium mb-1">تاريخ النهاية</label>
                   <Input type="date" {...form.register('endDate')} />
                   {form.formState.errors.endDate && (
-                    <p className="text-red-600 text-sm mt-1">{form.formState.errors.endDate.message}</p>
+                    <p className="text-red-600 text-sm mt-1">
+                      {form.formState.errors.endDate.message}
+                    </p>
                   )}
                 </div>
                 <div>
@@ -277,7 +296,10 @@ export function EngagementForm({ open, onOpenChange, onSuccess }: EngagementForm
                   <label className="block text-sm font-medium mb-1">
                     رابط إفصاح الاستقلالية (اختياري)
                   </label>
-                  <Input {...form.register('independenceDisclosureUrl')} placeholder="https://..." />
+                  <Input
+                    {...form.register('independenceDisclosureUrl')}
+                    placeholder="https://..."
+                  />
                   {form.formState.errors.independenceDisclosureUrl && (
                     <p className="text-red-600 text-sm mt-1">
                       {form.formState.errors.independenceDisclosureUrl.message}

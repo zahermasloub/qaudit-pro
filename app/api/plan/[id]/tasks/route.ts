@@ -24,10 +24,7 @@ import prisma from '@/lib/prisma';
  *       500:
  *         description: خطأ في الخادم
  */
-export async function GET(
-  req: NextRequest,
-  { params }: { params: { id: string } }
-) {
+export async function GET(req: NextRequest, { params }: { params: { id: string } }) {
   try {
     const { id } = params;
 
@@ -37,10 +34,7 @@ export async function GET(
     });
 
     if (!plan) {
-      return NextResponse.json(
-        { error: 'الخطة غير موجودة' },
-        { status: 404 }
-      );
+      return NextResponse.json({ error: 'الخطة غير موجودة' }, { status: 404 });
     }
 
     // Get all tasks for this plan
@@ -59,14 +53,11 @@ export async function GET(
         count: tasks.length,
         tasks: tasks,
       },
-      { status: 200 }
+      { status: 200 },
     );
   } catch (error: any) {
     console.error('❌ Error fetching tasks:', error);
-    return NextResponse.json(
-      { error: 'فشل جلب المهام', details: error.message },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: 'فشل جلب المهام', details: error.message }, { status: 500 });
   }
 }
 
@@ -153,10 +144,7 @@ export async function GET(
  *       500:
  *         description: خطأ في الخادم
  */
-export async function POST(
-  req: NextRequest,
-  { params }: { params: { id: string } }
-) {
+export async function POST(req: NextRequest, { params }: { params: { id: string } }) {
   try {
     const { id } = params;
     const body = await req.json();
@@ -168,17 +156,11 @@ export async function POST(
     });
 
     if (!plan) {
-      return NextResponse.json(
-        { error: 'الخطة غير موجودة' },
-        { status: 404 }
-      );
+      return NextResponse.json({ error: 'الخطة غير موجودة' }, { status: 404 });
     }
 
     if (!Array.isArray(tasks) || tasks.length === 0) {
-      return NextResponse.json(
-        { error: 'يجب تقديم قائمة مهام' },
-        { status: 400 }
-      );
+      return NextResponse.json({ error: 'يجب تقديم قائمة مهام' }, { status: 400 });
     }
 
     // Create tasks with new RBIA fields
@@ -189,7 +171,8 @@ export async function POST(
         const department = task.department || task.deptId || 'عام';
         const auditType = task.auditType || task.taskType || 'compliance';
         const plannedQuarter = task.plannedQuarter || task.scheduledQuarter || 'Q1';
-        const estimatedHours = task.estimatedHours || (task.durationDays ? task.durationDays * 8 : 40);
+        const estimatedHours =
+          task.estimatedHours || (task.durationDays ? task.durationDays * 8 : 40);
         const leadAuditor = task.leadAuditor || task.assignee || null;
         const objectiveAndScope = task.objectiveAndScope || task.notes || null;
 
@@ -202,7 +185,9 @@ export async function POST(
 
         // Validate auditType
         let validAuditType = auditType;
-        if (!['financial', 'operational', 'compliance', 'it', 'investigative'].includes(auditType)) {
+        if (
+          !['financial', 'operational', 'compliance', 'it', 'investigative'].includes(auditType)
+        ) {
           validAuditType = 'compliance';
         }
 
@@ -234,7 +219,7 @@ export async function POST(
             notes: task.notes || objectiveAndScope || '',
           },
         });
-      })
+      }),
     );
 
     return NextResponse.json(
@@ -242,13 +227,13 @@ export async function POST(
         message: `تم إنشاء ${createdTasks.length} مهمة بنجاح`,
         tasks: createdTasks,
       },
-      { status: 201 }
+      { status: 201 },
     );
   } catch (error: any) {
     console.error('❌ Error creating tasks:', error);
     return NextResponse.json(
       { error: 'فشل إنشاء المهام', details: error.message },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

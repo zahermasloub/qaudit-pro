@@ -57,13 +57,13 @@ export async function GET() {
     return NextResponse.json({
       ok: true,
       data: criteria,
-      count: Array.isArray(criteria) ? criteria.length : 0
+      count: Array.isArray(criteria) ? criteria.length : 0,
     });
   } catch (error: any) {
     console.error('GET /api/risk/criteria error:', error);
     return NextResponse.json(
       { ok: false, error: error.message || 'فشل في جلب معايير المخاطر' },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }
@@ -74,24 +74,18 @@ export async function POST(req: Request) {
 
     // Validation
     if (!body.name || body.name.trim().length === 0) {
-      return NextResponse.json(
-        { ok: false, error: 'الاسم مطلوب' },
-        { status: 400 }
-      );
+      return NextResponse.json({ ok: false, error: 'الاسم مطلوب' }, { status: 400 });
     }
 
     if (body.weight === undefined || body.weight === null) {
-      return NextResponse.json(
-        { ok: false, error: 'الوزن مطلوب' },
-        { status: 400 }
-      );
+      return NextResponse.json({ ok: false, error: 'الوزن مطلوب' }, { status: 400 });
     }
 
     const weight = Number(body.weight);
     if (isNaN(weight) || weight < 0 || weight > 100) {
       return NextResponse.json(
         { ok: false, error: 'الوزن يجب أن يكون بين 0 و 100' },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
@@ -107,20 +101,17 @@ export async function POST(req: Request) {
       query,
       body.name.trim(),
       weight,
-      body.description || null
+      body.description || null,
     );
 
     const created = Array.isArray(result) ? result[0] : result;
 
-    return NextResponse.json(
-      { ok: true, data: created },
-      { status: 201 }
-    );
+    return NextResponse.json({ ok: true, data: created }, { status: 201 });
   } catch (error: any) {
     console.error('POST /api/risk/criteria error:', error);
     return NextResponse.json(
       { ok: false, error: error.message || 'فشل في إنشاء معيار المخاطر' },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

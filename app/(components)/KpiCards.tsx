@@ -110,7 +110,7 @@ export default function KpiCards({ planId }: { planId?: string }) {
   if (loading) {
     return (
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6" dir="rtl">
-        {[1, 2, 3, 4].map((i) => (
+        {[1, 2, 3, 4].map(i => (
           <div key={i} className="bg-white border rounded-2xl p-4 shadow-sm animate-pulse">
             <div className="h-4 bg-gray-200 rounded w-24 mb-2"></div>
             <div className="h-8 bg-gray-300 rounded w-16"></div>
@@ -130,7 +130,10 @@ export default function KpiCards({ planId }: { planId?: string }) {
 
   if (!planId) {
     return (
-      <div className="bg-blue-50 border border-blue-200 rounded-2xl p-4 mb-6 text-blue-800" dir="rtl">
+      <div
+        className="bg-blue-50 border border-blue-200 rounded-2xl p-4 mb-6 text-blue-800"
+        dir="rtl"
+      >
         جارٍ تحميل أحدث خطة سنوية...
       </div>
     );
@@ -140,13 +143,9 @@ export default function KpiCards({ planId }: { planId?: string }) {
     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6" dir="rtl">
       {/* Card 1: Completion Percentage */}
       <div className="bg-white border rounded-2xl p-4 shadow-sm hover:shadow-md transition-shadow">
-        <div className="text-slate-500 text-xs mb-1 font-medium">
-          نسبة الإنجاز
-        </div>
+        <div className="text-slate-500 text-xs mb-1 font-medium">نسبة الإنجاز</div>
         <div className="flex items-baseline gap-2">
-          <div className="text-slate-900 text-3xl font-bold">
-            {kpis.completionPct}
-          </div>
+          <div className="text-slate-900 text-3xl font-bold">{kpis.completionPct}</div>
           <div className="text-slate-600 text-lg">%</div>
         </div>
         <div className="mt-2 h-2 bg-gray-200 rounded-full overflow-hidden">
@@ -159,45 +158,35 @@ export default function KpiCards({ planId }: { planId?: string }) {
 
       {/* Card 2: Total Hours */}
       <div className="bg-white border rounded-2xl p-4 shadow-sm hover:shadow-md transition-shadow">
-        <div className="text-slate-500 text-xs mb-1 font-medium">
-          إجمالي الساعات
-        </div>
+        <div className="text-slate-500 text-xs mb-1 font-medium">إجمالي الساعات</div>
         <div className="flex items-baseline gap-2">
           <div className="text-slate-900 text-3xl font-bold">
             {kpis.totalHours.toLocaleString('ar-SA')}
           </div>
           <div className="text-slate-600 text-sm">ساعة</div>
         </div>
-        <div className="mt-2 text-xs text-slate-500">
-          الساعات المقدرة للمهام
-        </div>
+        <div className="mt-2 text-xs text-slate-500">الساعات المقدرة للمهام</div>
       </div>
 
       {/* Card 3: Number of Tasks */}
       <div className="bg-white border rounded-2xl p-4 shadow-sm hover:shadow-md transition-shadow">
-        <div className="text-slate-500 text-xs mb-1 font-medium">
-          عدد المهام
-        </div>
+        <div className="text-slate-500 text-xs mb-1 font-medium">عدد المهام</div>
         <div className="flex items-baseline gap-2">
           <div className="text-slate-900 text-3xl font-bold">
             {kpis.itemsCount.toLocaleString('ar-SA')}
           </div>
           <div className="text-slate-600 text-sm">مهمة</div>
         </div>
-        <div className="mt-2 text-xs text-slate-500">
-          إجمالي مهام الخطة
-        </div>
+        <div className="mt-2 text-xs text-slate-500">إجمالي مهام الخطة</div>
       </div>
 
       {/* Card 4: Plan Status */}
       <div className="bg-white border rounded-2xl p-4 shadow-sm hover:shadow-md transition-shadow">
-        <div className="text-slate-500 text-xs mb-1 font-medium">
-          حالة الخطة
-        </div>
+        <div className="text-slate-500 text-xs mb-1 font-medium">حالة الخطة</div>
         <div className="mt-2">
           <span
             className={`inline-block px-3 py-2 rounded-lg text-sm font-bold ${getStatusColor(
-              kpis.status
+              kpis.status,
             )}`}
           >
             {getStatusText(kpis.status)}

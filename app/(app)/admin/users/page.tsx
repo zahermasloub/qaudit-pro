@@ -186,7 +186,7 @@ export default function AdminUsersPage() {
     if (selectedUsers.length === 0) return;
 
     const csvHeaders = ['البريد الإلكتروني', 'الاسم', 'الدور', 'اللغة', 'تاريخ الإنشاء'];
-    const csvRows = selectedUsers.map((user) => [
+    const csvRows = selectedUsers.map(user => [
       user.email,
       user.name || '—',
       user.role,
@@ -194,10 +194,7 @@ export default function AdminUsersPage() {
       new Date(user.createdAt).toLocaleDateString('ar-EG'),
     ]);
 
-    const csvContent = [
-      csvHeaders.join(','),
-      ...csvRows.map((row) => row.join(',')),
-    ].join('\n');
+    const csvContent = [csvHeaders.join(','), ...csvRows.map(row => row.join(','))].join('\n');
 
     const blob = new Blob(['\ufeff' + csvContent], { type: 'text/csv;charset=utf-8;' });
     const link = document.createElement('a');
@@ -269,9 +266,7 @@ export default function AdminUsersPage() {
     {
       accessorKey: 'name',
       header: 'الاسم',
-      cell: ({ row }) => (
-        <span className="text-text-secondary">{row.original.name || '—'}</span>
-      ),
+      cell: ({ row }) => <span className="text-text-secondary">{row.original.name || '—'}</span>,
     },
     {
       accessorKey: 'role',
@@ -292,7 +287,7 @@ export default function AdminUsersPage() {
         }
         return (
           <div className="flex gap-1 flex-wrap">
-            {userRoles.slice(0, 2).map((ur) => (
+            {userRoles.slice(0, 2).map(ur => (
               <span
                 key={ur.Role.id}
                 className="px-2 py-0.5 rounded-full text-xs bg-bg-muted text-text-secondary"
@@ -358,7 +353,7 @@ export default function AdminUsersPage() {
   ];
 
   // تطبيق الفلاتر
-  const filteredUsers = users.filter((user) => {
+  const filteredUsers = users.filter(user => {
     // فلتر RLS Preview Mode
     // في وضع المعاينة، نعرض فقط المستخدمين الذين لهم نفس الدور أو أقل
     if (isPreviewMode && previewUser) {
@@ -369,10 +364,10 @@ export default function AdminUsersPage() {
       // - User يرى نفسه فقط
 
       const roleHierarchy: Record<string, number> = {
-        'Admin': 4,
-        'IA_Lead': 3,
-        'IA_Auditor': 2,
-        'User': 1,
+        Admin: 4,
+        IA_Lead: 3,
+        IA_Auditor: 2,
+        User: 1,
       };
 
       const previewUserLevel = roleHierarchy[previewUser.role] || 0;
@@ -427,9 +422,7 @@ export default function AdminUsersPage() {
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-2xl font-bold text-text-primary">إدارة المستخدمين</h1>
-          <p className="text-sm text-text-tertiary mt-1">
-            عرض وإدارة جميع مستخدمي النظام
-          </p>
+          <p className="text-sm text-text-tertiary mt-1">عرض وإدارة جميع مستخدمي النظام</p>
         </div>
         <button
           type="button"
@@ -454,9 +447,7 @@ export default function AdminUsersPage() {
         searchPlaceholder="بحث بالبريد أو الاسم..."
         filters={filters}
         filterValues={filterValues}
-        onFilterChange={(id, value) =>
-          setFilterValues((prev) => ({ ...prev, [id]: value }))
-        }
+        onFilterChange={(id, value) => setFilterValues(prev => ({ ...prev, [id]: value }))}
         onClearFilters={() => {
           setSearchQuery('');
           setFilterValues({});
@@ -477,8 +468,8 @@ export default function AdminUsersPage() {
               : 'لا يوجد مستخدمين في النظام'
           }
           action={{
-            label: "إضافة مستخدم",
-            onClick: () => setCreateDialogOpen(true)
+            label: 'إضافة مستخدم',
+            onClick: () => setCreateDialogOpen(true),
           }}
         />
       ) : (
@@ -488,7 +479,7 @@ export default function AdminUsersPage() {
           pagination
           pageSize={10}
           selectable
-          getRowId={(row) => row.id}
+          getRowId={row => row.id}
           onSelectionChange={setSelectedUsers}
         />
       )}

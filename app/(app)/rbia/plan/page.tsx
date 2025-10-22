@@ -67,12 +67,8 @@ function PlanPageContent() {
       <div className="max-w-7xl mx-auto">
         {/* Page Header */}
         <div className="mb-6">
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">
-            الخطة السنوية (RBIA)
-          </h1>
-          <p className="text-gray-600">
-            إدارة الخطة السنوية للتدقيق الداخلي المبني على المخاطر
-          </p>
+          <h1 className="text-3xl font-bold text-gray-900 mb-2">الخطة السنوية (RBIA)</h1>
+          <p className="text-gray-600">إدارة الخطة السنوية للتدقيق الداخلي المبني على المخاطر</p>
         </div>
 
         {/* Tabs Navigation */}
@@ -125,10 +121,18 @@ function PlanPageContent() {
           {/* RACI Legend */}
           <div className="px-4 pb-3 pt-1 border-t border-gray-100">
             <div className="flex flex-wrap gap-3 text-xs text-gray-500">
-              <span><strong>A</strong> = Accountable (مسؤول)</span>
-              <span><strong>R</strong> = Responsible (منفذ)</span>
-              <span><strong>C</strong> = Consulted (مستشار)</span>
-              <span><strong>I</strong> = Informed (مُبلّغ)</span>
+              <span>
+                <strong>A</strong> = Accountable (مسؤول)
+              </span>
+              <span>
+                <strong>R</strong> = Responsible (منفذ)
+              </span>
+              <span>
+                <strong>C</strong> = Consulted (مستشار)
+              </span>
+              <span>
+                <strong>I</strong> = Informed (مُبلّغ)
+              </span>
             </div>
           </div>
         </div>
@@ -157,14 +161,19 @@ function PlanPageContent() {
 
 export default function PlanPage() {
   return (
-    <Suspense fallback={
-      <div className="w-full min-h-screen bg-gray-50 py-8 px-4 flex items-center justify-center" dir="rtl">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
-          <p className="text-gray-600">جاري التحميل...</p>
+    <Suspense
+      fallback={
+        <div
+          className="w-full min-h-screen bg-gray-50 py-8 px-4 flex items-center justify-center"
+          dir="rtl"
+        >
+          <div className="text-center">
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
+            <p className="text-gray-600">جاري التحميل...</p>
+          </div>
         </div>
-      </div>
-    }>
+      }
+    >
       <PlanPageContent />
     </Suspense>
   );

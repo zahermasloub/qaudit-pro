@@ -63,10 +63,7 @@ export async function POST(req: Request) {
 
     // Validation
     if (!body.au_id) {
-      return NextResponse.json(
-        { ok: false, error: 'معرّف عنصر الكون مطلوب' },
-        { status: 400 }
-      );
+      return NextResponse.json({ ok: false, error: 'معرّف عنصر الكون مطلوب' }, { status: 400 });
     }
 
     const likelihood = Number(body.likelihood);
@@ -76,21 +73,21 @@ export async function POST(req: Request) {
     if (isNaN(likelihood) || likelihood < 1 || likelihood > 5) {
       return NextResponse.json(
         { ok: false, error: 'الاحتمالية يجب أن تكون بين 1 و 5' },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
     if (isNaN(impact) || impact < 1 || impact > 5) {
       return NextResponse.json(
         { ok: false, error: 'التأثير يجب أن يكون بين 1 و 5' },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
     if (isNaN(weight) || weight < 0 || weight > 100) {
       return NextResponse.json(
         { ok: false, error: 'الوزن يجب أن يكون بين 0 و 100' },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
@@ -100,14 +97,11 @@ export async function POST(req: Request) {
     // Check if AU exists
     const auCheck: any = await prisma.$queryRawUnsafe(
       'SELECT id FROM audit."AuditUniverse" WHERE id = $1',
-      body.au_id
+      body.au_id,
     );
 
     if (!auCheck || auCheck.length === 0) {
-      return NextResponse.json(
-        { ok: false, error: 'عنصر الكون غير موجود' },
-        { status: 404 }
-      );
+      return NextResponse.json({ ok: false, error: 'عنصر الكون غير موجود' }, { status: 404 });
     }
 
     const query = `
@@ -126,29 +120,23 @@ export async function POST(req: Request) {
       weight,
       score,
       body.residual_score || null,
-      body.evidence || null
+      body.evidence || null,
     );
 
     const created = Array.isArray(result) ? result[0] : result;
 
-    return NextResponse.json(
-      { ok: true, data: created, score },
-      { status: 201 }
-    );
+    return NextResponse.json({ ok: true, data: created, score }, { status: 201 });
   } catch (error: any) {
     console.error('POST /api/risk/assess error:', error);
 
     // Handle foreign key constraint violation
     if (error.code === '23503') {
-      return NextResponse.json(
-        { ok: false, error: 'عنصر الكون غير موجود' },
-        { status: 404 }
-      );
+      return NextResponse.json({ ok: false, error: 'عنصر الكون غير موجود' }, { status: 404 });
     }
 
     return NextResponse.json(
       { ok: false, error: error.message || 'فشل في إنشاء تقييم المخاطر' },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

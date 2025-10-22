@@ -1,14 +1,14 @@
-﻿import Link from "next/link";
+﻿import Link from 'next/link';
 
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 
 const ITEMS = [
-  { title: "Dashboard", desc: "ملخّص مؤشرات العمل وفِعالية الفريق", href: "/admin/dashboard" },
-  { title: "Users", desc: "إدارة أعضاء الفريق وأدوارهم", href: "/admin/users" },
-  { title: "Roles", desc: "تحديث الصلاحيات وتوزيعها", href: "/admin/roles" },
-  { title: "Settings", desc: "الإعدادات العامة وسياسات الحفظ", href: "/admin/settings" },
-  { title: "Logs", desc: "سجل الأحداث وتدقيق السجلات", href: "/admin/logs" },
-  { title: "Backups", desc: "إدارة النسخ الاحتياطية واسترجاعها", href: "/admin/backups" },
+  { title: 'Dashboard', desc: 'ملخّص مؤشرات العمل وفِعالية الفريق', href: '/admin/dashboard' },
+  { title: 'Users', desc: 'إدارة أعضاء الفريق وأدوارهم', href: '/admin/users' },
+  { title: 'Roles', desc: 'تحديث الصلاحيات وتوزيعها', href: '/admin/roles' },
+  { title: 'Settings', desc: 'الإعدادات العامة وسياسات الحفظ', href: '/admin/settings' },
+  { title: 'Logs', desc: 'سجل الأحداث وتدقيق السجلات', href: '/admin/logs' },
+  { title: 'Backups', desc: 'إدارة النسخ الاحتياطية واسترجاعها', href: '/admin/backups' },
 ] as const;
 
 export async function OverviewPanel() {

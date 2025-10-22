@@ -229,7 +229,9 @@ const TestExecutionForm: React.FC<TestExecutionFormProps> = ({
                   className="w-full rounded-md border border-gray-300 px-3 py-2 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500"
                   placeholder="أضف أي ملاحظات أو معلومات إضافية تتعلق بالخطوة المنفذة..."
                 />
-                {errors.notes && <p className="mt-1 text-sm text-red-600">{errors.notes.message}</p>}
+                {errors.notes && (
+                  <p className="mt-1 text-sm text-red-600">{errors.notes.message}</p>
+                )}
               </div>
 
               <div>

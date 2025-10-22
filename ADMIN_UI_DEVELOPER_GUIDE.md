@@ -3,6 +3,7 @@
 ## 📦 ما تم إنجازه
 
 تم إجراء تدقيق شامل وإعادة بناء جزئية لواجهة الأدمن في **QAudit Pro**. النظام يعمل على:
+
 - **Next.js 14** (App Router) + React 18 + TypeScript
 - **Tailwind CSS** + shadcn/ui
 - **PostgreSQL 18** مع RLS + TLS
@@ -13,12 +14,14 @@
 ## 📋 التقارير المنتجة
 
 ### 1. تقرير التدقيق (`ADMIN_UI_AUDIT.md`)
+
 - ✅ 20 ملاحظة مصنفة (Must/Should/Could)
 - ✅ فحوص WCAG 2.1 AA (38% متوافق حالياً)
 - ✅ خريطة هيكلية ASCII للصفحات الحالية
 - ✅ خطة عمل مرحلية (4 Sprints)
 
 **أهم النتائج**:
+
 - Dashboard يعرض بيانات ثابتة (—) بدلاً من KPIs حقيقية
 - الجداول بدون virtualization/pagination متقدم
 - عدم وجود نظام توست/إشعارات موحد
@@ -28,6 +31,7 @@
 ---
 
 ### 2. مواصفة التصميم (`ADMIN_UI_SPEC.md`)
+
 - ✅ خريطة تنقل كاملة (Sitemap)
 - ✅ Design Tokens (CSS Variables)
 - ✅ Wireframes نصية ASCII
@@ -38,6 +42,7 @@
 - ✅ مصادر البيانات (API Endpoints + SQL Queries)
 
 **الصفحات المستهدفة**:
+
 - `/admin/dashboard` — KPIs + مخططات + نشاط حديث
 - `/admin/users` — جدول متقدم + CRUD + RLS Preview
 - `/admin/roles` — بطاقات + permissions checkboxes
@@ -76,6 +81,7 @@
 ```
 
 **الاستخدام**:
+
 ```css
 .my-component {
   background: var(--color-bg-elevated);
@@ -103,10 +109,11 @@ import { Toaster } from '@/components/ui/Toaster';
 <body>
   {children}
   <Toaster />
-</body>
+</body>;
 ```
 
 **الاستخدام**:
+
 ```tsx
 import { toast } from 'sonner';
 
@@ -126,6 +133,7 @@ toast('تم حذف المستخدم', {
 ```
 
 **الميزات**:
+
 - ✅ RTL كامل
 - ✅ Dark Mode
 - ✅ أنواع: success/error/warning/info
@@ -150,10 +158,11 @@ import { Users, Plus } from 'lucide-react';
     onClick: () => setShowDialog(true),
     icon: Plus,
   }}
-/>
+/>;
 ```
 
 **الميزات**:
+
 - ✅ أيقونة من lucide-react
 - ✅ نوعين: default, error
 - ✅ زر CTA اختياري
@@ -186,6 +195,7 @@ import { Users, Plus } from 'lucide-react';
 ```
 
 **الميزات**:
+
 - ✅ 3 أنواع: text, rect, circle
 - ✅ مكونات مركبة: SkeletonTable, SkeletonCard
 - ✅ A11y: aria-label="جارِ التحميل"
@@ -213,10 +223,11 @@ const [open, setOpen] = useState(false);
     toast.success('تم حذف المستخدم');
     setOpen(false);
   }}
-/>
+/>;
 ```
 
 **الميزات**:
+
 - ✅ 3 أنواع: info, warning, danger (ألوان وأيقونات مختلفة)
 - ✅ دعم async operations
 - ✅ حالة loading مع spinner
@@ -237,6 +248,7 @@ const [open, setOpen] = useState(false);
 ```
 
 **لتثبيت**:
+
 ```bash
 pnpm install
 ```
@@ -256,6 +268,7 @@ pnpm add @tanstack/react-table @tanstack/react-virtual
 **المكان المقترح**: `components/ui/DataTable.tsx`
 
 **الميزات المطلوبة**:
+
 - ✅ Virtualization للأداء (1000+ صف)
 - ✅ Sorting, filtering, pagination
 - ✅ Checkbox للتحديد المتعدد
@@ -265,12 +278,13 @@ pnpm add @tanstack/react-table @tanstack/react-virtual
 - ✅ تصدير CSV/Excel
 
 **مثال الاستخدام**:
+
 ```tsx
 <DataTable
   columns={userColumns}
   data={users}
   onSort={(column, direction) => {}}
-  onFilter={(filters) => {}}
+  onFilter={filters => {}}
   virtualizer
   selectable
   onExport={() => exportToCSV(users)}
@@ -320,10 +334,11 @@ pnpm add @tanstack/react-table @tanstack/react-virtual
 **الملف**: `app/(app)/admin/dashboard/page.tsx`
 
 **التغييرات المطلوبة**:
+
 1. إنشاء API endpoint: `/api/admin/kpis`
 2. جلب بيانات من `mv_org_kpis`:
    ```sql
-   SELECT 
+   SELECT
      SUM(engagements_total) AS engagements_total,
      SUM(findings_total) AS findings_total,
      SUM(recs_total) AS recs_total,
@@ -335,6 +350,7 @@ pnpm add @tanstack/react-table @tanstack/react-virtual
 5. عرض آخر 5 سجلات من `core.audit_logs`
 
 **الكود المقترح**:
+
 ```tsx
 'use client';
 
@@ -357,7 +373,9 @@ export default function AdminDashboardPage() {
   if (loading) {
     return (
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        {[1, 2, 3, 4].map(i => <SkeletonCard key={i} />)}
+        {[1, 2, 3, 4].map(i => (
+          <SkeletonCard key={i} />
+        ))}
       </div>
     );
   }
@@ -409,12 +427,12 @@ export default function AdminDashboardPage() {
 
 ### اختبارات قابلية الاستخدام
 
-| السيناريو | الخطوات | النتيجة المتوقعة |
-|-----------|---------|-------------------|
-| إضافة مستخدم | 1. انقر "+ مستخدم"<br>2. املأ النموذج<br>3. احفظ | يظهر في الجدول فوراً + toast نجاح |
-| فلترة السجلات | 1. اختر تاريخ<br>2. اكتب كلمة بحث<br>3. فلتر | الجدول يتحدث فوراً + URL يتحدث |
-| Dark Mode | 1. انقر أيقونة القمر | الواجهة تتحول فوراً بدون وميض |
-| Keyboard | 1. Tab عبر العناصر<br>2. Esc لإغلاق Dialog | Focus واضح + Dialog يُغلق |
+| السيناريو     | الخطوات                                          | النتيجة المتوقعة                  |
+| ------------- | ------------------------------------------------ | --------------------------------- |
+| إضافة مستخدم  | 1. انقر "+ مستخدم"<br>2. املأ النموذج<br>3. احفظ | يظهر في الجدول فوراً + toast نجاح |
+| فلترة السجلات | 1. اختر تاريخ<br>2. اكتب كلمة بحث<br>3. فلتر     | الجدول يتحدث فوراً + URL يتحدث    |
+| Dark Mode     | 1. انقر أيقونة القمر                             | الواجهة تتحول فوراً بدون وميض     |
+| Keyboard      | 1. Tab عبر العناصر<br>2. Esc لإغلاق Dialog       | Focus واضح + Dialog يُغلق         |
 
 ---
 
@@ -431,6 +449,7 @@ export default function AdminDashboardPage() {
 ## 🤝 المساهمة
 
 عند إضافة مكونات جديدة:
+
 1. ✅ استخدم Design Tokens من `design-tokens.css`
 2. ✅ أضف ARIA attributes (role, aria-label, aria-describedby)
 3. ✅ دعم Keyboard Navigation (Tab, Escape, Enter)

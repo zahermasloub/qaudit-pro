@@ -41,10 +41,7 @@ import prisma from '@/lib/prisma';
  *       500:
  *         description: خطأ في الخادم
  */
-export async function GET(
-  req: NextRequest,
-  { params }: { params: { id: string } }
-) {
+export async function GET(req: NextRequest, { params }: { params: { id: string } }) {
   try {
     const { id } = params;
 
@@ -62,10 +59,7 @@ export async function GET(
     });
 
     if (!plan) {
-      return NextResponse.json(
-        { error: 'الخطة غير موجودة' },
-        { status: 404 }
-      );
+      return NextResponse.json({ error: 'الخطة غير موجودة' }, { status: 404 });
     }
 
     // Return capacity from plan or default values
@@ -83,7 +77,7 @@ export async function GET(
     console.error('❌ Error fetching capacity:', error);
     return NextResponse.json(
       { error: 'فشل جلب بيانات السعة', details: error.message },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

@@ -2,11 +2,7 @@ import animate from 'tailwindcss-animate';
 import rtl from 'tailwindcss-rtl';
 
 export default {
-  content: [
-    './app/**/*.{ts,tsx}',
-    './components/**/*.{ts,tsx}',
-    './lib/**/*.{ts,tsx}',
-  ],
+  content: ['./app/**/*.{ts,tsx}', './components/**/*.{ts,tsx}', './lib/**/*.{ts,tsx}'],
   darkMode: 'class',
   theme: {
     container: {
@@ -22,19 +18,14 @@ export default {
     },
     extend: {
       fontFamily: {
-        arabic: [
-          'Tajawal',
-          'Cairo',
-          'Noto Sans Arabic',
-          'sans-serif',
-        ],
+        arabic: ['Tajawal', 'Cairo', 'Noto Sans Arabic', 'sans-serif'],
       },
       colors: {
         background: 'var(--background)',
         foreground: 'var(--foreground)',
 
         // Design Tokens - Background (Light + Dark)
-        'bg': 'var(--bg)',
+        bg: 'var(--bg)',
         'bg-base': 'var(--color-bg-base)',
         'bg-subtle': 'var(--color-bg-subtle)',
         'bg-muted': 'var(--color-bg-muted)',
@@ -42,7 +33,7 @@ export default {
         'bg-overlay': 'var(--color-bg-overlay)',
 
         // Design Tokens - Text (Light + Dark)
-        'text': 'var(--text)',
+        text: 'var(--text)',
         'text-2': 'var(--text-2)',
         'text-primary': 'var(--color-text-primary)',
         'text-secondary': 'var(--color-text-secondary)',
@@ -51,17 +42,17 @@ export default {
         'text-inverse': 'var(--color-text-inverse)',
 
         // Design Tokens - Border (Light + Dark)
-        'border': 'var(--border)',
+        border: 'var(--border)',
         'border-base': 'var(--color-border-base)',
         'border-strong': 'var(--color-border-strong)',
         'border-focus': 'var(--color-border-focus)',
 
         // Semantic Aliases for Light Theme
-        'surface': 'var(--surface)',
+        surface: 'var(--surface)',
         'surface-hover': 'var(--surface-hover)',
         'border-ui': 'var(--border)',
-        'muted': 'var(--muted)',
-        'primary': {
+        muted: 'var(--muted)',
+        primary: {
           DEFAULT: 'var(--primary)',
           50: 'var(--primary-50)',
           100: 'var(--primary-100)',
@@ -146,45 +137,45 @@ export default {
         },
       },
       spacing: {
-        'xs': '0.25rem',
-        'sm': '0.5rem',
-        'md': '1rem',
-        'lg': '1.5rem',
-        'xl': '2rem',
+        xs: '0.25rem',
+        sm: '0.5rem',
+        md: '1rem',
+        lg: '1.5rem',
+        xl: '2rem',
         '2xl': '3rem',
       },
       fontSize: {
-        'xs': ['0.75rem', { lineHeight: '1rem' }],
-        'sm': ['0.875rem', { lineHeight: '1.25rem' }],
-        'base': ['1rem', { lineHeight: '1.5rem' }],
-        'lg': ['1.125rem', { lineHeight: '1.75rem' }],
-        'xl': ['1.25rem', { lineHeight: '1.75rem' }],
+        xs: ['0.75rem', { lineHeight: '1rem' }],
+        sm: ['0.875rem', { lineHeight: '1.25rem' }],
+        base: ['1rem', { lineHeight: '1.5rem' }],
+        lg: ['1.125rem', { lineHeight: '1.75rem' }],
+        xl: ['1.25rem', { lineHeight: '1.75rem' }],
         '2xl': ['1.5rem', { lineHeight: '2rem' }],
         '3xl': ['1.875rem', { lineHeight: '2.25rem' }],
         '4xl': ['2.25rem', { lineHeight: '2.5rem' }],
         '5xl': ['3rem', { lineHeight: '1' }],
       },
       borderRadius: {
-        'sm': '0.25rem',
-        'md': '0.375rem',
-        'lg': '0.5rem',
-        'xl': '0.75rem',
+        sm: '0.25rem',
+        md: '0.375rem',
+        lg: '0.5rem',
+        xl: '0.75rem',
         '2xl': '1rem',
         '3xl': '1.5rem',
-        'full': '9999px',
-        'card': 'var(--radius-card)',
-        'btn': 'var(--radius-btn)',
+        full: '9999px',
+        card: 'var(--radius-card)',
+        btn: 'var(--radius-btn)',
       },
       boxShadow: {
         soft: '0 1px 2px 0 rgb(0 0 0 / 0.05), 0 8px 24px -20px rgb(0 0 0 / 0.25)',
         card: 'var(--shadow-card)',
       },
       screens: {
-        'xs': '360px',
-        'sm': '414px',
-        'md': '768px',
-        'lg': '1024px',
-        'xl': '1280px',
+        xs: '360px',
+        sm: '414px',
+        md: '768px',
+        lg: '1024px',
+        xl: '1280px',
         '2xl': '1440px',
         '3xl': '1920px',
       },

@@ -188,7 +188,7 @@ export function DataTable<TData, TValue>({
   // تحديث الصفوف المحددة
   React.useEffect(() => {
     if (onSelectionChange) {
-      const selectedRows = table.getFilteredSelectedRowModel().rows.map((row) => row.original);
+      const selectedRows = table.getFilteredSelectedRowModel().rows.map(row => row.original);
       onSelectionChange(selectedRows);
     }
   }, [rowSelection, onSelectionChange, table]);
@@ -210,9 +210,9 @@ export function DataTable<TData, TValue>({
         <div className="overflow-x-auto">
           <table className="w-full" role="table">
             <thead className="bg-bg-muted">
-              {table.getHeaderGroups().map((headerGroup) => (
+              {table.getHeaderGroups().map(headerGroup => (
                 <tr key={headerGroup.id}>
-                  {headerGroup.headers.map((header) => (
+                  {headerGroup.headers.map(header => (
                     <th
                       key={header.id}
                       className="px-4 py-3 text-right text-sm font-semibold text-text-primary"
@@ -222,7 +222,8 @@ export function DataTable<TData, TValue>({
                         <div
                           className={cn(
                             'flex items-center gap-2',
-                            header.column.getCanSort() && 'cursor-pointer select-none hover:text-brand-600'
+                            header.column.getCanSort() &&
+                              'cursor-pointer select-none hover:text-brand-600',
                           )}
                           onClick={header.column.getToggleSortingHandler()}
                         >
@@ -247,16 +248,16 @@ export function DataTable<TData, TValue>({
             </thead>
             <tbody className="divide-y divide-border-base">
               {table.getRowModel().rows?.length ? (
-                table.getRowModel().rows.map((row) => (
+                table.getRowModel().rows.map(row => (
                   <tr
                     key={row.id}
                     className={cn(
                       'transition-colors hover:bg-bg-subtle',
-                      row.getIsSelected() && 'bg-brand-50 dark:bg-brand-950'
+                      row.getIsSelected() && 'bg-brand-50 dark:bg-brand-950',
                     )}
                     data-state={row.getIsSelected() && 'selected'}
                   >
-                    {row.getVisibleCells().map((cell) => (
+                    {row.getVisibleCells().map(cell => (
                       <td key={cell.id} className="px-4 py-3 text-sm text-text-secondary">
                         {flexRender(cell.column.columnDef.cell, cell.getContext())}
                       </td>

@@ -18,8 +18,8 @@ export async function GET() {
     const entries = await fs.readdir(uploadsDir, { withFileTypes: true });
     const files = await Promise.all(
       entries
-        .filter((entry) => entry.isFile())
-        .map(async (entry) => {
+        .filter(entry => entry.isFile())
+        .map(async entry => {
           const filePath = path.join(uploadsDir, entry.name);
           const stats = await fs.stat(filePath);
 
@@ -43,7 +43,7 @@ export async function GET() {
             type,
             lastModified: stats.mtime.toISOString(),
           };
-        })
+        }),
     );
 
     // ترتيب حسب آخر تعديل
@@ -52,10 +52,7 @@ export async function GET() {
     return NextResponse.json({ ok: true, files });
   } catch (error) {
     console.error('Error fetching files:', error);
-    return NextResponse.json(
-      { ok: false, error: 'Failed to fetch files' },
-      { status: 500 }
-    );
+    return NextResponse.json({ ok: false, error: 'Failed to fetch files' }, { status: 500 });
   }
 }
 
@@ -66,18 +63,12 @@ export async function DELETE(request: Request) {
     const { path: filePath } = body;
 
     if (!filePath) {
-      return NextResponse.json(
-        { ok: false, error: 'File path is required' },
-        { status: 400 }
-      );
+      return NextResponse.json({ ok: false, error: 'File path is required' }, { status: 400 });
     }
 
     // التحقق من أن المسار آمن (لا يحتوي على .. أو /)
     if (filePath.includes('..') || filePath.includes('/') || filePath.includes('\\')) {
-      return NextResponse.json(
-        { ok: false, error: 'Invalid file path' },
-        { status: 400 }
-      );
+      return NextResponse.json({ ok: false, error: 'Invalid file path' }, { status: 400 });
     }
 
     const uploadsDir = path.join(process.cwd(), 'uploads');
@@ -87,10 +78,7 @@ export async function DELETE(request: Request) {
     try {
       await fs.access(fullPath);
     } catch {
-      return NextResponse.json(
-        { ok: false, error: 'File not found' },
-        { status: 404 }
-      );
+      return NextResponse.json({ ok: false, error: 'File not found' }, { status: 404 });
     }
 
     // حذف الملف
@@ -102,9 +90,6 @@ export async function DELETE(request: Request) {
     });
   } catch (error) {
     console.error('Error deleting file:', error);
-    return NextResponse.json(
-      { ok: false, error: 'Failed to delete file' },
-      { status: 500 }
-    );
+    return NextResponse.json({ ok: false, error: 'Failed to delete file' }, { status: 500 });
   }
 }
