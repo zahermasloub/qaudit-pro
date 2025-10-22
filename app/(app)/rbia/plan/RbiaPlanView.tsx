@@ -4,7 +4,7 @@ import KpiCards from '../../../(components)/KpiCards';
 import ProcessStepper, { ProcessStep } from './ProcessStepper';
 import CreatePlanWizard from './CreatePlanWizard';
 import { toast } from 'sonner';
-import { Search, Download, Eye, Edit2, Trash2, Plus, FileText } from 'lucide-react';
+import { Search, Download, Eye, Plus, FileText } from 'lucide-react';
 
 interface PlanItem {
   id: string;
@@ -543,17 +543,6 @@ export default function RbiaPlanView({ mode = 'plan' }: RbiaPlanViewProps) {
         {/* Table - Desktop */}
         <div className="hidden md:block bg-white rounded-xl shadow-sm border border-slate-200">
           <table className="w-full table-auto">
-            <colgroup>
-              <col className="w-[7%]" />  {/* الرمز */}
-              <col className="w-[23%]" /> {/* العنوان */}
-              <col className="w-[12%]" /> {/* الإدارة */}
-              <col className="w-[11%]" /> {/* المخاطر */}
-              <col className="w-[11%]" /> {/* النوع */}
-              <col className="w-[8%]" />  {/* الربع */}
-              <col className="w-[8%]" />  {/* الساعات */}
-              <col className="w-[11%]" /> {/* الحالة */}
-              <col className="w-[9%]" />  {/* الإجراءات */}
-            </colgroup>
               <thead className="bg-gradient-to-r from-slate-700 to-slate-800 text-white">
                 <tr>
                   <th className="px-3 py-4 text-right text-xs font-semibold uppercase tracking-wider">الرمز</th>
@@ -612,19 +601,19 @@ export default function RbiaPlanView({ mode = 'plan' }: RbiaPlanViewProps) {
                         <div className="flex items-center justify-center gap-2">
                           <button
                             onClick={() => handleEdit(item)}
-                            className="p-2 bg-blue-50 text-blue-700 hover:bg-blue-100 hover:text-blue-800 rounded-lg transition-all hover:shadow-md border border-blue-200 hover:border-blue-300"
+                            className="px-4 py-2 bg-blue-50 text-blue-700 hover:bg-blue-100 hover:text-blue-800 rounded-lg transition-all hover:shadow-md border-2 border-blue-300 hover:border-blue-400 font-semibold text-sm"
                             title="تعديل المهمة"
                             aria-label={`تعديل ${item.title}`}
                           >
-                            <Edit2 className="w-4.5 h-4.5" strokeWidth={2.5} />
+                            تعديل
                           </button>
                           <button
                             onClick={() => handleDelete(item)}
-                            className="p-2 bg-red-50 text-red-700 hover:bg-red-100 hover:text-red-800 rounded-lg transition-all hover:shadow-md border border-red-200 hover:border-red-300"
+                            className="px-4 py-2 bg-red-50 text-red-700 hover:bg-red-100 hover:text-red-800 rounded-lg transition-all hover:shadow-md border-2 border-red-300 hover:border-red-400 font-semibold text-sm"
                             title="حذف المهمة"
                             aria-label={`حذف ${item.title}`}
                           >
-                            <Trash2 className="w-4.5 h-4.5" strokeWidth={2.5} />
+                            حذف
                           </button>
                         </div>
                       </td>
@@ -647,19 +636,19 @@ export default function RbiaPlanView({ mode = 'plan' }: RbiaPlanViewProps) {
                 <div className="flex gap-2 mr-2">
                   <button
                     onClick={() => handleEdit(item)}
-                    className="p-2 bg-blue-50 text-blue-700 hover:bg-blue-100 rounded-lg transition-all border border-blue-200"
+                    className="px-3 py-1.5 bg-blue-50 text-blue-700 hover:bg-blue-100 rounded-lg transition-all border border-blue-200 font-semibold text-xs"
                     title="تعديل المهمة"
                     aria-label={`تعديل ${item.title}`}
                   >
-                    <Edit2 className="w-4.5 h-4.5" strokeWidth={2.5} />
+                    تعديل
                   </button>
                   <button
                     onClick={() => handleDelete(item)}
-                    className="p-2 bg-red-50 text-red-700 hover:bg-red-100 rounded-lg transition-all border border-red-200"
+                    className="px-3 py-1.5 bg-red-50 text-red-700 hover:bg-red-100 rounded-lg transition-all border border-red-200 font-semibold text-xs"
                     title="حذف المهمة"
                     aria-label={`حذف ${item.title}`}
                   >
-                    <Trash2 className="w-4.5 h-4.5" strokeWidth={2.5} />
+                    حذف
                   </button>
                 </div>
               </div>
