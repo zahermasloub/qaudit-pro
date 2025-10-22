@@ -1123,8 +1123,8 @@ export default function RbiaPlanView({ mode = 'plan' }: RbiaPlanViewProps) {
 
             {/* Dynamic Content Based on Active Step */}
             {renderStepContent()}
+          </div>
 
-          </
           {/* Process Stepper Sidebar */}
           <ProcessStepper
             steps={processSteps}
@@ -1132,8 +1132,8 @@ export default function RbiaPlanView({ mode = 'plan' }: RbiaPlanViewProps) {
             onStepClick={handleStepChange}
             completedCount={completedSteps}
           />
-        </
-      </
+        </div>
+      </div>
 
       {/* View/Edit Sheet (Simple Modal) */}
       {viewMode && selectedItem && (
@@ -1265,6 +1265,8 @@ export default function RbiaPlanView({ mode = 'plan' }: RbiaPlanViewProps) {
           </div>
         </div>
       )}
-    </
- 
+    </div>
+  );
+}
+
 
