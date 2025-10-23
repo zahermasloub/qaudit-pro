@@ -425,9 +425,9 @@ export function AnnualPlanScreen({ locale }: { locale: Locale }) {
       <div className="container mx-auto px-3 sm:px-4 lg:px-6 max-w-[1440px] w-full overflow-x-hidden" dir="rtl">
         {/* Flex Layout for better control */}
         <div className="flex flex-col lg:flex-row gap-6 w-full" style={{ maxWidth: '100%', contain: 'layout' }}>
-          {/* Stepper - fixed 320px on lg+ */}
-          <aside className="stepper-sidebar w-full lg:w-[320px] lg:min-w-[320px] lg:max-w-[320px] flex-shrink-0">
-            <div className="lg:sticky lg:top-[88px]">
+          {/* Stepper - fixed 320px on lg+ with high z-index */}
+          <aside className="stepper-sidebar w-full lg:w-[320px] lg:min-w-[320px] lg:max-w-[320px] flex-shrink-0 relative z-50">
+            <div className="lg:sticky lg:top-[88px] z-50">
               <ProcessStepper
                 steps={processSteps}
                 activeStepId={activeStepId || 1}
@@ -438,7 +438,7 @@ export function AnnualPlanScreen({ locale }: { locale: Locale }) {
           </aside>
 
           {/* المحتوى الأوسط - grows to fill space */}
-          <main className="flex-1 min-w-0 overflow-x-hidden space-y-6">
+          <main className="flex-1 min-w-0 overflow-x-hidden space-y-6 relative z-10">
             {/* 1) KPI Summary - مرة واحدة فقط في الأعلى */}
             {selectedPlan && (
               <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4">
@@ -769,8 +769,8 @@ export function AnnualPlanScreen({ locale }: { locale: Locale }) {
           </main>
 
           {/* RBIA sidebar - fixed 320px, shows on xl+ */}
-          <aside className="hidden xl:block w-[320px] min-w-[320px] max-w-[320px] flex-shrink-0">
-            <div className="bg-white rounded-lg border border-gray-200 p-6 sticky top-[88px]">
+          <aside className="hidden xl:block w-[320px] min-w-[320px] max-w-[320px] flex-shrink-0 relative z-40">
+            <div className="bg-white rounded-lg border border-gray-200 p-6 sticky top-[88px] relative z-40">
               <h3 className="text-lg font-bold text-gray-900 mb-4">
                 {locale === 'ar' ? 'معلومات RBIA' : 'RBIA Information'}
               </h3>

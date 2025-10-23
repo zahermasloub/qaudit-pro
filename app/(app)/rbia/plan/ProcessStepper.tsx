@@ -139,18 +139,18 @@ export default function ProcessStepper({
   return (
     <>
       {/* Desktop Sidebar - Hidden on mobile - Fixed Width 320px */}
-      <div className="hidden lg:block w-full">
-        <div className="bg-white rounded-xl shadow-sm border border-gray-200 sticky top-[88px] overflow-hidden">
+      <div className="hidden lg:block w-full relative z-50">
+        <div className="bg-white rounded-xl shadow-lg border border-gray-200 sticky top-4 overflow-hidden z-50 relative max-h-[calc(100vh-32px)] flex flex-col">
           {/* Header */}
-          <div className="bg-gradient-to-br from-slate-800 to-slate-900 text-white px-4 py-4">
-            <h3 className="text-base font-semibold mb-1">مراحل العملية</h3>
+          <div className="bg-gradient-to-br from-slate-800 to-slate-900 text-white px-4 py-3 flex-shrink-0">
+            <h3 className="text-sm font-semibold mb-1">مراحل العملية</h3>
             <p className="text-xs text-slate-300">
               {completedCount} من {totalSteps} مكتملة
             </p>
           </div>
 
           {/* Steps List */}
-          <div className="p-3 space-y-2 max-h-[calc(100vh-200px)] overflow-y-auto custom-scrollbar">
+          <div className="p-3 space-y-2 overflow-y-auto custom-scrollbar flex-1 min-h-0">
             {steps.map((step, index) => (
               <div
                 key={step.id}
@@ -197,7 +197,7 @@ export default function ProcessStepper({
           </div>
 
           {/* Progress Footer */}
-          <div className="border-t border-gray-200 p-4 bg-gray-50">
+          <div className="border-t border-gray-200 p-3 bg-gray-50 flex-shrink-0">
             <div className="flex items-center justify-between mb-2 text-xs text-gray-600">
               <span>التقدم الكلي</span>
               <span className="font-semibold">

@@ -920,7 +920,7 @@ export default function AppShell() {
 
   return (
     <ToastProvider>
-      <div className="min-h-screen min-w-full bg-slate-50 safe-area overflow-x-auto">
+      <div className="min-h-screen min-w-full bg-slate-50 safe-area overflow-x-auto relative z-0">
         <Topbar
           locale={locale}
           setLocale={setLocale}
