@@ -392,6 +392,9 @@ export function AnnualPlanScreen({ locale }: { locale: Locale }) {
     return colors[status] || 'bg-gray-100 text-gray-800';
   };
 
+  // State for sidebar collapse
+  const [sidebarOpen, setSidebarOpen] = useState(true);
+
   return (
     <div className="min-h-screen bg-gray-50" dir={isRTL ? 'rtl' : 'ltr'}>
       {/* Header - Fixed */}
@@ -421,24 +424,92 @@ export function AnnualPlanScreen({ locale }: { locale: Locale }) {
         </div>
       </div>
 
-      {/* Main Content with Fixed Grid Layout */}
-      <div className="container mx-auto px-3 sm:px-4 lg:px-6 max-w-[1440px] w-full overflow-x-hidden" dir="rtl">
-        {/* Flex Layout for better control */}
-        <div className="flex flex-col lg:flex-row gap-6 w-full" style={{ maxWidth: '100%', contain: 'layout' }}>
-          {/* Stepper - fixed 320px on lg+ with high z-index */}
-          <aside className="stepper-sidebar w-full lg:w-[320px] lg:min-w-[320px] lg:max-w-[320px] flex-shrink-0 relative z-50">
-            <div className="lg:sticky lg:top-[88px] z-50">
-              <ProcessStepper
-                steps={processSteps}
-                activeStepId={activeStepId || 1}
-                onStepClick={handleStepClick}
-                completedCount={processSteps.filter(s => s.status === 'completed').length}
-              />
+      {/* Main Content with Grid Layout */}
+      <div className="annual-plan-container container mx-auto px-3 sm:px-4 lg:px-6 max-w-[1440px]" dir="rtl">
+        {/* Grid Layout - Desktop: [sidebar | main], Mobile: [main only with bottom bar] */}
+        <div className="annual-plan-shell">
+          {/* Stepper Sidebar - Collapsible on Desktop (72px collapsed, 280px expanded) */}
+          <aside
+            className={clsx(
+              'annual-plan-sidebar hidden lg:block',
+              sidebarOpen && 'is-open'
+            )}
+            aria-expanded={sidebarOpen}
+            aria-label={locale === 'ar' ? 'شريط المراحل الجانبي' : 'Process Stages Sidebar'}
+          >
+            <div className="annual-plan-sidebar-inner">
+              {sidebarOpen ? (
+                // Expanded View - Full ProcessStepper
+                <div className="relative">
+                  <button
+                    onClick={() => setSidebarOpen(false)}
+                    className="absolute top-2 right-2 z-10 p-1.5 rounded-md hover:bg-gray-100 transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    aria-label={locale === 'ar' ? 'طي الشريط الجانبي' : 'Collapse Sidebar'}
+                    title={locale === 'ar' ? 'طي' : 'Collapse'}
+                  >
+                    <svg className="w-4 h-4 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+                    </svg>
+                  </button>
+                  <ProcessStepper
+                    steps={processSteps}
+                    activeStepId={activeStepId || 1}
+                    onStepClick={handleStepClick}
+                    completedCount={processSteps.filter(s => s.status === 'completed').length}
+                  />
+                </div>
+              ) : (
+                // Collapsed View - Icon Rail
+                <div className="bg-white rounded-xl shadow-lg border border-gray-200 overflow-hidden">
+                  {/* Toggle Button */}
+                  <div className="bg-gradient-to-br from-slate-800 to-slate-900 p-2">
+                    <button
+                      onClick={() => setSidebarOpen(true)}
+                      className="w-full p-2 rounded-md hover:bg-white/10 transition-colors focus:outline-none focus:ring-2 focus:ring-white"
+                      aria-label={locale === 'ar' ? 'توسيع الشريط الجانبي' : 'Expand Sidebar'}
+                      title={locale === 'ar' ? 'توسيع' : 'Expand'}
+                    >
+                      <svg className="w-5 h-5 text-white mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                      </svg>
+                    </button>
+                  </div>
+
+                  {/* Icon Rail */}
+                  <div className="p-2 space-y-1 max-h-[calc(100vh-160px)] overflow-y-auto">
+                    {processSteps.map((step) => (
+                      <button
+                        key={step.id}
+                        onClick={() => handleStepClick(step.id)}
+                        className={clsx(
+                          'w-full p-2 rounded-lg transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500',
+                          activeStepId === step.id
+                            ? 'bg-blue-100 text-blue-700'
+                            : 'hover:bg-gray-100 text-gray-700'
+                        )}
+                        title={step.label}
+                        aria-label={step.label}
+                      >
+                        <div className={clsx(
+                          'w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold mx-auto',
+                          activeStepId === step.id
+                            ? 'bg-blue-600 text-white'
+                            : step.status === 'completed'
+                              ? 'bg-green-100 text-green-700'
+                              : 'bg-gray-100 text-gray-600'
+                        )}>
+                          {step.id}
+                        </div>
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              )}
             </div>
           </aside>
 
-          {/* المحتوى الأوسط - grows to fill space */}
-          <main className="flex-1 min-w-0 overflow-x-hidden space-y-6 relative z-10">
+          {/* Main Content Area - Flexible width, scrolls inside */}
+          <main className="annual-plan-main space-y-6">
             {/* 1) KPI Summary - مرة واحدة فقط في الأعلى */}
             {selectedPlan && (
               <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4">
@@ -632,7 +703,7 @@ export function AnnualPlanScreen({ locale }: { locale: Locale }) {
                   </div>
                 </div>
 
-                {/* Tasks Table - Full width without horizontal scroll */}
+                {/* Tasks Table - Scrolls inside wrapper, doesn't push layout */}
                 {loadingPlan ? (
                   <div className="bg-white rounded-lg border border-gray-200 p-12 text-center">
                     <div className="text-gray-600">
@@ -640,75 +711,77 @@ export function AnnualPlanScreen({ locale }: { locale: Locale }) {
                     </div>
                   </div>
                 ) : (
-                  <div className="bg-white rounded-lg border border-gray-200 overflow-hidden shadow-sm max-w-full">
-                    <div className="w-full overflow-x-auto">
-                      <table className="w-full table-fixed" style={{ maxWidth: '100%' }}>
+                  <div className="bg-white rounded-lg border border-gray-200 shadow-sm overflow-hidden">
+                    {/* Table Wrapper with Internal Scroll */}
+                    <div className="annual-plan-table-wrapper">
+                      <table className="w-full table-fixed border-collapse">
                         <colgroup>
-                          <col style={{ width: '8%' }} />       {/* Code */}
-                          <col style={{ width: '30%' }} />      {/* Title - with wrap */}
-                          <col style={{ width: '14%' }} />      {/* Department */}
-                          <col style={{ width: '10%' }} />      {/* Risk */}
-                          <col style={{ width: '12%' }} />      {/* Type */}
-                          <col style={{ width: '8%' }} />       {/* Quarter */}
-                          <col style={{ width: '8%' }} />       {/* Hours */}
-                          <col style={{ width: '10%' }} />      {/* Status */}
+                          <col className="col-code" />
+                          <col className="col-title" />
+                          <col className="col-department" />
+                          <col className="col-risk" />
+                          <col className="col-type" />
+                          <col className="col-quarter" />
+                          <col className="col-hours" />
+                          <col className="col-status" />
+                          <col className="col-actions" />
                         </colgroup>
-                        <thead className="bg-gray-50 border-b border-gray-200">
+                        <thead>
                           <tr>
-                            <th className={`text-start text-xs font-medium text-gray-600 uppercase tracking-wider ${getDensityClasses()}`}>
+                            <th className={`text-start text-xs font-medium text-gray-600 uppercase tracking-wider bg-gray-50 ${getDensityClasses()}`}>
                               {locale === 'ar' ? 'الرمز' : 'Code'}
                             </th>
-                            <th className={`text-start text-xs font-medium text-gray-600 uppercase tracking-wider ${getDensityClasses()}`}>
+                            <th className={`text-start text-xs font-medium text-gray-600 uppercase tracking-wider bg-gray-50 ${getDensityClasses()}`}>
                               {locale === 'ar' ? 'عنوان المهمة' : 'Task Title'}
                             </th>
-                            <th className={`text-start text-xs font-medium text-gray-600 uppercase tracking-wider ${getDensityClasses()}`}>
+                            <th className={`text-start text-xs font-medium text-gray-600 uppercase tracking-wider bg-gray-50 ${getDensityClasses()}`}>
                               {locale === 'ar' ? 'الإدارة' : 'Department'}
                             </th>
-                            <th className={`text-start text-xs font-medium text-gray-600 uppercase tracking-wider ${getDensityClasses()}`}>
+                            <th className={`text-start text-xs font-medium text-gray-600 uppercase tracking-wider bg-gray-50 ${getDensityClasses()}`}>
                               {locale === 'ar' ? 'المخاطر' : 'Risk'}
                             </th>
-                            <th className={`text-start text-xs font-medium text-gray-600 uppercase tracking-wider ${getDensityClasses()}`}>
+                            <th className={`text-start text-xs font-medium text-gray-600 uppercase tracking-wider bg-gray-50 ${getDensityClasses()}`}>
                               {locale === 'ar' ? 'النوع' : 'Type'}
                             </th>
-                            <th className={`text-start text-xs font-medium text-gray-600 uppercase tracking-wider ${getDensityClasses()}`}>
+                            <th className={`text-start text-xs font-medium text-gray-600 uppercase tracking-wider bg-gray-50 ${getDensityClasses()}`}>
                               {locale === 'ar' ? 'الربع' : 'Quarter'}
                             </th>
-                            <th className={`text-start text-xs font-medium text-gray-600 uppercase tracking-wider ${getDensityClasses()}`}>
+                            <th className={`text-start text-xs font-medium text-gray-600 uppercase tracking-wider bg-gray-50 ${getDensityClasses()}`}>
                               {locale === 'ar' ? 'الساعات' : 'Hours'}
                             </th>
-                            <th className={`text-start text-xs font-medium text-gray-600 uppercase tracking-wider ${getDensityClasses()}`}>
+                            <th className={`text-start text-xs font-medium text-gray-600 uppercase tracking-wider bg-gray-50 ${getDensityClasses()}`}>
                               {locale === 'ar' ? 'الحالة' : 'Status'}
                             </th>
-                            <th className={`text-start text-xs font-medium text-gray-600 uppercase tracking-wider ${getDensityClasses()}`}>
+                            <th className={`text-start text-xs font-medium text-gray-600 uppercase tracking-wider bg-gray-50 ${getDensityClasses()}`}>
                               {locale === 'ar' ? 'إجراءات' : 'Actions'}
                             </th>
                           </tr>
                         </thead>
-                        <tbody className="divide-y divide-gray-200 bg-white">
+                        <tbody>
                           {filteredTasks.map(task => (
-                            <tr key={task.id} className="hover:bg-gray-50 transition-colors align-top">
-                              <td className={`text-sm font-medium text-gray-900 whitespace-nowrap ${getDensityClasses()}`}>{task.code}</td>
-                              <td className={`text-sm text-gray-900 break-words leading-relaxed ${getDensityClasses()}`} style={{ wordBreak: 'break-word', overflowWrap: 'break-word' }}>{task.title}</td>
-                              <td className={`text-sm text-gray-600 break-words ${getDensityClasses()}`}>{task.department}</td>
+                            <tr key={task.id} className="align-top">
+                              <td className={`text-sm font-medium text-gray-900 cell-token ${getDensityClasses()}`}>{task.code}</td>
+                              <td className={`text-sm text-gray-900 cell-text leading-relaxed ${getDensityClasses()}`}>{task.title}</td>
+                              <td className={`text-sm text-gray-600 cell-text ${getDensityClasses()}`}>{task.department}</td>
                               <td className={getDensityClasses()}>
                                 <span
                                   className={clsx(
-                                    'inline-block px-2 py-1 rounded text-xs font-medium',
+                                    'status-badge',
                                     getRiskLevelColor(task.riskLevel),
                                   )}
                                 >
                                   {getRiskLevelLabel(task.riskLevel)}
                                 </span>
                               </td>
-                              <td className={`text-sm text-gray-600 break-words ${getDensityClasses()}`}>
+                              <td className={`text-sm text-gray-600 cell-text ${getDensityClasses()}`}>
                                 {getAuditTypeLabel(task.auditType)}
                               </td>
-                              <td className={`text-sm text-gray-600 whitespace-nowrap ${getDensityClasses()}`}>{task.plannedQuarter}</td>
-                              <td className={`text-sm text-gray-600 whitespace-nowrap ${getDensityClasses()}`}>{task.estimatedHours}</td>
+                              <td className={`text-sm text-gray-600 cell-token ${getDensityClasses()}`}>{task.plannedQuarter}</td>
+                              <td className={`text-sm text-gray-600 cell-token text-center ${getDensityClasses()}`}>{task.estimatedHours}</td>
                               <td className={getDensityClasses()}>
                                 <span
                                   className={clsx(
-                                    'inline-block px-2 py-1 rounded text-xs font-medium',
+                                    'status-badge',
                                     getStatusColor(task.status),
                                   )}
                                 >
@@ -768,37 +841,40 @@ export function AnnualPlanScreen({ locale }: { locale: Locale }) {
             )}
           </main>
 
-          {/* RBIA sidebar - fixed 320px, shows on xl+ */}
-          <aside className="hidden xl:block w-[320px] min-w-[320px] max-w-[320px] flex-shrink-0 relative z-40">
-            <div className="bg-white rounded-lg border border-gray-200 p-6 sticky top-[88px] relative z-40">
-              <h3 className="text-lg font-bold text-gray-900 mb-4">
-                {locale === 'ar' ? 'معلومات RBIA' : 'RBIA Information'}
-              </h3>
-              <div className="space-y-4 text-sm text-gray-600">
-                <div>
-                  <h4 className="font-semibold text-gray-800 mb-2">
-                    {locale === 'ar' ? 'نهج التدقيق القائم على المخاطر' : 'Risk-Based Internal Audit'}
-                  </h4>
-                  <p className="leading-relaxed">
-                    {locale === 'ar'
-                      ? 'منهجية منظمة لتحديد وتقييم المخاطر وتطوير خطة تدقيق شاملة.'
-                      : 'A systematic approach to identify, assess risks, and develop comprehensive audit plans.'}
-                  </p>
-                </div>
-                <div className="border-t border-gray-200 pt-4">
-                  <h4 className="font-semibold text-gray-800 mb-2">
-                    {locale === 'ar' ? 'المراحل الأساسية' : 'Key Phases'}
-                  </h4>
-                  <ul className="space-y-2 list-disc list-inside">
-                    <li>{locale === 'ar' ? 'التخطيط السنوي' : 'Annual Planning'}</li>
-                    <li>{locale === 'ar' ? 'تقييم المخاطر' : 'Risk Assessment'}</li>
-                    <li>{locale === 'ar' ? 'الأعمال الميدانية' : 'Fieldwork'}</li>
-                    <li>{locale === 'ar' ? 'إعداد التقارير' : 'Reporting'}</li>
-                  </ul>
-                </div>
-              </div>
-            </div>
-          </aside>
+        </div>
+      </div>
+
+      {/* Mobile Bottom Bar - Shows stages horizontally on mobile */}
+      <div className="annual-plan-bottom-bar lg:hidden">
+        <div className="stage-rail">
+          {processSteps.map((step) => (
+            <button
+              key={step.id}
+              onClick={() => handleStepClick(step.id)}
+              className={clsx(
+                'stage-chip',
+                activeStepId === step.id
+                  ? 'active'
+                  : ''
+              )}
+              aria-current={activeStepId === step.id ? 'step' : undefined}
+              title={step.label}
+            >
+              <span className="inline-flex items-center gap-1.5">
+                <span className={clsx(
+                  'inline-flex items-center justify-center w-5 h-5 rounded-full text-xs font-bold',
+                  activeStepId === step.id
+                    ? 'bg-white text-blue-600'
+                    : step.status === 'completed'
+                      ? 'bg-green-600 text-white'
+                      : 'bg-gray-200 text-gray-600'
+                )}>
+                  {step.id}
+                </span>
+                <span>{step.label}</span>
+              </span>
+            </button>
+          ))}
         </div>
       </div>
 

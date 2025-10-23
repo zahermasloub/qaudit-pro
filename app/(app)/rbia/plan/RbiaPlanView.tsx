@@ -542,18 +542,20 @@ export default function RbiaPlanView({ mode = 'plan' }: RbiaPlanViewProps) {
 
         {/* Table - Desktop */}
         <div className="hidden md:block bg-white rounded-xl shadow-sm border border-slate-200">
-          <table className="w-full table-auto">
-              <thead className="bg-gradient-to-r from-slate-700 to-slate-800 text-white">
+          {/* Table wrapper with overflow control */}
+          <div className="w-full max-h-[calc(100vh-320px)] overflow-auto">
+            <table className="w-full table-fixed border-collapse">
+              <thead className="bg-gradient-to-r from-slate-700 to-slate-800 text-white sticky top-0 z-10">
                 <tr>
-                  <th className="px-4 py-4 text-right text-xs font-semibold uppercase tracking-wider whitespace-nowrap">الرمز</th>
-                  <th className="px-4 py-4 text-right text-xs font-semibold uppercase tracking-wider whitespace-nowrap">العنوان</th>
-                  <th className="px-4 py-4 text-right text-xs font-semibold uppercase tracking-wider whitespace-nowrap">الإدارة</th>
-                  <th className="px-4 py-4 text-right text-xs font-semibold uppercase tracking-wider whitespace-nowrap">المخاطر</th>
-                  <th className="px-4 py-4 text-right text-xs font-semibold uppercase tracking-wider whitespace-nowrap">النوع</th>
-                  <th className="px-4 py-4 text-right text-xs font-semibold uppercase tracking-wider whitespace-nowrap">الربع</th>
-                  <th className="px-4 py-4 text-right text-xs font-semibold uppercase tracking-wider whitespace-nowrap">الساعات</th>
-                  <th className="px-4 py-4 text-right text-xs font-semibold uppercase tracking-wider whitespace-nowrap">الحالة</th>
-                  <th className="px-4 py-4 text-center text-xs font-semibold uppercase tracking-wider whitespace-nowrap">الإجراءات</th>
+                  <th className="px-4 py-4 text-right text-xs font-semibold uppercase tracking-wider w-[100px]">الرمز</th>
+                  <th className="px-4 py-4 text-right text-xs font-semibold uppercase tracking-wider w-auto">العنوان</th>
+                  <th className="px-4 py-4 text-right text-xs font-semibold uppercase tracking-wider w-[140px]">الإدارة</th>
+                  <th className="px-4 py-4 text-right text-xs font-semibold uppercase tracking-wider w-[100px]">المخاطر</th>
+                  <th className="px-4 py-4 text-right text-xs font-semibold uppercase tracking-wider w-[120px]">النوع</th>
+                  <th className="px-4 py-4 text-right text-xs font-semibold uppercase tracking-wider w-[80px]">الربع</th>
+                  <th className="px-4 py-4 text-right text-xs font-semibold uppercase tracking-wider w-[80px]">الساعات</th>
+                  <th className="px-4 py-4 text-right text-xs font-semibold uppercase tracking-wider w-[100px]">الحالة</th>
+                  <th className="px-4 py-4 text-center text-xs font-semibold uppercase tracking-wider w-[160px]">الإجراءات</th>
                 </tr>
               </thead>
               <tbody className="bg-white divide-y divide-slate-200">
@@ -569,22 +571,22 @@ export default function RbiaPlanView({ mode = 'plan' }: RbiaPlanViewProps) {
                       key={item.id}
                       className={`hover:bg-slate-50 transition-colors ${index % 2 === 0 ? 'bg-white' : 'bg-slate-50/30'}`}
                     >
-                      <td className="px-4 py-4 text-sm font-mono text-slate-700 whitespace-nowrap" title={item.code}>
-                        {item.code}
+                      <td className="px-4 py-4 text-sm font-mono text-slate-700" title={item.code}>
+                        <div className="break-words overflow-wrap-anywhere">{item.code}</div>
                       </td>
-                      <td className="px-4 py-4 text-sm text-slate-800 font-medium" style={{maxWidth: '400px'}}>
-                        {item.title}
+                      <td className="px-4 py-4 text-sm text-slate-800 font-medium">
+                        <div className="break-words overflow-wrap-anywhere">{item.title}</div>
                       </td>
-                      <td className="px-4 py-4 text-sm text-slate-600 whitespace-nowrap" title={item.department}>
-                        {item.department}
+                      <td className="px-4 py-4 text-sm text-slate-600" title={item.department}>
+                        <div className="break-words overflow-wrap-anywhere">{item.department}</div>
                       </td>
-                      <td className="px-4 py-4 whitespace-nowrap">
+                      <td className="px-4 py-4">
                         <span className={`inline-flex items-center px-2.5 py-1 rounded-full text-xs font-semibold border ${getRiskBadgeColor(item.risk_level)}`}>
                           {getRiskLabel(item.risk_level)}
                         </span>
                       </td>
-                      <td className="px-4 py-4 text-sm text-slate-600 whitespace-nowrap" title={item.type}>
-                        {item.type}
+                      <td className="px-4 py-4 text-sm text-slate-600" title={item.type}>
+                        <div className="break-words overflow-wrap-anywhere">{item.type}</div>
                       </td>
                       <td className="px-4 py-4 text-sm text-slate-600 text-center font-medium whitespace-nowrap">
                         {item.quarter}
@@ -592,7 +594,7 @@ export default function RbiaPlanView({ mode = 'plan' }: RbiaPlanViewProps) {
                       <td className="px-4 py-4 text-sm text-slate-600 text-center font-medium whitespace-nowrap">
                         {item.hours}
                       </td>
-                      <td className="px-4 py-4 whitespace-nowrap">
+                      <td className="px-4 py-4">
                         <span className={`inline-flex items-center px-2.5 py-1 rounded-full text-xs font-semibold border ${getStatusBadgeColor(item.status)}`}>
                           {getStatusLabel(item.status)}
                         </span>
@@ -623,6 +625,7 @@ export default function RbiaPlanView({ mode = 'plan' }: RbiaPlanViewProps) {
               </tbody>
             </table>
           </div>
+        </div>
 
         {/* Cards - Mobile */}
         <div className="md:hidden grid gap-4">
@@ -762,12 +765,12 @@ export default function RbiaPlanView({ mode = 'plan' }: RbiaPlanViewProps) {
 
         {/* Main Grid with Content and Sidebar */}
         <div className="flex flex-col lg:flex-row gap-4 lg:gap-6 items-start">
-          {/* Dynamic Content Area */}
-          <div className="flex-1 w-full lg:w-auto">{renderContent()}
+          {/* Dynamic Content Area - min-w-0 allows overflow to work properly */}
+          <div className="flex-1 w-full lg:w-auto min-w-0">{renderContent()}
           </div>
 
-          {/* Sidebar Process Stepper */}
-          <div className="w-full lg:w-[280px] flex-shrink-0">
+          {/* Sidebar Process Stepper - Fixed width, prevent shrinking */}
+          <div className="w-full lg:w-[280px] lg:min-w-[260px] flex-shrink-0">
             <ProcessStepper
               steps={processSteps}
               activeStepId={activeStepId || 0}

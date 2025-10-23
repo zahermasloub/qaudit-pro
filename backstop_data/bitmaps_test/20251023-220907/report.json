@@ -3,10 +3,8 @@
   "tests": [
     {
       "pair": {
-        "reference": "..\\bitmaps_reference\\qaudit-pro-visual-tests_Homepage_0_document_0_phone.png",
-        "referenceLog": "..\\bitmaps_reference\\qaudit-pro-visual-tests_Homepage_0_document_0_phone.log.json",
-        "test": "..\\bitmaps_test\\20251023-220907\\qaudit-pro-visual-tests_Homepage_0_document_0_phone.png",
-        "testLog": "..\\bitmaps_test\\20251023-220907\\qaudit-pro-visual-tests_Homepage_0_document_0_phone.log.json",
+        "reference": "..\\..\\..\\backstop_data\\bitmaps_reference\\qaudit-pro-visual-tests_Homepage_0_document_0_phone.png",
+        "test": "..\\..\\..\\backstop_data\\bitmaps_test\\20251023-220907\\qaudit-pro-visual-tests_Homepage_0_document_0_phone.png",
         "selector": "document",
         "fileName": "qaudit-pro-visual-tests_Homepage_0_document_0_phone.png",
         "label": "Homepage",
@@ -22,10 +20,8 @@
     },
     {
       "pair": {
-        "reference": "..\\bitmaps_reference\\qaudit-pro-visual-tests_Homepage_0_document_1_tablet.png",
-        "referenceLog": "..\\bitmaps_reference\\qaudit-pro-visual-tests_Homepage_0_document_1_tablet.log.json",
-        "test": "..\\bitmaps_test\\20251023-220907\\qaudit-pro-visual-tests_Homepage_0_document_1_tablet.png",
-        "testLog": "..\\bitmaps_test\\20251023-220907\\qaudit-pro-visual-tests_Homepage_0_document_1_tablet.log.json",
+        "reference": "..\\..\\..\\backstop_data\\bitmaps_reference\\qaudit-pro-visual-tests_Homepage_0_document_1_tablet.png",
+        "test": "..\\..\\..\\backstop_data\\bitmaps_test\\20251023-220907\\qaudit-pro-visual-tests_Homepage_0_document_1_tablet.png",
         "selector": "document",
         "fileName": "qaudit-pro-visual-tests_Homepage_0_document_1_tablet.png",
         "label": "Homepage",
@@ -41,10 +37,8 @@
     },
     {
       "pair": {
-        "reference": "..\\bitmaps_reference\\qaudit-pro-visual-tests_Homepage_0_document_2_desktop.png",
-        "referenceLog": "..\\bitmaps_reference\\qaudit-pro-visual-tests_Homepage_0_document_2_desktop.log.json",
-        "test": "..\\bitmaps_test\\20251023-220907\\qaudit-pro-visual-tests_Homepage_0_document_2_desktop.png",
-        "testLog": "..\\bitmaps_test\\20251023-220907\\qaudit-pro-visual-tests_Homepage_0_document_2_desktop.log.json",
+        "reference": "..\\..\\..\\backstop_data\\bitmaps_reference\\qaudit-pro-visual-tests_Homepage_0_document_2_desktop.png",
+        "test": "..\\..\\..\\backstop_data\\bitmaps_test\\20251023-220907\\qaudit-pro-visual-tests_Homepage_0_document_2_desktop.png",
         "selector": "document",
         "fileName": "qaudit-pro-visual-tests_Homepage_0_document_2_desktop.png",
         "label": "Homepage",
@@ -60,10 +54,8 @@
     },
     {
       "pair": {
-        "reference": "..\\bitmaps_reference\\qaudit-pro-visual-tests_Login_Page_0_document_0_phone.png",
-        "referenceLog": "..\\bitmaps_reference\\qaudit-pro-visual-tests_Login_Page_0_document_0_phone.log.json",
-        "test": "..\\bitmaps_test\\20251023-220907\\qaudit-pro-visual-tests_Login_Page_0_document_0_phone.png",
-        "testLog": "..\\bitmaps_test\\20251023-220907\\qaudit-pro-visual-tests_Login_Page_0_document_0_phone.log.json",
+        "reference": "..\\..\\..\\backstop_data\\bitmaps_reference\\qaudit-pro-visual-tests_Login_Page_0_document_0_phone.png",
+        "test": "..\\..\\..\\backstop_data\\bitmaps_test\\20251023-220907\\qaudit-pro-visual-tests_Login_Page_0_document_0_phone.png",
         "selector": "document",
         "fileName": "qaudit-pro-visual-tests_Login_Page_0_document_0_phone.png",
         "label": "Login Page",
@@ -78,10 +70,8 @@
     },
     {
       "pair": {
-        "reference": "..\\bitmaps_reference\\qaudit-pro-visual-tests_Login_Page_0_document_1_tablet.png",
-        "referenceLog": "..\\bitmaps_reference\\qaudit-pro-visual-tests_Login_Page_0_document_1_tablet.log.json",
-        "test": "..\\bitmaps_test\\20251023-220907\\qaudit-pro-visual-tests_Login_Page_0_document_1_tablet.png",
-        "testLog": "..\\bitmaps_test\\20251023-220907\\qaudit-pro-visual-tests_Login_Page_0_document_1_tablet.log.json",
+        "reference": "..\\..\\..\\backstop_data\\bitmaps_reference\\qaudit-pro-visual-tests_Login_Page_0_document_1_tablet.png",
+        "test": "..\\..\\..\\backstop_data\\bitmaps_test\\20251023-220907\\qaudit-pro-visual-tests_Login_Page_0_document_1_tablet.png",
         "selector": "document",
         "fileName": "qaudit-pro-visual-tests_Login_Page_0_document_1_tablet.png",
         "label": "Login Page",
@@ -96,10 +86,8 @@
     },
     {
       "pair": {
-        "reference": "..\\bitmaps_reference\\qaudit-pro-visual-tests_Login_Page_0_document_2_desktop.png",
-        "referenceLog": "..\\bitmaps_reference\\qaudit-pro-visual-tests_Login_Page_0_document_2_desktop.log.json",
-        "test": "..\\bitmaps_test\\20251023-220907\\qaudit-pro-visual-tests_Login_Page_0_document_2_desktop.png",
-        "testLog": "..\\bitmaps_test\\20251023-220907\\qaudit-pro-visual-tests_Login_Page_0_document_2_desktop.log.json",
+        "reference": "..\\..\\..\\backstop_data\\bitmaps_reference\\qaudit-pro-visual-tests_Login_Page_0_document_2_desktop.png",
+        "test": "..\\..\\..\\backstop_data\\bitmaps_test\\20251023-220907\\qaudit-pro-visual-tests_Login_Page_0_document_2_desktop.png",
         "selector": "document",
         "fileName": "qaudit-pro-visual-tests_Login_Page_0_document_2_desktop.png",
         "label": "Login Page",
@@ -114,10 +102,8 @@
     },
     {
       "pair": {
-        "reference": "..\\bitmaps_reference\\qaudit-pro-visual-tests_Dashboard_0_document_0_phone.png",
-        "referenceLog": "..\\bitmaps_reference\\qaudit-pro-visual-tests_Dashboard_0_document_0_phone.log.json",
-        "test": "..\\bitmaps_test\\20251023-220907\\qaudit-pro-visual-tests_Dashboard_0_document_0_phone.png",
-        "testLog": "..\\bitmaps_test\\20251023-220907\\qaudit-pro-visual-tests_Dashboard_0_document_0_phone.log.json",
+        "reference": "..\\..\\..\\backstop_data\\bitmaps_reference\\qaudit-pro-visual-tests_Dashboard_0_document_0_phone.png",
+        "test": "..\\..\\..\\backstop_data\\bitmaps_test\\20251023-220907\\qaudit-pro-visual-tests_Dashboard_0_document_0_phone.png",
         "selector": "document",
         "fileName": "qaudit-pro-visual-tests_Dashboard_0_document_0_phone.png",
         "label": "Dashboard",
@@ -132,10 +118,8 @@
     },
     {
       "pair": {
-        "reference": "..\\bitmaps_reference\\qaudit-pro-visual-tests_Dashboard_0_document_1_tablet.png",
-        "referenceLog": "..\\bitmaps_reference\\qaudit-pro-visual-tests_Dashboard_0_document_1_tablet.log.json",
-        "test": "..\\bitmaps_test\\20251023-220907\\qaudit-pro-visual-tests_Dashboard_0_document_1_tablet.png",
-        "testLog": "..\\bitmaps_test\\20251023-220907\\qaudit-pro-visual-tests_Dashboard_0_document_1_tablet.log.json",
+        "reference": "..\\..\\..\\backstop_data\\bitmaps_reference\\qaudit-pro-visual-tests_Dashboard_0_document_1_tablet.png",
+        "test": "..\\..\\..\\backstop_data\\bitmaps_test\\20251023-220907\\qaudit-pro-visual-tests_Dashboard_0_document_1_tablet.png",
         "selector": "document",
         "fileName": "qaudit-pro-visual-tests_Dashboard_0_document_1_tablet.png",
         "label": "Dashboard",
@@ -150,10 +134,8 @@
     },
     {
       "pair": {
-        "reference": "..\\bitmaps_reference\\qaudit-pro-visual-tests_Dashboard_0_document_2_desktop.png",
-        "referenceLog": "..\\bitmaps_reference\\qaudit-pro-visual-tests_Dashboard_0_document_2_desktop.log.json",
-        "test": "..\\bitmaps_test\\20251023-220907\\qaudit-pro-visual-tests_Dashboard_0_document_2_desktop.png",
-        "testLog": "..\\bitmaps_test\\20251023-220907\\qaudit-pro-visual-tests_Dashboard_0_document_2_desktop.log.json",
+        "reference": "..\\..\\..\\backstop_data\\bitmaps_reference\\qaudit-pro-visual-tests_Dashboard_0_document_2_desktop.png",
+        "test": "..\\..\\..\\backstop_data\\bitmaps_test\\20251023-220907\\qaudit-pro-visual-tests_Dashboard_0_document_2_desktop.png",
         "selector": "document",
         "fileName": "qaudit-pro-visual-tests_Dashboard_0_document_2_desktop.png",
         "label": "Dashboard",
@@ -168,10 +150,8 @@
     },
     {
       "pair": {
-        "reference": "..\\bitmaps_reference\\qaudit-pro-visual-tests_Annual_Plan_0_document_0_phone.png",
-        "referenceLog": "..\\bitmaps_reference\\qaudit-pro-visual-tests_Annual_Plan_0_document_0_phone.log.json",
-        "test": "..\\bitmaps_test\\20251023-220907\\qaudit-pro-visual-tests_Annual_Plan_0_document_0_phone.png",
-        "testLog": "..\\bitmaps_test\\20251023-220907\\qaudit-pro-visual-tests_Annual_Plan_0_document_0_phone.log.json",
+        "reference": "..\\..\\..\\backstop_data\\bitmaps_reference\\qaudit-pro-visual-tests_Annual_Plan_0_document_0_phone.png",
+        "test": "..\\..\\..\\backstop_data\\bitmaps_test\\20251023-220907\\qaudit-pro-visual-tests_Annual_Plan_0_document_0_phone.png",
         "selector": "document",
         "fileName": "qaudit-pro-visual-tests_Annual_Plan_0_document_0_phone.png",
         "label": "Annual Plan",
@@ -186,10 +166,8 @@
     },
     {
       "pair": {
-        "reference": "..\\bitmaps_reference\\qaudit-pro-visual-tests_Annual_Plan_0_document_1_tablet.png",
-        "referenceLog": "..\\bitmaps_reference\\qaudit-pro-visual-tests_Annual_Plan_0_document_1_tablet.log.json",
-        "test": "..\\bitmaps_test\\20251023-220907\\qaudit-pro-visual-tests_Annual_Plan_0_document_1_tablet.png",
-        "testLog": "..\\bitmaps_test\\20251023-220907\\qaudit-pro-visual-tests_Annual_Plan_0_document_1_tablet.log.json",
+        "reference": "..\\..\\..\\backstop_data\\bitmaps_reference\\qaudit-pro-visual-tests_Annual_Plan_0_document_1_tablet.png",
+        "test": "..\\..\\..\\backstop_data\\bitmaps_test\\20251023-220907\\qaudit-pro-visual-tests_Annual_Plan_0_document_1_tablet.png",
         "selector": "document",
         "fileName": "qaudit-pro-visual-tests_Annual_Plan_0_document_1_tablet.png",
         "label": "Annual Plan",
@@ -204,10 +182,8 @@
     },
     {
       "pair": {
-        "reference": "..\\bitmaps_reference\\qaudit-pro-visual-tests_Annual_Plan_0_document_2_desktop.png",
-        "referenceLog": "..\\bitmaps_reference\\qaudit-pro-visual-tests_Annual_Plan_0_document_2_desktop.log.json",
-        "test": "..\\bitmaps_test\\20251023-220907\\qaudit-pro-visual-tests_Annual_Plan_0_document_2_desktop.png",
-        "testLog": "..\\bitmaps_test\\20251023-220907\\qaudit-pro-visual-tests_Annual_Plan_0_document_2_desktop.log.json",
+        "reference": "..\\..\\..\\backstop_data\\bitmaps_reference\\qaudit-pro-visual-tests_Annual_Plan_0_document_2_desktop.png",
+        "test": "..\\..\\..\\backstop_data\\bitmaps_test\\20251023-220907\\qaudit-pro-visual-tests_Annual_Plan_0_document_2_desktop.png",
         "selector": "document",
         "fileName": "qaudit-pro-visual-tests_Annual_Plan_0_document_2_desktop.png",
         "label": "Annual Plan",
