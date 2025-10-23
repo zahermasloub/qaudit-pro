@@ -422,12 +422,12 @@ export function AnnualPlanScreen({ locale }: { locale: Locale }) {
       </div>
 
       {/* Main Content with Fixed Grid Layout */}
-      <div className="container mx-auto px-3 sm:px-4 lg:px-6 max-w-[1440px]" dir="rtl">
-        {/* Grid: يسار 320px | وسط مرن | يمين 320px (يظهر من XL) */}
-        <div className="grid gap-6 lg:grid-cols-[320px_minmax(0,1fr)] xl:grid-cols-[320px_minmax(0,1fr)_320px] isolate">
-          {/* Stepper يسار - ثابت 320px لا ينكمش أبداً */}
-          <aside className="stepper-col w-[320px] min-w-[320px] max-w-[320px] flex-none shrink-0 overflow-hidden">
-            <div className="sticky top-[88px] z-10">
+      <div className="container mx-auto px-3 sm:px-4 lg:px-6 max-w-[1440px] w-full overflow-x-hidden" dir="rtl">
+        {/* Flex Layout for better control */}
+        <div className="flex flex-col lg:flex-row gap-6 w-full" style={{ maxWidth: '100%', contain: 'layout' }}>
+          {/* Stepper - fixed 320px on lg+ */}
+          <aside className="stepper-sidebar w-full lg:w-[320px] lg:min-w-[320px] lg:max-w-[320px] flex-shrink-0">
+            <div className="lg:sticky lg:top-[88px]">
               <ProcessStepper
                 steps={processSteps}
                 activeStepId={activeStepId || 1}
@@ -437,11 +437,11 @@ export function AnnualPlanScreen({ locale }: { locale: Locale }) {
             </div>
           </aside>
 
-          {/* المحتوى الأوسط - الوحيد المسموح له بالتمدد */}
-          <main className="min-w-0 space-y-6">
+          {/* المحتوى الأوسط - grows to fill space */}
+          <main className="flex-1 min-w-0 overflow-x-hidden space-y-6">
             {/* 1) KPI Summary - مرة واحدة فقط في الأعلى */}
             {selectedPlan && (
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4">
                 {/* Plan Status */}
                 <div className="bg-white rounded-lg border border-gray-200 p-6">
                   <div className="flex items-center justify-between mb-3">
@@ -640,19 +640,18 @@ export function AnnualPlanScreen({ locale }: { locale: Locale }) {
                     </div>
                   </div>
                 ) : (
-                  <div className="bg-white rounded-lg border border-gray-200 overflow-hidden shadow-sm">
+                  <div className="bg-white rounded-lg border border-gray-200 overflow-hidden shadow-sm max-w-full">
                     <div className="w-full overflow-x-auto">
-                      <table className="w-full table-fixed">
+                      <table className="w-full table-fixed" style={{ maxWidth: '100%' }}>
                         <colgroup>
-                          <col style={{ width: '7%' }} />       {/* Code */}
-                          <col style={{ width: '26%' }} />      {/* Title - with wrap */}
-                          <col style={{ width: '12%' }} />      {/* Department */}
+                          <col style={{ width: '8%' }} />       {/* Code */}
+                          <col style={{ width: '30%' }} />      {/* Title - with wrap */}
+                          <col style={{ width: '14%' }} />      {/* Department */}
                           <col style={{ width: '10%' }} />      {/* Risk */}
                           <col style={{ width: '12%' }} />      {/* Type */}
                           <col style={{ width: '8%' }} />       {/* Quarter */}
                           <col style={{ width: '8%' }} />       {/* Hours */}
                           <col style={{ width: '10%' }} />      {/* Status */}
-                          <col style={{ width: '10%' }} />      {/* Actions */}
                         </colgroup>
                         <thead className="bg-gray-50 border-b border-gray-200">
                           <tr>
@@ -769,8 +768,8 @@ export function AnnualPlanScreen({ locale }: { locale: Locale }) {
             )}
           </main>
 
-          {/* RBIA يمين - ثابت، يظهر من XL */}
-          <aside className="hidden xl:block w-[320px] min-w-[320px] max-w-[320px] flex-none shrink-0">
+          {/* RBIA sidebar - fixed 320px, shows on xl+ */}
+          <aside className="hidden xl:block w-[320px] min-w-[320px] max-w-[320px] flex-shrink-0">
             <div className="bg-white rounded-lg border border-gray-200 p-6 sticky top-[88px]">
               <h3 className="text-lg font-bold text-gray-900 mb-4">
                 {locale === 'ar' ? 'معلومات RBIA' : 'RBIA Information'}
