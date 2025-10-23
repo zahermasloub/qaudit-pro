@@ -44,3 +44,14 @@ next-env.d.ts
 # reports
 reports/*
 !reports/.gitkeep
+
+# testing reports
+tests/reports/*
+!tests/reports/README.md
+tests/visual/backstop_data/bitmaps_test/*
+tests/visual/backstop_data/bitmaps_reference/*
+tests/visual/backstop_data/html_report/*
+tests/visual/backstop_data/ci_report/*
+playwright-report/
+test-results/
+.playwright/
