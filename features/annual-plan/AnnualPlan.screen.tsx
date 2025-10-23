@@ -69,18 +69,18 @@ interface AuditTask {
 }
 
 // Content view types for different process stages
-type ContentView = 
-  | 'empty' 
-  | 'annualPlan' 
-  | 'prioritization' 
-  | 'resources' 
-  | 'timeline' 
-  | 'approval' 
-  | 'execution' 
-  | 'followup' 
-  | 'reporting' 
-  | 'recommendations' 
-  | 'closure' 
+type ContentView =
+  | 'empty'
+  | 'annualPlan'
+  | 'prioritization'
+  | 'resources'
+  | 'timeline'
+  | 'approval'
+  | 'execution'
+  | 'followup'
+  | 'reporting'
+  | 'recommendations'
+  | 'closure'
   | 'qa';
 
 export function AnnualPlanScreen({ locale }: { locale: Locale }) {
@@ -113,7 +113,7 @@ export function AnnualPlanScreen({ locale }: { locale: Locale }) {
     try {
       const response = await fetch(`/api/annual-plans/${planId}`);
       const data = await response.json();
-      
+
       if (data.ok && data.plan) {
         setSelectedPlan(data.plan);
         setTasks(data.plan.auditTasks || []);
@@ -155,10 +155,10 @@ export function AnnualPlanScreen({ locale }: { locale: Locale }) {
   // Handle step click
   const handleStepClick = (stepId: number) => {
     setActiveStepId(stepId);
-    
+
     // Smooth scroll to top
     window.scrollTo({ top: 0, behavior: 'smooth' });
-    
+
     // Map step to content view
     if (stepId === 1) {
       if (currentPlanId) {
@@ -207,7 +207,7 @@ export function AnnualPlanScreen({ locale }: { locale: Locale }) {
       if (density && ['comfortable', 'compact', 'spacious'].includes(density)) {
         setTableDensity(density);
       }
-      
+
       // Deep-link to specific step
       if (step && step !== 'empty') {
         setContentView(step);
@@ -262,22 +262,22 @@ export function AnnualPlanScreen({ locale }: { locale: Locale }) {
   // Handle delete task
   const handleDeleteTask = async (taskId: string) => {
     if (!currentPlanId) return;
-    
+
     const confirmDelete = window.confirm(
-      locale === 'ar' 
-        ? 'هل أنت متأكد من حذف هذه المهمة؟' 
+      locale === 'ar'
+        ? 'هل أنت متأكد من حذف هذه المهمة؟'
         : 'Are you sure you want to delete this task?'
     );
-    
+
     if (!confirmDelete) return;
-    
+
     try {
       const response = await fetch(`/api/annual-plans/${currentPlanId}/tasks/${taskId}`, {
         method: 'DELETE',
       });
-      
+
       const data = await response.json();
-      
+
       if (data.ok) {
         // Reload plan to get updated tasks
         await loadPlanById(currentPlanId);
@@ -421,11 +421,12 @@ export function AnnualPlanScreen({ locale }: { locale: Locale }) {
         </div>
       </div>
 
-      {/* Main Content with Grid Layout */}
-      <div className="container mx-auto max-w-[1440px] xl:max-w-[1536px] px-6 py-6">
-        <div className="grid grid-cols-[320px_minmax(0,1fr)] gap-6 lg:grid-cols-[320px_minmax(0,1fr)_320px]">
-          {/* Left Sidebar - ProcessStepper */}
-          <aside className="min-w-[320px] w-[320px] shrink-0 flex-none">
+      {/* Main Content with Fixed Grid Layout */}
+      <div className="container mx-auto px-3 sm:px-4 lg:px-6 max-w-[1440px]" dir="rtl">
+        {/* Grid: يسار 320px | وسط مرن | يمين 320px (يظهر من XL) */}
+        <div className="grid gap-6 lg:grid-cols-[320px_minmax(0,1fr)] xl:grid-cols-[320px_minmax(0,1fr)_320px]">
+          {/* Stepper يسار - ثابت */}
+          <aside className="stepper-col sticky top-[88px] h-fit w-[320px] min-w-[320px] max-w-[320px] flex-none shrink-0 z-10">
             <ProcessStepper
               steps={processSteps}
               activeStepId={activeStepId || 1}
@@ -434,9 +435,9 @@ export function AnnualPlanScreen({ locale }: { locale: Locale }) {
             />
           </aside>
 
-          {/* Main Content Area - Dynamic */}
+          {/* المحتوى الأوسط - الوحيد المسموح له بالتمدد */}
           <main className="min-w-0 space-y-6">
-            {/* KPI Cards - Only show when plan is loaded */}
+            {/* 1) KPI Summary - مرة واحدة فقط في الأعلى */}
             {selectedPlan && (
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
                 {/* Plan Status */}
@@ -496,7 +497,8 @@ export function AnnualPlanScreen({ locale }: { locale: Locale }) {
               </div>
             )}
 
-            {/* Dynamic Content Area */}
+            {/* 2) منطقة المحتوى الديناميكي - تتبدل حسب المرحلة */}
+            {/* محتوى واحد فقط يظهر حسب contentView */}
             {contentView === 'empty' && (
               <div className="bg-white rounded-lg border border-gray-200 p-12 text-center">
                 <div className="max-w-md mx-auto">
@@ -521,7 +523,7 @@ export function AnnualPlanScreen({ locale }: { locale: Locale }) {
 
             {contentView === 'annualPlan' && selectedPlan && (
               <>
-                {/* Filters and Search */}
+                {/* 3) Filters - مرة واحدة قبل الجدول */}
                 <div className="bg-white rounded-lg border border-gray-200 p-4">
                   <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
                     {/* Search */}
@@ -637,18 +639,18 @@ export function AnnualPlanScreen({ locale }: { locale: Locale }) {
                   </div>
                 ) : (
                   <div className="bg-white rounded-lg border border-gray-200 overflow-hidden shadow-sm">
-                    <div className="w-full overflow-hidden">
-                      <table className="w-full table-fixed">
+                    <div className="w-full overflow-x-auto">
+                      <table className="w-full table-fixed min-w-[900px]">
                         <colgroup>
-                          <col className="w-24" />
-                          <col className="w-[28%]" />
-                          <col className="w-32" />
-                          <col className="w-24" />
-                          <col className="w-28" />
-                          <col className="w-20" />
-                          <col className="w-24" />
-                          <col className="w-28" />
-                          <col className="w-24" />
+                          <col style={{ width: '6%' }} />       {/* Code */}
+                          <col style={{ width: '24%' }} />      {/* Title - with wrap */}
+                          <col style={{ width: '12%' }} />      {/* Department */}
+                          <col style={{ width: '10%' }} />      {/* Risk */}
+                          <col style={{ width: '12%' }} />      {/* Type */}
+                          <col style={{ width: '8%' }} />       {/* Quarter */}
+                          <col style={{ width: '8%' }} />       {/* Hours */}
+                          <col style={{ width: '10%' }} />      {/* Status */}
+                          <col style={{ width: '10%' }} />      {/* Actions */}
                         </colgroup>
                         <thead className="bg-gray-50 border-b border-gray-200">
                           <tr>
@@ -684,9 +686,9 @@ export function AnnualPlanScreen({ locale }: { locale: Locale }) {
                         <tbody className="divide-y divide-gray-200 bg-white">
                           {filteredTasks.map(task => (
                             <tr key={task.id} className="hover:bg-gray-50 transition-colors align-top">
-                              <td className={`text-sm font-medium text-gray-900 ${getDensityClasses()}`}>{task.code}</td>
-                              <td className={`text-sm text-gray-900 whitespace-normal leading-6 ${getDensityClasses()}`}>{task.title}</td>
-                              <td className={`text-sm text-gray-600 truncate ${getDensityClasses()}`}>{task.department}</td>
+                              <td className={`text-sm font-medium text-gray-900 whitespace-nowrap ${getDensityClasses()}`}>{task.code}</td>
+                              <td className={`text-sm text-gray-900 break-words leading-relaxed ${getDensityClasses()}`} style={{ wordBreak: 'break-word', overflowWrap: 'break-word' }}>{task.title}</td>
+                              <td className={`text-sm text-gray-600 break-words ${getDensityClasses()}`}>{task.department}</td>
                               <td className={getDensityClasses()}>
                                 <span
                                   className={clsx(
@@ -697,11 +699,11 @@ export function AnnualPlanScreen({ locale }: { locale: Locale }) {
                                   {getRiskLevelLabel(task.riskLevel)}
                                 </span>
                               </td>
-                              <td className={`text-sm text-gray-600 truncate ${getDensityClasses()}`}>
+                              <td className={`text-sm text-gray-600 break-words ${getDensityClasses()}`}>
                                 {getAuditTypeLabel(task.auditType)}
                               </td>
-                              <td className={`text-sm text-gray-600 ${getDensityClasses()}`}>{task.plannedQuarter}</td>
-                              <td className={`text-sm text-gray-600 ${getDensityClasses()}`}>{task.estimatedHours}</td>
+                              <td className={`text-sm text-gray-600 whitespace-nowrap ${getDensityClasses()}`}>{task.plannedQuarter}</td>
+                              <td className={`text-sm text-gray-600 whitespace-nowrap ${getDensityClasses()}`}>{task.estimatedHours}</td>
                               <td className={getDensityClasses()}>
                                 <span
                                   className={clsx(
@@ -765,8 +767,8 @@ export function AnnualPlanScreen({ locale }: { locale: Locale }) {
             )}
           </main>
 
-          {/* Right Sidebar - RBIA Info (Hidden on mobile/tablet) */}
-          <aside className="hidden lg:block min-w-[320px] w-[320px] shrink-0 flex-none">
+          {/* RBIA يمين - ثابت، يظهر من XL */}
+          <aside className="hidden xl:block w-[320px] min-w-[320px] max-w-[320px] flex-none shrink-0">
             <div className="bg-white rounded-lg border border-gray-200 p-6 sticky top-[88px]">
               <h3 className="text-lg font-bold text-gray-900 mb-4">
                 {locale === 'ar' ? 'معلومات RBIA' : 'RBIA Information'}
@@ -777,7 +779,7 @@ export function AnnualPlanScreen({ locale }: { locale: Locale }) {
                     {locale === 'ar' ? 'نهج التدقيق القائم على المخاطر' : 'Risk-Based Internal Audit'}
                   </h4>
                   <p className="leading-relaxed">
-                    {locale === 'ar' 
+                    {locale === 'ar'
                       ? 'منهجية منظمة لتحديد وتقييم المخاطر وتطوير خطة تدقيق شاملة.'
                       : 'A systematic approach to identify, assess risks, and develop comprehensive audit plans.'}
                   </p>
@@ -800,9 +802,9 @@ export function AnnualPlanScreen({ locale }: { locale: Locale }) {
       </div>
 
       {/* Annual Plan Wizard Modal */}
-      <AnnualPlanWizard 
-        open={openAnnualPlan} 
-        onOpenChange={setOpenAnnualPlan} 
+      <AnnualPlanWizard
+        open={openAnnualPlan}
+        onOpenChange={setOpenAnnualPlan}
         locale={locale}
         onSuccess={handleWizardSuccess}
       />
