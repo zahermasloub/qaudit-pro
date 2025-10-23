@@ -1,38 +1,38 @@
 {
-  "id": "backstop_default",
+  "id": "qaudit-pro-visual-tests",
   "viewports": [
     {
-      "label": "phone",
-      "width": 320,
-      "height": 480
+      "label": "desktop",
+      "width": 1280,
+      "height": 800
     },
     {
-      "label": "tablet",
-      "width": 1024,
-      "height": 768
+      "label": "mobile",
+      "width": 375,
+      "height": 812
     }
   ],
-  "onBeforeScript": "puppet/onBefore.js",
-  "onReadyScript": "puppet/onReady.js",
   "scenarios": [
     {
-      "label": "BackstopJS Homepage",
-      "cookiePath": "backstop_data/engine_scripts/cookies.json",
-      "url": "https://garris.github.io/BackstopJS/",
-      "referenceUrl": "",
-      "readyEvent": "",
-      "readySelector": "",
-      "delay": 0,
-      "hideSelectors": [],
-      "removeSelectors": [],
-      "hoverSelector": "",
-      "clickSelector": "",
-      "postInteractionWait": 0,
-      "selectors": [],
-      "selectorExpansion": true,
-      "expect": 0,
-      "misMatchThreshold" : 0.1,
-      "requireSameDimensions": true
+      "label": "Home",
+      "url": "http://localhost:3001/",
+      "selectors": ["document"],
+      "delay": 500,
+      "misMatchThreshold": 0.1
+    },
+    {
+      "label": "Login",
+      "url": "http://localhost:3001/auth/login",
+      "selectors": ["document"],
+      "delay": 500,
+      "misMatchThreshold": 0.1
+    },
+    {
+      "label": "Dashboard",
+      "url": "http://localhost:3001/dashboard",
+      "selectors": ["document"],
+      "delay": 500,
+      "misMatchThreshold": 0.1
     }
   ],
   "paths": {
@@ -43,7 +43,7 @@
     "ci_report": "backstop_data/ci_report"
   },
   "report": ["browser"],
-  "engine": "puppeteer",
+  "engine": "playwright",
   "engineOptions": {
     "args": ["--no-sandbox"]
   },

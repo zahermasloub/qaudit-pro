@@ -48,10 +48,16 @@ reports/*
 # testing reports
 tests/reports/*
 !tests/reports/README.md
+tests_environment/tests/reports/*
+!tests_environment/tests/reports/README.md
 tests/visual/backstop_data/bitmaps_test/*
 tests/visual/backstop_data/bitmaps_reference/*
 tests/visual/backstop_data/html_report/*
 tests/visual/backstop_data/ci_report/*
+tests_environment/backstop_data/bitmaps_test/
+tests_environment/backstop_data/html_report/
 playwright-report/
 test-results/
 .playwright/
+lighthouse/*.html
+lighthouse/*.json

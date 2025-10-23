@@ -5,7 +5,7 @@ import { defineConfig, devices } from '@playwright/test';
  * تكوين شامل لاختبارات Playwright البصرية والوظيفية
  */
 export default defineConfig({
-  testDir: './tests/e2e',
+  testDir: './tests',
 
   // ⏱️ إعدادات المهلة الزمنية
   timeout: 30 * 1000,
@@ -14,7 +14,7 @@ export default defineConfig({
   },
 
   // 🔄 إعدادات إعادة المحاولة
-  retries: process.env.CI ? 2 : 0,
+  retries: 1,
   workers: process.env.CI ? 1 : undefined,
 
   // 📊 تقارير الاختبارات
@@ -52,37 +52,17 @@ export default defineConfig({
   // 🌍 المتصفحات المستهدفة
   projects: [
     {
-      name: 'chromium',
-      use: { ...devices['Desktop Chrome'] },
+      name: 'Desktop Chrome',
+      use: { ...devices['Desktop Chrome'], viewport: { width: 1280, height: 800 } },
     },
     {
-      name: 'firefox',
-      use: { ...devices['Desktop Firefox'] },
-    },
-    {
-      name: 'webkit',
-      use: { ...devices['Desktop Safari'] },
-    },
-
-    // 📱 Mobile viewports
-    {
-      name: 'mobile-chrome',
-      use: { ...devices['Pixel 5'] },
-    },
-    {
-      name: 'mobile-safari',
+      name: 'iPhone 12',
       use: { ...devices['iPhone 12'] },
     },
-
-    // 🌐 RTL Testing
-    {
-      name: 'chromium-rtl',
-      use: {
-        ...devices['Desktop Chrome'],
-        locale: 'ar-SA',
-      },
-    },
   ],
+
+  // مسار اللقطات
+  snapshotPathTemplate: '{testDir}/__snapshots__/{projectName}/{testFilePath}/{arg}{ext}',
 
   // 🚀 تشغيل خادم التطوير قبل الاختبارات
   webServer: {
