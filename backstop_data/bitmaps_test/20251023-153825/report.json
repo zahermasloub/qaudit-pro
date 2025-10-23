@@ -1,0 +1,213 @@
+{
+  "testSuite": "BackstopJS",
+  "tests": [
+    {
+      "pair": {
+        "reference": "..\\..\\..\\backstop_data\\bitmaps_reference\\qaudit-pro-visual-tests_Homepage_0_document_0_phone.png",
+        "test": "..\\..\\..\\backstop_data\\bitmaps_test\\20251023-153825\\qaudit-pro-visual-tests_Homepage_0_document_0_phone.png",
+        "selector": "document",
+        "fileName": "qaudit-pro-visual-tests_Homepage_0_document_0_phone.png",
+        "label": "Homepage",
+        "requireSameDimensions": true,
+        "misMatchThreshold": 0.1,
+        "url": "http://localhost:3001",
+        "referenceUrl": "",
+        "expect": 0,
+        "viewportLabel": "phone",
+        "engineErrorMsg": "page.goto: net::ERR_CONNECTION_REFUSED at http://localhost:3001/\nCall log:\n\u001b[2m  - navigating to \"http://localhost:3001/\", waiting until \"load\"\u001b[22m\n",
+        "error": "Reference file not found D:\\THE-AUDIT-APP-2\\backstop_data\\bitmaps_reference\\qaudit-pro-visual-tests_Homepage_0_document_0_phone.png"
+      },
+      "status": "fail"
+    },
+    {
+      "pair": {
+        "reference": "..\\..\\..\\backstop_data\\bitmaps_reference\\qaudit-pro-visual-tests_Homepage_0_document_1_tablet.png",
+        "test": "..\\..\\..\\backstop_data\\bitmaps_test\\20251023-153825\\qaudit-pro-visual-tests_Homepage_0_document_1_tablet.png",
+        "selector": "document",
+        "fileName": "qaudit-pro-visual-tests_Homepage_0_document_1_tablet.png",
+        "label": "Homepage",
+        "requireSameDimensions": true,
+        "misMatchThreshold": 0.1,
+        "url": "http://localhost:3001",
+        "referenceUrl": "",
+        "expect": 0,
+        "viewportLabel": "tablet",
+        "engineErrorMsg": "page.goto: net::ERR_CONNECTION_REFUSED at http://localhost:3001/\nCall log:\n\u001b[2m  - navigating to \"http://localhost:3001/\", waiting until \"load\"\u001b[22m\n",
+        "error": "Reference file not found D:\\THE-AUDIT-APP-2\\backstop_data\\bitmaps_reference\\qaudit-pro-visual-tests_Homepage_0_document_1_tablet.png"
+      },
+      "status": "fail"
+    },
+    {
+      "pair": {
+        "reference": "..\\..\\..\\backstop_data\\bitmaps_reference\\qaudit-pro-visual-tests_Homepage_0_document_2_desktop.png",
+        "test": "..\\..\\..\\backstop_data\\bitmaps_test\\20251023-153825\\qaudit-pro-visual-tests_Homepage_0_document_2_desktop.png",
+        "selector": "document",
+        "fileName": "qaudit-pro-visual-tests_Homepage_0_document_2_desktop.png",
+        "label": "Homepage",
+        "requireSameDimensions": true,
+        "misMatchThreshold": 0.1,
+        "url": "http://localhost:3001",
+        "referenceUrl": "",
+        "expect": 0,
+        "viewportLabel": "desktop",
+        "engineErrorMsg": "page.goto: net::ERR_CONNECTION_REFUSED at http://localhost:3001/\nCall log:\n\u001b[2m  - navigating to \"http://localhost:3001/\", waiting until \"load\"\u001b[22m\n",
+        "error": "Reference file not found D:\\THE-AUDIT-APP-2\\backstop_data\\bitmaps_reference\\qaudit-pro-visual-tests_Homepage_0_document_2_desktop.png"
+      },
+      "status": "fail"
+    },
+    {
+      "pair": {
+        "reference": "..\\..\\..\\backstop_data\\bitmaps_reference\\qaudit-pro-visual-tests_Login_Page_0_document_0_phone.png",
+        "test": "..\\..\\..\\backstop_data\\bitmaps_test\\20251023-153825\\qaudit-pro-visual-tests_Login_Page_0_document_0_phone.png",
+        "selector": "document",
+        "fileName": "qaudit-pro-visual-tests_Login_Page_0_document_0_phone.png",
+        "label": "Login Page",
+        "requireSameDimensions": true,
+        "misMatchThreshold": 0.1,
+        "url": "http://localhost:3001/auth/login",
+        "expect": 0,
+        "viewportLabel": "phone",
+        "engineErrorMsg": "page.goto: net::ERR_CONNECTION_REFUSED at http://localhost:3001/auth/login\nCall log:\n\u001b[2m  - navigating to \"http://localhost:3001/auth/login\", waiting until \"load\"\u001b[22m\n",
+        "error": "Reference file not found D:\\THE-AUDIT-APP-2\\backstop_data\\bitmaps_reference\\qaudit-pro-visual-tests_Login_Page_0_document_0_phone.png"
+      },
+      "status": "fail"
+    },
+    {
+      "pair": {
+        "reference": "..\\..\\..\\backstop_data\\bitmaps_reference\\qaudit-pro-visual-tests_Login_Page_0_document_1_tablet.png",
+        "test": "..\\..\\..\\backstop_data\\bitmaps_test\\20251023-153825\\qaudit-pro-visual-tests_Login_Page_0_document_1_tablet.png",
+        "selector": "document",
+        "fileName": "qaudit-pro-visual-tests_Login_Page_0_document_1_tablet.png",
+        "label": "Login Page",
+        "requireSameDimensions": true,
+        "misMatchThreshold": 0.1,
+        "url": "http://localhost:3001/auth/login",
+        "expect": 0,
+        "viewportLabel": "tablet",
+        "engineErrorMsg": "page.goto: net::ERR_CONNECTION_REFUSED at http://localhost:3001/auth/login\nCall log:\n\u001b[2m  - navigating to \"http://localhost:3001/auth/login\", waiting until \"load\"\u001b[22m\n",
+        "error": "Reference file not found D:\\THE-AUDIT-APP-2\\backstop_data\\bitmaps_reference\\qaudit-pro-visual-tests_Login_Page_0_document_1_tablet.png"
+      },
+      "status": "fail"
+    },
+    {
+      "pair": {
+        "reference": "..\\..\\..\\backstop_data\\bitmaps_reference\\qaudit-pro-visual-tests_Login_Page_0_document_2_desktop.png",
+        "test": "..\\..\\..\\backstop_data\\bitmaps_test\\20251023-153825\\qaudit-pro-visual-tests_Login_Page_0_document_2_desktop.png",
+        "selector": "document",
+        "fileName": "qaudit-pro-visual-tests_Login_Page_0_document_2_desktop.png",
+        "label": "Login Page",
+        "requireSameDimensions": true,
+        "misMatchThreshold": 0.1,
+        "url": "http://localhost:3001/auth/login",
+        "expect": 0,
+        "viewportLabel": "desktop",
+        "engineErrorMsg": "page.goto: net::ERR_CONNECTION_REFUSED at http://localhost:3001/auth/login\nCall log:\n\u001b[2m  - navigating to \"http://localhost:3001/auth/login\", waiting until \"load\"\u001b[22m\n",
+        "error": "Reference file not found D:\\THE-AUDIT-APP-2\\backstop_data\\bitmaps_reference\\qaudit-pro-visual-tests_Login_Page_0_document_2_desktop.png"
+      },
+      "status": "fail"
+    },
+    {
+      "pair": {
+        "reference": "..\\..\\..\\backstop_data\\bitmaps_reference\\qaudit-pro-visual-tests_Dashboard_0_document_0_phone.png",
+        "test": "..\\..\\..\\backstop_data\\bitmaps_test\\20251023-153825\\qaudit-pro-visual-tests_Dashboard_0_document_0_phone.png",
+        "selector": "document",
+        "fileName": "qaudit-pro-visual-tests_Dashboard_0_document_0_phone.png",
+        "label": "Dashboard",
+        "requireSameDimensions": true,
+        "misMatchThreshold": 0.1,
+        "url": "http://localhost:3001/dashboard",
+        "expect": 0,
+        "viewportLabel": "phone",
+        "engineErrorMsg": "page.goto: net::ERR_CONNECTION_REFUSED at http://localhost:3001/dashboard\nCall log:\n\u001b[2m  - navigating to \"http://localhost:3001/dashboard\", waiting until \"load\"\u001b[22m\n",
+        "error": "Reference file not found D:\\THE-AUDIT-APP-2\\backstop_data\\bitmaps_reference\\qaudit-pro-visual-tests_Dashboard_0_document_0_phone.png"
+      },
+      "status": "fail"
+    },
+    {
+      "pair": {
+        "reference": "..\\..\\..\\backstop_data\\bitmaps_reference\\qaudit-pro-visual-tests_Dashboard_0_document_1_tablet.png",
+        "test": "..\\..\\..\\backstop_data\\bitmaps_test\\20251023-153825\\qaudit-pro-visual-tests_Dashboard_0_document_1_tablet.png",
+        "selector": "document",
+        "fileName": "qaudit-pro-visual-tests_Dashboard_0_document_1_tablet.png",
+        "label": "Dashboard",
+        "requireSameDimensions": true,
+        "misMatchThreshold": 0.1,
+        "url": "http://localhost:3001/dashboard",
+        "expect": 0,
+        "viewportLabel": "tablet",
+        "engineErrorMsg": "page.goto: net::ERR_CONNECTION_REFUSED at http://localhost:3001/dashboard\nCall log:\n\u001b[2m  - navigating to \"http://localhost:3001/dashboard\", waiting until \"load\"\u001b[22m\n",
+        "error": "Reference file not found D:\\THE-AUDIT-APP-2\\backstop_data\\bitmaps_reference\\qaudit-pro-visual-tests_Dashboard_0_document_1_tablet.png"
+      },
+      "status": "fail"
+    },
+    {
+      "pair": {
+        "reference": "..\\..\\..\\backstop_data\\bitmaps_reference\\qaudit-pro-visual-tests_Dashboard_0_document_2_desktop.png",
+        "test": "..\\..\\..\\backstop_data\\bitmaps_test\\20251023-153825\\qaudit-pro-visual-tests_Dashboard_0_document_2_desktop.png",
+        "selector": "document",
+        "fileName": "qaudit-pro-visual-tests_Dashboard_0_document_2_desktop.png",
+        "label": "Dashboard",
+        "requireSameDimensions": true,
+        "misMatchThreshold": 0.1,
+        "url": "http://localhost:3001/dashboard",
+        "expect": 0,
+        "viewportLabel": "desktop",
+        "engineErrorMsg": "page.goto: net::ERR_CONNECTION_REFUSED at http://localhost:3001/dashboard\nCall log:\n\u001b[2m  - navigating to \"http://localhost:3001/dashboard\", waiting until \"load\"\u001b[22m\n",
+        "error": "Reference file not found D:\\THE-AUDIT-APP-2\\backstop_data\\bitmaps_reference\\qaudit-pro-visual-tests_Dashboard_0_document_2_desktop.png"
+      },
+      "status": "fail"
+    },
+    {
+      "pair": {
+        "reference": "..\\..\\..\\backstop_data\\bitmaps_reference\\qaudit-pro-visual-tests_Annual_Plan_0_document_0_phone.png",
+        "test": "..\\..\\..\\backstop_data\\bitmaps_test\\20251023-153825\\qaudit-pro-visual-tests_Annual_Plan_0_document_0_phone.png",
+        "selector": "document",
+        "fileName": "qaudit-pro-visual-tests_Annual_Plan_0_document_0_phone.png",
+        "label": "Annual Plan",
+        "requireSameDimensions": true,
+        "misMatchThreshold": 0.1,
+        "url": "http://localhost:3001/annual-plan",
+        "expect": 0,
+        "viewportLabel": "phone",
+        "engineErrorMsg": "page.goto: net::ERR_CONNECTION_REFUSED at http://localhost:3001/annual-plan\nCall log:\n\u001b[2m  - navigating to \"http://localhost:3001/annual-plan\", waiting until \"load\"\u001b[22m\n",
+        "error": "Reference file not found D:\\THE-AUDIT-APP-2\\backstop_data\\bitmaps_reference\\qaudit-pro-visual-tests_Annual_Plan_0_document_0_phone.png"
+      },
+      "status": "fail"
+    },
+    {
+      "pair": {
+        "reference": "..\\..\\..\\backstop_data\\bitmaps_reference\\qaudit-pro-visual-tests_Annual_Plan_0_document_1_tablet.png",
+        "test": "..\\..\\..\\backstop_data\\bitmaps_test\\20251023-153825\\qaudit-pro-visual-tests_Annual_Plan_0_document_1_tablet.png",
+        "selector": "document",
+        "fileName": "qaudit-pro-visual-tests_Annual_Plan_0_document_1_tablet.png",
+        "label": "Annual Plan",
+        "requireSameDimensions": true,
+        "misMatchThreshold": 0.1,
+        "url": "http://localhost:3001/annual-plan",
+        "expect": 0,
+        "viewportLabel": "tablet",
+        "engineErrorMsg": "page.goto: net::ERR_CONNECTION_REFUSED at http://localhost:3001/annual-plan\nCall log:\n\u001b[2m  - navigating to \"http://localhost:3001/annual-plan\", waiting until \"load\"\u001b[22m\n",
+        "error": "Reference file not found D:\\THE-AUDIT-APP-2\\backstop_data\\bitmaps_reference\\qaudit-pro-visual-tests_Annual_Plan_0_document_1_tablet.png"
+      },
+      "status": "fail"
+    },
+    {
+      "pair": {
+        "reference": "..\\..\\..\\backstop_data\\bitmaps_reference\\qaudit-pro-visual-tests_Annual_Plan_0_document_2_desktop.png",
+        "test": "..\\..\\..\\backstop_data\\bitmaps_test\\20251023-153825\\qaudit-pro-visual-tests_Annual_Plan_0_document_2_desktop.png",
+        "selector": "document",
+        "fileName": "qaudit-pro-visual-tests_Annual_Plan_0_document_2_desktop.png",
+        "label": "Annual Plan",
+        "requireSameDimensions": true,
+        "misMatchThreshold": 0.1,
+        "url": "http://localhost:3001/annual-plan",
+        "expect": 0,
+        "viewportLabel": "desktop",
+        "engineErrorMsg": "page.goto: net::ERR_CONNECTION_REFUSED at http://localhost:3001/annual-plan\nCall log:\n\u001b[2m  - navigating to \"http://localhost:3001/annual-plan\", waiting until \"load\"\u001b[22m\n",
+        "error": "Reference file not found D:\\THE-AUDIT-APP-2\\backstop_data\\bitmaps_reference\\qaudit-pro-visual-tests_Annual_Plan_0_document_2_desktop.png"
+      },
+      "status": "fail"
+    }
+  ],
+  "id": "qaudit-pro-visual-tests"
+}
