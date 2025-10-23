@@ -138,18 +138,18 @@ export function AnnualPlanScreen({ locale }: { locale: Locale }) {
   };
 
   // Define process steps (complete 11-stage RBIA)
-  const processSteps = [
-    { id: 1, label: locale === 'ar' ? 'الخطة السنوية' : 'Annual Plan', status: (currentPlanId && tasks.length > 0) ? 'completed' : 'available' as const },
-    { id: 2, label: locale === 'ar' ? 'التخطيط' : 'Planning', status: 'available' as const },
-    { id: 3, label: locale === 'ar' ? 'فهم العملية والمخاطر' : 'Process & Risk Understanding', status: 'available' as const },
-    { id: 4, label: locale === 'ar' ? 'برنامج العمل والعينات' : 'Work Program & Sampling', status: 'available' as const },
-    { id: 5, label: locale === 'ar' ? 'الأعمال الميدانية والأدلة' : 'Fieldwork & Evidence', status: 'available' as const },
-    { id: 6, label: locale === 'ar' ? 'المسودات الأولية' : 'Initial Drafts', status: 'available' as const },
-    { id: 7, label: locale === 'ar' ? 'النتائج والتوصيات' : 'Findings & Recommendations', status: 'available' as const },
-    { id: 8, label: locale === 'ar' ? 'التقرير النهائي' : 'Final Report', status: 'available' as const },
-    { id: 9, label: locale === 'ar' ? 'المتابعة' : 'Follow-up', status: 'available' as const },
-    { id: 10, label: locale === 'ar' ? 'الإقفال' : 'Closure', status: 'available' as const },
-    { id: 11, label: locale === 'ar' ? 'ضمان الجودة' : 'Quality Assurance', status: 'available' as const },
+  const processSteps: ProcessStep[] = [
+    { id: 1, label: locale === 'ar' ? 'الخطة السنوية' : 'Annual Plan', status: (currentPlanId && tasks.length > 0) ? 'completed' : 'available' },
+    { id: 2, label: locale === 'ar' ? 'التخطيط' : 'Planning', status: 'available' },
+    { id: 3, label: locale === 'ar' ? 'فهم العملية والمخاطر' : 'Process & Risk Understanding', status: 'available' },
+    { id: 4, label: locale === 'ar' ? 'برنامج العمل والعينات' : 'Work Program & Sampling', status: 'available' },
+    { id: 5, label: locale === 'ar' ? 'الأعمال الميدانية والأدلة' : 'Fieldwork & Evidence', status: 'available' },
+    { id: 6, label: locale === 'ar' ? 'المسودات الأولية' : 'Initial Drafts', status: 'available' },
+    { id: 7, label: locale === 'ar' ? 'النتائج والتوصيات' : 'Findings & Recommendations', status: 'available' },
+    { id: 8, label: locale === 'ar' ? 'التقرير النهائي' : 'Final Report', status: 'available' },
+    { id: 9, label: locale === 'ar' ? 'المتابعة' : 'Follow-up', status: 'available' },
+    { id: 10, label: locale === 'ar' ? 'الإقفال' : 'Closure', status: 'available' },
+    { id: 11, label: locale === 'ar' ? 'ضمان الجودة' : 'Quality Assurance', status: 'available' },
   ];
 
   // Handle step click
@@ -424,15 +424,17 @@ export function AnnualPlanScreen({ locale }: { locale: Locale }) {
       {/* Main Content with Fixed Grid Layout */}
       <div className="container mx-auto px-3 sm:px-4 lg:px-6 max-w-[1440px]" dir="rtl">
         {/* Grid: يسار 320px | وسط مرن | يمين 320px (يظهر من XL) */}
-        <div className="grid gap-6 lg:grid-cols-[320px_minmax(0,1fr)] xl:grid-cols-[320px_minmax(0,1fr)_320px]">
-          {/* Stepper يسار - ثابت */}
-          <aside className="stepper-col sticky top-[88px] h-fit w-[320px] min-w-[320px] max-w-[320px] flex-none shrink-0 z-10">
-            <ProcessStepper
-              steps={processSteps}
-              activeStepId={activeStepId || 1}
-              onStepClick={handleStepClick}
-              completedCount={processSteps.filter(s => s.status === 'completed').length}
-            />
+        <div className="grid gap-6 lg:grid-cols-[320px_minmax(0,1fr)] xl:grid-cols-[320px_minmax(0,1fr)_320px] isolate">
+          {/* Stepper يسار - ثابت 320px لا ينكمش أبداً */}
+          <aside className="stepper-col w-[320px] min-w-[320px] max-w-[320px] flex-none shrink-0 overflow-hidden">
+            <div className="sticky top-[88px] z-10">
+              <ProcessStepper
+                steps={processSteps}
+                activeStepId={activeStepId || 1}
+                onStepClick={handleStepClick}
+                completedCount={processSteps.filter(s => s.status === 'completed').length}
+              />
+            </div>
           </aside>
 
           {/* المحتوى الأوسط - الوحيد المسموح له بالتمدد */}
@@ -640,10 +642,10 @@ export function AnnualPlanScreen({ locale }: { locale: Locale }) {
                 ) : (
                   <div className="bg-white rounded-lg border border-gray-200 overflow-hidden shadow-sm">
                     <div className="w-full overflow-x-auto">
-                      <table className="w-full table-fixed min-w-[900px]">
+                      <table className="w-full table-fixed">
                         <colgroup>
-                          <col style={{ width: '6%' }} />       {/* Code */}
-                          <col style={{ width: '24%' }} />      {/* Title - with wrap */}
+                          <col style={{ width: '7%' }} />       {/* Code */}
+                          <col style={{ width: '26%' }} />      {/* Title - with wrap */}
                           <col style={{ width: '12%' }} />      {/* Department */}
                           <col style={{ width: '10%' }} />      {/* Risk */}
                           <col style={{ width: '12%' }} />      {/* Type */}

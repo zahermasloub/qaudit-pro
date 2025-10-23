@@ -138,8 +138,8 @@ export default function ProcessStepper({
 
   return (
     <>
-      {/* Desktop Sidebar - Hidden on mobile */}
-      <div className="hidden lg:block w-[300px] xl:w-[300px] flex-shrink-0">
+      {/* Desktop Sidebar - Hidden on mobile - Fixed Width 320px */}
+      <div className="hidden lg:block w-full">
         <div className="bg-white rounded-xl shadow-sm border border-gray-200 sticky top-[88px] overflow-hidden">
           {/* Header */}
           <div className="bg-gradient-to-br from-slate-800 to-slate-900 text-white px-4 py-4">
