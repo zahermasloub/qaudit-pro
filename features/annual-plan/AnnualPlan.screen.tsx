@@ -422,10 +422,10 @@ export function AnnualPlanScreen({ locale }: { locale: Locale }) {
       </div>
 
       {/* Main Content with Grid Layout */}
-      <div className="container mx-auto max-w-[1440px] px-6 py-6">
-        <div className="grid grid-cols-[320px_1fr] gap-6 lg:grid-cols-[320px_1fr_320px]">
+      <div className="container mx-auto max-w-[1440px] xl:max-w-[1536px] px-6 py-6">
+        <div className="grid grid-cols-[320px_minmax(0,1fr)] gap-6 lg:grid-cols-[320px_minmax(0,1fr)_320px]">
           {/* Left Sidebar - ProcessStepper */}
-          <aside className="min-w-[320px] w-[320px] shrink-0">
+          <aside className="min-w-[320px] w-[320px] shrink-0 flex-none">
             <ProcessStepper
               steps={processSteps}
               activeStepId={activeStepId || 1}
@@ -637,7 +637,7 @@ export function AnnualPlanScreen({ locale }: { locale: Locale }) {
                   </div>
                 ) : (
                   <div className="bg-white rounded-lg border border-gray-200 overflow-hidden shadow-sm">
-                    <div className="w-full overflow-x-hidden">
+                    <div className="w-full overflow-hidden">
                       <table className="w-full table-fixed">
                         <colgroup>
                           <col className="w-24" />
@@ -766,7 +766,7 @@ export function AnnualPlanScreen({ locale }: { locale: Locale }) {
           </main>
 
           {/* Right Sidebar - RBIA Info (Hidden on mobile/tablet) */}
-          <aside className="hidden lg:block min-w-[320px] w-[320px] shrink-0">
+          <aside className="hidden lg:block min-w-[320px] w-[320px] shrink-0 flex-none">
             <div className="bg-white rounded-lg border border-gray-200 p-6 sticky top-[88px]">
               <h3 className="text-lg font-bold text-gray-900 mb-4">
                 {locale === 'ar' ? 'معلومات RBIA' : 'RBIA Information'}
