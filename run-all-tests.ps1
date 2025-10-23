@@ -12,7 +12,8 @@ Write-Host "🔍 Checking if application is running on localhost:3001..." -Foreg
 try {
     $response = Invoke-WebRequest -Uri "http://localhost:3001" -TimeoutSec 5 -UseBasicParsing
     Write-Host "✅ Application is running!" -ForegroundColor Green
-} catch {
+}
+catch {
     Write-Host "❌ Application is not running!" -ForegroundColor Red
     Write-Host "💡 Please start the application first: npm run dev" -ForegroundColor Yellow
     exit 1
