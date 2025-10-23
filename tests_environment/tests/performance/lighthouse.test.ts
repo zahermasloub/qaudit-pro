@@ -46,7 +46,7 @@ async function runLighthouse(url: string, name: string) {
   // حفظ التقرير HTML
   const reportHtml = runnerResult?.report;
   if (reportHtml) {
-    const reportPath = join(process.cwd(), 'tests', 'reports', 'lighthouse', `${name}.html`);
+    const reportPath = join(process.cwd(), 'tests_environment', 'tests', 'reports', 'lighthouse', `${name}.html`);
     writeFileSync(reportPath, reportHtml as string);
     console.log(`✅ Report saved: ${reportPath}`);
   }
@@ -89,7 +89,7 @@ async function runAllTests() {
   }
 
   // حفظ ملخص النتائج
-  const summaryPath = join(process.cwd(), 'tests', 'reports', 'lighthouse', 'summary.json');
+  const summaryPath = join(process.cwd(), 'tests_environment', 'tests', 'reports', 'lighthouse', 'summary.json');
   writeFileSync(summaryPath, JSON.stringify(results, null, 2));
   console.log(`\n📊 Summary saved: ${summaryPath}`);
 

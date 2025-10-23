@@ -66,9 +66,9 @@ module.exports = {
   ],
 
   paths: {
-    bitmaps_reference: 'tests/visual/backstop_data/bitmaps_reference',
-    bitmaps_test: 'tests/visual/backstop_data/bitmaps_test',
-    engine_scripts: 'tests/visual/backstop_data/engine_scripts',
+    bitmaps_reference: 'backstop_data/bitmaps_reference',
+    bitmaps_test: 'backstop_data/bitmaps_test',
+    engine_scripts: 'backstop_data/engine_scripts',
     html_report: 'tests/reports/backstop',
     ci_report: 'tests/reports/backstop',
   },

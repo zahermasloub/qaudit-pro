@@ -42,7 +42,7 @@ Write-Host "══════════════════════�
 Write-Host ""
 
 # Check if reference images exist
-if (-not (Test-Path "tests/visual/backstop_data/bitmaps_reference")) {
+if (-not (Test-Path "tests_environment/backstop_data/bitmaps_reference")) {
     Write-Host "📸 Creating reference images first..." -ForegroundColor Yellow
     npm run test:visual:reference
 }
@@ -63,9 +63,9 @@ Write-Host "  ✨ All tests completed!" -ForegroundColor Green
 Write-Host "═══════════════════════════════════════════════" -ForegroundColor Green
 Write-Host ""
 Write-Host "📊 View Reports:" -ForegroundColor Cyan
-Write-Host "   - Playwright: tests/reports/playwright/index.html" -ForegroundColor White
-Write-Host "   - BackstopJS: tests/reports/backstop/html_report/index.html" -ForegroundColor White
-Write-Host "   - Lighthouse: tests/reports/lighthouse/" -ForegroundColor White
+Write-Host "   - Playwright: tests_environment/tests/reports/playwright/index.html" -ForegroundColor White
+Write-Host "   - BackstopJS: tests_environment/tests/reports/backstop/html_report/index.html" -ForegroundColor White
+Write-Host "   - Lighthouse: tests_environment/tests/reports/lighthouse/" -ForegroundColor White
 Write-Host ""
 Write-Host "🎯 To open Playwright report: npm run test:report" -ForegroundColor Yellow
 Write-Host ""
