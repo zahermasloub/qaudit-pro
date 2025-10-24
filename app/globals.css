@@ -10,6 +10,19 @@
 @tailwind components;
 @tailwind utilities;
 
+/* رؤوس/خلايا الجدول (قابلة للتعديل حسب الثيم) */
+@layer components {
+  .thcell { @apply px-3 py-2 text-right bg-slate-900 text-white font-medium; }
+  .tdcell { @apply px-3 py-2 align-top; }
+}
+
+/* التفاف نص عربي مقروء + قصّ للأكواد/المعرّفات */
+@layer utilities {
+  .is-text  { white-space: normal; overflow-wrap: break-word; word-break: normal; hyphens: auto; line-height: 1.6; }
+  .is-token { white-space: nowrap; text-overflow: ellipsis; overflow: hidden; max-inline-size: 10rem; } /* ~160px */
+  .sticky-col { position: sticky; inset-inline-start: 0; background: white; z-index: 11; } /* عمود أول لاصق (اختياري) */
+}
+
 @layer base {
   :root {
     --font-arabic: 'Tajawal', 'Cairo', 'Noto Sans Arabic', system-ui, sans-serif;
