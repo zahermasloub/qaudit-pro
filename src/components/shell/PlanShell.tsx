@@ -1,89 +1,41 @@
-/**
- * PlanShell - Main container for the annual plan interface
- * Provides the layout structure with sidebar and main content area
- */
-
 'use client';
 
-import React, { useState } from 'react';
-import { StagesSidebar } from './StagesSidebar';
-import { StagesBottomBar } from './StagesBottomBar';
 import { usePlanStore } from '@/src/state/plan.store';
-import { motion, AnimatePresence } from 'framer-motion';
 
-export type ProcessStep = {
-  id: number;
-  label: string;
-  status: 'completed' | 'available' | 'locked';
-};
+import { PlanTable } from '../table/PlanTable';
+import { Toolbar } from '../table/Toolbar';
 
-type PlanShellProps = {
-  children: React.ReactNode;
-  steps: ProcessStep[];
-  activeStepId: number | null;
-  onStepClick: (stepId: number) => void;
-  locale?: 'ar' | 'en';
-  dir?: 'rtl' | 'ltr';
-};
+import { StageDrawer } from './StageDrawer';
+import { StagesBottomBar } from './StagesBottomBar';
+import { StagesSidebar } from './StagesSidebar';
 
-export function PlanShell({
-  children,
-  steps,
-  activeStepId,
-  onStepClick,
-  locale = 'ar',
-  dir = 'rtl',
-}: PlanShellProps) {
-  const { sidebarCollapsed, toggleSidebar } = usePlanStore();
+const DEFAULT_PLAN_ID = 'sample-plan-2025';
+
+export default function PlanShell() {
+  const { sidebarCollapsed } = usePlanStore();
 
   return (
-    <div className="min-h-screen bg-gray-50" dir={dir}>
-      <div className="annual-plan-container container mx-auto px-3 sm:px-4 lg:px-6 max-w-[1440px]">
-        <div className="annual-plan-shell">
-          {/* Desktop Sidebar */}
-          <aside
-            className={`annual-plan-sidebar hidden lg:block ${
-              !sidebarCollapsed ? 'is-open' : ''
-            }`}
-            aria-expanded={!sidebarCollapsed}
-            aria-label={locale === 'ar' ? 'شريط المراحل الجانبي' : 'Process Stages Sidebar'}
-          >
-            <div className="annual-plan-sidebar-inner">
-              <StagesSidebar
-                steps={steps}
-                activeStepId={activeStepId}
-                onStepClick={onStepClick}
-                collapsed={sidebarCollapsed}
-                onToggle={toggleSidebar}
-                locale={locale}
-              />
-            </div>
-          </aside>
+    <div className="grid grid-cols-1 lg:grid-cols-[auto_minmax(0,1fr)_360px] gap-4 w-full" dir="rtl">
+      <aside
+        className={[
+          'bg-white rounded-2xl shadow-sm sticky top-0 z-30 h-[calc(100vh-16px)] overflow-visible transition-[width] duration-200 hidden lg:block',
+          sidebarCollapsed ? 'w-[72px]' : 'w-[280px]',
+        ].join(' ')}
+      >
+        <StagesSidebar />
+      </aside>
 
-          {/* Main Content */}
-          <main className="annual-plan-main space-y-6">
-            <AnimatePresence mode="wait">
-              <motion.div
-                key={activeStepId}
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -10 }}
-                transition={{ duration: 0.2 }}
-              >
-                {children}
-              </motion.div>
-            </AnimatePresence>
-          </main>
+      <section className="min-w-0 flex flex-col">
+        <Toolbar />
+        <div className="w-full max-h-[calc(100vh-260px)] overflow-auto [contain:content]">
+          <PlanTable planId={DEFAULT_PLAN_ID} />
         </div>
-      </div>
+      </section>
 
-      {/* Mobile Bottom Bar */}
-      <StagesBottomBar
-        steps={steps}
-        activeStepId={activeStepId}
-        onStepClick={onStepClick}
-        locale={locale}
-      />
+      <aside className="hidden lg:block w-[360px] sticky top-0 z-20 h-[calc(100vh-16px)]" />
+
+      <StagesBottomBar />
+      <StageDrawer />
     </div>
   );
 }

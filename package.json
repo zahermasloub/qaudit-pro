@@ -104,7 +104,7 @@
     "autoprefixer": "10.4.17",
     "axe-core": "^4.11.0",
     "backstopjs": "^6.3.25",
-    "eslint": "9.38.0",
+    "eslint": "^8.57.0",
     "eslint-config-next": "14.2.5",
     "eslint-config-prettier": "^10.1.8",
     "eslint-plugin-import": "^2.32.0",

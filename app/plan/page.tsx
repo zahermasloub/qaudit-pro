@@ -1,11 +1,7 @@
-'use client';
-
 import dynamic from 'next/dynamic';
-
-import type { Locale } from '@/lib/i18n';
 
 const PlanShell = dynamic(() => import('@/src/components/shell/PlanShell'), { ssr: false });
 
-export function EnhancedAnnualPlanScreen({ locale: _locale }: { locale: Locale }) {
+export default function PlanPage() {
   return <PlanShell />;
 }

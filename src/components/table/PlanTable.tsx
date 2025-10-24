@@ -1,184 +1,134 @@
-/**
- * PlanTable - Main table component using TanStack Table
- */
-
 'use client';
 
-import React, { useMemo } from 'react';
+import * as React from 'react';
 import {
-  useReactTable,
+  flexRender,
   getCoreRowModel,
   getSortedRowModel,
-  getFilteredRowModel,
-  flexRender,
+  useReactTable,
 } from '@tanstack/react-table';
-import { AuditTask } from '@/src/lib/api';
-import { getColumns } from './columns';
+import { useVirtualizer } from '@tanstack/react-virtual';
+
+import { useVirtualSwitch } from '@/src/hooks/useVirtualSwitch';
+import type { PlanRow } from '@/src/lib/api';
+import { fetchPlanTasks } from '@/src/lib/api';
 import { usePlanStore } from '@/src/state/plan.store';
 
+import { planColumns } from './columns';
+
 type PlanTableProps = {
-  data: AuditTask[];
-  locale?: 'ar' | 'en';
-  onRowClick?: (task: AuditTask) => void;
-  onEdit?: (task: AuditTask) => void;
-  onDelete?: (task: AuditTask) => void;
+  planId: string;
 };
 
-export function PlanTable({
-  data,
-  locale = 'ar',
-  onRowClick,
-  onEdit,
-  onDelete,
-}: PlanTableProps) {
-  const { sort, setSort, filters } = usePlanStore();
+export function PlanTable({ planId }: PlanTableProps) {
+  const { pageIndex, pageSize, set, total } = usePlanStore();
+  const [data, setData] = React.useState<PlanRow[]>([]);
+  const [loading, setLoading] = React.useState(false);
+  const [error, setError] = React.useState<string | null>(null);
 
-  const columns = useMemo(() => {
-    const baseColumns = getColumns(locale);
-    
-    // Add actions column if edit/delete handlers provided
-    if (onEdit || onDelete) {
-      return [
-        ...baseColumns,
-        {
-          id: 'actions',
-          header: locale === 'ar' ? 'إجراءات' : 'Actions',
-          size: 100,
-          cell: ({ row }: any) => (
-            <div className="flex items-center gap-2">
-              {onEdit && (
-                <button
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    onEdit(row.original);
-                  }}
-                  className="text-green-600 hover:text-green-800 transition-colors focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 rounded"
-                  title={locale === 'ar' ? 'تعديل' : 'Edit'}
-                  aria-label={`${locale === 'ar' ? 'تعديل' : 'Edit'} ${row.original.title}`}
-                >
-                  ✏️
-                </button>
-              )}
-              {onDelete && (
-                <button
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    onDelete(row.original);
-                  }}
-                  className="text-red-600 hover:text-red-800 transition-colors focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 rounded"
-                  title={locale === 'ar' ? 'حذف' : 'Delete'}
-                  aria-label={`${locale === 'ar' ? 'حذف' : 'Delete'} ${row.original.title}`}
-                >
-                  🗑️
-                </button>
-              )}
-            </div>
-          ),
-        },
-      ];
-    }
-    return baseColumns;
-  }, [locale, onEdit, onDelete]);
+  React.useEffect(() => {
+    let active = true;
+    setLoading(true);
+    setError(null);
 
-  // Filter data based on store filters
-  const filteredData = useMemo(() => {
-    let result = [...data];
+    (async () => {
+      try {
+        const json = await fetchPlanTasks(planId, pageIndex * pageSize, pageSize);
+        if (!active) return;
+        setData(json.rows);
+        set({ total: json.total });
+      } catch (err) {
+        if (!active) return;
+        setError((err as Error).message);
+        setData([]);
+      } finally {
+        if (active) setLoading(false);
+      }
+    })();
 
-    if (filters.search) {
-      const searchLower = filters.search.toLowerCase();
-      result = result.filter(
-        (task) =>
-          task.title.toLowerCase().includes(searchLower) ||
-          task.code.toLowerCase().includes(searchLower) ||
-          task.department.toLowerCase().includes(searchLower)
-      );
-    }
-
-    if (filters.department) {
-      result = result.filter((task) => task.department === filters.department);
-    }
-
-    if (filters.riskLevel) {
-      result = result.filter((task) => task.riskLevel === filters.riskLevel);
-    }
-
-    if (filters.status) {
-      result = result.filter((task) => task.status === filters.status);
-    }
-
-    return result;
-  }, [data, filters]);
+    return () => {
+      active = false;
+    };
+  }, [planId, pageIndex, pageSize, set]);
 
   const table = useReactTable({
-    data: filteredData,
-    columns,
+    data,
+    columns: planColumns,
     getCoreRowModel: getCoreRowModel(),
     getSortedRowModel: getSortedRowModel(),
-    getFilteredRowModel: getFilteredRowModel(),
-    state: {
-      sorting: sort ? [sort] : [],
-    },
-    onSortingChange: (updater) => {
-      const newSort = typeof updater === 'function' ? updater(sort ? [sort] : []) : updater;
-      setSort(newSort.length > 0 ? newSort[0] : null);
-    },
+    state: {},
   });
 
-  if (filteredData.length === 0) {
-    return (
-      <div className="bg-white rounded-lg border border-gray-200 p-12 text-center">
-        <div className="text-gray-500">
-          {locale === 'ar' ? 'لا توجد مهام تدقيق' : 'No audit tasks found'}
-        </div>
-      </div>
-    );
-  }
+  const useVirtual = useVirtualSwitch(total, 2000);
+  const parentRef = React.useRef<HTMLDivElement>(null);
+  const virtualRowCount = table.getRowModel().rows.length;
+
+  const rowVirtualizer = useVirtualizer({
+    count: virtualRowCount,
+    getScrollElement: () => parentRef.current,
+    estimateSize: () => 44,
+    overscan: 6,
+    enabled: useVirtual,
+  });
 
   return (
-    <div className="bg-white rounded-lg border border-gray-200 shadow-sm overflow-hidden">
-      <div className="annual-plan-table-wrapper">
-        <table className="w-full table-fixed border-collapse">
-          <colgroup>
-            {columns.map((col) => (
-              <col
-                key={col.id || (col as any).accessorKey}
-                style={{ width: `${(col as any).size}px` }}
-              />
-            ))}
-          </colgroup>
-          <thead>
-            {table.getHeaderGroups().map((headerGroup) => (
-              <tr key={headerGroup.id}>
-                {headerGroup.headers.map((header) => (
-                  <th
-                    key={header.id}
-                    className="text-start text-xs font-medium text-gray-600 uppercase tracking-wider bg-gray-50 px-4 py-3"
-                  >
-                    {header.isPlaceholder
-                      ? null
-                      : flexRender(header.column.columnDef.header, header.getContext())}
-                  </th>
-                ))}
-              </tr>
-            ))}
-          </thead>
-          <tbody>
-            {table.getRowModel().rows.map((row) => (
-              <tr
-                key={row.id}
-                className="align-top cursor-pointer hover:bg-gray-50 transition-colors"
-                onClick={() => onRowClick?.(row.original)}
-              >
+    <div ref={parentRef} className="w-full max-h-[calc(100vh-260px)] overflow-auto [contain:content]">
+      <table className="w-full table-fixed border-collapse min-w-full [width:max-content]">
+        <thead className="sticky top-0 z-10 bg-slate-900 text-white">
+          {table.getHeaderGroups().map((headerGroup) => (
+            <tr key={headerGroup.id}>
+              {headerGroup.headers.map((header) => (
+                <th key={header.id} className="thcell">
+                  {header.isPlaceholder
+                    ? null
+                    : flexRender(header.column.columnDef.header, header.getContext())}
+                </th>
+              ))}
+            </tr>
+          ))}
+        </thead>
+        <tbody>
+          {useVirtual ? (
+            <tr>
+              <td colSpan={planColumns.length} className="p-0">
+                <div style={{ height: rowVirtualizer.getTotalSize() }} className="relative">
+                  {rowVirtualizer.getVirtualItems().map((virtualRow) => {
+                    const row = table.getRowModel().rows[virtualRow.index];
+                    if (!row) return null;
+                    return (
+                      <div
+                        key={row.id}
+                        className="absolute left-0 right-0"
+                        style={{ transform: `translateY(${virtualRow.start}px)` }}
+                      >
+                        <div className="table-row">
+                          {row.getVisibleCells().map((cell) => (
+                            <div key={cell.id} className="table-cell tdcell">
+                              {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              </td>
+            </tr>
+          ) : (
+            table.getRowModel().rows.map((row) => (
+              <tr key={row.id} className="hover:bg-slate-50">
                 {row.getVisibleCells().map((cell) => (
-                  <td key={cell.id} className="px-4 py-3">
+                  <td key={cell.id} className="tdcell">
                     {flexRender(cell.column.columnDef.cell, cell.getContext())}
                   </td>
                 ))}
               </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
+            ))
+          )}
+        </tbody>
+      </table>
+      {loading && <div className="p-3 text-sm">...?????</div>}
+      {!loading && error && <div className="p-3 text-sm text-red-600">{error}</div>}
     </div>
   );
 }

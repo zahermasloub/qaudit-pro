@@ -1,62 +1,22 @@
-/**
- * StagesBottomBar - Mobile bottom navigation for process stages
- */
-
 'use client';
 
-import React from 'react';
-import { ProcessStep } from './PlanShell';
+import * as Drawer from '@radix-ui/react-drawer';
 
-type StagesBottomBarProps = {
-  steps: ProcessStep[];
-  activeStepId: number | null;
-  onStepClick: (stepId: number) => void;
-  locale?: 'ar' | 'en';
-};
-
-export function StagesBottomBar({
-  steps,
-  activeStepId,
-  onStepClick,
-  locale = 'ar',
-}: StagesBottomBarProps) {
+export function StagesBottomBar() {
   return (
-    <div className="annual-plan-bottom-bar lg:hidden">
-      <div className="stage-rail">
-        {steps.map((step) => (
-          <button
-            key={step.id}
-            onClick={() => onStepClick(step.id)}
-            className={`stage-chip ${activeStepId === step.id ? 'active' : ''}`}
-            aria-current={activeStepId === step.id ? 'step' : undefined}
-            title={step.label}
-          >
-            <span className="inline-flex items-center gap-1.5">
-              <span
-                className={`inline-flex items-center justify-center w-5 h-5 rounded-full text-xs font-bold ${
-                  activeStepId === step.id
-                    ? 'bg-white text-blue-600'
-                    : step.status === 'completed'
-                    ? 'bg-green-600 text-white'
-                    : 'bg-gray-200 text-gray-600'
-                }`}
-              >
-                {step.status === 'completed' ? (
-                  <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
-                    <path
-                      fillRule="evenodd"
-                      d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
-                      clipRule="evenodd"
-                    />
-                  </svg>
-                ) : (
-                  step.id
-                )}
-              </span>
-              <span className="text-sm">{step.label}</span>
-            </span>
-          </button>
-        ))}
+    <div className="fixed inset-x-0 bottom-0 bg-white shadow lg:hidden z-40">
+      <div className="flex gap-2 overflow-x-auto p-2">
+        <Drawer.Root>
+          <Drawer.Trigger className="px-3 py-1.5 rounded-lg bg-slate-100">
+            تفاصيل المراحل
+          </Drawer.Trigger>
+          <Drawer.Portal>
+            <Drawer.Overlay className="fixed inset-0 bg-black/20" />
+            <Drawer.Content className="fixed inset-x-0 bottom-0 bg-white rounded-t-2xl p-4">
+              <Drawer.Close className="mt-2">إغلاق</Drawer.Close>
+            </Drawer.Content>
+          </Drawer.Portal>
+        </Drawer.Root>
       </div>
     </div>
   );
