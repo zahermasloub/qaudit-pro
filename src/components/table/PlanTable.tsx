@@ -33,7 +33,11 @@ export function PlanTable({ planId }: PlanTableProps) {
 
     (async () => {
       try {
-        const json = await fetchPlanTasks(planId, pageIndex * pageSize, pageSize);
+        const json = await fetchPlanTasks({
+          planId,
+          offset: pageIndex * pageSize,
+          limit: pageSize,
+        });
         if (!active) return;
         setData(json.rows);
         set({ total: json.total });
@@ -71,8 +75,41 @@ export function PlanTable({ planId }: PlanTableProps) {
     enabled: useVirtual,
   });
 
+  // Show loading state
+  if (loading) {
+    return (
+      <div className="p-8 text-center">
+        <div className="inline-flex items-center gap-2 text-slate-600">
+          <div className="w-4 h-4 border-2 border-slate-400 border-t-transparent rounded-full animate-spin" />
+          جاري تحميل البيانات...
+        </div>
+      </div>
+    );
+  }
+
+  // Show error state
+  if (error) {
+    return (
+      <div className="p-8 text-center">
+        <div className="inline-flex items-center gap-2 text-red-600 bg-red-50 px-4 py-3 rounded-lg">
+          <span>⚠️</span>
+          <span>{error}</span>
+        </div>
+      </div>
+    );
+  }
+
+  // Show empty state
+  if (data.length === 0) {
+    return (
+      <div className="p-8 text-center text-slate-500">
+        لا توجد مهام متاحة
+      </div>
+    );
+  }
+
   return (
-    <div ref={parentRef} className="w-full max-h-[calc(100vh-260px)] overflow-auto [contain:content]">
+    <div ref={parentRef} className="w-full max-h-[calc(100vh-260px)] overflow-auto">
       <table className="w-full table-fixed border-collapse min-w-full [width:max-content]">
         <thead className="sticky top-0 z-10 bg-slate-900 text-white">
           {table.getHeaderGroups().map((headerGroup) => (
@@ -127,8 +164,6 @@ export function PlanTable({ planId }: PlanTableProps) {
           )}
         </tbody>
       </table>
-      {loading && <div className="p-3 text-sm">...?????</div>}
-      {!loading && error && <div className="p-3 text-sm text-red-600">{error}</div>}
     </div>
   );
 }

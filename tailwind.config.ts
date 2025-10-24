@@ -3,12 +3,26 @@ import rtl from 'tailwindcss-rtl';
 
 export default {
   content: [
-    './app/**/*.{ts,tsx}',
-    './components/**/*.{ts,tsx}',
-    './lib/**/*.{ts,tsx}',
-    './src/**/*.{ts,tsx}',
+    './app/**/*.{js,ts,jsx,tsx}',
+    './components/**/*.{js,ts,jsx,tsx}',
+    './lib/**/*.{js,ts,jsx,tsx}',
+    './src/**/*.{js,ts,jsx,tsx}',
+    './src/components/**/*.{js,ts,jsx,tsx}',
+    './src/app/**/*.{js,ts,jsx,tsx}',
+    './index.html',
   ],
   darkMode: 'class',
+  safelist: [
+    // احمِ الكلاسات التعسفية من التنظيف لو كانت تُحقن بشروط
+    '[width:max-content]',
+    '[contain:content]',
+    'min-w-0',
+    'sticky',
+    'top-0',
+    'z-10',
+    'z-20',
+    'z-30',
+  ],
   theme: {
     container: {
       center: true,

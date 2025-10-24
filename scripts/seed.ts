@@ -79,12 +79,15 @@ async function seedData() {
       administrativeHours: 50,
       estimatedBudget: 500000,
       createdBy: 'lead@example.com',
+      planRef: 'AP-2025-001', // رقم مرجعي للخطة
     },
   });
 
   // Create Sample Audit Tasks
   const auditTasks = [
     {
+      seqNo: 1,
+      taskRef: 'AT-2025-001',
       code: 'AT-2025-001',
       title: 'تدقيق العمليات المالية',
       department: 'المالية',
@@ -96,6 +99,8 @@ async function seedData() {
       status: 'not_started' as const,
     },
     {
+      seqNo: 2,
+      taskRef: 'AT-2025-002',
       code: 'AT-2025-002',
       title: 'تدقيق أمن المعلومات',
       department: 'تقنية المعلومات',
@@ -107,6 +112,8 @@ async function seedData() {
       status: 'not_started' as const,
     },
     {
+      seqNo: 3,
+      taskRef: 'AT-2025-003',
       code: 'AT-2025-003',
       title: 'تدقيق الامتثال التنظيمي',
       department: 'الامتثال',
@@ -118,6 +125,8 @@ async function seedData() {
       status: 'not_started' as const,
     },
     {
+      seqNo: 4,
+      taskRef: 'AT-2025-004',
       code: 'AT-2025-004',
       title: 'تدقيق العمليات التشغيلية',
       department: 'العمليات',

@@ -1,4 +1,5 @@
 'use client';
+import Link from 'next/link';
 import type { Locale } from '@/lib/i18n';
 import KpiCards from '@/app/(components)/KpiCards';
 
@@ -18,6 +19,28 @@ export default function DashboardView({
       dir={locale === 'ar' ? 'rtl' : 'ltr'}
     >
       <div className="w-full max-w-4xl space-y-6">
+        {/* Quick Access to Annual Plan (New Design) */}
+        <div className="bg-gradient-to-r from-blue-600 to-blue-700 rounded-2xl p-6 shadow-lg text-white">
+          <div className="flex items-center justify-between flex-wrap gap-4">
+            <div>
+              <h2 className="text-xl font-bold mb-2">
+                {locale === 'ar' ? 'الخطة السنوية 2025' : 'Annual Plan 2025'}
+              </h2>
+              <p className="text-blue-100 text-sm">
+                {locale === 'ar'
+                  ? 'عرض تفصيلي لخطة التدقيق السنوية مع إدارة المهام والمراحل'
+                  : 'Detailed view of annual audit plan with task and stage management'}
+              </p>
+            </div>
+            <Link
+              href="/annual-plans/sample-plan-2025"
+              className="px-6 py-3 bg-white text-blue-600 rounded-lg font-semibold hover:bg-blue-50 transition-colors shadow-md whitespace-nowrap"
+            >
+              {locale === 'ar' ? 'فتح الخطة السنوية →' : 'Open Annual Plan →'}
+            </Link>
+          </div>
+        </div>
+
         {/* KPI Cards - displays metrics for latest annual plan */}
         <KpiCards />
         {/* Filters */}
